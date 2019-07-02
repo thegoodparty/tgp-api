@@ -12,7 +12,9 @@
     "sails-hook-sockets": "^1.5.5",
     "@sailshq/connect-redis": "^3.2.1",
     "@sailshq/socket.io-redis": "^5.2.0",
-    "@sailshq/lodash": "^3.10.3"
+    "@sailshq/lodash": "^3.10.3",
+    "js-yaml": ">=3.13.1",
+    "underscore.string": ">=3.3.5"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3"
