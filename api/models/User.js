@@ -69,7 +69,7 @@ module.exports = {
 
   customToJSON: function () {
     // Return a shallow copy of this record with the password removed.
-    return _.omit(this, ['encryptedPassword', 'passwordResetToken', 'passwordResetTokenExpiresAt'])
+    return _.omit(this, ['encryptedPassword', 'passwordResetToken', 'passwordResetTokenExpiresAt']);
   },
 
   // hash password and save it in encryptedPassword.
@@ -82,9 +82,9 @@ module.exports = {
       // Delete the passwords so that they are not stored in the DB
       delete values.password;
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.
-      next();
+      return next();
     } catch (e) {
-      next(e);
+      return next(e);
     }
   },
 

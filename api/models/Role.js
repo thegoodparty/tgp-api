@@ -22,7 +22,7 @@ module.exports = {
       example: 'superAdmin, admin, artist or fan',
     },
 
-    access_level: {
+    accessLevel: {
       type: 'number',
       required: true,
       description: 'Integer access level',
