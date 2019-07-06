@@ -17,7 +17,7 @@ module.exports.policies = {
    *                                                                          *
    ***************************************************************************/
 
-  '*': ['isAuthorized'], // Restrict all but routes below
+  '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'entrance/*': true,
 };

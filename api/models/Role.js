@@ -5,6 +5,13 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+export const RoleEnum = {
+  VOTER: 10,
+  CANDIDATE: 20,
+  ADMIN: 30,
+  SUPER_ADMIN: 40
+};
+
 module.exports = {
 
   attributes: {
@@ -14,19 +21,11 @@ module.exports = {
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
     name: {
-      type: 'string',
-      required: true,
-      description: 'Role name',
-      unique: true,
-      maxLength: 60,
-      example: 'superAdmin, admin, artist or fan',
-    },
-
-    accessLevel: {
       type: 'number',
+      in: [RoleEnum.VOTER, RoleEnum.CANDIDATE, RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN],
       required: true,
-      description: 'Integer access level',
-      example: '10, 20 or 30',
+      description: 'Role access level',
+      unique: true,
     },
 
 
