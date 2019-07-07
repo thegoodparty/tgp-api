@@ -35,9 +35,9 @@ module.exports = {
       console.log('before creating');
       await Candidate.create({
         summary: inputs.summary,
-        user: user.data.id
+        user: user.id
       });
-      const candidate = await Candidate.findOne({user: user.data.id}).populate('user')
+      const candidate = await Candidate.findOne({user: user.id}).populate('user')
       console.log('after creating', candidate);
       // candidate.user = user;
       return exits.success({

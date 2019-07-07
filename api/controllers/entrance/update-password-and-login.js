@@ -13,7 +13,8 @@ module.exports = {
     password: {
       description: 'The new, unencrypted password.',
       example: 'abc123v2',
-      required: true
+      required: true,
+      minLength: 8,
     },
 
     token: {

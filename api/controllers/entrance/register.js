@@ -21,7 +21,8 @@ module.exports = {
     password: {
       description: 'User Password',
       type: 'string',
-      required: true
+      required: true,
+      minLength: 8
     },
     firstName: {
       description: 'User First Name',

@@ -15,7 +15,7 @@ module.exports = {
     payload: {
       friendlyName: 'Payload to sign as a JWT',
       description: 'Valid JSON. in our case a user JSON.',
-      type: {},
+      type: 'json',
     },
   },
 
