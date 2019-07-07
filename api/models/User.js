@@ -64,6 +64,11 @@ module.exports = {
 
     role: {
       model: 'role',
+    },
+
+    candidates: {
+      collection: 'candidate',
+      via: 'user'
     }
 
   },
