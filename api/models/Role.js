@@ -1,16 +1,12 @@
 /**
  * Role.js
+ * Useing the beforeCreate rule and the uniqeness of the accessLevel we ensure that we can have max of 3 roles
+ * only with the permissions defined in our custom variables
  *
  * @description :: User Roles such as superAdmin, admin, artist or fan. Has one-to-many association with user.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
-export const RoleEnum = {
-  VOTER: 10,
-  CANDIDATE: 20,
-  ADMIN: 30,
-  SUPER_ADMIN: 40
-};
 
 module.exports = {
 
@@ -20,9 +16,8 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    name: {
+    accessLevel: {
       type: 'number',
-      in: [RoleEnum.VOTER, RoleEnum.CANDIDATE, RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN],
       required: true,
       description: 'Role access level',
       unique: true,
@@ -44,6 +39,15 @@ module.exports = {
     }
 
   },
+
+  beforeCreate: function (values, next) {
+    if (values.accessLevel !== sails.config.custom.rolesEnums.VOTER &&
+    values.accessLevel !== sails.config.custom.rolesEnums.CANDIDATE &&
+    values.accessLevel !== sails.config.custom.rolesEnums.ADMIN) {
+      values.accessLevel = sails.config.custom.rolesEnums.VOTER;
+    }
+    next();
+  }
 
 };
 

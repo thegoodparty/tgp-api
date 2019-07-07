@@ -19,5 +19,6 @@ module.exports.routes = {
   'GET    /api/v1/user/check':                            'user/check',
   'POST   /api/v1/entrance/send-password-recovery-email': 'entrance/send-password-recovery-email',
   'POST   /api/v1/entrance/update-password-and-login':    'entrance/update-password-and-login',
+  'POST   /api/v1/role':                                  'role/create',
 
 };

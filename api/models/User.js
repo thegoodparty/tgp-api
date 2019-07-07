@@ -5,6 +5,7 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+
 module.exports = {
 
   attributes: {
@@ -81,7 +82,16 @@ module.exports = {
       values.encryptedPassword = hashedPassword;
       // Delete the passwords so that they are not stored in the DB
       delete values.password;
+
+      // set role. Voter by default (if non is provided).
+      if(values.role !== 20) {
+        values.role = 10;
+      }
+
+
+
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.
+
       return next();
     } catch (e) {
       return next(e);

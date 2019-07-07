@@ -35,17 +35,20 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    try {
+      const user = await User.findOne({email: inputs.email});
+      await sails.helpers.passwords.checkPassword(inputs.password, user.encryptedPassword);
 
-    const user = await User.findOne({email: inputs.email});
-    await sails.helpers.passwords.checkPassword(inputs.password, user.encryptedPassword);
+      if (!user) {
+        return exits.forbidden();
+      }
 
-    if (!user) {
+      return exits.success({
+        user,
+        token: jwToken.sign(user)//generate the token and send it in the response
+      });
+    } catch (err) {
       return exits.forbidden();
     }
-
-    return exits.success({
-      user,
-      token: jwToken.sign(user)//generate the token and send it in the response
-    });
   }
 };

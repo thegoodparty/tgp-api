@@ -1,3 +1,8 @@
+/**
+ * isuthenticated.js
+ *
+ * @description :: policy that checks the headers for Bearer {JWT TOKEN} format
+ */
 module.exports = function(req, res, next) {
   let token;
   //Check if authorization header is present
