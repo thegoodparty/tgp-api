@@ -54,9 +54,7 @@ module.exports = {
     }
 
     // Hash the new password.
-    console.log(inputs.password);
     const hashed = await sails.helpers.passwords.hashPassword(inputs.password);
-    console.log(hashed);
 
     // Store the user's new password and clear their reset token so it can't be used again.
     await User.updateOne({id: userRecord.id})
@@ -69,7 +67,7 @@ module.exports = {
     // Log the user in.
     return exits.success({
       user: userRecord,
-      token: jwToken.sign(userRecord)//generate the token and send it in the response
+      token: sails.helpers.jwtSign(userRecord)//generate the token and send it in the response
     });
 
   }

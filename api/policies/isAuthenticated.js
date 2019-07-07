@@ -3,7 +3,7 @@
  *
  * @description :: policy that checks the headers for Bearer {JWT TOKEN} format
  */
-module.exports = function(req, res, next) {
+module.exports = async function(req, res, next) {
   let token;
   //Check if authorization header is present
   if(req.headers && req.headers.authorization) {
@@ -23,11 +23,11 @@ module.exports = function(req, res, next) {
     //authorization header is not present
     return res.json(401, {err: 'No Authorization header was found'});
   }
-  jwToken.verify(token, (err, decoded) => {
-    if(err) {
-      return res.json(401, {err: 'Invalid token'});
-    }
+  try {
+    const decoded = await sails.helpers.jwtVerify(token);
     req.user = decoded;
-    next();
-  });
+    return next();
+  } catch (err) {
+    return res.json(401, {err: 'Invalid token'});
+  }
 };

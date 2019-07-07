@@ -42,10 +42,10 @@ module.exports = {
       if (!user) {
         return exits.forbidden();
       }
-
+      const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
-        token: jwToken.sign(user)//generate the token and send it in the response
+        token
       });
     } catch (err) {
       return exits.forbidden();

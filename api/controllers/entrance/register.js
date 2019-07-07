@@ -69,7 +69,7 @@ module.exports = {
       const user = await User.findOne({email});
       return exits.success({
         user,
-        token: jwToken.sign(user)//generate the token and send it in the response
+        token: sails.helpers.jwtSign(user)//generate the token and send it in the response
       });
     } catch (e) {
       return exits.badRequest(e);

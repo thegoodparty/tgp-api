@@ -43,15 +43,11 @@ module.exports = {
 
     // Store the token on the user record
     // (This allows us to look up the user when the link from the email is clicked.)
-    const user1 = await User.findOne({id: userRecord.id});
-    console.log('user1 before update', user1);
     await User.update({id: userRecord.id})
       .set({
         passwordResetToken: token,
         passwordResetTokenExpiresAt: Date.now() + sails.config.custom.passwordResetTokenTTL,
       });
-    const user2 = await User.findOne({id: userRecord.id});
-    console.log('user2 after update', user2);
 
     /*
     // Send recovery email
