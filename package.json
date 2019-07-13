@@ -29,10 +29,10 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/talmog/tgp-api.git"
+    "url": "git://github.com/thegoodparty/tgp-api"
   },
-  "author": "talmog",
-  "license": "",
+  "author": "Tomer Almog",
+  "license": "CC0",
   "engines": {
     "node": "^10.16"
   }
