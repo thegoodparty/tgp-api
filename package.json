@@ -9,6 +9,7 @@
     "eslint": "^6.0.1",
     "global": "^4.4.0",
     "jsonwebtoken": "^8.5.1",
+    "lodash": "4.17.13",
     "nodemon": "^1.19.1",
     "sails": "^1.1.0",
     "sails-hook-organics": "^1.0.0",
