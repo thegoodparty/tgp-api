@@ -5,27 +5,35 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "@sailshq/lodash": "^3.10.3",
+    "eslint": "^6.0.1",
+    "global": "^4.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "4.17.13",
+    "nodemon": "^1.19.1",
     "sails": "^1.1.0",
+    "sails-hook-organics": "^1.0.0",
     "sails-hook-orm": "^2.1.1",
-    "sails-hook-sockets": "^1.5.5",
-    "@sailshq/lodash": "^3.10.3"
+    "sails-hook-sockets": "^1.5.5"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3"
   },
   "scripts": {
     "start": "NODE_ENV=production node app.js",
+    "start-dev": "NODE_ENV=development nodemon app.js",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
+    "lint-fix": "eslint --fix",
     "custom-tests": "echo \"(No other custom tests yet.)\" && echo"
   },
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/talmog/tgp-api.git"
+    "url": "git://github.com/thegoodparty/tgp-api"
   },
-  "author": "talmog",
-  "license": "",
+  "author": "Tomer Almog",
+  "license": "CC0",
   "engines": {
     "node": "^10.16"
   }
