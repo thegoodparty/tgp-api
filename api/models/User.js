@@ -25,7 +25,7 @@ module.exports = {
 
     firstName: {
       type: 'string',
-      required: true,
+      required: false,
       description: 'User\'s first name.',
       maxLength: 60,
       example: 'John'
@@ -33,7 +33,7 @@ module.exports = {
 
     lastName: {
       type: 'string',
-      required: true,
+      required: false,
       description: 'User\'s last name.',
       maxLength: 60,
       example: 'Smith'

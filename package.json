@@ -14,7 +14,8 @@
     "sails": "^1.1.0",
     "sails-hook-organics": "^1.0.0",
     "sails-hook-orm": "^2.1.1",
-    "sails-hook-sockets": "^1.5.5"
+    "sails-hook-sockets": "^1.5.5",
+    "sails-postgresql": "^1.0.2"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3"
@@ -33,7 +34,7 @@
     "url": "git://github.com/thegoodparty/tgp-api"
   },
   "author": "Tomer Almog",
-  "license": "CC0",
+  "license": "CC0-1.0",
   "engines": {
     "node": "^10.16"
   }

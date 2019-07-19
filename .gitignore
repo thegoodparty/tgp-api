@@ -129,4 +129,5 @@ lib-cov
 *.log
 *.out
 *.pid
+.elasticbeanstalk
 

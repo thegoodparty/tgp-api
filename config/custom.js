@@ -39,7 +39,7 @@ module.exports.custom = {
    *                                                                          *
    ***************************************************************************/
   mailgunDomain: 'sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org',
-  mailgunSecret: sails.config.MAILGUN_API,
+  // mailgunSecret: sails.config.MAILGUN_API,
   // stripeSecret: 'sk_test_Zzd814nldl91104qor5911gjald',
   // …
 
