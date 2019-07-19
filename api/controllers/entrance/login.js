@@ -36,7 +36,8 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const user = await User.findOne({email: inputs.email});
+      const email = inputs.email.toLowerCase();
+      const user = await User.findOne({email});
       await sails.helpers.passwords.checkPassword(inputs.password, user.encryptedPassword);
 
       if (!user) {

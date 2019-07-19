@@ -58,14 +58,15 @@ module.exports = {
       firstName,
       lastName
     } = inputs;
+    const lowerCaseEmail = email.toLowerCase();
     try {
       await User.create({
-        email,
+        email: lowerCaseEmail,
         password,
         firstName,
         lastName
       });
-      const user = await User.findOne({email});
+      const user = await User.findOne({lowerCaseEmail});
       const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
