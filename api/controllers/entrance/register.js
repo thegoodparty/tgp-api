@@ -27,12 +27,10 @@ module.exports = {
     firstName: {
       description: 'User First Name',
       type: 'string',
-      required: true
     },
     lastName: {
       description: 'User Last Name',
       type: 'string',
-      required: true
     }
   },
 
@@ -68,9 +66,10 @@ module.exports = {
         lastName
       });
       const user = await User.findOne({email});
+      const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
-        token: sails.helpers.jwtSign(user)//generate the token and send it in the response
+        token
       });
     } catch (e) {
       return exits.badRequest(e);
