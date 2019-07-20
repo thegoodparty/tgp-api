@@ -5,11 +5,8 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
-
 module.exports = {
-
   attributes: {
-
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
@@ -23,7 +20,6 @@ module.exports = {
       type: 'string',
     },
 
-
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
@@ -31,15 +27,11 @@ module.exports = {
     user: {
       model: 'user',
       unique: true,
-    }
-
+    },
   },
 
   // customToJSON: function () {
   //   // Return a shallow copy of this record with the password removed.
   //   return _.omit(this, ['encryptedPassword', 'passwordResetToken', 'passwordResetTokenExpiresAt']);
   // },
-
-
 };
-

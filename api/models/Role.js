@@ -9,9 +9,7 @@
 
 
 module.exports = {
-
   attributes: {
-
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
@@ -23,11 +21,9 @@ module.exports = {
       unique: true,
     },
 
-
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝
-
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
@@ -35,19 +31,19 @@ module.exports = {
 
     users: {
       collection: 'user',
-      via: 'role'
-    }
-
+      via: 'role',
+    },
   },
 
-  beforeCreate: function (values, next) {
-    if (values.accessLevel !== sails.config.custom.rolesEnums.VOTER &&
-    values.accessLevel !== sails.config.custom.rolesEnums.CANDIDATE &&
-    values.accessLevel !== sails.config.custom.rolesEnums.ADMIN) {
+  beforeCreate: function(values, next) {
+    if (
+      values.accessLevel !== sails.config.custom.rolesEnums.VOTER &&
+      values.accessLevel !== sails.config.custom.rolesEnums.CANDIDATE &&
+      values.accessLevel !== sails.config.custom.rolesEnums.ADMIN
+    ) {
       values.accessLevel = sails.config.custom.rolesEnums.VOTER;
     }
     next();
-  }
-
+  },
 };
 

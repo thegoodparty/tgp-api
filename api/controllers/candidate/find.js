@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 module.exports = {
-
   friendlyName: 'Check user',
 
   description: 'Return user from jwt',
@@ -21,28 +20,28 @@ module.exports = {
   exits: {
     success: {
       description: 'Candidate Found',
-      responseType: 'ok'
+      responseType: 'ok',
     },
     notFound: {
       description: 'Candidate Not Found.',
-      responseType: 'notFound'
-    }
+      responseType: 'notFound',
+    },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
-      const candidate = await Candidate.findOne({id: inputs.id}).populate('user');
-      if(!candidate){
+      const candidate = await Candidate.findOne({ id: inputs.id }).populate(
+        'user',
+      );
+      if (!candidate) {
         return exits.notFound();
       }
       return exits.success({
-        candidate
+        candidate,
       });
     } catch (e) {
       console.log(e);
       return exits.notFound();
     }
-
-
-  }
+  },
 };

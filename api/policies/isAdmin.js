@@ -5,12 +5,12 @@
  * locally we use /config/local file to store this array. On production we need to set the ENV variables.
  */
 
-const errorMsg = ''
+const errorMsg = '';
 
 module.exports = async function(req, res, next) {
   let token;
 
-  if(req.headers && req.headers.authorization) {
+  if (req.headers && req.headers.authorization) {
     //authorization header is present
     const parts = req.headers.authorization.split(' ');
     if (parts.length === 2) {
@@ -21,7 +21,7 @@ module.exports = async function(req, res, next) {
         token = credentials;
         try {
           const decoded = await sails.helpers.jwtVerify(token);
-          if(sails.config.ADMIN_EMAILS.includes(decoded.email)){
+          if (sails.config.ADMIN_EMAILS.includes(decoded.email)) {
             return next();
           } else {
             return res.status(401).send('Admin permission access required');
@@ -32,13 +32,10 @@ module.exports = async function(req, res, next) {
       } else {
         return res.status(401).send('Admin permission access required');
       }
-
     } else {
       return res.status(401).send('Admin permission access required');
     }
-
   } else {
     return res.status(401).send('Admin permission access required');
   }
-
 };

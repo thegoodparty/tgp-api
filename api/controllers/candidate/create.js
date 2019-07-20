@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 module.exports = {
-
   friendlyName: 'Check user',
 
   description: 'Return user from jwt',
@@ -20,34 +19,34 @@ module.exports = {
   exits: {
     success: {
       description: 'Candidate Created',
-      responseType: 'ok'
+      responseType: 'ok',
     },
     forbidden: {
       description: 'Can not create candidate',
-      responseType: 'forbidden'
-    }
+      responseType: 'forbidden',
+    },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     const user = this.req.user;
     console.log(user);
     try {
       console.log('before creating');
       await Candidate.create({
         summary: inputs.summary,
-        user: user.id
+        user: user.id,
       });
-      const candidate = await Candidate.findOne({user: user.id}).populate('user')
+      const candidate = await Candidate.findOne({ user: user.id }).populate(
+        'user',
+      );
       console.log('after creating', candidate);
       // candidate.user = user;
       return exits.success({
-        candidate
+        candidate,
       });
     } catch (e) {
       console.log(e);
       return exits.forbidden(e);
     }
-
-
-  }
+  },
 };

@@ -5,40 +5,43 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 module.exports = {
-
   friendlyName: 'Login user',
 
-  description: 'Login user with email and password. Return the user and jwt access token.',
+  description:
+    'Login user with email and password. Return the user and jwt access token.',
 
   inputs: {
     email: {
       description: 'User Email',
       type: 'string',
-      required: true
+      required: true,
     },
     password: {
       description: 'User Password',
       type: 'string',
-      required: true
-    }
+      required: true,
+    },
   },
 
   exits: {
     success: {
       description: 'Returns ok response from api/responses/ok.js',
-      responseType: 'ok'
+      responseType: 'ok',
     },
     forbidden: {
       description: 'Login Failed',
-      responseType: 'forbidden'
-    }
+      responseType: 'forbidden',
+    },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const email = inputs.email.toLowerCase();
-      const user = await User.findOne({email});
-      await sails.helpers.passwords.checkPassword(inputs.password, user.encryptedPassword);
+      const user = await User.findOne({ email });
+      await sails.helpers.passwords.checkPassword(
+        inputs.password,
+        user.encryptedPassword,
+      );
 
       if (!user) {
         return exits.forbidden();
@@ -46,10 +49,10 @@ module.exports = {
       const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
-        token
+        token,
       });
     } catch (err) {
       return exits.forbidden();
     }
-  }
+  },
 };
