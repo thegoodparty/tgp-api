@@ -6,37 +6,37 @@
 module.exports = async function(req, res, next) {
   let token;
   //Check if authorization header is present
-  if(req.headers && req.headers.authorization) {
+  if (req.headers && req.headers.authorization) {
     //authorization header is present
     const parts = req.headers.authorization.split(' ');
-    if(parts.length === 2) {
+    if (parts.length === 2) {
       const scheme = parts[0];
       const credentials = parts[1];
 
-      if(/^Bearer$/i.test(scheme)) {
+      if (/^Bearer$/i.test(scheme)) {
         token = credentials;
       }
     } else {
-      return res.json(401, {err: 'Format is Authorization: Bearer [token]'});
+      return res.json(401, { err: 'Format is Authorization: Bearer [token]' });
     }
   } else {
     //authorization header is not present
-    return res.json(401, {err: 'No Authorization header was found'});
+    return res.json(401, { err: 'No Authorization header was found' });
   }
   try {
     const decoded = await sails.helpers.jwtVerify(token);
     const user = decoded.data;
     //check that the user exists in our system and the token matches.
-    const userRecord = await User.findOne({id: user.id});
-    console.log('userRecord.encryptedPassword',userRecord.encryptedPassword);
-    console.log('user.encryptedPassword',user.encryptedPassword);
-    if(userRecord.encryptedPassword === user.encryptedPassword) {
+    const userRecord = await User.findOne({ id: user.id });
+    console.log('userRecord.encryptedPassword', userRecord.encryptedPassword);
+    console.log('user.encryptedPassword', user.encryptedPassword);
+    if (userRecord.encryptedPassword === user.encryptedPassword) {
       req.user = user;
       return next();
     } else {
-      return res.json(401, {err: 'Invalid token'});
+      return res.json(401, { err: 'Invalid token' });
     }
   } catch (err) {
-    return res.json(401, {err: 'Invalid token'});
+    return res.json(401, { err: 'Invalid token' });
   }
 };

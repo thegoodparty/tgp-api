@@ -68,7 +68,7 @@ module.exports = {
     // Log the user in.
     return exits.success({
       user: userRecord,
-      token: sails.helpers.jwtSign(userRecord)//generate the token and send it in the response
+      token: sails.helpers.jwtSign(userRecord), //generate the token and send it in the response
     });
 
   }

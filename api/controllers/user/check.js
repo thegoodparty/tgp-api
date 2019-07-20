@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 module.exports = {
-
   friendlyName: 'Check user',
 
   description: 'Return user from jwt',
@@ -20,17 +19,17 @@ module.exports = {
   exits: {
     success: {
       description: 'Check passed.',
-      responseType: 'ok'
+      responseType: 'ok',
     },
     forbidden: {
       description: 'Bad token',
-      responseType: 'forbidden'
-    }
+      responseType: 'forbidden',
+    },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     return exits.success({
       user: this.req.user,
     });
-  }
+  },
 };
