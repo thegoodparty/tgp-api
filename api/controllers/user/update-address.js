@@ -30,21 +30,20 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      // Look up the user with this reset token.
       const user = this.req.user;
       const { address, addressComponents } = inputs;
       if (!address || !addressComponents) {
         return exits.badRequest();
       }
 
-      // Store the user's new password and clear their reset token so it can't be used again.
       await User.updateOne({ id: user.id }).set({
         address,
         addressComponents,
       });
 
-      // Log the user in.
-      return exits.success();
+      return exits.success({
+        message: 'Address updated',
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest();
