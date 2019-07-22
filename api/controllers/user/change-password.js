@@ -9,12 +9,14 @@ module.exports = {
       example: 'abc123v2',
       required: true,
       minLength: 8,
+      type: 'string',
     },
     newPassword: {
       description: 'The new, unencrypted password.',
       example: 'abc123v2',
       required: true,
       minLength: 8,
+      type: 'string',
     },
   },
 

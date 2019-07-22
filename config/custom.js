@@ -11,13 +11,12 @@
 const ONE_HOUR = 60 * 60 * 1000;
 
 module.exports.custom = {
-
   /**************************************************************************
    *                                                                         *
    * The TTL (time-to-live) for various sorts of tokens before they expire.  *
    *                                                                         *
    **************************************************************************/
-  passwordResetTokenTTL: 24 * ONE_HOUR,// 24 hours
+  passwordResetTokenTTL: 24 * ONE_HOUR, // 24 hours
 
   /**************************************************************************
    *                                                                         *
@@ -30,9 +29,6 @@ module.exports.custom = {
     ADMIN: 30,
   },
 
-
-
-
   /***************************************************************************
    *                                                                          *
    * Any other custom config this Sails app should use during development.    *
@@ -42,5 +38,4 @@ module.exports.custom = {
   // mailgunSecret: sails.config.MAILGUN_API,
   // stripeSecret: 'sk_test_Zzd814nldl91104qor5911gjald',
   // …
-
 };

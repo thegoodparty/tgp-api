@@ -19,6 +19,10 @@ module.exports = {
       maxLength: 200,
       example: 'mary.sue@example.com',
     },
+    // didn't need this with localDiskDb, but got an error with postgres
+    password: {
+      type: 'string',
+    },
 
     firstName: {
       type: 'string',
@@ -105,7 +109,7 @@ module.exports = {
       );
       values.encryptedPassword = hashedPassword;
       // Delete the passwords so that they are not stored in the DB
-      delete values.password;
+      values.password = '';
 
       // set role. Voter by default (if non is provided).
       if (values.role !== 20) {
