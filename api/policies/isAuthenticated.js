@@ -28,8 +28,6 @@ module.exports = async function(req, res, next) {
     const user = decoded.data;
     //check that the user exists in our system and the token matches.
     const userRecord = await User.findOne({ id: user.id });
-    console.log('userRecord.encryptedPassword', userRecord.encryptedPassword);
-    console.log('user.encryptedPassword', user.encryptedPassword);
     if (userRecord.encryptedPassword === user.encryptedPassword) {
       req.user = user;
       return next();

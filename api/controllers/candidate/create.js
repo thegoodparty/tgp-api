@@ -29,17 +29,14 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     const user = this.req.user;
-    console.log(user);
     try {
-      console.log('before creating');
-      await Candidate.create({
+      const candidate = await Candidate.create({
         summary: inputs.summary,
         user: user.id,
-      });
-      const candidate = await Candidate.findOne({ user: user.id }).populate(
+      }).fetch();
+      candidate.populate(
         'user',
       );
-      console.log('after creating', candidate);
       // candidate.user = user;
       return exits.success({
         candidate,
