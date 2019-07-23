@@ -29,6 +29,7 @@ module.exports.custom = {
     ADMIN: 30,
   },
   adminEmails: ['tomeralmog@gmail.com'],
+  jwtSecret: 'QD.-&%`rMG^Uj#4a]WLKJLLph4',
 
   /***************************************************************************
    *                                                                          *
