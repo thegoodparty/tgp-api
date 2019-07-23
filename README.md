@@ -96,6 +96,7 @@ npm run test
 Setup the following ENV varialbles:
 ```
 sails_datastores__default__url: 'postgres connection url', //https://sailsjs.com/documentation/reference/configuration/sails-config-datastores
+sails_custom__adminEmails: ['example@gmail.com'] // array of emails for admin permission
 ```
 
 ## Coding styles

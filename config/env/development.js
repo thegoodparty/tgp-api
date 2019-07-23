@@ -354,6 +354,5 @@ module.exports = {
    * Custom Secret for jwt. This should be an environment vairable.          *
    *                                                                         *
    ***************************************************************************/
-  adminEmails: [],
   secret: 'Xd3*+Hzu9(LF^DN,',
 };
