@@ -21,7 +21,10 @@ module.exports = async function(req, res, next) {
         token = credentials;
         try {
           const decoded = await sails.helpers.jwtVerify(token);
-          if (decoded && decoded.data && sails.config.adminEmails.includes(decoded.data.email)) {
+          console.log('sails.config', sails.config);
+          console.log('sails.config.adminEmails', sails.config.adminEmails);
+          console.log('typeof sails.config.adminEmails', typeof sails.config.adminEmails);
+          if (decoded && decoded.data && sails.config.adminEmails && sails.config.adminEmails.includes(decoded.data.email)) {
             return next();
           } else {
             return res.status(401).send('Admin permission access required1');
