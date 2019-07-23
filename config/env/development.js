@@ -332,7 +332,6 @@ module.exports = {
   custom: {
     baseUrl: 'https://example.com',
     internalEmailAddress: 'support@example.com',
-    adminEmails: [],
 
     // mailgunDomain: 'mg.example.com',
     // mailgunSecret: 'key-prod_fake_bd32301385130a0bafe030c',
@@ -355,6 +354,6 @@ module.exports = {
    * Custom Secret for jwt. This should be an environment vairable.          *
    *                                                                         *
    ***************************************************************************/
-
+  adminEmails: [],
   secret: 'Xd3*+Hzu9(LF^DN,',
 };
