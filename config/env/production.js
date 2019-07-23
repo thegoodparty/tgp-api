@@ -1,4 +1,3 @@
-
 /**
  * Development environment settings
  *
@@ -12,15 +11,11 @@
  */
 
 module.exports = {
-
   /**************************************************************************
-  *                                                                         *
-  * Custom Secret for jwt. This should be an environment vairable.          *
-  *                                                                         *
-  ***************************************************************************/
+   *                                                                         *
+   * Custom Secret for jwt. This should be an environment variable.          *
+   *                                                                         *
+   ***************************************************************************/
 
   secret: 'QD.-&%`rMG^Uj#4a]WXBKph4',
-
-
-
 };
