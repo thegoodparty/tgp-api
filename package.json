@@ -15,7 +15,8 @@
     "sails-hook-organics": "^1.0.0",
     "sails-hook-orm": "^2.1.1",
     "sails-hook-sockets": "^1.5.5",
-    "sails-postgresql": "^1.0.2"
+    "sails-postgresql": "^1.0.2",
+    "twilio": "^3.33.1"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",

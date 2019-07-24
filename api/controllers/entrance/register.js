@@ -48,6 +48,9 @@ module.exports = {
         phone,
       }).fetch();
       const token = await sails.helpers.jwtSign(user);
+      // send sms to the newly created user.
+
+      await sails.helpers.smsVerify(`+1${phone}`);
       return exits.success({
         user,
         token,

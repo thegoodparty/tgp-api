@@ -54,6 +54,12 @@ module.exports = {
       description: 'Google auto-complete address components',
     },
 
+    isPhoneVerified: {
+      type: 'boolean',
+      defaultsTo: false,
+      description: 'Was the phone verified via sms',
+    },
+
     // encryptedPassword: {
     //   type: 'string',
     //   description:
