@@ -40,7 +40,7 @@ module.exports = {
 
     if (phoneError) {
       return exits.badRequest({
-        formatError: 'Accepting 10 digits phone numbers only. EX: 3104445566',
+        message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
       });
     }
     try {
@@ -57,7 +57,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest(e);
+      return exits.badRequest({ message: 'Error registering phone.' });
     }
   },
 };

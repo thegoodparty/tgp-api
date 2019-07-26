@@ -33,7 +33,9 @@ module.exports = {
       const user = this.req.user;
       const { address, addressComponents } = inputs;
       if (!address || !addressComponents) {
-        return exits.badRequest();
+        return exits.badRequest({
+          message: 'Address and address components are missing',
+        });
       }
 
       await User.updateOne({ id: user.id }).set({
@@ -46,7 +48,9 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest();
+      return exits.badRequest({
+        message: 'Error saving address',
+      });
     }
   },
 };

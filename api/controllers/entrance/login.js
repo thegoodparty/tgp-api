@@ -40,7 +40,7 @@ module.exports = {
 
       if (phoneError) {
         return exits.badRequest({
-          formatError: 'Accepting 10 digits phone numbers only. EX: 3104445566',
+          message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
         });
       }
       const user = await User.findOne({ phone });
@@ -58,7 +58,9 @@ module.exports = {
         token,
       });
     } catch (err) {
-      return exits.forbidden();
+      console.log('login error');
+      console.log(err);
+      return exits.forbidden({ message: 'Login Failed' });
     }
   },
 };

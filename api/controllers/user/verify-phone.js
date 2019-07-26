@@ -28,7 +28,9 @@ module.exports = {
       const reqUser = this.req.user;
       const { code } = inputs;
       if (!code || code.length !== 6) {
-        return exits.badRequest();
+        return exits.badRequest({
+          message: 'Missing 6 digits code',
+        });
       }
       console.log('reqUser.phone', reqUser.phone);
       await sails.helpers.smsVerifyCheck(`+1${reqUser.phone}`, code);
@@ -44,7 +46,9 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest();
+      return exits.badRequest({
+        message: 'Error verifying phone',
+      });
     }
   },
 };
