@@ -30,9 +30,9 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const twilioSID = sails.config.twilioSID;
-      const twilioAuthToken = sails.config.twilioAuthToken;
-      const twilioVerification = sails.config.twilioVerification;
+      const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
+      const twilioAuthToken = sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
+      const twilioVerification = sails.config.custom.twilioVerification || sails.config.twilioVerification;
 
       if (!twilioClient) {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
