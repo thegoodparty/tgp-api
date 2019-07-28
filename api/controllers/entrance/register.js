@@ -57,7 +57,12 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({ message: 'Error registering phone.' });
+      if(e.code === 'E_UNIQUE'){
+        return exits.badRequest({ message: 'This phone is already pledged. Try logging in instead of pledging.' });
+      }else {
+        return exits.badRequest({ message: 'Error registering phone.' });
+      }
+
     }
   },
 };

@@ -11,6 +11,8 @@
     "jsonwebtoken": "^8.5.1",
     "lodash": "4.17.13",
     "nodemon": "^1.19.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "sails": "^1.1.0",
     "sails-hook-organics": "^1.0.0",
     "sails-hook-orm": "^2.1.1",

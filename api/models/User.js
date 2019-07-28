@@ -54,6 +54,12 @@ module.exports = {
       description: 'Google auto-complete address components',
     },
 
+    normalizedAddress: {
+      description: 'Normalized address from civic api. stringified JSON',
+      required: false,
+      type: 'string',
+    },
+
     isPhoneVerified: {
       type: 'boolean',
       defaultsTo: false,
@@ -87,6 +93,10 @@ module.exports = {
 
     role: {
       model: 'role',
+    },
+
+    district: {
+      model: 'district',
     },
 
     candidates: {
