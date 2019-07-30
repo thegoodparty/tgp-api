@@ -23,10 +23,6 @@ module.exports = {
       description: 'Returns ok response from api/responses/ok.js',
       responseType: 'ok',
     },
-    forbidden: {
-      description: 'Login Failed',
-      responseType: 'forbidden',
-    },
     badRequest: {
       description: 'Phone Format Error',
       responseType: 'badRequest',
@@ -60,7 +56,7 @@ module.exports = {
     } catch (err) {
       console.log('login error');
       console.log(err);
-      return exits.forbidden({ message: 'Login Failed' });
+      return exits.badRequest({ message: 'Login Failed' });
     }
   },
 };

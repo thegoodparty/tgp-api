@@ -69,32 +69,25 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      console.log('update address');
       const user = this.req.user;
-      console.log('update address A');
       const {
         address,
         addressComponents,
         normalizedAddress,
         divisions,
       } = inputs;
-      console.log('update address B', inputs);
       if (!address || !addressComponents || !normalizedAddress || !divisions) {
-        console.log('update address C');
         return exits.badRequest({
           message:
             'Address, addressComponents, normalizedAddress and divisions are required',
         });
       }
-      console.log('update address2');
       const divs = JSON.parse(divisions);
-      console.log(divs);
       if (!divs || !divs.country || divs.country.code !== 'us') {
         return exits.badRequest({
           message: 'Currently we support only US elections.',
         });
       }
-      console.log('update address3', divs.state.name);
 
       // find or create state and district for user divisions.
       const state = await State.findOrCreate(
@@ -104,7 +97,6 @@ module.exports = {
           shortName: divs.state.code,
         },
       );
-      console.log('update address4');
       const district = await District.findOrCreate(
         { code: divs.cd.code },
         {
@@ -113,7 +105,6 @@ module.exports = {
           state: state.id,
         },
       );
-      console.log('update address5');
 
       await User.updateOne({ id: user.id }).set({
         address,
@@ -121,7 +112,6 @@ module.exports = {
         normalizedAddress,
         district: district.id,
       });
-      console.log('update address6');
 
       return exits.success({
         message: 'Address updated',
