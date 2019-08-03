@@ -29,6 +29,8 @@ module.exports.routes = {
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'PUT    /api/v1/user/verify-phone': 'user/verify-phone',
 
+  'GET    /api/v1/elections/user-elections': 'elections/user-elections',
+
   'POST   /api/v1/candidate/create': 'candidate/create',
   'GET    /api/v1/candidate/find/:id': 'candidate/find',
 };

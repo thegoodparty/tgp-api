@@ -95,8 +95,16 @@ module.exports = {
       model: 'role',
     },
 
-    district: {
-      model: 'district',
+    congressionalDistrict: {
+      model: 'congressionalDistrict',
+    },
+
+    houseDistrict: {
+      model: 'houseDistrict',
+    },
+
+    senateDistrict: {
+      model: 'senateDistrict',
     },
 
     candidates: {

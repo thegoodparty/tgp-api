@@ -1,8 +1,8 @@
 /**
- * State.js
- * District associated with a user's address
+ * HouseDistrict.js
+ * House District associated with a user's address
  *
- * @description :: District associated with a user's address.
+ * @description :: House District associated with a user's address.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
@@ -16,7 +16,15 @@ module.exports = {
       type: 'string',
       required: true,
       description: 'Name of district',
-      example: "California's 29th congressional district",
+      example: 'California Assembly district 46',
+      unique: true,
+    },
+    ocdDivisionId: {
+      type: 'string',
+      required: true,
+      description:
+        'The political division of the election. A unique ocd division id',
+      example: 'ocd-division/country:us/state:ca/sldl:46',
       unique: true,
     },
     code: {
@@ -43,7 +51,13 @@ module.exports = {
     // a user has one district (a district has many users)
     users: {
       collection: 'user',
-      via: 'district',
+      via: 'houseDistrict',
+    },
+
+    // an election has one district (a district has many elecions)
+    elections: {
+      collection: 'election',
+      via: 'houseDistrict',
     },
   },
 };

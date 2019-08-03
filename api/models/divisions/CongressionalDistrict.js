@@ -1,8 +1,8 @@
 /**
- * State.js
- * State definition for a district. Has one to many relationships with district.
+ * CongressionalDistrict.js
+ * Congressional District associated with a user's address
  *
- * @description :: State definition for a district. Has one to many relationships with district.
+ * @description :: Congressional District associated with a user's address.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
@@ -15,18 +15,23 @@ module.exports = {
     name: {
       type: 'string',
       required: true,
-      description: 'Long name of the state',
-      example: 'California',
-      maxLength: 20,
+      description: 'Name of district',
+      example: "California's 29th congressional district",
       unique: true,
     },
-
-    shortName: {
+    ocdDivisionId: {
       type: 'string',
       required: true,
-      description: 'Short code for the state',
-      example: 'ca',
-      maxLength: 2,
+      description:
+        'The political division of the election. A unique ocd division id',
+      example: 'ocd-division/country:us/state:al/cd:6',
+      unique: true,
+    },
+    code: {
+      type: 'number',
+      required: true,
+      description: 'District code',
+      example: '29',
       unique: true,
     },
 
@@ -38,9 +43,21 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    districts: {
-      collection: 'district',
-      via: 'state',
+    // a district has one state
+    state: {
+      model: 'state',
+    },
+
+    // a user has one district (a district has many users)
+    users: {
+      collection: 'user',
+      via: 'congressionalDistrict',
+    },
+
+    // an election has one district (a district has many elections)
+    elections: {
+      collection: 'election',
+      via: 'congressionalDistrict',
     },
   },
 };

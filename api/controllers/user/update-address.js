@@ -1,3 +1,4 @@
+const request = require('request-promise');
 module.exports = {
   friendlyName: 'Update Address',
 
@@ -12,45 +13,6 @@ module.exports = {
     },
     addressComponents: {
       description: 'Google autocomplete address components. stringified JSON',
-      required: true,
-      type: 'string',
-    },
-    /*
-    https://developers.google.com/civic-information/docs/v2/representatives/representativeInfoByAddress
-    "normalizedInput": {
-      "locationName": string,
-      "line1": string,
-      "line2": string,
-      "line3": string,
-      "city": string,
-      "state": string,
-      "zip": string
-    }
-     */
-    normalizedAddress: {
-      description: 'Normalized address from civic api. stringified JSON',
-      required: true,
-      type: 'string',
-    },
-
-    /*
-    divisions: {
-      "cd": Object {
-        "code": "29",
-        "name": "California's 29th congressional district",
-      },
-      "country": Object {
-        "code": "us",
-        "name": "United States",
-      },
-      "state": Object {
-        "code": "ca",
-        "name": "California",
-      },
-    }
-     */
-    divisions: {
-      description: 'division from civic api. stringified JSON',
       required: true,
       type: 'string',
     },
@@ -70,20 +32,24 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const user = this.req.user;
-      const {
-        address,
-        addressComponents,
-        normalizedAddress,
-        divisions,
-      } = inputs;
-      if (!address || !addressComponents || !normalizedAddress || !divisions) {
+      const { address, addressComponents } = inputs;
+      if (!address || !addressComponents) {
         return exits.badRequest({
-          message:
-            'Address, addressComponents, normalizedAddress and divisions are required',
+          message: 'Address and addressComponents are required',
         });
       }
-      const divs = JSON.parse(divisions);
-      if (!divs || !divs.country || divs.country.code !== 'us') {
+      // call google civic api to get the district from the address
+      const districtResponse = await civicApiDistrict(address);
+
+      const divisions = districtResponse.divisions;
+      const normalizedAddress = JSON.stringify(
+        districtResponse.normalizedAddress,
+      );
+      console.log('districtResponse', districtResponse);
+      console.log('divisions', divisions);
+
+      // const divs = JSON.parse(divisions);
+      if (!divisions || !divisions.country || divisions.country.code !== 'us') {
         return exits.badRequest({
           message: 'Currently we support only US elections.',
         });
@@ -91,18 +57,40 @@ module.exports = {
 
       // find or create state and district for user divisions.
       const state = await State.findOrCreate(
-        { shortName: divs.state.code },
+        { shortName: divisions.state.code },
         {
-          name: divs.state.name,
-          shortName: divs.state.code,
+          name: divisions.state.name,
+          shortName: divisions.state.code,
         },
       );
-      const district = await District.findOrCreate(
-        { code: divs.cd.code },
+
+      const congressionalDistrict = await CongressionalDistrict.findOrCreate(
+        { code: divisions.cd.code },
         {
-          name: divs.cd.name,
-          code: divs.cd.code,
+          name: divisions.cd.name,
+          code: divisions.cd.code,
           state: state.id,
+          ocdDivisionId: divisions.cd.ocdDivisionId,
+        },
+      );
+
+      const houseDistrict = await HouseDistrict.findOrCreate(
+        { code: divisions.sldl.code },
+        {
+          name: divisions.sldl.name,
+          code: divisions.sldl.code,
+          state: state.id,
+          ocdDivisionId: divisions.sldl.ocdDivisionId,
+        },
+      );
+
+      const senateDistrict = await SenateDistrict.findOrCreate(
+        { code: divisions.sldu.code },
+        {
+          name: divisions.sldu.name,
+          code: divisions.sldu.code,
+          state: state.id,
+          ocdDivisionId: divisions.sldu.ocdDivisionId,
         },
       );
 
@@ -110,11 +98,14 @@ module.exports = {
         address,
         addressComponents,
         normalizedAddress,
-        district: district.id,
+        congressionalDistrict: congressionalDistrict.id,
+        houseDistrict: houseDistrict.id,
+        senateDistrict: senateDistrict.id,
       });
 
       return exits.success({
         message: 'Address updated',
+        districtName: divisions.cd.name,
       });
     } catch (e) {
       console.log(e);
@@ -124,3 +115,36 @@ module.exports = {
     }
   },
 };
+
+const civicApiDistrict = async address => {
+  const googleApiKey =
+    sails.config.custom.googleApiKey || sails.config.googleApiKey;
+  const options = {
+    uri: `https://www.googleapis.com/civicinfo/v2/representatives?key=${googleApiKey}&address=${encodeURI(
+      address.replace(/,/g, ''),
+    )}&includeOffices=false`,
+    json: true,
+  };
+
+  try {
+    const civicResponse = await request(options);
+    const keys = Object.keys(civicResponse.divisions);
+    const district = {
+      //format: https://developers.google.com/civic-information/docs/v2/representatives/representativeInfoByAddress
+      normalizedAddress: civicResponse.normalizedInput,
+
+      ocdDivisionId: keys[keys.length - 1],
+    };
+
+    const divisions = await sails.helpers.ocdDivisionParser(
+      civicResponse.divisions,
+    );
+
+    district.divisions = divisions;
+    return district;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+//301 Studdard Dr, Clanton, AL 35045
