@@ -105,7 +105,9 @@ module.exports = {
 
       return exits.success({
         message: 'Address updated',
-        districtName: divisions.cd.name,
+        congressionalDistrict: divisions.cd.name,
+        houseDistrict: divisions.sldl.name,
+        senateDistrict: divisions.sldu.name,
       });
     } catch (e) {
       console.log(e);

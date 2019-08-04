@@ -33,14 +33,34 @@ module.exports = {
       const election = electionsResponse.election;
 
       console.log(electionsResponse);
-      if (election && election !== {}) {
-        const districtCode = electionsResponse.contests
-          ? electionsResponse.contests[0].district.id
-          : -1;
-        console.log('districtCode', districtCode)
-        const district = await District.findOne({
-          code: districtCode,
-        });
+      if (
+        election &&
+        election !== {} &&
+        electionsResponse.contests &&
+        electionsResponse.contests.length > 0
+      ) {
+        const districtCode = electionsResponse.contests[0].district.id;
+        // house (stateLower) Senate (stateUpper) or congressional
+        const districtScope = electionsResponse.contests[0].district.scope;
+        console.log('districtCode', districtCode);
+        let district;
+        let type;
+        if (districtScope === 'congressional') {
+          district = await CongressionalDistrict.findOne({
+            code: districtCode,
+          });
+          type = 'congressionalDistrict';
+        } else if (districtScope === 'stateLower') {
+          district = await HouseDistrict.findOne({
+            code: districtCode,
+          });
+          type = 'houseDistrict';
+        } else if (districtScope === 'stateUpper') {
+          district = await SenateDistrict.findOne({
+            code: districtCode,
+          });
+          type = 'senateDistrict';
+        }
 
         // find or create Election based on the election id
         const electionRecord = await Election.findOrCreate(
@@ -51,14 +71,14 @@ module.exports = {
             electionDay: election.electionDay,
             ocdDivisionId: election.ocdDivisionId,
             rawResult: JSON.stringify(electionsResponse),
-            district: district.id,
+            [type]: district.id,
           },
-        ).fetch();
+        );
 
         return exits.success({
           message: 'Elections searched successfully',
           electionsResponse,
-          electionRecord
+          electionRecord,
         });
       }
     } catch (e) {
