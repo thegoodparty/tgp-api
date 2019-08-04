@@ -11,13 +11,8 @@ module.exports = {
     'Login user with email and password. Return the user and jwt access token.',
 
   inputs: {
-    email: {
+    phone: {
       description: 'User Email',
-      type: 'string',
-      required: true,
-    },
-    password: {
-      description: 'User Password',
       type: 'string',
       required: true,
     },
@@ -28,31 +23,44 @@ module.exports = {
       description: 'Returns ok response from api/responses/ok.js',
       responseType: 'ok',
     },
-    forbidden: {
-      description: 'Login Failed',
-      responseType: 'forbidden',
+    badRequest: {
+      description: 'Phone Format Error',
+      responseType: 'badRequest',
     },
   },
 
   fn: async function(inputs, exits) {
     try {
-      const email = inputs.email.toLowerCase();
-      const user = await User.findOne({ email });
-      await sails.helpers.passwords.checkPassword(
-        inputs.password,
-        user.encryptedPassword,
-      );
+      const { phone } = inputs;
+      const phoneError = !/^\d{10}$/.test(phone);
 
-      if (!user) {
-        return exits.forbidden();
+      if (phoneError) {
+        return exits.badRequest({
+          message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
+        });
       }
+      const user = await User.findOne({ phone })
+        .populate('congressionalDistrict')
+        .populate('houseDistrict')
+        .populate('senateDistrict');
+      await User.updateOne({ id: user.id }).set({
+        isPhoneVerified: false,
+      });
+
+      // await sails.helpers.passwords.checkPassword(
+      //   inputs.password,
+      //   user.encryptedPassword,
+      // );
+      await sails.helpers.smsVerify(`+1${phone}`);
       const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
         token,
       });
     } catch (err) {
-      return exits.forbidden();
+      console.log('login error');
+      console.log(err);
+      return exits.badRequest({ message: 'Login Failed' });
     }
   },
 };

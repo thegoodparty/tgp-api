@@ -11,16 +11,10 @@ module.exports = {
   description: 'register a user with email, password first and last name',
 
   inputs: {
-    email: {
-      description: 'User Email',
+    phone: {
+      description: 'User Phone',
       type: 'string',
       required: true,
-    },
-    password: {
-      description: 'User Password',
-      type: 'string',
-      required: true,
-      minLength: 8,
     },
   },
 
@@ -41,22 +35,34 @@ module.exports = {
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
 
+    const { phone } = inputs;
+    const phoneError = !/^\d{10}$/.test(phone);
 
-    const { email, password } = inputs;
-    const lowerCaseEmail = email.toLowerCase();
+    if (phoneError) {
+      return exits.badRequest({
+        message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
+      });
+    }
     try {
       const user = await User.create({
-        email: lowerCaseEmail,
-        password,
+        phone,
       }).fetch();
       const token = await sails.helpers.jwtSign(user);
+      // send sms to the newly created user.
+
+      await sails.helpers.smsVerify(`+1${phone}`);
       return exits.success({
         user,
         token,
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest(e);
+      if(e.code === 'E_UNIQUE'){
+        return exits.badRequest({ message: 'This phone is already pledged. Try logging in instead of pledging.' });
+      }else {
+        return exits.badRequest({ message: 'Error registering phone.' });
+      }
+
     }
   },
 };

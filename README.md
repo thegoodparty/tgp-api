@@ -97,6 +97,10 @@ Setup the following ENV varialbles:
 ```
 sails_datastores__default__url: 'postgres connection url', //https://sailsjs.com/documentation/reference/configuration/sails-config-datastores
 sails_custom__adminEmails: ['example@gmail.com'] // array of emails for admin permission
+sails_custom__jwt_secret: 'jwt secret key' // array of emails for admin permission
+sails_custom__twilioSID: 'Twilio SID'
+sails_custom__twilioAuthToken: 'Twilio Secret Auth Token'
+sails_custom__twilioVerification: 'Twilio Verification ID' 
 ```
 
 ## Coding styles

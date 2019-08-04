@@ -26,7 +26,7 @@ module.exports = {
       {
         data: inputs.payload,
       },
-      sails.config.secret,
+      sails.config.custom.jwtSecret,
       { expiresIn: ONE_DAY },
     );
 

@@ -28,7 +28,7 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    const verify = await jwt.verify(inputs.token, sails.config.secret);
+    const verify = await jwt.verify(inputs.token, sails.config.custom.jwtSecret);
     return await exits.success(verify);
   },
 };

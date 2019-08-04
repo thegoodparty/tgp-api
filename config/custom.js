@@ -28,7 +28,8 @@ module.exports.custom = {
     CANDIDATE: 20,
     ADMIN: 30,
   },
-  adminEmails: ['tomeralmog@gmail.com'],
+  adminPhones: ['31012345678'],
+  jwtSecret: 'Xd3*+Hzu9(LF^DN,',
 
   /***************************************************************************
    *                                                                          *

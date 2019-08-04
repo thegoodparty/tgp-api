@@ -29,8 +29,7 @@ module.exports = async function(req, res, next) {
     //check that the user exists in our system and the token matches.
     const userRecord = await User.findOne({ id: user.id });
     if (userRecord.encryptedPassword === user.encryptedPassword) {
-      console.log(user);
-      req.user = user;
+      req.user = userRecord;
       return next();
     } else {
       return res.json(401, { err: 'Invalid token' });
