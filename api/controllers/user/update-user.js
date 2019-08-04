@@ -59,7 +59,10 @@ module.exports = {
 
       await User.updateOne({ id: reqUser.id }).set(updateFields);
 
-      const user = await User.findOne({ id: reqUser.id });
+      const user = await User.findOne({ id: reqUser.id })
+        .populate('congressionalDistrict')
+        .populate('houseDistrict')
+        .populate('senateDistrict');
 
       return exits.success({
         user,

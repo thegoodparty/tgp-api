@@ -60,4 +60,8 @@ module.exports = {
       via: 'senateDistrict',
     },
   },
+  customToJSON: function() {
+    // Return a shallow copy of this record with the password removed.
+    return _.omit(this, ['id', 'createdAt', 'updatedAt', 'state']);
+  },
 };

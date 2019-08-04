@@ -39,10 +39,14 @@ module.exports = {
           message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
         });
       }
-      const user = await User.findOne({ phone });
+      const user = await User.findOne({ phone })
+        .populate('congressionalDistrict')
+        .populate('houseDistrict')
+        .populate('senateDistrict');
       await User.updateOne({ id: user.id }).set({
         isPhoneVerified: false,
       });
+
       // await sails.helpers.passwords.checkPassword(
       //   inputs.password,
       //   user.encryptedPassword,

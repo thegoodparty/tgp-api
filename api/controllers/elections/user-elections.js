@@ -78,7 +78,7 @@ module.exports = {
         return exits.success({
           message: 'Elections searched successfully',
           electionsResponse,
-          electionRecord,
+          election: electionRecord,
         });
       }
     } catch (e) {

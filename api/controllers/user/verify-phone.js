@@ -39,7 +39,10 @@ module.exports = {
         isPhoneVerified: true,
       });
 
-      const user = await User.findOne({ id: reqUser.id });
+      const user = await User.findOne({ id: reqUser.id })
+        .populate('congressionalDistrict')
+        .populate('houseDistrict')
+        .populate('senateDistrict');
 
       return exits.success({
         user,
