@@ -16,6 +16,11 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    verify: {
+      description: 'Should verify phone via sms? ',
+      type: 'boolean',
+      required: true,
+    },
   },
 
   exits: {
@@ -29,10 +34,9 @@ module.exports = {
     },
   },
 
-
   fn: async function(inputs, exits) {
     try {
-      const { phone } = inputs;
+      const { phone, verify } = inputs;
       const phoneError = !/^\d{10}$/.test(phone);
 
       if (phoneError) {
@@ -44,15 +48,18 @@ module.exports = {
         .populate('congressionalDistrict')
         .populate('houseDistrict')
         .populate('senateDistrict');
-      await User.updateOne({ id: user.id }).set({
-        isPhoneVerified: false,
-      });
 
-      // await sails.helpers.passwords.checkPassword(
-      //   inputs.password,
-      //   user.encryptedPassword,
-      // );
-      await sails.helpers.smsVerify(`+1${phone}`);
+      if (verify) {
+        await User.updateOne({ id: user.id }).set({
+          isPhoneVerified: false,
+        });
+
+        // await sails.helpers.passwords.checkPassword(
+        //   inputs.password,
+        //   user.encryptedPassword,
+        // );
+        await sails.helpers.smsVerify(`+1${phone}`);
+      }
       const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
