@@ -21,7 +21,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const user = this.req.user;
-      console.log(user);
       const address = user.address;
       if (!address) {
         return exits.badRequest({
@@ -32,7 +31,6 @@ module.exports = {
       const electionsResponse = await civicApiElections(address);
       const election = electionsResponse.election;
 
-      console.log(electionsResponse);
       if (
         election &&
         election !== {} &&
@@ -42,7 +40,6 @@ module.exports = {
         const districtCode = electionsResponse.contests[0].district.id;
         // house (stateLower) Senate (stateUpper) or congressional
         const districtScope = electionsResponse.contests[0].district.scope;
-        console.log('districtCode', districtCode);
         let district;
         let type;
         if (districtScope === 'congressional') {

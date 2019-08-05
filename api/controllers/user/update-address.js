@@ -45,8 +45,6 @@ module.exports = {
       const normalizedAddress = JSON.stringify(
         districtResponse.normalizedAddress,
       );
-      console.log('districtResponse', districtResponse);
-      console.log('divisions', divisions);
 
       // const divs = JSON.parse(divisions);
       if (!divisions || !divisions.country || divisions.country.code !== 'us') {

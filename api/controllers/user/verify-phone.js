@@ -32,7 +32,6 @@ module.exports = {
           message: 'Missing 6 digits code',
         });
       }
-      console.log('reqUser.phone', reqUser.phone);
       await sails.helpers.smsVerifyCheck(`+1${reqUser.phone}`, code);
 
       await User.updateOne({ id: reqUser.id }).set({

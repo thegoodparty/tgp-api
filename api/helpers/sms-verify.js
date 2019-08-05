@@ -37,7 +37,6 @@ module.exports = {
         .services(twilioVerification)
         .verifications.create({ to: inputs.phone, channel: 'sms' });
       if (verification) {
-        console.log('verification.sid', verification);
         return exits.success({ sid: verification.sid });
       }
       return exits.badRequest({ message: 'failed to send sms' });
