@@ -29,7 +29,7 @@ module.exports = {
       }
 
       const electionsResponse = await civicApiElections(address);
-      const election = electionsResponse.election;
+      const election = electionsResponse ? electionsResponse.election : false;
 
       if (
         election &&
@@ -77,11 +77,15 @@ module.exports = {
           fullElections: electionsResponse,
           electionSummary: electionRecord,
         });
+      } else {
+        return exits.success({
+          message: 'No Elections found for your address',
+        });
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       return exits.badRequest({
-        message: 'Error saving address',
+        message: 'Error loading elections',
       });
     }
   },
@@ -89,6 +93,7 @@ module.exports = {
 
 const civicApiElections = async address => {
   try {
+    const address = '6656 langdon ave van nuys ca 91406';
     const googleApiKey =
       sails.config.custom.googleApiKey || sails.config.googleApiKey;
     const options = {
@@ -99,9 +104,11 @@ const civicApiElections = async address => {
     };
 
     const civicResponse = await request(options);
+    console.log(civicResponse);
     return civicResponse;
   } catch (err) {
     console.log(err);
+    return false;
   }
 };
 
