@@ -48,7 +48,9 @@ module.exports = {
         .populate('congressionalDistrict')
         .populate('houseDistrict')
         .populate('senateDistrict');
-
+      if (!user) {
+        return exits.badRequest({ message: 'Login Failed' });
+      }
       if (verify) {
         await User.updateOne({ id: user.id }).set({
           isPhoneVerified: false,
