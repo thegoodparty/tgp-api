@@ -93,7 +93,6 @@ module.exports = {
 
 const civicApiElections = async address => {
   try {
-    const address = '6656 langdon ave van nuys ca 91406';
     const googleApiKey =
       sails.config.custom.googleApiKey || sails.config.googleApiKey;
     const options = {
