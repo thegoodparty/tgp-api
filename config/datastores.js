@@ -47,5 +47,6 @@ module.exports.datastores = {
      ***************************************************************************/
     adapter: require('sails-postgresql'),
     url: 'postgresql://local:test123@localhost:5432/tgp-local',
+
   },
 };
