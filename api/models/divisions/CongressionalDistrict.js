@@ -6,6 +6,8 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+const cdThreshold = require('../../../data/cdThreshold');
+
 module.exports = {
   attributes: {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
@@ -33,6 +35,18 @@ module.exports = {
       description: 'District code',
       example: '29',
       unique: true,
+    },
+    writeInThreshold: {
+      type: 'number',
+      description:
+        'Threshold to invoke write-in procedure without presidential run in effect',
+      example: '100000',
+    },
+    writeInThresholdWithPresident: {
+      type: 'number',
+      description:
+        'Threshold to invoke write-in procedure with presidential run in effect',
+      example: '100000',
     },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
@@ -64,5 +78,31 @@ module.exports = {
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, ['id', 'createdAt', 'updatedAt', 'state']);
+  },
+
+  beforeCreate: async function(values, next) {
+    try {
+      console.log('cd before create', values);
+      const stateId = values.state;
+      const state = await State.findOne({
+        id: stateId,
+      });
+
+      const cdKey = `${state.shortName}-${values.code}`;
+      const threshold = cdThreshold[cdKey];
+      console.log(threshold);
+      if (threshold) {
+        values.writeInThreshold = threshold.writeInThreshold;
+        values.writeInThresholdWithPresident =
+          threshold.writeInThresholdWithPresident;
+      } else {
+        console.log('missing house threshold');
+      }
+
+      // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.
+      return next();
+    } catch (e) {
+      return next(e);
+    }
   },
 };

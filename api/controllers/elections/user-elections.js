@@ -72,10 +72,17 @@ module.exports = {
           },
         );
 
+        const fullElectionRecord = await Election.findOne({
+          id: electionRecord.id,
+        })
+          .populate('congressionalDistrict')
+          .populate('houseDistrict')
+          .populate('senateDistrict');
+
         return exits.success({
           message: 'Elections searched successfully',
           fullElections: electionsResponse,
-          electionSummary: electionRecord,
+          electionSummary: fullElectionRecord,
         });
       } else {
         return exits.success({
@@ -83,7 +90,7 @@ module.exports = {
         });
       }
     } catch (e) {
-      // console.log(e);
+      console.log(e);
       return exits.badRequest({
         message: 'Error loading elections',
       });
