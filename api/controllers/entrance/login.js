@@ -19,7 +19,7 @@ module.exports = {
     verify: {
       description: 'Should verify phone via sms? ',
       type: 'boolean',
-      required: true,
+      defaultsTo: true,
     },
   },
 
