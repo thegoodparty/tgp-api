@@ -31,6 +31,8 @@ module.exports.routes = {
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 
+  'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
+
   'POST   /api/v1/candidate/create': 'candidate/create',
   'GET    /api/v1/candidate/find/:id': 'candidate/find',
 };

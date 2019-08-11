@@ -13,7 +13,7 @@ module.exports = {
     },
 
     badRequest: {
-      description: 'Error searching address',
+      description: 'Error searching for elections',
       responseType: 'badRequest',
     },
   },

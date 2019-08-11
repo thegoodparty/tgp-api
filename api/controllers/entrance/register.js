@@ -16,6 +16,11 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    verify: {
+      description: 'Should verify phone via sms? ',
+      type: 'boolean',
+      required: false,
+    },
   },
 
   exits: {
@@ -35,7 +40,7 @@ module.exports = {
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
 
-    const { phone } = inputs;
+    const { phone, verify } = inputs;
     const phoneError = !/^\d{10}$/.test(phone);
 
     if (phoneError) {
@@ -49,8 +54,9 @@ module.exports = {
       }).fetch();
       const token = await sails.helpers.jwtSign(user);
       // send sms to the newly created user.
-
-      await sails.helpers.smsVerify(`+1${phone}`);
+      if (verify) {
+        await sails.helpers.smsVerify(`+1${phone}`);
+      }
       return exits.success({
         user,
         token,
