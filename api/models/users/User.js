@@ -137,7 +137,8 @@ module.exports = {
       // values.password = '';
 
       // set role. Voter by default (if non is provided).
-      if (sails.config.custom.adminPhones && sails.config.custom.adminPhones.includes(values.phone)) {
+      const adminPhones = sails.config.custom.adminPhones || sails.config.adminPhones;
+      if (adminPhones && adminPhones.includes(values.phone)) {
         values.role = sails.config.custom.rolesEnums.ADMIN;
       } else {
         if (values.role !== sails.config.custom.rolesEnums.CANDIDATE) {
