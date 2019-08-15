@@ -12,7 +12,7 @@ module.exports = {
 
   inputs: {
     phone: {
-      description: 'User Email',
+      description: 'User Phone',
       type: 'string',
       required: true,
     },
