@@ -28,6 +28,9 @@ module.exports = async function(req, res, next) {
     const user = decoded.data;
     //check that the user exists in our system and the token matches.
     const userRecord = await User.findOne({ id: user.id });
+    if (!userRecord.isPhoneVerified) {
+      return res.json(401, { err: 'Phone is not verified' });
+    }
     if (userRecord.encryptedPassword === user.encryptedPassword) {
       req.user = userRecord;
       return next();

@@ -62,10 +62,8 @@ module.exports = {
         // );
         await sails.helpers.smsVerify(`+1${phone}`);
       }
-      const token = await sails.helpers.jwtSign(user);
       return exits.success({
         user,
-        token,
       });
     } catch (err) {
       console.log('login error');

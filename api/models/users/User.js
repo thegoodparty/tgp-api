@@ -137,8 +137,12 @@ module.exports = {
       // values.password = '';
 
       // set role. Voter by default (if non is provided).
-      if (values.role !== 20) {
-        values.role = 10;
+      if (sails.config.custom.adminPhones && sails.config.custom.adminPhones.includes(values.phone)) {
+        values.role = sails.config.custom.rolesEnums.ADMIN;
+      } else {
+        if (values.role !== sails.config.custom.rolesEnums.CANDIDATE) {
+          values.role = sails.config.custom.rolesEnums.VOTER;
+        }
       }
 
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.

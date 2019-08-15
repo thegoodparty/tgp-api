@@ -15,6 +15,7 @@ module.exports.routes = {
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'POST   /api/v1/entrance/register': 'entrance/register',
+  'PUT    /api/v1/entrance/verify-phone': 'entrance/verify-phone',
 
   'POST   /api/v1/entrance/send-password-recovery-email':
     'entrance/send-password-recovery-email',
@@ -27,7 +28,6 @@ module.exports.routes = {
   'PUT    /api/v1/user/change-password': 'user/change-password',
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-address': 'user/update-address',
-  'PUT    /api/v1/user/verify-phone': 'user/verify-phone',
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 

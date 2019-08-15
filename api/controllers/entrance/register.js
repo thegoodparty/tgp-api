@@ -52,14 +52,13 @@ module.exports = {
       const user = await User.create({
         phone,
       }).fetch();
-      const token = await sails.helpers.jwtSign(user);
+      // const token = await sails.helpers.jwtSign(user);
       // send sms to the newly created user.
       if (verify) {
         await sails.helpers.smsVerify(`+1${phone}`);
       }
       return exits.success({
         user,
-        token,
       });
     } catch (e) {
       console.log(e);

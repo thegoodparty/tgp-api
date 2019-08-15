@@ -4,6 +4,12 @@ module.exports = {
   description: 'Verify phone number via code sent to number',
 
   inputs: {
+    phone: {
+      type: 'string',
+      required: true,
+      maxLength: 11,
+      example: '3101234567',
+    },
     code: {
       description: '6 digits code sent by twilio',
       example: '123456',
@@ -25,7 +31,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const reqUser = this.req.user;
+      const reqUser = await User.findOne({ phone: inputs.phone });
       const { code } = inputs;
       if (!code || code.length !== 6) {
         return exits.badRequest({
@@ -43,8 +49,11 @@ module.exports = {
         .populate('houseDistrict')
         .populate('senateDistrict');
 
+      const token = await sails.helpers.jwtSign(user);
+
       return exits.success({
         user,
+        token,
       });
     } catch (e) {
       console.log(e);
