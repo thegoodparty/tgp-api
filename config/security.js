@@ -33,7 +33,7 @@ module.exports.security = {
       'http://localhost:4000',
       'http://admin-dev.thegoodparty.org.s3-website-us-west-2.amazonaws.com',
     ],
-    allowCredentials: false,
+    allowCredentials: true,
     allowRequestMethods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
   },
 
