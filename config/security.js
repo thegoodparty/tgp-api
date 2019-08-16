@@ -32,9 +32,10 @@ module.exports.security = {
     allowOrigins: [
       'http://localhost:4000',
       'http://admin-dev.thegoodparty.org.s3-website-us-west-2.amazonaws.com',
-    ],
+    ], // TODO: change later
     allowCredentials: true,
     allowRequestMethods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+    allowRequestHeaders: 'content-type, authorization',
   },
 
   /****************************************************************************
