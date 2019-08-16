@@ -37,4 +37,5 @@ module.exports.routes = {
   'GET    /api/v1/candidate/find/:id': 'candidate/find',
 
   'PUT    /api/v1/admin/make-admin': 'admin/make-admin',
+  'GET    /api/v1/admin/all-users': 'admin/all-users',
 };
