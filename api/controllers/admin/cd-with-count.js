@@ -9,7 +9,7 @@ module.exports = {
     try {
       const cd = [];
       let userCount;
-      const cds = await CongressionalDistrict.find();
+      const cds = await CongressionalDistrict.find().populate('state');
 
       // can't use map or forEach because of the await
       for (let i = 0; i < cds.length; i++) {

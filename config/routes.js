@@ -40,4 +40,5 @@ module.exports.routes = {
   'GET    /api/v1/admin/all-users': 'admin/all-users',
   'GET    /api/v1/admin/thresholds': 'admin/thresholds',
   'GET    /api/v1/admin/cd-with-count': 'admin/cd-with-count',
+  'GET    /api/v1/admin/senate-with-count': 'admin/senate-with-count',
 };
