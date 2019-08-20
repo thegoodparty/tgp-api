@@ -33,7 +33,6 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-
   fn: async function(inputs, exits) {
     // Look up the user whose ID was specified in the request.
     // Note that we don't have to validate that `userId` is a number;
@@ -62,12 +61,14 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      if(e.code === 'E_UNIQUE'){
-        return exits.badRequest({ message: 'This phone is already pledged. Try logging in instead of pledging.' });
-      }else {
+      if (e.code === 'E_UNIQUE') {
+        return exits.badRequest({
+          message:
+            'This phone is already pledged. Try logging in instead of pledging.',
+        });
+      } else {
         return exits.badRequest({ message: 'Error registering phone.' });
       }
-
     }
   },
 };
