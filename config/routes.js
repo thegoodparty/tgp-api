@@ -15,6 +15,7 @@ module.exports.routes = {
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'POST   /api/v1/entrance/register': 'entrance/register',
+  'PUT    /api/v1/entrance/verify-phone': 'entrance/verify-phone',
 
   'POST   /api/v1/entrance/send-password-recovery-email':
     'entrance/send-password-recovery-email',
@@ -27,10 +28,18 @@ module.exports.routes = {
   'PUT    /api/v1/user/change-password': 'user/change-password',
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-address': 'user/update-address',
-  'PUT    /api/v1/user/verify-phone': 'user/verify-phone',
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 
+  'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
+
   'POST   /api/v1/candidate/create': 'candidate/create',
   'GET    /api/v1/candidate/find/:id': 'candidate/find',
+
+  'PUT    /api/v1/admin/make-admin': 'admin/make-admin',
+  'GET    /api/v1/admin/all-users': 'admin/all-users',
+  'GET    /api/v1/admin/thresholds': 'admin/thresholds',
+  'GET    /api/v1/admin/cd-with-count': 'admin/cd-with-count',
+  'GET    /api/v1/admin/senate-with-count': 'admin/senate-with-count',
+  'GET    /api/v1/admin/cd-weekly-trend': 'admin/cd-weekly-trend',
 };

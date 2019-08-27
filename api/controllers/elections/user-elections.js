@@ -13,7 +13,7 @@ module.exports = {
     },
 
     badRequest: {
-      description: 'Error searching address',
+      description: 'Error searching for elections',
       responseType: 'badRequest',
     },
   },
@@ -21,7 +21,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const user = this.req.user;
-      console.log(user);
       const address = user.address;
       if (!address) {
         return exits.badRequest({
@@ -30,9 +29,8 @@ module.exports = {
       }
 
       const electionsResponse = await civicApiElections(address);
-      const election = electionsResponse.election;
+      const election = electionsResponse ? electionsResponse.election : false;
 
-      console.log(electionsResponse);
       if (
         election &&
         election !== {} &&
@@ -42,7 +40,6 @@ module.exports = {
         const districtCode = electionsResponse.contests[0].district.id;
         // house (stateLower) Senate (stateUpper) or congressional
         const districtScope = electionsResponse.contests[0].district.scope;
-        console.log('districtCode', districtCode);
         let district;
         let type;
         if (districtScope === 'congressional') {
@@ -75,16 +72,27 @@ module.exports = {
           },
         );
 
+        const fullElectionRecord = await Election.findOne({
+          id: electionRecord.id,
+        })
+          .populate('congressionalDistrict')
+          .populate('houseDistrict')
+          .populate('senateDistrict');
+
         return exits.success({
           message: 'Elections searched successfully',
-          electionsResponse,
-          election: electionRecord,
+          fullElections: electionsResponse,
+          electionSummary: fullElectionRecord,
+        });
+      } else {
+        return exits.success({
+          message: 'No Elections found for your address',
         });
       }
     } catch (e) {
       console.log(e);
       return exits.badRequest({
-        message: 'Error saving address',
+        message: 'Error loading elections',
       });
     }
   },
@@ -102,9 +110,11 @@ const civicApiElections = async address => {
     };
 
     const civicResponse = await request(options);
+    console.log(civicResponse);
     return civicResponse;
   } catch (err) {
     console.log(err);
+    return false;
   }
 };
 

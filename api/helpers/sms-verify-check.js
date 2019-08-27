@@ -42,7 +42,6 @@ module.exports = {
         .services(twilioVerification)
         .verificationChecks.create({ to: inputs.phone, code: inputs.code });
 
-      console.log(verificationResult);
       if (verificationResult.status === 'approved') {
         return exits.success({message: 'successfully verified phone'});
       } else {

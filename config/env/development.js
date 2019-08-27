@@ -44,6 +44,7 @@ module.exports = {
      *                                                                          *
      ***************************************************************************/
     default: {
+      adapter: 'sails-disk',
       // adapter: 'sails-mysql',
       // url: 'mysql://user:password@host:port/database',
       //--------------------------------------------------------------------------
@@ -132,9 +133,14 @@ module.exports = {
      *                                                                          *
      ***************************************************************************/
     cors: {
-      // allowOrigins: [
-      //   'https://example.com',
-      // ]
+      allRoutes: true,
+      allowOrigins: [
+        'http://localhost:4000',
+        'https://admin-dev.thegoodparty.org',
+      ],
+      allowCredentials: true,
+      allowRequestMethods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+      allowRequestHeaders: 'content-type, authorization',
     },
   },
 
@@ -348,5 +354,4 @@ module.exports = {
     // ```
     //--------------------------------------------------------------------------
   },
-
 };

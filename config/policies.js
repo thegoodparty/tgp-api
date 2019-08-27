@@ -9,7 +9,6 @@
  */
 
 module.exports.policies = {
-
   /***************************************************************************
    *                                                                          *
    * Default policy for all controllers and actions, unless overridden.       *
@@ -17,9 +16,9 @@ module.exports.policies = {
    *                                                                          *
    ***************************************************************************/
 
-  'role/*':  ['isAuthenticated', 'isAdmin'],
+  'admin/*': ['isAuthenticated', 'isAdmin'],
+  'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'entrance/*': true,
-
 };

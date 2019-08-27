@@ -186,6 +186,10 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
+"@tyriar/binary-heap@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@tyriar/binary-heap/-/binary-heap-1.0.5.tgz#0a7d2852599d79fd74853af585e17f2981683b01"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"

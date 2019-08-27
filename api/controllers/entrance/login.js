@@ -12,9 +12,14 @@ module.exports = {
 
   inputs: {
     phone: {
-      description: 'User Email',
+      description: 'User Phone',
       type: 'string',
       required: true,
+    },
+    verify: {
+      description: 'Should verify phone via sms? ',
+      type: 'boolean',
+      defaultsTo: true,
     },
   },
 
@@ -31,7 +36,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { phone } = inputs;
+      const { phone, verify } = inputs;
       const phoneError = !/^\d{10}$/.test(phone);
 
       if (phoneError) {
@@ -43,19 +48,22 @@ module.exports = {
         .populate('congressionalDistrict')
         .populate('houseDistrict')
         .populate('senateDistrict');
-      await User.updateOne({ id: user.id }).set({
-        isPhoneVerified: false,
-      });
+      if (!user) {
+        return exits.badRequest({ message: 'Login Failed' });
+      }
+      if (verify) {
+        await User.updateOne({ id: user.id }).set({
+          isPhoneVerified: false,
+        });
 
-      // await sails.helpers.passwords.checkPassword(
-      //   inputs.password,
-      //   user.encryptedPassword,
-      // );
-      await sails.helpers.smsVerify(`+1${phone}`);
-      const token = await sails.helpers.jwtSign(user);
+        // await sails.helpers.passwords.checkPassword(
+        //   inputs.password,
+        //   user.encryptedPassword,
+        // );
+        await sails.helpers.smsVerify(`+1${phone}`);
+      }
       return exits.success({
         user,
-        token,
       });
     } catch (err) {
       console.log('login error');

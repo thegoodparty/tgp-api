@@ -38,6 +38,7 @@ module.exports = {
           message: 'Address and addressComponents are required',
         });
       }
+      console.log(address);
       // call google civic api to get the district from the address
       const districtResponse = await civicApiDistrict(address);
 
@@ -45,8 +46,6 @@ module.exports = {
       const normalizedAddress = JSON.stringify(
         districtResponse.normalizedAddress,
       );
-      console.log('districtResponse', districtResponse);
-      console.log('divisions', divisions);
 
       // const divs = JSON.parse(divisions);
       if (!divisions || !divisions.country || divisions.country.code !== 'us') {
@@ -63,51 +62,60 @@ module.exports = {
           shortName: divisions.state.code,
         },
       );
+      let congressionalDistrict;
+      if (divisions.cd) {
+        congressionalDistrict = await CongressionalDistrict.findOrCreate(
+          { code: divisions.cd.code },
+          {
+            name: divisions.cd.name,
+            code: divisions.cd.code,
+            state: state.id,
+            ocdDivisionId: divisions.cd.ocdDivisionId,
+          },
+        );
+      }
+      let houseDistrict;
+      if (divisions.sldl) {
+        houseDistrict = await HouseDistrict.findOrCreate(
+          { code: divisions.sldl.code },
+          {
+            name: divisions.sldl.name,
+            code: divisions.sldl.code,
+            state: state.id,
+            ocdDivisionId: divisions.sldl.ocdDivisionId,
+          },
+        );
+      }
 
-      const congressionalDistrict = await CongressionalDistrict.findOrCreate(
-        { code: divisions.cd.code },
-        {
-          name: divisions.cd.name,
-          code: divisions.cd.code,
-          state: state.id,
-          ocdDivisionId: divisions.cd.ocdDivisionId,
-        },
-      );
-
-      const houseDistrict = await HouseDistrict.findOrCreate(
-        { code: divisions.sldl.code },
-        {
-          name: divisions.sldl.name,
-          code: divisions.sldl.code,
-          state: state.id,
-          ocdDivisionId: divisions.sldl.ocdDivisionId,
-        },
-      );
-
-      const senateDistrict = await SenateDistrict.findOrCreate(
-        { code: divisions.sldu.code },
-        {
-          name: divisions.sldu.name,
-          code: divisions.sldu.code,
-          state: state.id,
-          ocdDivisionId: divisions.sldu.ocdDivisionId,
-        },
-      );
+      let senateDistrict;
+      if (divisions.sldu) {
+        senateDistrict = await SenateDistrict.findOrCreate(
+          { code: divisions.sldu.code },
+          {
+            name: divisions.sldu.name,
+            code: divisions.sldu.code,
+            state: state.id,
+            ocdDivisionId: divisions.sldu.ocdDivisionId,
+          },
+        );
+      }
 
       await User.updateOne({ id: user.id }).set({
         address,
         addressComponents,
         normalizedAddress,
-        congressionalDistrict: congressionalDistrict.id,
-        houseDistrict: houseDistrict.id,
-        senateDistrict: senateDistrict.id,
+        congressionalDistrict: congressionalDistrict
+          ? congressionalDistrict.id
+          : null,
+        houseDistrict: houseDistrict ? houseDistrict.id : null,
+        senateDistrict: senateDistrict ? senateDistrict.id : null,
       });
 
       return exits.success({
         message: 'Address updated',
-        congressionalDistrict: divisions.cd.name,
-        houseDistrict: divisions.sldl.name,
-        senateDistrict: divisions.sldu.name,
+        congressionalDistrict: divisions.cd,
+        houseDistrict: divisions.sldl,
+        senateDistrict: divisions.sldu,
       });
     } catch (e) {
       console.log(e);

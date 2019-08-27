@@ -16,6 +16,11 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    verify: {
+      description: 'Should verify phone via sms? ',
+      type: 'boolean',
+      defaultsTo: true,
+    },
   },
 
   exits: {
@@ -28,14 +33,13 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-
   fn: async function(inputs, exits) {
     // Look up the user whose ID was specified in the request.
     // Note that we don't have to validate that `userId` is a number;
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
 
-    const { phone } = inputs;
+    const { phone, verify } = inputs;
     const phoneError = !/^\d{10}$/.test(phone);
 
     if (phoneError) {
@@ -47,22 +51,24 @@ module.exports = {
       const user = await User.create({
         phone,
       }).fetch();
-      const token = await sails.helpers.jwtSign(user);
+      // const token = await sails.helpers.jwtSign(user);
       // send sms to the newly created user.
-
-      await sails.helpers.smsVerify(`+1${phone}`);
+      if (verify) {
+        await sails.helpers.smsVerify(`+1${phone}`);
+      }
       return exits.success({
         user,
-        token,
       });
     } catch (e) {
       console.log(e);
-      if(e.code === 'E_UNIQUE'){
-        return exits.badRequest({ message: 'This phone is already pledged. Try logging in instead of pledging.' });
-      }else {
+      if (e.code === 'E_UNIQUE') {
+        return exits.badRequest({
+          message:
+            'This phone is already pledged. Try logging in instead of pledging.',
+        });
+      } else {
         return exits.badRequest({ message: 'Error registering phone.' });
       }
-
     }
   },
 };
