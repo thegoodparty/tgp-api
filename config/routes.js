@@ -42,4 +42,5 @@ module.exports.routes = {
   'GET    /api/v1/admin/cd-with-count': 'admin/cd-with-count',
   'GET    /api/v1/admin/senate-with-count': 'admin/senate-with-count',
   'GET    /api/v1/admin/cd-weekly-trend': 'admin/cd-weekly-trend',
+  'GET    /api/v1/admin/senate-weekly-trend': 'admin/senate-weekly-trend',
 };

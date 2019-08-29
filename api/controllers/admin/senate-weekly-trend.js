@@ -3,9 +3,9 @@ const BinaryHeap = require('@tyriar/binary-heap');
 const DAY = 24 * 60 * 60 * 1000;
 const DISTRICT_LIMIT = 10; // show only the top ten
 module.exports = {
-  friendlyName: 'CD with Count',
+  friendlyName: 'Senate with Count',
 
-  description: 'Congressional Districts with user count',
+  description: 'Senate Districts with user count',
 
   inputs: {},
 
@@ -14,15 +14,15 @@ module.exports = {
       const now = new Date();
       const lastWeek = new Date(now.getTime() - DAY * 7);
       let userCount;
-      let cdWithUserCount;
+      let senateWithUserCount;
       let topTrends = [];
 
-      const cds = await CongressionalDistrict.find().populate('state');
+      const senates = await SenateDistrict.find().populate('state');
       let minTopDistrict;
       // can't use map or forEach because of the await
-      for (let i = 0; i < cds.length; i++) {
+      for (let i = 0; i < senates.length; i++) {
         userCount = await User.count({
-          congressionalDistrict: cds[i].id,
+          senateDistrict: senates[i].id,
           createdAt: { '>': lastWeek },
         });
 
@@ -30,16 +30,16 @@ module.exports = {
           return a.userCount > b.userCount ? 1 : -1;
         });
 
-        cdWithUserCount = { ...cds[i], userCount };
+        senateWithUserCount = { ...senates[i], userCount };
         // enter the first 10 without comparing
         if (i < DISTRICT_LIMIT) {
-          heap.insert(cdWithUserCount);
+          heap.insert(senateWithUserCount);
         } else {
           // compare with the top minimum and insert if larger
           minTopDistrict = heap.findMinimum();
           if (userCount > minTopDistrict.userCount) {
             heap.extractMinimum();
-            heap.insert(cdWithUserCount);
+            heap.insert(senateWithUserCount);
           }
         }
 
@@ -53,7 +53,7 @@ module.exports = {
       }
 
       return exits.success({
-        cdWeeklyTrend: topTrends,
+        senateWeeklyTrend: topTrends,
       });
     } catch (e) {
       console.log(e);
