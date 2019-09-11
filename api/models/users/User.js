@@ -107,10 +107,6 @@ module.exports = {
       model: 'senateDistrict',
     },
 
-    candidates: {
-      collection: 'candidate',
-      via: 'user',
-    },
   },
 
   customToJSON: function() {

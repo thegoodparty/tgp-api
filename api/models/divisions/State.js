@@ -57,6 +57,11 @@ module.exports = {
       collection: 'election',
       via: 'state',
     },
+
+    candidates: {
+      collection: 'candidate',
+      via: 'state',
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
