@@ -56,10 +56,10 @@ module.exports = {
 
       // find or create state and district for user divisions.
       const state = await State.findOrCreate(
-        { shortName: divisions.state.code },
+        { shortName: divisions.state.code.toLowerCase() },
         {
           name: divisions.state.name,
-          shortName: divisions.state.code,
+          shortName: divisions.state.code.toLowerCase(),
         },
       );
       let congressionalDistrict;

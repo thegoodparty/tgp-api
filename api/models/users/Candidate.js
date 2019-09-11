@@ -51,17 +51,9 @@ module.exports = {
       description: 'Summary about the Candidate',
     },
 
-    shortState: {
-      type: 'string',
-      required: true,
-      maxLength: 2,
-      description: 'State Related to candidate',
-      example: 'CA',
-    },
-
     image: {
       type: 'string',
-      required: true,
+      required: false,
       description: 'url of a profile image',
     },
 
