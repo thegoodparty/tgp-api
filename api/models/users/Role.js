@@ -1,6 +1,6 @@
 /**
  * Role.js
- * Useing the beforeCreate rule and the uniqeness of the accessLevel we ensure that we can have max of 3 roles
+ * Using the beforeCreate rule and the uniqeness of the accessLevel we ensure that we can have max of 3 roles
  * only with the permissions defined in our custom variables
  *
  * @description :: User Roles such as superAdmin, admin, artist or fan. Has one-to-many association with user.

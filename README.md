@@ -101,6 +101,8 @@ sails_custom__jwt_secret: 'jwt secret key' // array of emails for admin permissi
 sails_custom__twilioSID: 'Twilio SID'
 sails_custom__twilioAuthToken: 'Twilio Secret Auth Token'
 sails_custom__twilioVerification: 'Twilio Verification ID' 
+sails_custom__contentfulSpaceId: 'Contentful Space Id' 
+sails_custom__contentfulAccessToken: 'Conteful Access Token' 
 ```
 
 ## Coding styles

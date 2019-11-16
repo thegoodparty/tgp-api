@@ -13,6 +13,9 @@ module.exports.routes = {
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
 
+  'GET    /api/v1/content/all-content': 'content/all-content',
+  'GET    /api/v1/content/update': 'content/update',
+
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'POST   /api/v1/entrance/register': 'entrance/register',
   'PUT    /api/v1/entrance/verify-phone': 'entrance/verify-phone',
