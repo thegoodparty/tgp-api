@@ -67,6 +67,11 @@ module.exports = {
       collection: 'user',
       via: 'congressionalDistrict',
     },
+    // a candidate has one district (a district has many users)
+    candidates: {
+      collection: 'candidate',
+      via: 'congressionalDistrict',
+    },
 
     // an election has one district (a district has many elections)
     elections: {
@@ -77,7 +82,7 @@ module.exports = {
 
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
-    return _.omit(this, ['id', 'createdAt', 'updatedAt', 'state']);
+    return _.omit(this, ['createdAt', 'updatedAt', 'state']);
   },
 
   beforeCreate: async function(values, next) {
