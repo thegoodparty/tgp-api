@@ -37,7 +37,7 @@ module.exports = {
 const mapResponse = items => {
   const mappedResponse = {};
   console.log(JSON.stringify(items));
-  items.map(item => {
+  items.map((item, index) => {
     if (item && item.sys && item.sys.contentType && item.sys.contentType.sys) {
       const itemId = item.sys.contentType.sys.id;
       if (itemId === 'appPartyScreen') {
@@ -52,6 +52,12 @@ const mapResponse = items => {
           mappedResponse.mapClickArea = [];
         }
         mappedResponse.mapClickArea.push(item.fields);
+      } else if (itemId === 'faqArticle') {
+        if (!mappedResponse.faqArticles) {
+          mappedResponse.faqArticles = [];
+        }
+        // front end needs an id.
+        mappedResponse.faqArticles.push({ ...item.fields, id: index + '' });
       }
     }
   });

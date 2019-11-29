@@ -34,7 +34,7 @@
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
     "lint-fix": "eslint --fix",
     "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
-    "deploy": "eb deploy"
+    "deploy-dev": "git checkout develop && eb deploy"
   },
   "main": "app.js",
   "repository": {
