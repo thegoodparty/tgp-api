@@ -25,6 +25,8 @@ module.exports.routes = {
   'PUT   /api/v1/entrance/update-password-and-login':
     'entrance/update-password-and-login',
 
+  'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
+
   'POST   /api/v1/role/create': 'role/create',
 
   'GET    /api/v1/user/check': 'user/check',

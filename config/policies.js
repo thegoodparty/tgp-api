@@ -22,4 +22,5 @@ module.exports.policies = {
   // public access
   'entrance/*': true,
   'content/*': true,
+  'notifications/*': true,
 };
