@@ -38,7 +38,7 @@ module.exports = {
 
       mg.messages
         .create('sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org', {
-          from: 'TGP APP - AMA <ask@thegoodparty.org>',
+          from: 'TGP APP - AMA <farhad@thegoodparty.org>',
           to: ['farhad@thegoodparty.org'],
           subject: 'AMA form submitted on TGP App',
           text: inputs.message,
