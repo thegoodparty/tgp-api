@@ -33,13 +33,13 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const MAILGUN_API = sails.config.MAILGUN_API || sails.config.MAILGUN_API;
+      const MAILGUN_API = sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
       mg.messages
         .create('sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org', {
-          from: 'TGP APP - AMA <farhad@thegoodparty.org>',
-          to: ['farhad@thegoodparty.org'],
+          from: 'TGP APP - AMA <tomer@thegoodparty.org>',
+          to: ['tomer@thegoodparty.org'],
           subject: 'AMA form submitted on TGP App',
           text: inputs.message,
           html: html(inputs.message),
