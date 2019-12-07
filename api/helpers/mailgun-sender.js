@@ -38,8 +38,8 @@ module.exports = {
 
       mg.messages
         .create('sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org', {
-          from: 'TGP APP - AMA <farhad@thegoodparty.org>',
-          to: ['farhad@thegoodparty.org'],
+          from: 'TGP APP - AMA <ask@thegoodparty.org>',
+          to: ['ask@thegoodparty.org'],
           subject: 'AMA form submitted on TGP App',
           text: inputs.message,
           html: html(inputs.message),
@@ -90,7 +90,7 @@ const html = msg => {
                 <tr>
                   <td align="center" height="40"
                       style="font-size: 76px; line-height: 76px; text-align:center; padding:12px 0;"><img
-                      src="https://images.ctfassets.net/g08ybc4r0f4b/3ck2MrIB4DUsfuEC0exrHr/0ccdf2c914950ba9b3d2e41c05aed893/image04.svg" height="157" width="500" alt="TGP" /></td>
+                      src="https://images.ctfassets.net/g08ybc4r0f4b/3ck2MrIB4DUsfuEC0exrHr/0ccdf2c914950ba9b3d2e41c05aed893/image04.svg" height="119" width="300" alt="TGP" /></td>
                 </tr>
                 <tr>
                   <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
