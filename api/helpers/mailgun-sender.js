@@ -33,7 +33,8 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const MAILGUN_API = sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
+      const MAILGUN_API =
+        sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
       mg.messages
@@ -42,7 +43,7 @@ module.exports = {
           to: ['ask@thegoodparty.org'],
           subject: 'AMA form submitted on TGP App',
           text: inputs.message,
-          html: html(inputs.message),
+          // html: html(inputs.message),
         })
         .then(msg => {}) // logs response data
         .catch(err => {

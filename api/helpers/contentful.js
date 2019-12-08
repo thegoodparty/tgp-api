@@ -65,7 +65,7 @@ const mapResponse = items => {
         }
         mappedResponse.events.push(mapEvent(item.fields, elementId));
       } else if (itemId === 'appVersion') {
-        mappedResponse.appVersion = item.fields.version
+        mappedResponse.appVersion = item.fields.version;
       }
     }
   });
@@ -77,10 +77,39 @@ const mapResponse = items => {
 
 const mapAppPartyScreen = fields => {
   const flatResponse = {};
-  const { header } = fields;
-  flatResponse.header = header;
+  const {
+    quotes,
+    section1Header,
+    section1Paragraph,
+    section2Header,
+    section2Paragraph,
+    videoPlaceholder,
+    video,
+    section3Header,
+    section3Paragraph,
+  } = fields;
+
+  flatResponse.quote = mapQuotes(quotes);
+  flatResponse.section1Header = section1Header;
+  flatResponse.section2Header = section2Header;
+  flatResponse.section3Header = section3Header;
+  flatResponse.section1Paragraph = section1Paragraph;
+  flatResponse.section2Paragraph = section2Paragraph;
+  flatResponse.section3Paragraph = section3Paragraph;
+  flatResponse.videoPlaceholder = extractMediaFile(videoPlaceholder);
+  flatResponse.video = extractMediaFile(video);
+
+  console.log(flatResponse);
 
   return flatResponse;
+};
+
+const mapQuotes = quotes => {
+  const flatQuotes = [];
+  quotes.map(quote => {
+    flatQuotes.push(quote.fields);
+  });
+  return flatQuotes;
 };
 
 const mapCandidate = fields => {
@@ -92,9 +121,7 @@ const mapCandidate = fields => {
   flatResponse.site = site;
   flatResponse.districtNumber = districtNumber;
   flatResponse.state = state;
-  if (avatarPhoto && avatarPhoto.fields && avatarPhoto.fields.file) {
-    flatResponse.avatarPhoto = avatarPhoto.fields.file.url;
-  }
+  flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
 
   return flatResponse;
 };
@@ -122,9 +149,7 @@ const mapEvent = (fields, id) => {
     const { name, title, avatarPhoto } = presenter.fields;
     flatResponse.presenter = name;
     flatResponse.presenterTitle = title;
-    if (avatarPhoto && avatarPhoto.fields && avatarPhoto.fields.file) {
-      flatResponse.avatarPhoto = avatarPhoto.fields.file.url;
-    }
+    flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
   }
   return flatResponse;
 };
@@ -177,4 +202,11 @@ const timeZoneToHours = timezone => {
     return -6;
   }
   return 0;
+};
+
+const extractMediaFile = img => {
+  if (img && img.fields && img.fields.file) {
+    return img.fields.file.url;
+  }
+  return null;
 };
