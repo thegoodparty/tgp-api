@@ -24,7 +24,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const contents = await Content.find();
+      const contents = await CmsContent.find();
       if (contents.length === 1) {
         return exits.success({
           ...JSON.parse(contents[0].content),

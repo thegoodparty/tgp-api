@@ -43,19 +43,19 @@ module.exports = {
 
       // save content to our DB. Make sure we have only one version of the content
       // first see if we already have an entry
-      const contents = await Content.find();
+      const contents = await CmsContent.find();
       if (contents.length === 0) {
         // no content yet, create one
-        await Content.create({
+        await CmsContent.create({
           content: stringifiedContent,
         });
       } else if (contents.length > 1) {
         console.log('something is off. more than one entry');
-        await Content.updateOne({ id: contents[0].id }).set({
+        await CmsContent.updateOne({ id: contents[0].id }).set({
           content: stringifiedContent,
         });
       } else {
-        await Content.updateOne({ id: contents[0].id }).set({
+        await CmsContent.updateOne({ id: contents[0].id }).set({
           content: stringifiedContent,
         });
       }

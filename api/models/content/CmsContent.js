@@ -17,7 +17,6 @@ module.exports = {
       type: 'string',
       required: true,
       description: 'JSON.stringify-ed string of cms content',
-      unique: true,
     },
   },
 };
