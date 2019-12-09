@@ -89,7 +89,7 @@ const mapAppPartyScreen = fields => {
     section3Paragraph,
   } = fields;
 
-  flatResponse.quote = mapQuotes(quotes);
+  flatResponse.quotes = mapQuotes(quotes);
   flatResponse.section1Header = section1Header;
   flatResponse.section2Header = section2Header;
   flatResponse.section3Header = section3Header;
@@ -97,6 +97,9 @@ const mapAppPartyScreen = fields => {
   flatResponse.section2Paragraph = section2Paragraph;
   flatResponse.section3Paragraph = section3Paragraph;
   flatResponse.videoPlaceholder = extractMediaFile(videoPlaceholder);
+  flatResponse.videoPlaceholderDimensions = extractImageDimensions(
+    videoPlaceholder,
+  );
   flatResponse.video = extractMediaFile(video);
 
   console.log(flatResponse);
@@ -207,6 +210,13 @@ const timeZoneToHours = timezone => {
 const extractMediaFile = img => {
   if (img && img.fields && img.fields.file) {
     return img.fields.file.url;
+  }
+  return null;
+};
+
+const extractImageDimensions = img => {
+  if (img && img.fields && img.fields.file) {
+    return img.fields.file.details.image;
   }
   return null;
 };
