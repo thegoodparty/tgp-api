@@ -90,12 +90,12 @@ const mapAppPartyScreen = fields => {
   } = fields;
 
   flatResponse.quotes = mapQuotes(quotes);
-  flatResponse.section1Header = section1Header;
-  flatResponse.section2Header = section2Header;
-  flatResponse.section3Header = section3Header;
-  flatResponse.section1Paragraph = section1Paragraph;
-  flatResponse.section2Paragraph = section2Paragraph;
-  flatResponse.section3Paragraph = section3Paragraph;
+  flatResponse.section1Header = extendText(section1Header);
+  flatResponse.section2Header = extendText(section2Header);
+  flatResponse.section3Header = extendText(section3Header);
+  flatResponse.section1Paragraph = extendText(section1Paragraph);
+  flatResponse.section2Paragraph = extendText(section2Paragraph);
+  flatResponse.section3Paragraph = extendText(section3Paragraph);
   flatResponse.videoPlaceholder = extractMediaFile(videoPlaceholder);
   flatResponse.videoPlaceholderDimensions = extractImageDimensions(
     videoPlaceholder,
@@ -120,7 +120,7 @@ const mapCandidate = fields => {
   const { name, role, bio, site, districtNumber, state, avatarPhoto } = fields;
   flatResponse.name = name;
   flatResponse.role = role;
-  flatResponse.bio = bio;
+  flatResponse.bio = extendText(bio);
   flatResponse.site = site;
   flatResponse.districtNumber = districtNumber;
   flatResponse.state = state;
@@ -145,7 +145,7 @@ const mapEvent = (fields, id) => {
   flatResponse.id = id;
   flatResponse.title = title;
   flatResponse.dateAndTime = dateAndTime;
-  flatResponse.description = description;
+  flatResponse.description = extendText(description);
   flatResponse.timeZone = timeZone;
   flatResponse.eventDuration = eventDuration;
   if (presenter) {
@@ -219,4 +219,22 @@ const extractImageDimensions = img => {
     return img.fields.file.details.image;
   }
   return null;
+};
+
+const extendText = text => {
+  if (!text) {
+    return text;
+  }
+
+  // replace *text* with <Text style={{fontWeight="bold"}}>text</Text>
+  const bold = /\*(.*?)\*/gim;
+  const boldedText = text.replace(bold, function($0, $1) {
+    return $1 ? '<Text style={{fontWeight: "bold"}}>' + $1 + '</Text>' : $0;
+  });
+
+  // replace :tgp with <Image /> tag
+  return boldedText.replace(
+    /:tgp/g,
+    '<Image source={{ uri: "https://assets.thegoodparty.org/heart-text.png"}} resizeMode="contain" style={{height: 20, width: 20 }}  />',
+  );
 };
