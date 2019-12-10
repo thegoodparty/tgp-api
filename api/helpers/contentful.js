@@ -102,7 +102,7 @@ const mapAppPartyScreen = fields => {
   );
   flatResponse.video = extractMediaFile(video);
 
-  console.log(flatResponse);
+  // console.log(flatResponse);
 
   return flatResponse;
 };
