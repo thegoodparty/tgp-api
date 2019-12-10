@@ -58,7 +58,11 @@ const mapResponse = items => {
           mappedResponse.faqArticles = [];
         }
         // front end needs an id.
-        mappedResponse.faqArticles.push({ ...item.fields, id: elementId });
+        mappedResponse.faqArticles.push({
+          ...item.fields,
+          body: extendText(item.fields.body),
+          id: elementId,
+        });
       } else if (itemId === 'event') {
         if (!mappedResponse.events) {
           mappedResponse.events = [];
