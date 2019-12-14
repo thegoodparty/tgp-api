@@ -120,12 +120,16 @@ const createEntries = async (rows, indexStart = 0) => {
         approxPct,
         sequence,
         congressionalDistrict: cd.id,
+        stateLong: longState,
+        stateShort: shortState,
       },
     );
 
     //to fix a bug. Can be removed later
     await ZipCode.updateOne({ id: zipCode.id }).set({
       congressionalDistrict: cd.id,
+      stateLong: longState,
+      stateShort: shortState,
     });
 
     console.log('completed row ' + i + ' zip: ' + zip);

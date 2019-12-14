@@ -36,6 +36,14 @@ module.exports = {
       description: 'approximate percent of accuracy',
       example: 'Los Angeles',
     },
+    stateShort: {
+      type: 'string',
+      example: 'ca',
+    },
+    stateLong: {
+      type: 'string',
+      example: 'California',
+    },
     sequence: {
       type: 'number',
       description:
