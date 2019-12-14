@@ -79,60 +79,65 @@ const mapZip = csvRow => {
 const createEntries = async (rows, indexStart = 0) => {
   let row;
   for (let i = indexStart; i < rows.length; i++) {
-    row = rows[i];
-    const {
-      zip,
-      primaryCity,
-      primaryCounty,
-      approxPct,
-      sequence,
-      shortState,
-      longState,
-      congressionalDistrict,
-    } = row;
-
-    const state = await State.findOrCreate(
-      { shortName: shortState },
-      {
-        name: longState,
-        shortName: shortState,
-      },
-    );
-
-    const cd = await CongressionalDistrict.findOrCreate(
-      {
-        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
-      },
-      {
-        name: `${longState} Congressional District number ${congressionalDistrict}`,
-        code: congressionalDistrict,
-        state: state.id,
-        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
-      },
-    );
-
-    const zipCode = await ZipCode.findOrCreate(
-      { zip },
-      {
+    try {
+      row = rows[i];
+      const {
         zip,
         primaryCity,
         primaryCounty,
         approxPct,
         sequence,
+        shortState,
+        longState,
+        congressionalDistrict,
+      } = row;
+
+      const state = await State.findOrCreate(
+        { shortName: shortState },
+        {
+          name: longState,
+          shortName: shortState,
+        },
+      );
+
+      const cd = await CongressionalDistrict.findOrCreate(
+        {
+          ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
+        },
+        {
+          name: `${longState} Congressional District number ${congressionalDistrict}`,
+          code: congressionalDistrict,
+          state: state.id,
+          ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
+        },
+      );
+
+      const zipCode = await ZipCode.findOrCreate(
+        { zip },
+        {
+          zip,
+          primaryCity,
+          primaryCounty,
+          approxPct,
+          sequence,
+          congressionalDistrict: cd.id,
+          stateLong: longState,
+          stateShort: shortState,
+        },
+      );
+
+      //to fix a bug. Can be removed later
+      await ZipCode.updateOne({ id: zipCode.id }).set({
         congressionalDistrict: cd.id,
         stateLong: longState,
         stateShort: shortState,
-      },
-    );
+      });
 
-    //to fix a bug. Can be removed later
-    await ZipCode.updateOne({ id: zipCode.id }).set({
-      congressionalDistrict: cd.id,
-      stateLong: longState,
-      stateShort: shortState,
-    });
-
-    console.log('completed row ' + i + ' zip: ' + zip);
+      console.log('completed row ' + i + ' zip: ' + zip);
+    } catch (e) {
+      console.log('error in seed. ' + i);
+      console.log(e);
+    }
   }
   console.log('seed completed');
 };
