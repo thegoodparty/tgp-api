@@ -73,7 +73,7 @@ const mapZip = csvRow => {
 
 const createEntries = async rows => {
   let row;
-  for (let i = 0; i < rows.length; i++) {
+  for (let i = 10860; i < rows.length; i++) {
     row = rows[i];
     const {
       zip,
