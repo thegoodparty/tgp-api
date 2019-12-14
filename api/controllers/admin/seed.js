@@ -7,7 +7,11 @@ module.exports = {
 
   description: 'database seed',
 
-  inputs: {},
+  inputs: {
+    indexStart: {
+      type: 'number',
+    },
+  },
 
   exits: {
     success: {
@@ -22,6 +26,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      let { indexStart } = inputs;
       this.req.setTimeout(60000 * 20);
       const results = [];
       // load district csv and convert it to an array.
@@ -34,7 +39,7 @@ module.exports = {
         })
         .on('end', async () => {
           console.log(results);
-          await createEntries(results);
+          await createEntries(results, indexStart);
           return exits.success({
             seed: 'ok',
           });
@@ -71,9 +76,9 @@ const mapZip = csvRow => {
   };
 };
 
-const createEntries = async rows => {
+const createEntries = async (rows, indexStart = 0) => {
   let row;
-  for (let i = 10860; i < rows.length; i++) {
+  for (let i = indexStart; i < rows.length; i++) {
     row = rows[i];
     const {
       zip,
