@@ -45,11 +45,11 @@ module.exports = {
         });
       }
       const user = await User.findOne({ phone })
-        // .populate('congressionalDistrict')
-        // .populate('houseDistrict')
-        // .populate('senateDistrict');
+        .populate('congressionalDistrict')
+        .populate('houseDistrict')
+        .populate('senateDistrict');
       if (!user) {
-        return exits.badRequest({ message: 'Login Failed1' });
+        return exits.badRequest({ message: 'Login Failed' });
       }
       if (verify) {
         await User.updateOne({ id: user.id }).set({
