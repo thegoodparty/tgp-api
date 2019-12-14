@@ -87,7 +87,6 @@ module.exports = {
 
   beforeCreate: async function(values, next) {
     try {
-      console.log('cd before create', values);
       const stateId = values.state;
       const state = await State.findOne({
         id: stateId,
@@ -95,13 +94,12 @@ module.exports = {
 
       const cdKey = `${state.shortName}-${values.code}`;
       const threshold = cdThreshold[cdKey];
-      console.log(threshold);
       if (threshold) {
         values.writeInThreshold = threshold.writeInThreshold;
         values.writeInThresholdWithPresident =
           threshold.writeInThresholdWithPresident;
       } else {
-        console.log('missing house threshold');
+        //console.log('missing house threshold');
       }
 
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.

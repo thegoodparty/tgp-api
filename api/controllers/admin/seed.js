@@ -115,6 +115,7 @@ const createEntries = async rows => {
         congressionalDistrict: cd.id,
       },
     );
+    console.log('completed row ' + i + ' zip: ' + zip);
   }
   console.log('seed completed');
 };
