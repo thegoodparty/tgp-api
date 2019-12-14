@@ -22,8 +22,8 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      this.req.setTimeout(60000 * 20);
       const results = [];
-      let row;
       // load district csv and convert it to an array.
       fs.createReadStream(
         path.join(__dirname, '../../../data/districts-full.csv'),
