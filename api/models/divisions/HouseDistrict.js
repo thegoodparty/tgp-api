@@ -32,7 +32,6 @@ module.exports = {
       required: true,
       description: 'District code',
       example: '29',
-      unique: true,
     },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗

@@ -100,7 +100,9 @@ const createEntries = async (rows, indexStart = 0) => {
     );
 
     const cd = await CongressionalDistrict.findOrCreate(
-      { code: congressionalDistrict },
+      {
+        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
+      },
       {
         name: `${longState} Congressional District number ${congressionalDistrict}`,
         code: congressionalDistrict,
@@ -109,7 +111,7 @@ const createEntries = async (rows, indexStart = 0) => {
       },
     );
 
-    await ZipCode.findOrCreate(
+    const zipCode = await ZipCode.findOrCreate(
       { zip },
       {
         zip,
@@ -120,6 +122,12 @@ const createEntries = async (rows, indexStart = 0) => {
         congressionalDistrict: cd.id,
       },
     );
+
+    //to fix a bug. Can be removed later
+    await ZipCode.updateOne({ id: zipCode.id }).set({
+      congressionalDistrict: cd.id,
+    });
+
     console.log('completed row ' + i + ' zip: ' + zip);
   }
   console.log('seed completed');

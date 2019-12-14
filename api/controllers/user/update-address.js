@@ -65,7 +65,7 @@ module.exports = {
       let congressionalDistrict;
       if (divisions.cd) {
         congressionalDistrict = await CongressionalDistrict.findOrCreate(
-          { code: divisions.cd.code },
+          { ocdDivisionId: divisions.cd.ocdDivisionId },
           {
             name: divisions.cd.name,
             code: divisions.cd.code,
@@ -77,7 +77,7 @@ module.exports = {
       let houseDistrict;
       if (divisions.sldl) {
         houseDistrict = await HouseDistrict.findOrCreate(
-          { code: divisions.sldl.code },
+          { ocdDivisionId: divisions.sldl.ocdDivisionId },
           {
             name: divisions.sldl.name,
             code: divisions.sldl.code,
@@ -90,7 +90,7 @@ module.exports = {
       let senateDistrict;
       if (divisions.sldu) {
         senateDistrict = await SenateDistrict.findOrCreate(
-          { code: divisions.sldu.code },
+          { ocdDivisionId: divisions.sldu.ocdDivisionId },
           {
             name: divisions.sldu.name,
             code: divisions.sldu.code,
