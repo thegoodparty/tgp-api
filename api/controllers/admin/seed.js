@@ -165,7 +165,7 @@ const states = {
   NY: 'New York',
   NC: 'North Carolina',
   ND: 'North Dakota',
-  MP: 'Northern Mariana Islands',
+  MP: 'N. Mariana Islands',
   OH: 'Ohio',
   OK: 'Oklahoma',
   OR: 'Oregon',
