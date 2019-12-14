@@ -50,4 +50,5 @@ module.exports.routes = {
   'GET    /api/v1/admin/senate-weekly-trend': 'admin/senate-weekly-trend',
   'POST   /api/v1/admin/candidate': 'admin/create-candidate',
   'GET    /api/v1/admin/candidates': 'admin/all-candidates',
+  'POST    /api/v1/admin/seed': 'admin/seed',
 };

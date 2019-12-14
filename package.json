@@ -8,6 +8,7 @@
     "@sailshq/lodash": "^3.10.3",
     "@tyriar/binary-heap": "^1.0.5",
     "contentful": "^7.10.0",
+    "csv-parser": "^2.3.2",
     "eslint": "^6.0.1",
     "global": "^4.4.0",
     "jsonwebtoken": "^8.5.1",
