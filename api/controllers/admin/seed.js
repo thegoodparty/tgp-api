@@ -150,7 +150,7 @@ const createEntries = async (rows, indexStart = 0) => {
           sequence,
           stateLong: longState,
           stateShort: shortState,
-        });
+        }).fetch();
       }
       await ZipCode.addToCollection(
         zipCode.id,
