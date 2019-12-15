@@ -45,7 +45,7 @@ module.exports = {
       }
 
       return exits.success({
-        zipCode,
+        ...zipCode,
       });
     } catch (err) {
       console.log('zip to district error');
