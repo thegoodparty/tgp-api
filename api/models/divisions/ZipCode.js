@@ -65,10 +65,10 @@ module.exports = {
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
     // a zip has many districts
-    // congressionalDistricts: {
-    //   collection: 'congressionalDistrict',
-    //   via: 'zipCodes',
-    // },
+    congressionalDistricts: {
+      collection: 'congressionalDistrict',
+      via: 'zipCodes',
+    },
   },
 
   customToJSON: function() {
