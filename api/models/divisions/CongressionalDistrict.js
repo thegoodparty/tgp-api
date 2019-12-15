@@ -61,11 +61,11 @@ module.exports = {
       model: 'state',
     },
 
-    // a district has one zip code
-    zipCodes: {
-      collection: 'zipCode',
-      via: 'congressionalDistricts',
-    },
+    // a district has many zip codes
+    // zipCodes: {
+    //   collection: 'zipCode',
+    //   via: 'congressionalDistricts',
+    // },
 
     // a user has one district (a district has many users)
     users: {
