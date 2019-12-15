@@ -1,4 +1,5 @@
 ZIPCode,Sequence,State,PrimaryCity,PrimaryCounty,District,ApproxPct
 00501,1,NY,Holtsville,Suffolk,1,100
 00544,1,NY,Holtsville,Suffolk,1,100
-00601,1,PR,Adjuntas,Adjuntas,98,100
+00601,1,PR,Adjuntas,Adjuntas,98,98
+00601,1,PR,Adjuntas1,Adjuntas1,97,2

@@ -112,26 +112,51 @@ const createEntries = async (rows, indexStart = 0) => {
         },
       );
 
-      const zipCode = await ZipCode.findOrCreate(
-        { zip },
-        {
+      let zipCode = await ZipCode.findOne({ zip });
+      if (zipCode) {
+        const approxPctArr = zipCode.approxPctArr;
+        // for cleanup
+        if (approxPctArr && typeof approxPctArr === 'string') {
+          const apx = JSON.parse(approxPctArr);
+          // update only if this district is not in the array.
+          let isDistrictInArray = false;
+          for (let i = 0; i < apx.length; i++) {
+            if (apx[i].districtId === cd.id) {
+              isDistrictInArray = true;
+            }
+          }
+          if (!isDistrictInArray) {
+            apx.push({ districtId: cd.id, pct: approxPct });
+            await ZipCode.updateOne({ id: zipCode.id }).set({
+              approxPctArr: JSON.stringify(apx),
+            });
+          }
+        } else {
+          //arr doesn't exist. create one from the number
+          const newApx = [{ districtId: cd.id, pct: approxPct }];
+          await ZipCode.updateOne({ id: zipCode.id }).set({
+            approxPctArr: JSON.stringify(newApx),
+          });
+        }
+      } else {
+        //zip code not found, create a new one
+        const newApx = [{ districtId: cd.id, pct: approxPct }];
+        zipCode = await ZipCode.create({
           zip,
           primaryCity,
           primaryCounty,
           approxPct,
+          approxPctArr: JSON.stringify(newApx),
           sequence,
-          congressionalDistrict: cd.id,
           stateLong: longState,
           stateShort: shortState,
-        },
+        });
+      }
+      await ZipCode.addToCollection(
+        zipCode.id,
+        'congressionalDistricts',
+        cd.id,
       );
-
-      //to fix a bug. Can be removed later
-      await ZipCode.updateOne({ id: zipCode.id }).set({
-        congressionalDistrict: cd.id,
-        stateLong: longState,
-        stateShort: shortState,
-      });
 
       console.log('completed row ' + i + ' zip: ' + zip);
     } catch (e) {

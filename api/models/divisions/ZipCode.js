@@ -34,7 +34,12 @@ module.exports = {
     approxPct: {
       type: 'number',
       description: 'approximate percent of accuracy',
-      example: 'Los Angeles',
+      example: '80',
+    },
+    approxPctArr: {
+      type: 'string',
+      description: 'array approximate percent of accuracy',
+      example: '[{districtId: 1, pct: 100}]',
     },
     stateShort: {
       type: 'string',
@@ -59,9 +64,10 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    // a zip has one district
-    congressionalDistrict: {
-      model: 'congressionalDistrict',
+    // a zip has many districts
+    congressionalDistricts: {
+      collection: 'congressionalDistrict',
+      via: 'zipCodes',
     },
   },
 
@@ -70,4 +76,3 @@ module.exports = {
     return _.omit(this, ['createdAt', 'updatedAt']);
   },
 };
-

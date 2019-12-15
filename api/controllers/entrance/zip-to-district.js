@@ -37,9 +37,8 @@ module.exports = {
     try {
       const { zip } = inputs;
 
-      const zipCode = await ZipCode.findOne({ zip }).populate(
-        'congressionalDistrict',
-      );
+      const zipCode = await ZipCode.findOne({ zip })
+        .populate('congressionalDistricts');
 
       if (!zipCode) {
         return exits.notFound({ message: 'Failed to find zip code' });
