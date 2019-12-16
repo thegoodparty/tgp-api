@@ -1,14 +1,13 @@
 /**
- * entrance/zipToDistrict.js
+ * entrance/zip-to-district.js
  *
  * @description :: First step of account creation - search zip code to find district
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 module.exports = {
-  friendlyName: 'Login user',
+  friendlyName: 'Zip To District',
 
-  description:
-    'Login user with email and password. Return the user and jwt access token.',
+  description: 'Given a zip, returns zip with cd',
 
   inputs: {
     zip: {
@@ -37,8 +36,9 @@ module.exports = {
     try {
       const { zip } = inputs;
 
-      const zipCode = await ZipCode.findOne({ zip })
-        .populate('congressionalDistricts');
+      const zipCode = await ZipCode.findOne({ zip }).populate(
+        'congressionalDistricts',
+      );
 
       if (!zipCode) {
         return exits.notFound({ message: 'Failed to find zip code' });
