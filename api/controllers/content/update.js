@@ -122,7 +122,7 @@ const processContent = async content => {
 };
 
 const statesWithCandidates = async () => {
-  return await State.find()
+  return await State.find({candidates: {'!': null}})
     .populate('candidates')
     .populate('congressionalDistricts');
 };
