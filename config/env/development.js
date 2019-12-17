@@ -45,6 +45,7 @@ module.exports = {
      ***************************************************************************/
     default: {
       adapter: 'sails-disk',
+
       // adapter: 'sails-mysql',
       // url: 'mysql://user:password@host:port/database',
       //--------------------------------------------------------------------------

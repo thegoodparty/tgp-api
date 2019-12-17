@@ -36,13 +36,7 @@ module.exports = {
     try {
       const { zip } = inputs;
 
-      const zipCode = await ZipCode.findOne({ zip }).populate(
-        'congressionalDistricts',
-      );
-      console.log('*******************');
-      console.log('zip', zip);
-      console.log(sails.config.datastores.default.url);
-      console.log('zipCode', zipCode);
+      const zipCode = await ZipCode.findOne({ zip }).populate('cds');
 
       if (!zipCode) {
         return exits.notFound({

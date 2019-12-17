@@ -64,7 +64,7 @@ module.exports = {
     // a district has many zip codes
     zipCodes: {
       collection: 'zipCode',
-      via: 'congressionalDistricts',
+      via: 'cds',
     },
 
     // a user has one district (a district has many users)

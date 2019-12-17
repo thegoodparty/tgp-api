@@ -128,14 +128,14 @@ const createEntries = async (rows, indexStart = 0) => {
           if (!isDistrictInArray) {
             apx.push({ districtId: cd.id, pct: approxPct });
             await ZipCode.updateOne({ id: zipCode.id }).set({
-              approxPctArr: 'a', //JSON.stringify(apx),
+              approxPctArr: JSON.stringify(apx),
             });
           }
         } else {
           //arr doesn't exist. create one from the number
           const newApx = [{ districtId: cd.id, pct: approxPct }];
           await ZipCode.updateOne({ id: zipCode.id }).set({
-            approxPctArr: 'b', //JSON.stringify(newApx),
+            approxPctArr: JSON.stringify(newApx),
           });
         }
       } else {
@@ -146,7 +146,7 @@ const createEntries = async (rows, indexStart = 0) => {
           primaryCity,
           primaryCounty,
           approxPct,
-          approxPctArr: 'c', //JSON.stringify(newApx),
+          approxPctArr: JSON.stringify(newApx),
           sequence,
           stateLong: longState,
           stateShort: shortState,
@@ -154,7 +154,7 @@ const createEntries = async (rows, indexStart = 0) => {
       }
       await ZipCode.addToCollection(
         zipCode.id,
-        'congressionalDistricts',
+        'cds',
         cd.id,
       );
 
