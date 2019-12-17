@@ -53,7 +53,7 @@ module.exports = {
       type: 'number',
       description:
         'this will be one for the primary district, 2 for the secondary, etc.',
-      example: 'Los Angeles',
+      example: '1',
     },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
