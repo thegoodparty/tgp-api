@@ -36,11 +36,11 @@ module.exports = {
       description: 'approximate percent of accuracy',
       example: '80',
     },
-    approxPctArr: {
-      type: 'array',
-      description: 'array approximate percent of accuracy',
-      example: '[{districtId: 1, pct: 100}]',
-    },
+    // approxPctArr: {
+    //   type: 'array',
+    //   description: 'array approximate percent of accuracy',
+    //   example: '[{districtId: 1, pct: 100}]',
+    // },
     stateShort: {
       type: 'string',
       example: 'ca',
