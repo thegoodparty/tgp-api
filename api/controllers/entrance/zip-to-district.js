@@ -39,7 +39,7 @@ module.exports = {
       const zipCode = await ZipCode.findOne({ zip }).populate(
         'congressionalDistricts',
       );
-      console.log('*******************');
+      console.log('*********************');
       console.log('zip', zip);
       console.log(sails.config.datastores.default.url);
       console.log('zipCode', zipCode);
