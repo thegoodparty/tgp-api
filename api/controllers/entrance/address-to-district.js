@@ -38,7 +38,7 @@ module.exports = {
       const { address } = inputs;
       if (!address) {
         return exits.badRequest({
-          message: 'Address and addressComponents are required',
+          message: 'Address is required',
         });
       }
       const districtResponse = await civicApiDistrict(address);
