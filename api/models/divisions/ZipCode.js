@@ -37,7 +37,7 @@ module.exports = {
       example: '80',
     },
     approxPctArr: {
-      type: 'string',
+      type: 'array',
       description: 'array approximate percent of accuracy',
       example: '[{districtId: 1, pct: 100}]',
     },
