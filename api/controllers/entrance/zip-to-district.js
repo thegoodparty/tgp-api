@@ -39,9 +39,17 @@ module.exports = {
       const zipCode = await ZipCode.findOne({ zip }).populate(
         'congressionalDistricts',
       );
+      console.log('*****************');
+      console.log('zip', zip);
+      console.log(sails.config.datastores.default.url);
+      console.log('zipCode', zipCode);
 
       if (!zipCode) {
-        return exits.notFound({ message: 'Failed to find zip code', zipCode: zipCode, db: sails.config.datastores.default.url });
+        return exits.notFound({
+          message: 'Failed to find zip code',
+          zipCode,
+          db: sails.config.datastores.default.url,
+        });
       }
 
       return exits.success({
