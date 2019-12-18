@@ -122,9 +122,16 @@ const processContent = async content => {
 };
 
 const statesWithCandidates = async () => {
-  return await State.find({candidates: {'!': null}})
+  const allStates = await State.find()
     .populate('candidates')
     .populate('congressionalDistricts');
+  const onlyCandidates = [];
+  allStates.map(state => {
+    if (state.candidates.length > 0) {
+      onlyCandidates.push(state);
+    }
+  });
+  return onlyCandidates;
 };
 
 const states = {
