@@ -4,18 +4,13 @@ module.exports = {
   description: 'update name and email for a logged in user.',
 
   inputs: {
-    firstName: {
+    name: {
       description: 'First Name',
       example: 'John',
       required: false,
       type: 'string',
     },
-    lastName: {
-      description: 'Last Name',
-      example: 'Smith',
-      required: false,
-      type: 'string',
-    },
+
     email: {
       description: 'Email',
       example: 'mary.sue@example.com',
@@ -39,19 +34,16 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { firstName, lastName, email } = inputs;
-      if (!firstName && !lastName && !email) {
+      const { name, email } = inputs;
+      if (!name && !email) {
         return exits.badRequest({
-          message: 'First Name, Last Name or Email are required',
+          message: 'Name or Email are required',
         });
       }
 
       const updateFields = {};
-      if (firstName) {
-        updateFields.firstName = firstName;
-      }
-      if (lastName) {
-        updateFields.lastName = lastName;
+      if (name) {
+        updateFields.name = name;
       }
       if (email) {
         updateFields.email = email;

@@ -69,6 +69,11 @@ module.exports = {
       collection: 'congressionalDistrict',
       via: 'zipCodes',
     },
+
+    users: {
+      collection: 'user',
+      via: 'zipCode',
+    },
   },
 
   customToJSON: function() {

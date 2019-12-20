@@ -25,23 +25,16 @@ module.exports = {
       example: 'mary.sue@example.com',
     },
 
-    firstName: {
+    name: {
       type: 'string',
       required: false,
-      description: "User's first name.",
-      maxLength: 60,
-      example: 'John',
+      description: "User's name.",
+      maxLength: 120,
+      example: 'John Smith',
     },
 
-    lastName: {
-      type: 'string',
-      required: false,
-      description: "User's last name.",
-      maxLength: 60,
-      example: 'Smith',
-    },
 
-    address: {
+    displayAddress: {
       type: 'string',
       required: false,
       description: "User's display address",
@@ -105,6 +98,10 @@ module.exports = {
 
     senateDistrict: {
       model: 'senateDistrict',
+    },
+
+    zipCode: {
+      model: 'zipCode',
     },
 
   },

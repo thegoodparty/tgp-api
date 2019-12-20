@@ -21,6 +21,14 @@ module.exports = {
       type: 'boolean',
       defaultsTo: true,
     },
+    districtId: {
+      description: 'Selected district id',
+      type: 'number',
+    },
+    addresses: {
+      description: 'Addresses collected from user during account creation.',
+      type: 'string',
+    },
   },
 
   exits: {
@@ -38,19 +46,47 @@ module.exports = {
     // Note that we don't have to validate that `userId` is a number;
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
-
-    const { phone, verify } = inputs;
-    const phoneError = !/^\d{10}$/.test(phone);
-
-    if (phoneError) {
-      return exits.badRequest({
-        message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
-      });
-    }
     try {
-      const user = await User.create({
+      const { phone, verify, districtId, addresses } = inputs;
+      const phoneError = !/^\d{10}$/.test(phone);
+      if (phoneError) {
+        return exits.badRequest({
+          message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
+        });
+      }
+
+      let displayAddress, normalizedAddress, zip;
+      if (addresses) {
+        const address = JSON.parse(addresses);
+        displayAddress = address.displayAddress;
+        normalizedAddress = address.normalizedAddress;
+        zip = address.zip;
+      }
+      let zipCode;
+
+      if (zip) {
+        zipCode = await ZipCode.findOne({ zip });
+      }
+      const userAttr = {
         phone,
-      }).fetch();
+      };
+      if (zipCode) {
+        userAttr.zipCode = zipCode.id;
+      }
+      if (districtId) {
+        userAttr.congressionalDistrict = districtId;
+      }
+
+      const user = await User.findOrCreate(
+        {
+          phone,
+        },
+        {
+          ...userAttr,
+          displayAddress,
+          normalizedAddress,
+        },
+      );
       // const token = await sails.helpers.jwtSign(user);
       // send sms to the newly created user.
       if (verify) {
@@ -60,7 +96,6 @@ module.exports = {
         user,
       });
     } catch (e) {
-      console.log(e);
       if (e.code === 'E_UNIQUE') {
         return exits.badRequest({
           message:

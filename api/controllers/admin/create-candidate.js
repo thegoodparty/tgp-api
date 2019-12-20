@@ -11,20 +11,12 @@ module.exports = {
   description: 'Admin endpoint to create a candidate.',
 
   inputs: {
-    firstName: {
+    name: {
       type: 'string',
       required: true,
-      description: "Candidate's first name.",
-      maxLength: 60,
-      example: 'John',
-    },
-
-    lastName: {
-      type: 'string',
-      required: true,
-      description: "Candidate's last name.",
-      maxLength: 60,
-      example: 'Smith',
+      description: "Candidate's name.",
+      maxLength: 120,
+      example: 'John Smith',
     },
 
     phone: {
