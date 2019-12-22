@@ -7,6 +7,7 @@
   "dependencies": {
     "@sailshq/lodash": "^3.10.3",
     "@tyriar/binary-heap": "^1.0.5",
+    "aws-sdk": "^2.595.0",
     "contentful": "^7.10.0",
     "csv-parser": "^2.3.2",
     "eslint": "^6.0.1",
@@ -22,6 +23,7 @@
     "sails-hook-orm": "^2.1.1",
     "sails-hook-sockets": "^1.5.5",
     "sails-postgresql": "^1.0.2",
+    "skipper-s3": "^0.6.0",
     "twilio": "^3.33.1"
   },
   "devDependencies": {

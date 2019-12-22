@@ -33,7 +33,6 @@ module.exports = {
       example: 'John Smith',
     },
 
-
     displayAddress: {
       type: 'string',
       required: false,
@@ -57,6 +56,11 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
       description: 'Was the phone verified via sms',
+    },
+
+    avatar: {
+      type: 'string',
+      description: 'Uploaded avatar image',
     },
 
     // encryptedPassword: {
@@ -103,7 +107,6 @@ module.exports = {
     zipCode: {
       model: 'zipCode',
     },
-
   },
 
   customToJSON: function() {
@@ -130,7 +133,8 @@ module.exports = {
       // values.password = '';
 
       // set role. Voter by default (if non is provided).
-      const adminPhones = sails.config.custom.adminPhones || sails.config.adminPhones;
+      const adminPhones =
+        sails.config.custom.adminPhones || sails.config.adminPhones;
       if (adminPhones && adminPhones.includes(values.phone)) {
         values.role = sails.config.custom.rolesEnums.ADMIN;
       } else {

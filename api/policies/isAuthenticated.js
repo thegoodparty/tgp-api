@@ -17,11 +17,11 @@ module.exports = async function(req, res, next) {
         token = credentials;
       }
     } else {
-      return res.json(401, { err: 'Format is Authorization: Bearer [token]' });
+      return res.status(401).json({ err: 'Format is Authorization: Bearer [token]' });
     }
   } else {
     //authorization header is not present
-    return res.json(401, { err: 'No Authorization header was found' });
+    return res.status(401).json({ err: 'No Authorization header was found' });
   }
   try {
     const decoded = await sails.helpers.jwtVerify(token);
@@ -29,15 +29,15 @@ module.exports = async function(req, res, next) {
     //check that the user exists in our system and the token matches.
     const userRecord = await User.findOne({ id: user.id });
     if (!userRecord.isPhoneVerified) {
-      return res.json(401, { err: 'Phone is not verified' });
+      return res.status(401).json({ err: 'Phone is not verified' });
     }
     if (userRecord.encryptedPassword === user.encryptedPassword) {
       req.user = userRecord;
       return next();
     } else {
-      return res.json(401, { err: 'Invalid token' });
+      return res.status(401).json({ err: 'Invalid token' });
     }
   } catch (err) {
-    return res.json(401, { err: 'Invalid token' });
+    return res.status(401).json({ err: 'Invalid token' });
   }
 };
