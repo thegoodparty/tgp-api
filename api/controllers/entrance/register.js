@@ -87,7 +87,14 @@ module.exports = {
           normalizedAddress,
         },
       );
-      // const token = await sails.helpers.jwtSign(user);
+
+      // need to update in case the user was already in the db.
+      await User.updateOne({ id: user.id }).set({
+        ...userAttr,
+        displayAddress,
+        normalizedAddress,
+      });
+
       // send sms to the newly created user.
       if (verify) {
         await sails.helpers.smsVerify(`+1${phone}`);
