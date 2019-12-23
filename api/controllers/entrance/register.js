@@ -114,8 +114,7 @@ module.exports = {
         });
       } else {
         return exits.badRequest({
-          message: 'Error registering phone.',
-          err: JSON.stringify(e),
+          message: JSON.stringify(e),
         });
       }
     }
