@@ -113,9 +113,7 @@ module.exports = {
             'This phone is already pledged. Try logging in instead of pledging.',
         });
       } else {
-        return exits.badRequest({
-          message: JSON.stringify(e),
-        });
+        return exits.badRequest({ message: 'Error registering phone.' });
       }
     }
   },
