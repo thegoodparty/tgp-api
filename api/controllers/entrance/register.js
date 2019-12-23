@@ -88,6 +88,10 @@ module.exports = {
         },
       );
 
+      if (verify) {
+        userAttr.isVerified = false;
+      }
+
       // need to update in case the user was already in the db.
       await User.updateOne({ id: user.id }).set({
         ...userAttr,

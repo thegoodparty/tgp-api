@@ -33,6 +33,13 @@ module.exports = {
       example: 'John Smith',
     },
 
+    feedback: {
+      type: 'string',
+      required: false,
+      description: "User's Feedback",
+      maxLength: 140,
+    },
+
     displayAddress: {
       type: 'string',
       required: false,
