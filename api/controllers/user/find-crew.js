@@ -35,6 +35,9 @@ module.exports = {
         message: 'missing contacts',
       });
     }
+    console.log('********');
+    console.log('find crew');
+    console.log('contacts length', contacts.length)
     const crew = {};
     let contact;
     for (let i = 0; i < contacts.length; i++) {
@@ -46,6 +49,7 @@ module.exports = {
         }
       }
     }
+    console.log('crew found', crew);
     return exits.success({
       crew,
     });
