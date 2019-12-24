@@ -43,10 +43,10 @@ module.exports = {
         let district;
         let type;
         if (districtScope === 'congressional') {
-          district = await CongressionalDistrict.findOne({
+          district = await CongDistrict.findOne({
             code: districtCode,
           });
-          type = 'congressionalDistrict';
+          type = 'congDistrict';
         } else if (districtScope === 'stateLower') {
           district = await HouseDistrict.findOne({
             code: districtCode,
@@ -75,9 +75,9 @@ module.exports = {
         const fullElectionRecord = await Election.findOne({
           id: electionRecord.id,
         })
-          .populate('congressionalDistrict')
-          .populate('houseDistrict')
-          .populate('senateDistrict');
+          .populate('congDistrict')
+          // .populate('houseDistrict')
+          // .populate('senateDistrict');
 
         return exits.success({
           message: 'Elections searched successfully',

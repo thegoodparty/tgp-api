@@ -72,7 +72,7 @@ const mapZip = csvRow => {
     sequence: parseInt(Sequence, 10),
     shortState: State.toLowerCase(),
     longState: states[State],
-    congressionalDistrict: District,
+    congDistrict: District,
   };
 };
 
@@ -89,7 +89,7 @@ const createEntries = async (rows, indexStart = 0) => {
         sequence,
         shortState,
         longState,
-        congressionalDistrict,
+        congDistrict,
       } = row;
 
       const state = await State.findOrCreate(
@@ -100,15 +100,15 @@ const createEntries = async (rows, indexStart = 0) => {
         },
       );
 
-      const cd = await CongressionalDistrict.findOrCreate(
+      const cd = await CongDistrict.findOrCreate(
         {
-          ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
+          ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
         },
         {
-          name: `${longState} Congressional District number ${congressionalDistrict}`,
-          code: congressionalDistrict,
+          name: `${longState} Congressional District number ${congDistrict}`,
+          code: congDistrict,
           state: state.id,
-          ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congressionalDistrict}`,
+          ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
         },
       );
 

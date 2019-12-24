@@ -74,7 +74,7 @@ module.exports = {
         userAttr.zipCode = zipCode.id;
       }
       if (districtId) {
-        userAttr.congressionalDistrict = districtId;
+        userAttr.congDistrict = districtId;
       }
 
       const user = await User.findOrCreate(

@@ -86,7 +86,7 @@ const processContent = async content => {
         },
       );
 
-      const congressionalDistrict = await CongressionalDistrict.findOrCreate(
+      const congDistrict = await CongDistrict.findOrCreate(
         {
           code: cmsCandidate.districtNumber,
           state: state.id,
@@ -108,13 +108,13 @@ const processContent = async content => {
         await Candidate.create({
           ...cmsCandidate,
           state: state.id,
-          congressionalDistrict: congressionalDistrict.id,
+          congDistrict: congDistrict.id,
         });
       } else {
         await Candidate.updateOne({ name: cmsCandidate.name }).set({
           ...cmsCandidate,
           state: state.id,
-          congressionalDistrict: congressionalDistrict.id,
+          congDistrict: congDistrict.id,
         });
       }
     });
@@ -124,7 +124,7 @@ const processContent = async content => {
 const statesWithCandidates = async () => {
   const allStates = await State.find()
     .populate('candidates')
-    .populate('congressionalDistricts');
+    .populate('congDistricts');
   const onlyCandidates = [];
   allStates.map(state => {
     if (state.candidates.length > 0) {

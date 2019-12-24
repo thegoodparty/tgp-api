@@ -66,7 +66,7 @@ module.exports = {
 
     // a zip has many districts
     cds: {
-      collection: 'congressionalDistrict',
+      collection: 'congDistrict',
       via: 'zipCodes',
     },
 

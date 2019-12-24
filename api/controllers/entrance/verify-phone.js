@@ -44,10 +44,9 @@ module.exports = {
         isPhoneVerified: true,
       });
 
-      const user = await User.findOne({ id: reqUser.id })
-        .populate('congressionalDistrict')
-        .populate('houseDistrict')
-        .populate('senateDistrict');
+      const user = await User.findOne({ id: reqUser.id }).populate(
+        'congDistrict',
+      );
 
       const token = await sails.helpers.jwtSign(user);
 

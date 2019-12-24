@@ -49,8 +49,8 @@ module.exports = {
     state: {
       model: 'state',
     },
-    congressionalDistrict: {
-      model: 'congressionalDistrict',
+    congDistrict: {
+      model: 'congDistrict',
     },
   },
 

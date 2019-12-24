@@ -17,12 +17,12 @@ module.exports = {
       let cdWithUserCount;
       let topTrends = [];
 
-      const cds = await CongressionalDistrict.find().populate('state');
+      const cds = await CongDistrict.find().populate('state');
       let minTopDistrict;
       // can't use map or forEach because of the await
       for (let i = 0; i < cds.length; i++) {
         userCount = await User.count({
-          congressionalDistrict: cds[i].id,
+          congDistrict: cds[i].id,
           createdAt: { '>': lastWeek },
         });
 

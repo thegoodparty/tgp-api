@@ -1,5 +1,5 @@
 /**
- * CongressionalDistrict.js
+ * CongDistrict.js
  * Congressional District associated with a user's address
  *
  * @description :: Congressional District associated with a user's address.
@@ -70,18 +70,18 @@ module.exports = {
     // a user has one district (a district has many users)
     users: {
       collection: 'user',
-      via: 'congressionalDistrict',
+      via: 'congDistrict',
     },
     // a candidate has one district (a district has many users)
     candidates: {
       collection: 'candidate',
-      via: 'congressionalDistrict',
+      via: 'congDistrict',
     },
 
     // an election has one district (a district has many elections)
     elections: {
       collection: 'election',
-      via: 'congressionalDistrict',
+      via: 'congDistrict',
     },
   },
 

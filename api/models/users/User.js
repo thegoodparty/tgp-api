@@ -99,8 +99,8 @@ module.exports = {
       model: 'role',
     },
 
-    congressionalDistrict: {
-      model: 'congressionalDistrict',
+    congDistrict: {
+      model: 'congDistrict',
     },
 
     houseDistrict: {

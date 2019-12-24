@@ -38,8 +38,8 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    congressionalDistricts: {
-      collection: 'congressionalDistrict',
+    congDistricts: {
+      collection: 'congDistrict',
       via: 'state',
     },
 

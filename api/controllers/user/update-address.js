@@ -62,9 +62,9 @@ module.exports = {
           shortName: divisions.state.code.toLowerCase(),
         },
       );
-      let congressionalDistrict;
+      let congDistrict;
       if (divisions.cd) {
-        congressionalDistrict = await CongressionalDistrict.findOrCreate(
+        congDistrict = await CongDistrict.findOrCreate(
           { ocdDivisionId: divisions.cd.ocdDivisionId },
           {
             name: divisions.cd.name,
@@ -104,8 +104,8 @@ module.exports = {
         address,
         addressComponents,
         normalizedAddress,
-        congressionalDistrict: congressionalDistrict
-          ? congressionalDistrict.id
+        congDistrict: congDistrict
+          ? congDistrict.id
           : null,
         houseDistrict: houseDistrict ? houseDistrict.id : null,
         senateDistrict: senateDistrict ? senateDistrict.id : null,
@@ -113,7 +113,7 @@ module.exports = {
 
       return exits.success({
         message: 'Address updated',
-        congressionalDistrict: divisions.cd,
+        congDistrict: divisions.cd,
         houseDistrict: divisions.sldl,
         senateDistrict: divisions.sldu,
       });

@@ -58,8 +58,8 @@ module.exports = {
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
     // an election has one district (of each type)
-    congressionalDistrict: {
-      model: 'congressionalDistrict',
+    congDistrict: {
+      model: 'congDistrict',
     },
 
     houseDistrict: {

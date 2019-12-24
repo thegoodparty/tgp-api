@@ -50,15 +50,15 @@ module.exports = {
         });
       }
 
-      let congressionalDistrict;
+      let congDistrict;
       if (divisions.cd) {
-        congressionalDistrict = await CongressionalDistrict.findOne({
+        congDistrict = await CongDistrict.findOne({
           ocdDivisionId: divisions.cd.ocdDivisionId,
         });
       }
       return exits.success({
         normalizedAddress,
-        district: congressionalDistrict,
+        district: congDistrict,
         zip: normalizedAddress ? normalizedAddress.zip : '',
         state: normalizedAddress ? normalizedAddress.state.toLowerCase() : '',
       });

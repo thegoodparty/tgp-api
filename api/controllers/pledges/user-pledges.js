@@ -26,17 +26,17 @@ module.exports = {
         });
       }
       // get user cd and senate districts
-      const cd = await CongressionalDistrict.findOne({
-        id: user.congressionalDistrict,
+      const cd = await CongDistrict.findOne({
+        id: user.congDistrict,
       });
 
       const senate = await SenateDistrict.findOne({
         id: user.senateDistrict,
       });
       let totalCdPledges = 0;
-      if (user.congressionalDistrict) {
+      if (user.congDistrict) {
         totalCdPledges = await User.count({
-          congressionalDistrict: user.congressionalDistrict,
+          congDistrict: user.congDistrict,
         });
       }
 
