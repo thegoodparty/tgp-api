@@ -35,20 +35,35 @@ module.exports = {
         message: 'missing contacts',
       });
     }
-    console.log('*********');
-    console.log('find crew');
-    console.log('contacts length', contacts.length)
+    const contactsPhones = [];
+    const contactsPhonesToIds = {};
     const crew = {};
     let contact;
     for (let i = 0; i < contacts.length; i++) {
       contact = contacts[i];
       if (contact.id && contact.phone) {
-        const user = await User.findOne({ phone: contact.phone });
-        if (user) {
-          crew[contact.id] = true;
-        }
+        contactsPhones.push(contact.phone);
+        contactsPhonesToIds[contact.phone] = {
+          id: contact.id,
+          name: contact.name,
+        };
       }
     }
+    console.log(contactsPhones);
+
+    const users = await User.find({ phone: contactsPhones }).populate('congDistrict');
+    console.log('users', users);
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      const contactId = contactsPhonesToIds[user.phone].id;
+      crew[contactId] = {
+        district: user.congDistrict.name,
+        image: user.avatar,
+        feedback: user.feedback,
+        name: contactsPhonesToIds[user.phone].name,
+      };
+    }
+
     console.log('crew found', crew);
     return exits.success({
       crew,

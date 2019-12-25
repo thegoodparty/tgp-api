@@ -105,12 +105,24 @@ const createEntries = async (rows, indexStart = 0) => {
           ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
         },
         {
-          name: `${longState} Congressional District number ${congDistrict}`,
+          name: `${primaryCity}, ${shortState}-${congDistrict}`,
           code: congDistrict,
           state: state.id,
           ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
         },
       );
+
+      //test end
+      await CongDistrict.updateOne({
+        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
+      }).set({
+        name: `${primaryCity}, ${shortState}-${congDistrict}`,
+        code: congDistrict,
+        state: state.id,
+        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
+      });
+
+      // temp end
 
       let zipCode = await ZipCode.findOne({ zip });
       if (zipCode) {
@@ -152,11 +164,7 @@ const createEntries = async (rows, indexStart = 0) => {
           stateShort: shortState,
         }).fetch();
       }
-      await ZipCode.addToCollection(
-        zipCode.id,
-        'cds',
-        cd.id,
-      );
+      await ZipCode.addToCollection(zipCode.id, 'cds', cd.id);
 
       console.log('completed row ' + i + ' zip: ' + zip);
     } catch (e) {
