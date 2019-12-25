@@ -35,7 +35,7 @@ module.exports = {
         message: 'missing contacts',
       });
     }
-    console.log('********');
+    console.log('*********');
     console.log('find crew');
     console.log('contacts length', contacts.length)
     const crew = {};
