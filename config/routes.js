@@ -37,6 +37,7 @@ module.exports.routes = {
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'POST    /api/v1/user/upload-avatar': 'user/upload-avatar',
   'POST    /api/v1/user/find-crew': 'user/find-crew', // post because of payload size.
+  'PUT    /api/v1/user/invite-contact': 'user/invite-contact',
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 

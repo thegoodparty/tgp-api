@@ -70,6 +70,12 @@ module.exports = {
       description: 'Uploaded avatar image',
     },
 
+    invited: {
+      type: 'string',
+      required: false,
+      description: 'array of phone numbers the user invited.',
+    },
+
     // encryptedPassword: {
     //   type: 'string',
     //   description:

@@ -105,7 +105,7 @@ const createEntries = async (rows, indexStart = 0) => {
           ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
         },
         {
-          name: `${primaryCity}, ${shortState}-${congDistrict}`,
+          name: `${primaryCity}, ${shortState.toUpperCase()}-${congDistrict}`,
           code: congDistrict,
           state: state.id,
           ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
