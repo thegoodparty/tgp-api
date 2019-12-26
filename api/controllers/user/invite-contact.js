@@ -57,7 +57,7 @@ module.exports = {
       //   `+1${phone}`,
       //   `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
       // );
-      await sails.helpers.sendSms(
+      sails.helpers.sendSms(
         `+1${reqUser.phone}`,
         `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
       );
