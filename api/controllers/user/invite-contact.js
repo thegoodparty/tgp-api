@@ -37,6 +37,15 @@ module.exports = {
       const reqUser = this.req.user;
       const { phone, name } = inputs;
 
+      // await sails.helpers.sendSms(
+      //   `+1${phone}`,
+      //   `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
+      // );
+      await sails.helpers.sendSms(
+        `+1${reqUser.phone}`,
+        `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
+      );
+
       const user = await User.findOne({ id: reqUser.id });
       const invited = user.invited;
       if (!invited) {
@@ -53,14 +62,20 @@ module.exports = {
         }
       }
 
-      // await sails.helpers.sendSms(
-      //   `+1${phone}`,
-      //   `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
-      // );
-      sails.helpers.sendSms(
-        `+1${reqUser.phone}`,
-        `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
-      );
+      // update invited table
+      const invitedPhone = await Invited.findOne({ phone });
+      if (invitedPhone) {
+        const invitedBy = JSON.parse(invitedPhone.invitedBy);
+        if (!invitedBy.includes(reqUser.id)) {
+          invitedBy.push({ id: reqUser.id, name });
+        }
+        await Invited.updateOne({ id: invitedPhone.id }).set({
+          invitedBy: JSON.stringify(invitedBy),
+        });
+      } else {
+        const invitedBy = JSON.stringify([{ id: reqUser.id, name }]);
+        await Invited.create({ phone, invitedBy });
+      }
 
       return exits.success({
         message: 'Invitation sent successfully',

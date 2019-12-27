@@ -49,10 +49,8 @@ module.exports = {
         };
       }
     }
-    console.log(contactsPhones);
 
     const users = await User.find({ phone: contactsPhones }).populate('congDistrict');
-    console.log('users', users);
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
       const contactId = contactsPhonesToIds[user.phone].id;

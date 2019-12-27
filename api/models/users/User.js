@@ -120,6 +120,16 @@ module.exports = {
     zipCode: {
       model: 'zipCode',
     },
+
+    // many to many relationship with itself. a user can recruit many users and a user can be recruited by many users.
+    recruitedBy: {
+      collection: 'user',
+      via: 'recruits',
+    },
+    recruits: {
+      collection: 'user',
+      via: 'recruitedBy',
+    },
   },
 
   customToJSON: function() {
@@ -160,6 +170,39 @@ module.exports = {
 
       return next();
     } catch (e) {
+      return next(e);
+    }
+  },
+  afterCreate: async function(newUser, next) {
+    // check if the newly created user exists in invited table. If so, update all those who invited the new user.
+    // then remove the row from invited table.
+    try {
+      const { id, phone, name } = newUser;
+      const invitedPhone = await Invited.findOne({ phone });
+      if (!invitedPhone) {
+        return next();
+      }
+      const invitedBy = JSON.parse(invitedPhone.invitedBy);
+      const invitedByIds = [];
+      // send message to the users that invited the new recruit
+      for (let i = 0; i < invitedBy.length; i++) {
+        invitedByIds.push(invitedBy[i].id);
+        const inviter = await User.findOne({ id: invitedBy[i].id });
+        await sails.helpers.sendSms(
+          `+1${inviter.phone}`,
+          `Great News! ${invitedBy[i].name} accepted your invitation for The Good Party!`,
+        );
+      }
+
+      await User.addToCollection(id, 'recruitedBy', invitedByIds);
+
+      // remove row from invited table.
+      const deleted = await Invited.destroyOne({ id: invitedPhone.id });
+      console.log('deleted', deleted);
+
+      return next();
+    } catch (e) {
+      console.log('error', e);
       return next(e);
     }
   },
