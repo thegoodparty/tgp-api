@@ -55,7 +55,7 @@ module.exports = {
       const user = users[i];
       const contactId = contactsPhonesToIds[user.phone].id;
       crew[contactId] = {
-        district: user.congDistrict.name,
+        district: user.congDistrict ? user.congDistrict.name : '',
         image: user.avatar,
         feedback: user.feedback,
         name: contactsPhonesToIds[user.phone].name,
