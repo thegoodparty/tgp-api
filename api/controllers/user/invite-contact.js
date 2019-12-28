@@ -50,7 +50,7 @@ module.exports = {
       // );
       await sails.helpers.sendSms(
         `+1${reqUser.phone}`,
-        `${reqUser.name}: Hey ${firstName}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
+        `${reqUser.name}: Hey ${firstName}, check out The Good Party! 🙏❤️🎉 https://exp.host/@tgp-expo/tgp-native-apps`,
       );
 
       const user = await User.findOne({ id: reqUser.id });
