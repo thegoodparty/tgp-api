@@ -47,13 +47,16 @@ module.exports = {
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
     try {
+      console.log('register1');
       const { phone, verify, districtId, addresses } = inputs;
+      console.log('register2', phone, verify, districtId, addresses);
       const phoneError = !/^\d{10}$/.test(phone);
       if (phoneError) {
         return exits.badRequest({
           message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
         });
       }
+      console.log('register3');
 
       let displayAddress, normalizedAddress, zip;
       if (addresses) {
@@ -62,21 +65,25 @@ module.exports = {
         normalizedAddress = address.normalizedAddress;
         zip = address.zip;
       }
+      console.log('register4');
       let zipCode;
 
       if (zip) {
         zipCode = await ZipCode.findOne({ zip });
       }
+      console.log('register5');
       const userAttr = {
         phone,
       };
+      console.log('register6');
       if (zipCode) {
         userAttr.zipCode = zipCode.id;
       }
+      console.log('register7');
       if (districtId) {
         userAttr.congDistrict = districtId;
       }
-
+      console.log('register8');
       const user = await User.findOrCreate(
         {
           phone,
@@ -87,10 +94,12 @@ module.exports = {
           normalizedAddress,
         },
       );
+      console.log('register9');
 
       if (verify) {
         userAttr.isVerified = false;
       }
+      console.log('register10');
 
       // need to update in case the user was already in the db.
       await User.updateOne({ id: user.id }).set({
@@ -98,11 +107,13 @@ module.exports = {
         displayAddress,
         normalizedAddress,
       });
+      console.log('register11');
 
       // send sms to the newly created user.
       if (verify) {
         await sails.helpers.smsVerify(`+1${phone}`);
       }
+      console.log('register12');
       return exits.success({
         user,
       });
