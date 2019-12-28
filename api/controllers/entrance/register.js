@@ -62,7 +62,9 @@ module.exports = {
       if (addresses) {
         const address = JSON.parse(addresses);
         displayAddress = address.displayAddress;
-        normalizedAddress = address.normalizedAddress;
+        normalizedAddress = address.normalizedAddress
+          ? JSON.stringify(address.normalizedAddress)
+          : null;
         zip = address.zip;
       }
       console.log('register4');
