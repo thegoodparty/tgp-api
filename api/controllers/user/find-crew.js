@@ -50,7 +50,9 @@ module.exports = {
       }
     }
 
-    const users = await User.find({ phone: contactsPhones }).populate('congDistrict');
+    const users = await User.find({ phone: contactsPhones })
+      .populate('congDistrict')
+      .populate('recruits');
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
       const contactId = contactsPhonesToIds[user.phone].id;
@@ -59,6 +61,7 @@ module.exports = {
         image: user.avatar,
         feedback: user.feedback,
         name: contactsPhonesToIds[user.phone].name,
+        recruits: user.recruits ? user.recruits.length : 0,
       };
     }
 
