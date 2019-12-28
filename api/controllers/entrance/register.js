@@ -61,7 +61,7 @@ module.exports = {
         displayAddress = address.displayAddress;
         normalizedAddress = address.normalizedAddress
           ? JSON.stringify(address.normalizedAddress)
-          : null;
+          : address.normalizedAddress;
         zip = address.zip;
       }
       let zipCode;
