@@ -65,7 +65,6 @@ module.exports = {
       };
     }
 
-    console.log('crew found', crew);
     return exits.success({
       crew,
     });
