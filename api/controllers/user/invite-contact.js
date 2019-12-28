@@ -40,28 +40,21 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    console.log('***** invite-contact *****');
     try {
-      console.log('invite-contact1');
       const reqUser = this.req.user;
-      console.log('invite-contact2');
       const { phone, firstName, lastName } = inputs;
-      console.log('invite-contact3', phone, name);
 
       // await sails.helpers.sendSms(
       //   `+1${phone}`,
       //   `${reqUser.name}: Hey ${name}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
       // );
-      console.log('invite-contact4');
       await sails.helpers.sendSms(
         `+1${reqUser.phone}`,
         `${reqUser.name}: Hey ${firstName}, check out The Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
       );
-      console.log('invite-contact5');
 
       const user = await User.findOne({ id: reqUser.id });
       const invited = user.invited;
-      console.log('invite-contact6');
       if (!invited) {
         await User.updateOne({ id: reqUser.id }).set({
           invited: JSON.stringify([phone]),
@@ -75,7 +68,6 @@ module.exports = {
           });
         }
       }
-      console.log('invite-contact7');
 
       // update invited table
       const invitedPhone = await Invited.findOne({ phone });
@@ -93,7 +85,6 @@ module.exports = {
         ]);
         await Invited.create({ phone, invitedBy });
       }
-      console.log('invite-contact8');
 
       return exits.success({
         message: 'Invitation sent successfully',
