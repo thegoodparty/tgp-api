@@ -81,6 +81,8 @@ module.exports = {
         message: 'Invitation sent successfully',
       });
     } catch (e) {
+      console.log('***** ERROR in invite-contact *****');
+      console.log(JSON.stringify(e));
       console.log(e);
       return exits.badRequest({
         message: 'Error inviting contact',
