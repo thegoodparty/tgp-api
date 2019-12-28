@@ -107,6 +107,7 @@ module.exports = {
         user,
       });
     } catch (e) {
+      console.log('register error', JSON.stringify(e));
       if (e.code === 'E_UNIQUE') {
         return exits.badRequest({
           message:
