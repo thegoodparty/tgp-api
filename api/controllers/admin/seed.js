@@ -112,17 +112,6 @@ const createEntries = async (rows, indexStart = 0) => {
         },
       );
 
-      //test end
-      await CongDistrict.updateOne({
-        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
-      }).set({
-        name: `${primaryCity}, ${shortState.toUpperCase()}-${congDistrict}`,
-        code: congDistrict,
-        state: state.id,
-        ocdDivisionId: `ocd-division/country:us/state:${shortState}/cd:${congDistrict}`,
-      });
-
-      // temp end
 
       let zipCode = await ZipCode.findOne({ zip });
       if (zipCode) {

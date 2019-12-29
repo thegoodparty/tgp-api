@@ -190,7 +190,7 @@ module.exports = {
         const inviter = await User.findOne({ id: invitedBy[i].id });
         await sails.helpers.sendSms(
           `+1${inviter.phone}`,
-          `Good News: ${invitedBy[i].name}  just joined the Good Party! https://exp.host/@tgp-expo/tgp-native-apps`,
+          `Good News: ${invitedBy[i].name}  just joined the Good Party! 🙏❤️🎉 https://exp.host/@tgp-expo/tgp-native-apps`,
         );
       }
 
