@@ -52,6 +52,7 @@ module.exports = {
 
     const users = await User.find({ phone: contactsPhones })
       .populate('congDistrict')
+      .populate('zipCode')
       .populate('recruits');
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
