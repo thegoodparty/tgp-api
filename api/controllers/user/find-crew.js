@@ -63,6 +63,7 @@ module.exports = {
         feedback: user.feedback,
         name: contactsPhonesToIds[user.phone].name,
         recruits: user.recruits ? user.recruits.length : 0,
+        zipCode: user.zipCode,
       };
     }
 
