@@ -105,7 +105,9 @@ module.exports = {
         await sails.helpers.smsVerify(`+1${phone}`);
       }
 
-      const userWithZip = await User.find({ id: user.id }).populate('zipCode');
+      const userWithZip = await User.find({ id: user.id })
+        .populate('zipCode')
+        .populate('congDistrict');
       return exits.success({
         user: userWithZip,
       });
