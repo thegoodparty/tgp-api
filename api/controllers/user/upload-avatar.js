@@ -48,7 +48,13 @@ module.exports = async function uploadAvatar(req, res) {
   const user = await User.updateOne({ id: req.user.id }).set({
     avatar: `https://s3-us-west-2.amazonaws.com/uploads.thegoodparty.org/${fileName}`,
   });
-  return res.ok({user});
+  const userWithZip = await User.findOne({ id: req.user.id })
+    .populate('zipCode')
+    .populate('congDistrict');
+
+  return res.ok({
+    user: userWithZip,
+  });
 
   // console.log(req.param('avatar'));
 
