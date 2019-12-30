@@ -62,7 +62,9 @@ module.exports = {
 
       await User.updateOne({ id: reqUser.id }).set(updateFields);
 
-      const user = await User.findOne({ id: reqUser.id });
+      const user = await User.findOne({ id: reqUser.id })
+        .populate('congDistrict')
+        .populate('zipCode');
 
       return exits.success({
         user,
