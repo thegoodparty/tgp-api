@@ -5,15 +5,12 @@ module.exports = {
   description: 'update password for a logged in user.',
 
   inputs: {
-    address: {
-      description: 'display address',
-      example: '123 main street, Los Angeles CA 90210',
-      required: true,
-      type: 'string',
+    districtId: {
+      description: 'Selected district id',
+      type: 'number',
     },
-    addressComponents: {
-      description: 'Google autocomplete address components. stringified JSON',
-      required: true,
+    addresses: {
+      description: 'Addresses collected from user during account creation.',
       type: 'string',
     },
   },
@@ -32,90 +29,47 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const user = this.req.user;
-      const { address, addressComponents } = inputs;
-      if (!address || !addressComponents) {
+      const { addresses, districtId } = inputs;
+      if (!addresses && !districtId) {
         return exits.badRequest({
-          message: 'Address and addressComponents are required',
+          message: 'Address or districtId are required',
         });
       }
-      console.log(address);
-      // call google civic api to get the district from the address
-      const districtResponse = await civicApiDistrict(address);
+      let displayAddress, normalizedAddress, zip;
+      if (addresses) {
+        const address = JSON.parse(addresses);
+        displayAddress = address.displayAddress;
+        normalizedAddress = address.normalizedAddress
+          ? JSON.stringify(address.normalizedAddress)
+          : address.normalizedAddress;
+        zip = address.zip;
+      }
+      let zipCode;
 
-      const divisions = districtResponse.divisions;
-      const normalizedAddress = JSON.stringify(
-        districtResponse.normalizedAddress,
-      );
-
-      // const divs = JSON.parse(divisions);
-      if (!divisions || !divisions.country || divisions.country.code !== 'us') {
-        return exits.badRequest({
-          message: 'Currently we support only US elections.',
-        });
+      if (zip) {
+        zipCode = await ZipCode.findOne({ zip });
       }
 
-      // find or create state and district for user divisions.
-      const state = await State.findOrCreate(
-        { shortName: divisions.state.code.toLowerCase() },
-        {
-          name: divisions.state.name,
-          shortName: divisions.state.code.toLowerCase(),
-        },
-      );
-      let congDistrict;
-      if (divisions.cd) {
-        congDistrict = await CongDistrict.findOrCreate(
-          { ocdDivisionId: divisions.cd.ocdDivisionId },
-          {
-            name: divisions.cd.name,
-            code: divisions.cd.code,
-            state: state.id,
-            ocdDivisionId: divisions.cd.ocdDivisionId,
-          },
-        );
+      const userAttr = {};
+      if (zipCode) {
+        userAttr.zipCode = zipCode.id;
       }
-      let houseDistrict;
-      if (divisions.sldl) {
-        houseDistrict = await HouseDistrict.findOrCreate(
-          { ocdDivisionId: divisions.sldl.ocdDivisionId },
-          {
-            name: divisions.sldl.name,
-            code: divisions.sldl.code,
-            state: state.id,
-            ocdDivisionId: divisions.sldl.ocdDivisionId,
-          },
-        );
-      }
-
-      let senateDistrict;
-      if (divisions.sldu) {
-        senateDistrict = await SenateDistrict.findOrCreate(
-          { ocdDivisionId: divisions.sldu.ocdDivisionId },
-          {
-            name: divisions.sldu.name,
-            code: divisions.sldu.code,
-            state: state.id,
-            ocdDivisionId: divisions.sldu.ocdDivisionId,
-          },
-        );
+      if (districtId) {
+        userAttr.congDistrict = districtId;
       }
 
       await User.updateOne({ id: user.id }).set({
-        address,
-        addressComponents,
+        ...userAttr,
+        displayAddress,
         normalizedAddress,
-        congDistrict: congDistrict
-          ? congDistrict.id
-          : null,
-        houseDistrict: houseDistrict ? houseDistrict.id : null,
-        senateDistrict: senateDistrict ? senateDistrict.id : null,
       });
 
+      const userWithZip = await User.findOne({ id: user.id })
+        .populate('zipCode')
+        .populate('congDistrict');
+
       return exits.success({
-        message: 'Address updated',
-        congDistrict: divisions.cd,
-        houseDistrict: divisions.sldl,
-        senateDistrict: divisions.sldu,
+        user: userWithZip,
       });
     } catch (e) {
       console.log(e);

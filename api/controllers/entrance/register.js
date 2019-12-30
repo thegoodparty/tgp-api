@@ -105,7 +105,7 @@ module.exports = {
         await sails.helpers.smsVerify(`+1${phone}`);
       }
 
-      const userWithZip = await User.find({ id: user.id })
+      const userWithZip = await User.findOne({ id: user.id })
         .populate('zipCode')
         .populate('congDistrict');
       return exits.success({
@@ -113,14 +113,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('register error', JSON.stringify(e));
-      if (e.code === 'E_UNIQUE') {
-        return exits.badRequest({
-          message:
-            'This phone is already pledged. Try logging in instead of pledging.',
-        });
-      } else {
-        return exits.badRequest({ message: 'Error registering phone.' });
-      }
+      return exits.badRequest({ message: 'Error registering account.' });
     }
   },
 };
