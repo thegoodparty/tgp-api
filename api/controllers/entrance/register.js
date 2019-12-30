@@ -104,8 +104,10 @@ module.exports = {
       if (verify) {
         await sails.helpers.smsVerify(`+1${phone}`);
       }
+
+      const userWithZip = User.find({ id: user.id }).populate('zipCode');
       return exits.success({
-        user,
+        user: userWithZip,
       });
     } catch (e) {
       console.log('register error', JSON.stringify(e));

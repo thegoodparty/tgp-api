@@ -44,9 +44,9 @@ module.exports = {
           message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
         });
       }
-      const user = await User.findOne({ phone }).populate('congDistrict');
-      // .populate('houseDistrict')
-      // .populate('senateDistrict');
+      const user = await User.findOne({ phone })
+        .populate('congDistrict')
+        .populate('zipCode');
       if (!user) {
         return exits.badRequest({ message: 'Login Failed' });
       }
