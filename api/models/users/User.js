@@ -188,10 +188,12 @@ module.exports = {
       for (let i = 0; i < invitedBy.length; i++) {
         invitedByIds.push(invitedBy[i].id);
         const inviter = await User.findOne({ id: invitedBy[i].id });
-        await sails.helpers.sendSms(
-          `+1${inviter.phone}`,
-          `Good News: ${invitedBy[i].name}  just joined the Good Party! 🙏❤️🎉 https://exp.host/@tgp-expo/tgp-native-apps`,
-        );
+        if (inviter) {
+          await sails.helpers.sendSms(
+            `+1${inviter.phone}`,
+            `Good News: ${invitedBy[i].name}  just joined the Good Party! 🙏❤️🎉 https://exp.host/@tgp-expo/tgp-native-apps`,
+          );
+        }
       }
 
       await User.addToCollection(id, 'recruitedBy', invitedByIds);
