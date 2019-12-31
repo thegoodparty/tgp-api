@@ -44,9 +44,9 @@ module.exports = {
         isPhoneVerified: true,
       });
 
-      const user = await User.findOne({ id: reqUser.id }).populate(
-        'congDistrict',
-      );
+      const user = await User.findOne({ id: reqUser.id })
+        .populate('congDistrict')
+        .populate('zipCode');
 
       const token = await sails.helpers.jwtSign(user);
 

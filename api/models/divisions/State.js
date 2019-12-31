@@ -30,6 +30,12 @@ module.exports = {
       unique: true,
     },
 
+    primaryElectionDate: {
+      type: 'string',
+      description: 'Short code for the state',
+      example: '3/17/20',
+    },
+
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
     //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
     //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝
