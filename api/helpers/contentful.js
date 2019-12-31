@@ -70,6 +70,8 @@ const mapResponse = items => {
         mappedResponse.events.push(mapEvent(item.fields, elementId));
       } else if (itemId === 'appVersion') {
         mappedResponse.appVersion = item.fields.version;
+      } else if (itemId === 'generalElectionDate') {
+        mappedResponse.generalElectionDate = item.fields.date;
       }
     }
   });
