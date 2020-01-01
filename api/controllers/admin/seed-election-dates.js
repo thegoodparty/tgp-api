@@ -64,7 +64,7 @@ const createEntries = async rows => {
       const lowercaseShort = shortName.toLowerCase();
 
       const state = await State.findOrCreate(
-        { shortName },
+        { shortName: lowercaseShort },
         {
           name,
           shortName: lowercaseShort,
