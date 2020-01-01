@@ -32,13 +32,21 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { shortState } = inputs;
-      const state = await State.findOne({ shortName: shortState.toLowerCase() });
+      const state = await State.findOne({
+        shortName: shortState.toLowerCase(),
+      }).populate('congDistricts');
+      let stateSupporters = 0;
+      for (let i = 0; i < state.congDistricts.length; i++) {
+        const district = state.congDistricts[i];
+        const supportersCount = await User.count({ congDistrict: district.id });
+        stateSupporters += supportersCount;
+        state.congDistricts[i].supporters = supportersCount;
+      }
+      state.totalSupporters = stateSupporters;
       return exits.success({
         ...state,
       });
     } catch (err) {
-      console.log('load state error');
-      console.log(err);
       return exits.badRequest({
         message: 'Error getting state.',
       });

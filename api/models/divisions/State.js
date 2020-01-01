@@ -6,6 +6,8 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+const senateThreshold = require('../../../data/senateThreshold');
+
 module.exports = {
   attributes: {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
@@ -34,6 +36,19 @@ module.exports = {
       type: 'string',
       description: 'Short code for the state',
       example: '3/17/20',
+    },
+
+    writeInThreshold: {
+      type: 'number',
+      description:
+        'Threshold to invoke write-in procedure without presidential run in effect',
+      example: '100000',
+    },
+    writeInThresholdWithPresident: {
+      type: 'number',
+      description:
+        'Threshold to invoke write-in procedure with presidential run in effect',
+      example: '100000',
     },
 
     //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
@@ -72,5 +87,23 @@ module.exports = {
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, ['id', 'createdAt', 'updatedAt']);
+  },
+  beforeCreate: async function(values, next) {
+    try {
+      const stateKey = values.shortName;
+      const threshold = senateThreshold[stateKey];
+      if (threshold) {
+        values.writeInThreshold = threshold.writeInThreshold;
+        values.writeInThresholdWithPresident =
+          threshold.writeInThresholdWithPresident;
+      } else {
+        //console.log('missing house threshold');
+      }
+
+      // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.
+      return next();
+    } catch (e) {
+      return next(e);
+    }
   },
 };

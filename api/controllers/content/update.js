@@ -29,7 +29,7 @@ module.exports = {
       const content = await sails.helpers.contentful();
 
       // process content - create new DB entries based on content
-      processContent(content);
+      await processContent(content);
 
       // now that we created or updated the candidates from the CMS,
       // we want to replace the candidates in the response with the
@@ -122,9 +122,7 @@ const processContent = async content => {
 };
 
 const statesWithCandidates = async () => {
-  const allStates = await State.find()
-    .populate('candidates')
-    .populate('congDistricts');
+  const allStates = await State.find().populate('candidates');
   const onlyCandidates = [];
   allStates.map(state => {
     if (state.candidates.length > 0) {
