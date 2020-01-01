@@ -61,12 +61,13 @@ const createEntries = async rows => {
     try {
       row = rows[i];
       const { shortName, name, primaryElectionDate } = row;
+      const lowercaseShort = shortName.toLowerCase();
 
       const state = await State.findOrCreate(
         { shortName },
         {
           name,
-          shortName,
+          shortName: lowercaseShort,
           primaryElectionDate,
         },
       );
@@ -74,7 +75,7 @@ const createEntries = async rows => {
       // need to update in case the state already exists
       await State.updateOne({ id: state.id }).set({
         name,
-        shortName,
+        shortName: lowercaseShort,
         primaryElectionDate,
       });
 

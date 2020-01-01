@@ -23,4 +23,5 @@ module.exports.policies = {
   'entrance/*': true,
   'content/*': true,
   'notifications/*': true,
+  'district/*': true,
 };
