@@ -129,6 +129,18 @@ const statesWithCandidates = async () => {
       onlyCandidates.push(state);
     }
   });
+  for (let i = 0; i < onlyCandidates.length; i++) {
+    for (let j = 0; j < onlyCandidates[i].candidates.length; j++) {
+      const candidate = onlyCandidates[i].candidates[j];
+      const district = await CongDistrict.findOne({
+        id: candidate.congDistrict,
+      });
+      candidate.districtName = district.name;
+      candidate.code = district.code;
+      candidate.ocdDivisionId = district.ocdDivisionId;
+    }
+  }
+
   return onlyCandidates;
 };
 
