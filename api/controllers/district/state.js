@@ -4,6 +4,9 @@
  * @description :: returns data about one state.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
+
+const presidentialYear = true;
+
 module.exports = {
   friendlyName: 'Load State',
 
@@ -41,8 +44,21 @@ module.exports = {
         const supportersCount = await User.count({ congDistrict: district.id });
         stateSupporters += supportersCount;
         state.congDistricts[i].supporters = supportersCount;
+        const threshold = presidentialYear
+          ? district.writeInThresholdWithPresident
+          : district.writeInThreshold;
+        district.threshold = threshold;
+        delete district.writeInThreshold;
+        delete district.writeInThresholdWithPresident;
       }
       state.totalSupporters = stateSupporters;
+      const threshold = presidentialYear
+          ? state.writeInThresholdWithPresident
+          : state.writeInThreshold;
+        state.threshold = threshold;
+        delete state.writeInThreshold;
+        delete state.writeInThresholdWithPresident;
+
       return exits.success({
         ...state,
       });
