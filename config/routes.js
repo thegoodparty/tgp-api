@@ -60,4 +60,5 @@ module.exports.routes = {
   'POST    /api/v1/admin/seed-election-dates': 'admin/seed-election-dates',
 
   'GET    /api/v1/district/state': 'district/state',
+  'GET    /api/v1/district/total-supporters': 'district/total-supporters',
 };
