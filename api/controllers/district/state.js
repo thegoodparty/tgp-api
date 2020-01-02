@@ -37,13 +37,15 @@ module.exports = {
       const { shortState } = inputs;
       const state = await State.findOne({
         shortName: shortState.toLowerCase(),
-      }).populate('congDistricts');
+      }).populate('congDistricts', { sort: 'code ASC' });
+
       let stateSupporters = 0;
       for (let i = 0; i < state.congDistricts.length; i++) {
         const district = state.congDistricts[i];
         const supportersCount = await User.count({ congDistrict: district.id });
         stateSupporters += supportersCount;
         state.congDistricts[i].supporters = supportersCount;
+        // choose one threshold for each district
         const threshold = presidentialYear
           ? district.writeInThresholdWithPresident
           : district.writeInThreshold;
@@ -52,12 +54,14 @@ module.exports = {
         delete district.writeInThresholdWithPresident;
       }
       state.totalSupporters = stateSupporters;
+
+      // choose one threshold for the state
       const threshold = presidentialYear
-          ? state.writeInThresholdWithPresident
-          : state.writeInThreshold;
-        state.threshold = threshold;
-        delete state.writeInThreshold;
-        delete state.writeInThresholdWithPresident;
+        ? state.writeInThresholdWithPresident
+        : state.writeInThreshold;
+      state.threshold = threshold;
+      delete state.writeInThreshold;
+      delete state.writeInThresholdWithPresident;
 
       return exits.success({
         ...state,
