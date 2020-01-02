@@ -37,7 +37,7 @@ module.exports = {
       const { shortState } = inputs;
       const state = await State.findOne({
         shortName: shortState.toLowerCase(),
-      }).populate('congDistricts', { sort: 'code ASC' });
+      }).populate('congDistricts');
 
       let stateSupporters = 0;
       for (let i = 0; i < state.congDistricts.length; i++) {
@@ -53,6 +53,17 @@ module.exports = {
         delete district.writeInThreshold;
         delete district.writeInThresholdWithPresident;
       }
+      // sort district by chance of winning
+      state.congDistricts.sort((a, b) => {
+        if (b.threshold === 0 || a.threshold === 0) {
+          return 1;
+        }
+        return (
+          (b.supporters * 100) / b.threshold -
+          (a.supporters * 100) / a.threshold
+        );
+      });
+
       state.totalSupporters = stateSupporters;
 
       // choose one threshold for the state
