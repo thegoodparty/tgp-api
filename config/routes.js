@@ -61,4 +61,5 @@ module.exports.routes = {
 
   'GET    /api/v1/district/state': 'district/state',
   'GET    /api/v1/district/total-supporters': 'district/total-supporters',
+  'GET    /api/v1/district/cong-district': 'district/cong-district',
 };
