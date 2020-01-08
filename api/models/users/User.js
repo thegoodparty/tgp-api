@@ -76,26 +76,11 @@ module.exports = {
       description: 'array of phone numbers the user invited.',
     },
 
-    // encryptedPassword: {
-    //   type: 'string',
-    //   description:
-    //     "Securely hashed representation of the user's login password.",
-    //   protect: true,
-    //   example: '2$28a8eabna301089103-13948134nad',
-    // },
-    //
-    // passwordResetToken: {
-    //   type: 'string',
-    //   description:
-    //     "A unique token used to verify the user's identity when recovering a password.  Expires after 1 use, or after a set amount of time has elapsed.",
-    // },
-    //
-    // passwordResetTokenExpiresAt: {
-    //   type: 'number',
-    //   description:
-    //     "A JS timestamp (epoch ms) representing the moment when this user's `passwordResetToken` will expire (or 0 if the user currently has no such token).",
-    //   example: 1502844074211,
-    // },
+    crew: {
+      type: 'string',
+      required: false,
+      description: 'array of user ids that are in the user crew',
+    },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
