@@ -60,6 +60,7 @@ module.exports = {
         const user = users[i];
         const contactId = contactsPhonesToIds[user.phone].id;
         crew[contactId] = {
+          id: user.id,
           congDistrict: user.congDistrict,
           image: user.avatar,
           feedback: user.feedback,
