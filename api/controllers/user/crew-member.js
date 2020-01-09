@@ -36,7 +36,7 @@ module.exports = {
         .populate('zipCode')
         .populate('recruits');
 
-      const crewMembers = [];
+      const crewMembers = {};
       let user = {};
       if (dbUser) {
         user = {
@@ -52,6 +52,7 @@ module.exports = {
         // get user crew
         if (dbUser.crew && dbUser.crew != '') {
           const crew = JSON.parse(dbUser.crew);
+          console.log('crew', crew);
 
           const crews = await User.find({ id: crew })
             .populate('congDistrict')
@@ -60,7 +61,7 @@ module.exports = {
 
           for (let i = 0; i < crews.length; i++) {
             const crewMember = crews[i];
-            crewMembers.push({
+            crewMembers[crewMember.id] = {
               id: crewMember.id,
               congDistrict: crewMember.congDistrict,
               image: crewMember.avatar,
@@ -68,7 +69,7 @@ module.exports = {
               name: crewMember.name,
               recruits: crewMember.recruits ? crewMember.recruits.length : 0,
               zipCode: crewMember.zipCode,
-            });
+            };
           }
         }
       }
