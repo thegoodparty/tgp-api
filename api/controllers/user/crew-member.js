@@ -42,7 +42,7 @@ module.exports = {
         user = {
           id: dbUser.id,
           congDistrict: dbUser.congDistrict,
-          image: dbUser.avatar,
+          avatar: dbUser.avatar,
           feedback: dbUser.feedback,
           name: dbUser.name,
           recruits: dbUser.recruits ? dbUser.recruits.length : 0,
