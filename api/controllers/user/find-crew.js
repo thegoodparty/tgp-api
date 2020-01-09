@@ -29,53 +29,58 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    const { contacts } = inputs;
-    if (!contacts) {
-      return exits.badRequest({
-        message: 'missing contacts',
-      });
-    }
-    const contactsPhones = [];
-    const contactsPhonesToIds = {};
-    const crew = {};
-    const dbCrew = [];
-    let contact;
-    for (let i = 0; i < contacts.length; i++) {
-      contact = contacts[i];
-      if (contact.id && contact.phone) {
-        contactsPhones.push(contact.phone);
-        contactsPhonesToIds[contact.phone] = {
-          id: contact.id,
-          name: contact.name,
-        };
+    try {
+      const { contacts } = inputs;
+      if (!contacts) {
+        return exits.badRequest({
+          message: 'missing contacts',
+        });
       }
+      const contactsPhones = [];
+      const contactsPhonesToIds = {};
+      const crew = {};
+      const dbCrew = [];
+      let contact;
+      for (let i = 0; i < contacts.length; i++) {
+        contact = contacts[i];
+        if (contact.id && contact.phone) {
+          contactsPhones.push(contact.phone);
+          contactsPhonesToIds[contact.phone] = {
+            id: contact.id,
+            name: contact.name,
+          };
+        }
+      }
+
+      const users = await User.find({ phone: contactsPhones })
+        .populate('congDistrict')
+        .populate('zipCode')
+        .populate('recruits');
+      for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        const contactId = contactsPhonesToIds[user.phone].id;
+        crew[contactId] = {
+          congDistrict: user.congDistrict,
+          image: user.avatar,
+          feedback: user.feedback,
+          name: contactsPhonesToIds[user.phone].name,
+          recruits: user.recruits ? user.recruits.length : 0,
+          zipCode: user.zipCode,
+        };
+        dbCrew.push(user.id);
+      }
+
+      const user = this.req.user;
+      await User.updateOne({ id: user.id }).set({
+        crew: JSON.stringify(dbCrew),
+      });
+
+      return exits.success({
+        crew,
+      });
+    } catch (e) {
+      console.log('error at find crew');
+      console.log(e);
     }
-
-    const users = await User.find({ phone: contactsPhones })
-      .populate('congDistrict')
-      .populate('zipCode')
-      .populate('recruits');
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      const contactId = contactsPhonesToIds[user.phone].id;
-      crew[contactId] = {
-        congDistrict: user.congDistrict,
-        image: user.avatar,
-        feedback: user.feedback,
-        name: contactsPhonesToIds[user.phone].name,
-        recruits: user.recruits ? user.recruits.length : 0,
-        zipCode: user.zipCode,
-      };
-      dbCrew.push(user.id);
-    }
-
-    const user = this.req.user;
-    await User.updateOne({ id: user.id }).set({
-      crew: dbCrew,
-    });
-
-    return exits.success({
-      crew,
-    });
   },
 };
