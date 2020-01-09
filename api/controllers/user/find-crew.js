@@ -38,6 +38,7 @@ module.exports = {
     const contactsPhones = [];
     const contactsPhonesToIds = {};
     const crew = {};
+    const dbCrew = [];
     let contact;
     for (let i = 0; i < contacts.length; i++) {
       contact = contacts[i];
@@ -65,7 +66,13 @@ module.exports = {
         recruits: user.recruits ? user.recruits.length : 0,
         zipCode: user.zipCode,
       };
+      dbCrew.push(user.id);
     }
+
+    const user = this.req.user;
+    await User.updateOne({ id: user.id }).set({
+      crew: dbCrew,
+    });
 
     return exits.success({
       crew,
