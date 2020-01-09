@@ -12,7 +12,7 @@ module.exports = {
   inputs: {
     id: {
       description: 'User id',
-      type: 'string',
+      type: 'number',
       required: true,
     },
   },
