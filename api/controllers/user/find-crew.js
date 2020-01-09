@@ -82,6 +82,9 @@ module.exports = {
     } catch (e) {
       console.log('error at find crew');
       console.log(e);
+      return exits.badRequest({
+        message: 'Error finding crew',
+      });
     }
   },
 };
