@@ -36,7 +36,7 @@ module.exports = {
           console.log('error in invite contact inner', e);
         },
       };
-      for (let i = 0; i < Math.max(parsedContacts.length, 10); i++) { // TODO remove before deploy
+      for (let i = 0; i < Math.min(parsedContacts.length, 10); i++) { // TODO remove before deploy
         // for (let i = 0; i < parsedContacts.length; i++) {
         const contact = parsedContacts[i];
         if (contact.firstName && contact.lastName && contact.phone) {
