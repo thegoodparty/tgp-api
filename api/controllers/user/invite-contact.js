@@ -41,7 +41,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const reqUser = this.req.user;
+      const reqUser = this.req ? this.req.user : inputs.user;
       const { phone, firstName, lastName } = inputs;
 
       // await sails.helpers.sendSms(
