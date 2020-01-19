@@ -115,6 +115,11 @@ module.exports = {
       collection: 'user',
       via: 'recruitedBy',
     },
+
+    rawContacts: {
+      collection: 'rawContacts',
+      via: 'user',
+    },
   },
 
   customToJSON: function() {
