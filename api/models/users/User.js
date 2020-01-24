@@ -116,9 +116,9 @@ module.exports = {
       via: 'recruitedBy',
     },
 
-    // rawContacts: {
-    //   model: 'rawContacts',
-    // },
+    rawContacts: {
+      model: 'rawContacts',
+    },
   },
 
   customToJSON: function() {
