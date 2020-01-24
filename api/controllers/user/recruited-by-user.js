@@ -22,9 +22,12 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      console.log('recruited by user1');
       const user = await User.findOne({ id: this.req.user.id }).populate(
         'recruits',
       );
+      console.log('recruited by user2');
+      console.log('recruited by user2', user);
       return exits.success({
         user,
       });
