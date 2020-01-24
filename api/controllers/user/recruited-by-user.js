@@ -9,7 +9,6 @@ module.exports = {
 
   description: 'User with recruited users',
 
-
   exits: {
     success: {
       description: 'Check passed.',
@@ -22,11 +21,17 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    const user = await User.findOne({ id: this.req.user.id }).populate(
-      'recruits',
-    );
-    return exits.success({
-      user,
-    });
+    try {
+      const user = await User.findOne({ id: this.req.user.id }).populate(
+        'recruits',
+      );
+      return exits.success({
+        user,
+      });
+    } catch (e) {
+      console.log('error at user/recruited-by-user');
+      console.log(e);
+      return exits.forbidden();
+    }
   },
 };
