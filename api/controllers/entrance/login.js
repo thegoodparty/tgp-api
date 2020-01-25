@@ -63,7 +63,7 @@ module.exports = {
       }
       let token = null;
       if (!verify && user.isPhoneVerified) {
-        token = await sails.helpers.jwtSign(user);
+        token = await sails.helpers.jwtSign({ id: user.id, phone: user.phone });
       }
       return exits.success({
         user,

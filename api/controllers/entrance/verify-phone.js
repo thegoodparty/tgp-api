@@ -48,7 +48,7 @@ module.exports = {
         .populate('congDistrict')
         .populate('zipCode');
 
-      const token = await sails.helpers.jwtSign(user);
+      const token = await sails.helpers.jwtSign({ id: user.id, phone: user.phone });
 
       return exits.success({
         user,
