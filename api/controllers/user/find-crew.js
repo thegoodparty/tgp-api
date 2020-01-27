@@ -14,6 +14,7 @@ module.exports = {
     contacts: {
       description: 'Contacts from phone',
       type: ['json'],
+      required: true
     },
   },
 
@@ -31,11 +32,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { contacts } = inputs;
-      if (!contacts) {
-        return exits.badRequest({
-          message: 'missing contacts',
-        });
-      }
       const contactsPhones = [];
       const contactsPhonesToIds = {};
       const crew = {};

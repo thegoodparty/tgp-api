@@ -41,6 +41,7 @@ module.exports.routes = {
   'PUT    /api/v1/user/invite-all-contacts': 'user/invite-all-contacts',
   'GET    /api/v1/user/recruited-by-user': 'user/recruited-by-user',
   'GET    /api/v1/user/crew-member': 'user/crew-member',
+  'POST    /api/v1/user/save-contacts': 'user/save-contacts',
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 

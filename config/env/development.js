@@ -44,9 +44,9 @@ module.exports = {
      *                                                                          *
      ***************************************************************************/
     default: {
-      // adapter: 'sails-disk',
-      adapter: require('sails-postgresql'),
-      url: 'postgresql://local:test123@localhost:5432/tgp-local',
+      adapter: 'sails-disk',
+      // adapter: require('sails-postgresql'),
+      // url: 'postgresql://local:test123@localhost:5432/tgp-local',
 
       // adapter: 'sails-mysql',
       // url: 'mysql://user:password@host:port/database',
