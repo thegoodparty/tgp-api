@@ -65,9 +65,9 @@ const mapIncumbents = csvRow => {
     chamber: Chamber,
     district: district==='null' || !district ? -1 : parseInt(district, 10),
     image,
-    raised: parseInt(raised, 10),
-    pacRaised: parseInt(pacRaised, 10),
-    smallContributions: parseInt(SmallIndividual, 10),
+    raised: parseInt(raised.replace(/,/g, ''), 10),
+    pacRaised: parseInt(pacRaised.replace(/,/g, ''), 10),
+    smallContributions: parseInt(SmallIndividual.replace(/,/g, ''), 10),
   };
 };
 

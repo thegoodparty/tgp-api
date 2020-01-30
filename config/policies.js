@@ -17,12 +17,14 @@ module.exports.policies = {
    ***************************************************************************/
 
   'admin/*': ['isAuthenticated', 'isAdmin'],
+  // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'entrance/*': true,
-  'seed/*': true,
   'content/*': true,
   'notifications/*': true,
   'district/*': true,
+  'incumbent/*': true,
+  'seed/*': true,
 };
