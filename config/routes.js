@@ -59,8 +59,10 @@ module.exports.routes = {
   'GET    /api/v1/admin/senate-weekly-trend': 'admin/senate-weekly-trend',
   'POST   /api/v1/admin/candidate': 'admin/create-candidate',
   'GET    /api/v1/admin/candidates': 'admin/all-candidates',
-  'POST    /api/v1/admin/seed': 'admin/seed',
-  'POST    /api/v1/admin/seed-election-dates': 'admin/seed-election-dates',
+
+  'POST    /api/v1/seed/seed': 'seed/seed',
+  'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',
+  'POST    /api/v1/seed/seed-incumbents': 'seed/seed-incumbents',
 
   'GET    /api/v1/district/state': 'district/state',
   'GET    /api/v1/district/total-supporters': 'district/total-supporters',

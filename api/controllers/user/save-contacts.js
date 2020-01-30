@@ -57,7 +57,8 @@ module.exports = {
       console.log('error at save contacts');
       console.log(e);
       return exits.badRequest({
-        message: 'Error saveing contacts',
+        message: 'Error saving contacts',
+        error: JSON.stringify(e)
       });
     }
   },
