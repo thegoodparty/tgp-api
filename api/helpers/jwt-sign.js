@@ -14,12 +14,6 @@ module.exports = {
     },
   },
 
-  exits: {
-    success: {
-      description: 'Returns ok response from api/responses/ok.js',
-      responseType: 'ok',
-    },
-  },
 
   fn: async function(inputs, exits) {
     const token = await jwt.sign(

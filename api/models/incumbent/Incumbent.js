@@ -41,6 +41,9 @@ module.exports = {
     smallContributions: {
       type: 'number',
     },
+    reportDate: {
+      type: 'string',
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

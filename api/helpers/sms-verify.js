@@ -12,16 +12,7 @@ module.exports = {
     },
   },
 
-  exits: {
-    success: {
-      description: 'Returns ok response from api/responses/ok.js',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'sms failed',
-      responseType: 'badRequest',
-    },
-  },
+
 
   fn: async function(inputs, exits) {
     try {

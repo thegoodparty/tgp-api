@@ -33,7 +33,7 @@ module.exports = {
           console.log(results);
           await createEntries(results);
           return exits.success({
-            seed: 'ok',
+            seed: `seeded ${results.length} incumbents`,
           });
         });
     } catch (e) {
@@ -56,6 +56,7 @@ const mapIncumbents = csvRow => {
     raised,
     pacRaised,
     SmallIndividual,
+    reportDate,
   } = csvRow;
 
   return {
@@ -63,11 +64,12 @@ const mapIncumbents = csvRow => {
     name,
     state,
     chamber: Chamber,
-    district: district==='null' || !district ? -1 : parseInt(district, 10),
+    district: district === 'null' || !district ? -1 : parseInt(district, 10),
     image,
     raised: parseInt(raised.replace(/,/g, ''), 10),
     pacRaised: parseInt(pacRaised.replace(/,/g, ''), 10),
     smallContributions: parseInt(SmallIndividual.replace(/,/g, ''), 10),
+    reportDate: reportDate + '',
   };
 };
 
@@ -86,6 +88,7 @@ const createEntries = async rows => {
         raised,
         pacRaised,
         smallContributions,
+        reportDate,
       } = row;
 
       const incumbent = await Incumbent.findOrCreate(
@@ -100,6 +103,7 @@ const createEntries = async rows => {
           raised,
           pacRaised,
           smallContributions,
+          reportDate,
         },
       );
 
@@ -113,6 +117,7 @@ const createEntries = async rows => {
         raised,
         pacRaised,
         smallContributions,
+        reportDate,
       });
 
       console.log(

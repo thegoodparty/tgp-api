@@ -26,20 +26,21 @@ module.exports = {
     try {
       const incumbents = await Incumbent.find();
       const calcIncumbents = [];
-      incumbents.map(incumbent => {
-        const totalRaised = incumbent.raised + incumbent.pacRaised;
-        const largeDonorsPerc =
-          (totalRaised - incumbent.smallContributions) / totalRaised;
-        const hours = incumbent.chamber === 'House' ? 2000 : 10000;
-        const largeDonorPerHour =
-          (totalRaised - incumbent.smallContributions) / hours;
+      for (let i = 0; i < incumbents.length; i++) {
+        const incumbent = incumbents[i];
+        const {
+          totalRaised,
+          largeDonorsPerc,
+          largeDonorPerHour,
+        } = await sails.helpers.incumbentHelper(incumbent);
+
         calcIncumbents.push({
           ...incumbent,
           totalRaised,
           largeDonorsPerc,
           largeDonorPerHour,
         });
-      });
+      }
 
       return exits.success({
         incumbents: calcIncumbents,

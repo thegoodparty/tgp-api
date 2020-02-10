@@ -35,12 +35,20 @@ module.exports = {
         return exits.notFound();
       }
 
-      const totalRaised = incumbent.raised + incumbent.pacRaised;
-      const largeDonorsPerc =
-        (totalRaised - incumbent.smallContributions) / totalRaised;
-      const hours = incumbent.chamber === 'House' ? 2000 : 10000;
-      const largeDonorPerHour =
-        (totalRaised - incumbent.smallContributions) / hours;
+      // const totalRaised = incumbent.raised + incumbent.pacRaised;
+      // const largeDonorsPerc =
+      //   (totalRaised - incumbent.smallContributions) / totalRaised;
+      // const hours = incumbent.chamber === 'House' ? 2000 : 10000;
+      // const largeDonorPerHour =
+      //   (totalRaised - incumbent.smallContributions) / hours;
+
+      const {
+        totalRaised,
+        largeDonorsPerc,
+        largeDonorPerHour,
+      } = await sails.helpers.incumbentHelper(incumbent);
+
+      // new calculation
 
       return exits.success({
         ...incumbent,
