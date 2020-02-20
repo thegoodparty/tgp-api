@@ -26,5 +26,6 @@ module.exports.policies = {
   'notifications/*': true,
   'district/*': true,
   'incumbent/*': true,
+  'presidential/*': true,
   'seed/*': true,
 };

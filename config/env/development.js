@@ -140,6 +140,8 @@ module.exports = {
       allowOrigins: [
         'http://localhost:4000',
         'https://admin-dev.thegoodparty.org',
+        'https://dev.thegoodparty.org',
+        'https://www.thegoodparty.org',
       ],
       allowCredentials: true,
       allowRequestMethods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',

@@ -12,7 +12,7 @@ module.exports = {
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
     phone: {
       type: 'string',
-      required: true,
+      required: false,
       unique: true,
       maxLength: 11,
       example: '3101234567',
@@ -20,7 +20,9 @@ module.exports = {
 
     email: {
       type: 'string',
+      required: false,
       isEmail: true,
+      unique: true,
       maxLength: 200,
       example: 'mary.sue@example.com',
     },
@@ -80,6 +82,16 @@ module.exports = {
       type: 'string',
       required: false,
       description: 'array of user ids that are in the user crew',
+    },
+    emailConfToken: {
+      type: 'string',
+      required: false,
+      description: 'token to validate email',
+    },
+    emailConfTokenDateCreated: {
+      type: 'string',
+      required: false,
+      description: 'date that the token was created',
     },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -144,15 +156,21 @@ module.exports = {
       // // Delete the passwords so that they are not stored in the DB
       // values.password = '';
 
-      // set role. Voter by default (if non is provided).
-      const adminPhones =
-        sails.config.custom.adminPhones || sails.config.adminPhones;
-      if (adminPhones && adminPhones.includes(values.phone)) {
-        values.role = sails.config.custom.rolesEnums.ADMIN;
-      } else {
-        if (values.role !== sails.config.custom.rolesEnums.CANDIDATE) {
-          values.role = sails.config.custom.rolesEnums.VOTER;
+      if (values.phone) {
+        // set role. Voter by default (if non is provided).
+        const adminPhones =
+          sails.config.custom.adminPhones || sails.config.adminPhones;
+        if (adminPhones && adminPhones.includes(values.phone)) {
+          values.role = sails.config.custom.rolesEnums.ADMIN;
+        } else {
+          if (values.role !== sails.config.custom.rolesEnums.CANDIDATE) {
+            values.role = sails.config.custom.rolesEnums.VOTER;
+          }
         }
+      }
+
+      if(values.email) {
+
       }
 
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.
