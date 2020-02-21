@@ -71,6 +71,7 @@ module.exports.routes = {
 
   'GET    /api/v1/incumbent/find-by-id': 'incumbent/find-by-id',
   'GET    /api/v1/incumbent/all': 'incumbent/all',
+  'GET    /api/v1/incumbent/find-by-district': 'incumbent/find-by-district',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
 };
