@@ -50,12 +50,12 @@ const mapIncumbents = csvRow => {
     id,
     name,
     state,
-    Chamber,
+    chamber,
     district,
     image,
     raised,
     pacRaised,
-    SmallIndividual,
+    smallIndividual,
     reportDate,
   } = csvRow;
 
@@ -63,14 +63,21 @@ const mapIncumbents = csvRow => {
     openSecretsId: id,
     name,
     state,
-    chamber: Chamber,
+    chamber: chamber,
     district: district === 'null' || !district ? -1 : parseInt(district, 10),
     image,
-    raised: parseInt(raised.replace(/,/g, ''), 10),
-    pacRaised: parseInt(pacRaised.replace(/,/g, ''), 10),
-    smallContributions: parseInt(SmallIndividual.replace(/,/g, ''), 10),
+    raised: strNumToInt(raised),
+    pacRaised: strNumToInt(pacRaised),
+    smallContributions: strNumToInt(smallIndividual),
     reportDate: reportDate + '',
   };
+};
+
+const strNumToInt = strNum => {
+  if (!strNum) {
+    return strNum;
+  }
+  return parseInt(strNum.replace('$', '').replace(/,/g, ''), 10);
 };
 
 const createEntries = async rows => {

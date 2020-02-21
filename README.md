@@ -109,7 +109,15 @@ sails_custom__contentfulAccessToken: 'Conteful Access Token'
 
 We are using [conventional commits](https://www.conventionalcommits.org/)
 
-
+### Copy Table in pgAdmin
+```
+1) In pgAdmin, right click the table you want to move, select "Backup"
+2) Pick the directory for the output file and set Format to "plain"
+3) Click the "Dump Options #1" tab, check "Only data" or "only Schema" (depending on what you are doing)
+4) Under the Queries section, click "Use Column Inserts" and "User Insert Commands".
+5) Click the "Backup" button. This outputs to a .backup file
+6) Open this new file using notepad. You will see the insert scripts needed for the table/data. Copy and paste these into the new database sql page in pgAdmin. Run as pgScript - Query->Execute as pgScript F6
+```
 
 ### Links
 

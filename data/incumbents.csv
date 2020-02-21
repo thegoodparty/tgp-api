@@ -1,525 +1,536 @@
-id,name,state,district,Chamber,image,raised,pacRaised,Small Individual Contributions (< $200),SmallIndividual,reportDate
-N00000078,Carolyn B Maloney,New York,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00000078.jpg,"1,016,565","46,500","28,684","28,684",09/30/2019
-N00000153,Richard E Neal,Massachusetts,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00000153.jpg,"2,061,352","351,573","6,345","6,345",09/30/2019
-N00000179,James P McGovern,Massachusetts,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00000179.jpg,"537,190",0,"117,178","117,178",12/31/2019
-N00000270,Ed Markey,Massachusetts,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00000270.jpg,"5,671,851","598,277","1,046,334","1,046,334",09/30/2019
-N00000286,Mitt Romney,Utah,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00000286.jpg,"5,566,445","240,211","502,173","502,173",09/30/2019
-N00000362,Jack Reed,Rhode Island,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00000362.jpg,"2,492,212","1,006,075","56,523","56,523",09/30/2019
-N00000491,Susan M Collins,Maine,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00000491.jpg,"8,556,077","1,011,354","816,569","816,569",09/30/2019
-N00000515,Peter Welch,Vermont,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00000515.jpg,"208,055","10,000","1,242","1,242",09/30/2019
-N00000528,Bernie Sanders,Vermont,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00000528.jpg,"73,822,995","105,500","42,692,961","42,692,961",09/30/2019
-N00000575,John B Larson,Connecticut,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00000575.jpg,"519,633","78,050","14,990","14,990",09/30/2019
-N00000615,Rosa L DeLauro,Connecticut,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00000615.jpg,"654,464","1,157,412","47,976","47,976",12/31/2019
-N00000699,Robert Menendez,New Jersey,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00000699.jpg,"10,911,998","31,000","303,647","303,647",09/30/2019
-N00000751,Bill Jr Pascrell,New Jersey,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00000751.jpg,"590,399","442,206","6,607","6,607",09/30/2019
-N00000781,Frank Jr Pallone,New Jersey,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00000781.jpg,"1,427,045","27,250","6,989","6,989",09/30/2019
-N00000939,Jerrold Nadler,New York,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00000939.jpg,"858,037","20,000","83,023","83,023",09/30/2019
-N00001003,Eliot L Engel,New York,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00001003.jpg,"564,730","35,000","10,226","10,226",09/30/2019
-N00001024,Nita M Lowey,New York,17,House,https://cdn1.opensecrets.org/congress-members/photos/N00001024.jpg,"643,894","3,478,240","13,270","13,270",12/31/2019
-N00001093,Charles E Schumer,New York,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00001093.jpg,"18,643,013",683,"546,092","546,092",09/30/2019
-N00001102,Nydia M Velazquez,New York,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00001102.jpg,"447,470","24,307","17,301","17,301",09/30/2019
-N00001171,Gregory W Meeks,New York,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00001171.jpg,"638,295",0,"4,513","4,513",09/30/2019
-N00001193,Pete King,New York,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00001193.jpg,"451,169","92,000","29,717","29,717",09/30/2019
-N00001373,Mike Doyle,Pennsylvania,18,House,https://cdn1.opensecrets.org/congress-members/photos/N00001373.jpg,"390,393","2,268,740","2,343","2,343",09/30/2019
-N00001489,Pat Toomey,Pennsylvania,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00001489.jpg,"26,349,469",0,"4,728,655","4,728,655",09/30/2019
-N00001692,Eleanor Holmes Norton,District of Columbia,0,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00001692.jpg,"159,858","1,512,552","1,059","1,059",12/31/2019
-N00001758,Chuck Grassley,Iowa,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00001758.jpg,"9,640,896",0,"1,230,045","1,230,045",09/30/2019
-N00001813,Jose E Serrano,New York,15,House,https://cdn1.opensecrets.org/congress-members/photos/N00001813.jpg,"12,750","1,684,463",351,351,09/30/2019
-N00001821,Steny H Hoyer,Maryland,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00001821.jpg,"2,043,387","657,450","22,383","22,383",09/30/2019
-N00001955,Ben Cardin,Maryland,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00001955.jpg,"4,603,570","2,716,192","147,525","147,525",09/30/2019
-N00002097,Mark Warner,Virginia,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00002097.jpg,"10,617,427","35,000","770,883","770,883",12/31/2019
-N00002147,Bobby Scott,Virginia,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00002147.jpg,"302,770","1,704,955","12,420","12,420",09/30/2019
-N00002221,Richard Burr,North Carolina,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00002221.jpg,"12,585,225",0,"512,120","512,120",09/30/2019
-N00002260,David Price,North Carolina,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00002260.jpg,"324,439","540,988","24,660","24,660",09/30/2019
-N00002408,James E Clyburn,South Carolina,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00002408.jpg,"1,273,782","7,500","20,526","20,526",09/30/2019
-N00002577,John Lewis,Georgia,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00002577.jpg,"1,409,249","15,000","785,342","785,342",09/30/2019
-N00002674,Sanford Bishop,Georgia,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00002674.jpg,"519,384",0,"3,761","3,761",09/30/2019
-N00002884,Alcee L Hastings,Florida,20,House,https://cdn1.opensecrets.org/congress-members/photos/N00002884.jpg,"212,112","12,700","1,274","1,274",12/31/2019
-N00002893,Lois J Frankel,Florida,21,House,https://cdn1.opensecrets.org/congress-members/photos/N00002893.jpg,"431,271","118,000","15,808","15,808",09/30/2019
-N00002942,Charlie Crist,Florida,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00002942.jpg,"1,186,868","34,000","38,055","38,055",09/30/2019
-N00003028,Robert B Aderholt,Alabama,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00003028.jpg,"495,532","661,655","14,408","14,408",09/30/2019
-N00003105,Marsha Blackburn,Tennessee,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00003105.jpg,"15,217,438",0,"1,576,759","1,576,759",09/30/2019
-N00003132,Jim Cooper,Tennessee,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00003132.jpg,"362,749","30,000","17,381","17,381",09/30/2019
-N00003225,Steve Cohen,Tennessee,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00003225.jpg,"285,657","1,631,746","2,093","2,093",12/31/2019
-N00003280,Roger Wicker,Mississippi,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00003280.jpg,"6,671,460","61,661","162,251","162,251",09/30/2019
-N00003288,Bennie G Thompson,Mississippi,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00003288.jpg,"486,478","4,198,161","6,544","6,544",09/30/2019
-N00003389,Mitch McConnell,Kentucky,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00003389.jpg,"12,817,474","133,542","1,559,897","1,559,897",09/30/2019
-N00003473,Hal Rogers,Kentucky,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00003473.jpg,"206,390","20,000",100,100,09/30/2019
-N00003522,Marcy Kaptur,Ohio,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00003522.jpg,"369,623","3,529,118","4,473","4,473",09/30/2019
-N00003535,Sherrod Brown,Ohio,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00003535.jpg,"26,955,325","2,863,636","6,719,878","6,719,878",09/30/2019
-N00003682,Rob Portman,Ohio,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00003682.jpg,"23,431,502","22,500","1,133,883","1,133,883",09/30/2019
-N00003689,Steve Chabot,Ohio,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00003689.jpg,"923,258","77,500","43,050","43,050",09/30/2019
-N00003813,Pete Visclosky,Indiana,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00003813.jpg,"544,096","1,974,148","11,817","11,817",09/30/2019
-N00004118,Debbie Stabenow,Michigan,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00004118.jpg,"17,219,047",0,"3,048,249","3,048,249",09/30/2019
-N00004133,Fred Upton,Michigan,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00004133.jpg,"962,015","1,026,350","40,712","40,712",09/30/2019
-N00004291,Jim Sensenbrenner,Wisconsin,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00004291.jpg,"62,640","168,584",118,118,09/30/2019
-N00004367,Tammy Baldwin,Wisconsin,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00004367.jpg,"30,797,308","24,000","11,085,191","11,085,191",09/30/2019
-N00004403,Ron Kind,Wisconsin,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00004403.jpg,"1,039,645","3,769,444","116,334","116,334",12/31/2019
-N00004558,Collin Peterson,Minnesota,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00004558.jpg,"772,351","160,500","41,047","41,047",12/31/2019
-N00004572,John Thune,South Dakota,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00004572.jpg,"9,090,244","109,500","599,127","599,127",09/30/2019
-N00004614,Kevin Cramer,North Dakota,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00004614.jpg,"6,084,478",0,"517,744","517,744",09/30/2019
-N00004724,Jan Schakowsky,Illinois,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00004724.jpg,"939,304","5,000","193,252","193,252",09/30/2019
-N00004884,Danny K Davis,Illinois,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00004884.jpg,"141,673","60,500","1,724","1,724",09/30/2019
-N00004887,Bobby L Rush,Illinois,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00004887.jpg,"182,299","2,260,739",530,530,12/31/2019
-N00004961,John Shimkus,Illinois,15,House,https://cdn1.opensecrets.org/congress-members/photos/N00004961.jpg,"528,437","2,647,262","27,097","27,097",09/30/2019
-N00004981,Dick Durbin,Illinois,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00004981.jpg,"5,801,163","1,629,837","1,242,169","1,242,169",09/30/2019
-N00005195,Roy Blunt,Missouri,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00005195.jpg,"13,888,352","987,695","536,949","536,949",09/30/2019
-N00005282,Jerry Moran,Kansas,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00005282.jpg,"5,615,692","18,000","117,531","117,531",09/30/2019
-N00005285,Pat Roberts,Kansas,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00005285.jpg,"934,047","1,492,594","2,211","2,211",09/30/2019
-N00005559,Frank D Lucas,Oklahoma,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00005559.jpg,"272,832","11,000","5,249","5,249",09/30/2019
-N00005582,James M Inhofe,Oklahoma,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00005582.jpg,"2,865,847",250,"48,000","48,000",09/30/2019
-N00005736,Brian Babin,Texas,36,House,https://cdn1.opensecrets.org/congress-members/photos/N00005736.jpg,"520,089","168,332","26,266","26,266",09/30/2019
-N00005818,Sheila Jackson Lee,Texas,18,House,https://cdn1.opensecrets.org/congress-members/photos/N00005818.jpg,"282,758",0,"2,666","2,666",09/30/2019
-N00005883,Kevin Brady,Texas,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00005883.jpg,"1,311,869","102,000","2,285","2,285",09/30/2019
-N00006023,Lloyd Doggett,Texas,35,House,https://cdn1.opensecrets.org/congress-members/photos/N00006023.jpg,"468,374","1,018","24,091","24,091",09/30/2019
-N00006052,Mac Thornberry,Texas,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00006052.jpg,"482,339","2,252,451","6,345","6,345",09/30/2019
-N00006134,Diana DeGette,Colorado,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00006134.jpg,"527,658","1,263,528","41,509","41,509",09/30/2019
-N00006236,John A Barrasso,Wyoming,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00006236.jpg,"6,938,936","27,000","138,684","138,684",09/30/2019
-N00006249,Mike Enzi,Wyoming,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00006249.jpg,"385,611","1,872,086",285,285,09/30/2019
-N00006263,Mike Simpson,Idaho,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00006263.jpg,"489,925",0,"7,412","7,412",12/31/2019
-N00006267,Mike Crapo,Idaho,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00006267.jpg,"6,349,114","955,533","118,752","118,752",09/30/2019
-N00006460,David Schweikert,Arizona,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00006460.jpg,"620,998",0,"13,216","13,216",09/30/2019
-N00006561,Tom Udall,New Mexico,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00006561.jpg,"1,669,942","20,000","480,403","480,403",09/30/2019
-N00006671,Lucille Roybal-Allard,California,40,House,https://cdn1.opensecrets.org/congress-members/photos/N00006671.jpg,"234,869","32,500","1,619","1,619",09/30/2019
-N00006690,Maxine Waters,California,43,House,https://cdn1.opensecrets.org/congress-members/photos/N00006690.jpg,"523,827",0,"24,131","24,131",09/30/2019
-N00006701,Mark Takano,California,41,House,https://cdn1.opensecrets.org/congress-members/photos/N00006701.jpg,"477,229","5,000","25,851","25,851",09/30/2019
-N00006789,Grace Napolitano,California,32,House,https://cdn1.opensecrets.org/congress-members/photos/N00006789.jpg,"216,224","5,000",836,836,09/30/2019
-N00006863,Tom McClintock,California,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00006863.jpg,"712,896",0,"223,809","223,809",09/30/2019
-N00006897,Brad Sherman,California,30,House,https://cdn1.opensecrets.org/congress-members/photos/N00006897.jpg,"391,320","94,205","5,650","5,650",09/30/2019
-N00007021,Juan Vargas,California,51,House,https://cdn1.opensecrets.org/congress-members/photos/N00007021.jpg,"328,426","158,500","1,472","1,472",12/31/2019
-N00007099,Ken Calvert,California,42,House,https://cdn1.opensecrets.org/congress-members/photos/N00007099.jpg,"769,166",0,"17,911","17,911",09/30/2019
-N00007248,Devin Nunes,California,22,House,https://cdn1.opensecrets.org/congress-members/photos/N00007248.jpg,"7,810,529","1,710,348","4,137,981","4,137,981",12/31/2019
-N00007335,Anna Eshoo,California,18,House,https://cdn1.opensecrets.org/congress-members/photos/N00007335.jpg,"854,320","818,525","15,633","15,633",09/30/2019
-N00007360,Nancy Pelosi,California,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00007360.jpg,"3,717,762","61,905","862,888","862,888",09/30/2019
-N00007364,Dianne Feinstein,California,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00007364.jpg,"11,704,782","80,169","1,121,711","1,121,711",09/30/2019
-N00007419,Mike Thompson,California,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00007419.jpg,"965,011",0,"65,904","65,904",09/30/2019
-N00007479,Zoe Lofgren,California,19,House,https://cdn1.opensecrets.org/congress-members/photos/N00007479.jpg,"874,834","377,886","20,139","20,139",09/30/2019
-N00007635,Amata Coleman Radewagen,American Samoa,0,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00007635.jpg,"24,776","1,838,764",475,475,12/31/2019
-N00007690,Greg Walden,Oregon,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00007690.jpg,"1,513,419","90,450","28,644","28,644",09/30/2019
-N00007724,Ron Wyden,Oregon,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00007724.jpg,"10,611,454","90,003","1,356,754","1,356,754",09/30/2019
-N00007727,Earl Blumenauer,Oregon,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00007727.jpg,"680,199","79,600","36,737","36,737",09/30/2019
-N00007781,Peter DeFazio,Oregon,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00007781.jpg,"905,217",0,"114,967","114,967",09/30/2019
-N00007833,Adam Smith,Washington,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00007833.jpg,"697,091","1,860,498","12,866","12,866",12/31/2019
-N00007836,Maria Cantwell,Washington,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00007836.jpg,"10,680,258","10,000","2,770,082","2,770,082",09/30/2019
-N00007876,Patty Murray,Washington,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00007876.jpg,"12,102,659","47,500","2,000,645","2,000,645",09/30/2019
-N00007999,Don Young,Alaska,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00007999.jpg,"567,883",0,"14,015","14,015",09/30/2019
-N00008046,Barbara Lee,California,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00008046.jpg,"874,501","112,500","168,814","168,814",12/31/2019
-N00008122,Eddie Bernice Johnson,Texas,30,House,https://cdn1.opensecrets.org/congress-members/photos/N00008122.jpg,"189,422","227,507","2,306","2,306",09/30/2019
-N00008799,Kay Granger,Texas,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00008799.jpg,"1,030,594",0,"23,781","23,781",09/30/2019
-N00009585,Adam Schiff,California,28,House,https://cdn1.opensecrets.org/congress-members/photos/N00009585.jpg,"4,377,168","773,666","1,936,181","1,936,181",09/30/2019
-N00009604,Susan Davis,California,53,House,https://cdn1.opensecrets.org/congress-members/photos/N00009604.jpg,"103,489","25,000","1,265","1,265",09/30/2019
-N00009660,Steve Scalise,Louisiana,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00009660.jpg,"8,803,523","7,500","3,731,002","3,731,002",09/30/2019
-N00009724,Jim Langevin,Rhode Island,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00009724.jpg,"483,663","991,729","14,680","14,680",09/30/2019
-N00009759,Rick Larsen,Washington,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00009759.jpg,"418,365","6,005","24,942","24,942",09/30/2019
-N00009771,Shelley Moore Capito,West Virginia,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00009771.jpg,"2,962,035","2,880,011","51,678","51,678",09/30/2019
-N00009816,Chris Smith,New Jersey,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00009816.jpg,"536,213","1,603,971","97,443","97,443",09/30/2019
-N00009888,Lamar Alexander,Tennessee,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00009888.jpg,"451,813","3,374,001",650,650,09/30/2019
-N00009918,Patrick Leahy,Vermont,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00009918.jpg,"4,522,763","1,521,946","89,295","89,295",09/30/2019
-N00009920,Richard C Shelby,Alabama,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00009920.jpg,"3,608,087","6,000","10,555","10,555",09/30/2019
-N00009975,Lindsey Graham,South Carolina,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00009975.jpg,"12,171,157","33,500","2,673,055","2,673,055",09/30/2019
-N00012233,Robert E Latta,Ohio,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00012233.jpg,"522,759","1,171,960","33,350","33,350",09/30/2019
-N00012460,William L Jr Clay,Missouri,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00012460.jpg,"527,608","64,850","5,457","5,457",12/31/2019
-N00012508,Tom Carper,Delaware,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00012508.jpg,"4,036,451","48,000","136,361","136,361",09/30/2019
-N00012942,Betty McCollum,Minnesota,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00012942.jpg,"418,515",0,"24,851","24,851",09/30/2019
-N00013323,Sam Graves,Missouri,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00013323.jpg,"920,290","722,832","3,673","3,673",09/30/2019
-N00013817,Chellie Pingree,Maine,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00013817.jpg,"194,440","5,000","53,411","53,411",12/31/2019
-N00013820,Chris Van Hollen,Maryland,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00013820.jpg,"13,274,738","846,908","961,806","961,806",09/30/2019
-N00013855,Stephen F Lynch,Massachusetts,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00013855.jpg,"351,133","47,250","4,460","4,460",09/30/2019
-N00013873,John Boozman,Arkansas,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00013873.jpg,"4,633,279","759,603","132,482","132,482",09/30/2019
-N00024759,Mike D Rogers,Alabama,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00024759.jpg,"511,423","9,000","3,275","3,275",09/30/2019
-N00024790,Jeanne Shaheen,New Hampshire,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00024790.jpg,"7,237,728","304,954","1,709,419","1,709,419",09/30/2019
-N00024809,Joe Wilson,South Carolina,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00024809.jpg,"401,368","27,500","24,617","24,617",09/30/2019
-N00024817,Doug Jones,Alabama,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00024817.jpg,"5,634,016","4,539,937","915,679","915,679",09/30/2019
-N00024842,Joe Courtney,Connecticut,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00024842.jpg,"382,166","65,750","36,966","36,966",09/30/2019
-N00024852,John Cornyn,Texas,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00024852.jpg,"13,386,279","22,000","1,232,119","1,232,119",09/30/2019
-N00024870,Linda Sanchez,California,38,House,https://cdn1.opensecrets.org/congress-members/photos/N00024870.jpg,"566,453","35,300","5,370","5,370",12/31/2019
-N00024871,David Scott,Georgia,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00024871.jpg,"452,802","12,500",200,200,09/30/2019
-N00024978,Henry Cuellar,Texas,28,House,https://cdn1.opensecrets.org/congress-members/photos/N00024978.jpg,"1,097,493","48,330","5,214","5,214",09/30/2019
-N00025095,John Carter,Texas,31,House,https://cdn1.opensecrets.org/congress-members/photos/N00025095.jpg,"872,705","208,803","33,106","33,106",09/30/2019
-N00025175,Michael R Turner,Ohio,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00025175.jpg,"641,571",0,"5,564","5,564",09/30/2019
-N00025219,Michael Burgess,Texas,26,House,https://cdn1.opensecrets.org/congress-members/photos/N00025219.jpg,"445,668","283,785","6,615","6,615",09/30/2019
-N00025237,Steven A King,Iowa,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00025237.jpg,"215,347","17,800","107,789","107,789",09/30/2019
-N00025280,Tim Ryan,Ohio,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00025280.jpg,"146,456","17,000","11,598","11,598",09/30/2019
-N00025284,Raul M Grijalva,Arizona,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00025284.jpg,"306,594","38,000","40,929","40,929",09/30/2019
-N00025292,Rob Bishop,Utah,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00025292.jpg,77,"88,715",0,0,09/30/2019
-N00025337,Mario Diaz-Balart,Florida,25,House,https://cdn1.opensecrets.org/congress-members/photos/N00025337.jpg,"744,971","27,500","1,071","1,071",09/30/2019
-N00025445,David Kustoff,Tennessee,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00025445.jpg,"783,068","61,500","5,775","5,775",12/31/2019
-N00025482,Dutch Ruppersberger,Maryland,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00025482.jpg,"434,633",0,"11,281","11,281",09/30/2019
-N00025726,Tom Cole,Oklahoma,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00025726.jpg,"686,272","78,500","6,650","6,650",09/30/2019
-N00025882,Ed Case,Hawaii,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00025882.jpg,"248,463","1,282,235","21,100","21,100",12/31/2019
-N00026041,Mike Conaway,Texas,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00026041.jpg,"384,073","109,932",0,0,12/31/2019
-N00026050,Lisa Murkowski,Alaska,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00026050.jpg,"5,687,509",0,"138,191","138,191",09/30/2019
-N00026106,Debbie Wasserman Schultz,Florida,23,House,https://cdn1.opensecrets.org/congress-members/photos/N00026106.jpg,"695,074","60,000","59,798","59,798",09/30/2019
-N00026148,Louis B Jr Gohmert,Texas,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00026148.jpg,"257,095","88,916","31,414","31,414",12/31/2019
-N00026166,Virginia Foxx,North Carolina,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00026166.jpg,"784,221",0,"19,696","19,696",09/30/2019
-N00026314,Cathy McMorris Rodgers,Washington,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00026314.jpg,"1,285,871","10,000","207,427","207,427",09/30/2019
-N00026335,Daniel Webster,Florida,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00026335.jpg,"195,831","7,500","16,286","16,286",09/30/2019
-N00026341,Jim Costa,California,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00026341.jpg,"714,026",0,870,870,09/30/2019
-N00026368,Tim Walberg,Michigan,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00026368.jpg,"994,492","50,668","50,403","50,403",09/30/2019
-N00026427,Ro Khanna,California,17,House,https://cdn1.opensecrets.org/congress-members/photos/N00026427.jpg,"1,571,807","541,207","103,473","103,473",09/30/2019
-N00026460,Michael McCaul,Texas,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00026460.jpg,"1,209,858","20,000","33,878","33,878",09/30/2019
-N00026627,Patrick McHenry,North Carolina,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00026627.jpg,"1,517,398",0,"3,767","3,767",12/31/2019
-N00026631,Jeff Fortenberry,Nebraska,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00026631.jpg,"316,264","9,000","7,845","7,845",09/30/2019
-N00026686,Al Green,Texas,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00026686.jpg,"143,205","40,000","6,655","6,655",09/30/2019
-N00026710,Kenny Marchant,Texas,24,House,https://cdn1.opensecrets.org/congress-members/photos/N00026710.jpg,"444,262","476,361",300,300,12/31/2019
-N00026790,Emanuel Cleaver,Missouri,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00026790.jpg,"486,968","77,351","15,538","15,538",09/30/2019
-N00026823,John Kennedy,Louisiana,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00026823.jpg,"10,130,455","13,750","248,084","248,084",09/30/2019
-N00026914,Gwen Moore,Wisconsin,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00026914.jpg,"460,046",0,"16,155","16,155",09/30/2019
-N00026926,Jerry McNerney,California,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00026926.jpg,"437,650","50,500","34,501","34,501",09/30/2019
-N00026961,Yvette D Clarke,New York,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00026961.jpg,"376,607","2,500","8,629","8,629",09/30/2019
-N00027035,G K Butterfield,North Carolina,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00027035.jpg,"386,244","11,500","1,419","1,419",12/31/2019
-N00027060,Brian M Higgins,New York,26,House,https://cdn1.opensecrets.org/congress-members/photos/N00027060.jpg,"514,107","28,000","27,841","27,841",09/30/2019
-N00027239,Daniel Lipinski,Illinois,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00027239.jpg,"667,812",0,"11,005","11,005",09/30/2019
-N00027459,Doris O Matsui,California,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00027459.jpg,"485,212","1,400,517","4,163","4,163",09/30/2019
-N00027462,Gus Bilirakis,Florida,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00027462.jpg,"719,650","1,220,664","46,498","46,498",12/31/2019
-N00027500,Amy Klobuchar,Minnesota,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027500.jpg,"17,389,551",0,"5,536,458","5,536,458",09/30/2019
-N00027503,Bob Casey,Pennsylvania,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027503.jpg,"20,521,165","87,500","3,795,166","3,795,166",09/30/2019
-N00027509,Scott Tipton,Colorado,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00027509.jpg,"551,648",9,"22,375","22,375",09/30/2019
-N00027510,Ed Perlmutter,Colorado,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00027510.jpg,"720,312",0,"53,873","53,873",12/31/2019
-N00027514,Kathy Castor,Florida,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00027514.jpg,"333,460","1,249,776","19,565","19,565",09/30/2019
-N00027523,Albio Sires,New Jersey,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00027523.jpg,"284,698","968,046","1,544","1,544",12/31/2019
-N00027533,Sheldon Whitehouse,Rhode Island,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027533.jpg,"6,365,606","2,092,801","204,809","204,809",09/30/2019
-N00027566,Christopher S Murphy,Connecticut,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027566.jpg,"15,009,433","10,000","4,381,938","4,381,938",09/30/2019
-N00027605,Jon Tester,Montana,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027605.jpg,"20,442,574","112,900","3,956,539","3,956,539",09/30/2019
-N00027623,Adrian Smith,Nebraska,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00027623.jpg,"718,990","3,408,955","11,176","11,176",12/31/2019
-N00027626,Vernon Buchanan,Florida,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00027626.jpg,"804,830","5,000","6,691","6,691",09/30/2019
-N00027658,Kirsten Gillibrand,New York,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027658.jpg,"19,356,430","10,000","6,271,532","6,271,532",09/30/2019
-N00027709,Van Taylor,Texas,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00027709.jpg,"979,465","73,645","12,787","12,787",09/30/2019
-N00027741,David Loebsack,Iowa,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00027741.jpg,"106,917",0,"5,726","5,726",09/30/2019
-N00027751,John Sarbanes,Maryland,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00027751.jpg,"237,302","5,000","10,485","10,485",09/30/2019
-N00027783,Ralph Norman,South Carolina,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00027783.jpg,"104,889","707,739","14,169","14,169",09/30/2019
-N00027848,Hank Johnson,Georgia,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00027848.jpg,"183,462","16,450",913,913,09/30/2019
-N00027860,Tammy Duckworth,Illinois,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00027860.jpg,"19,419,054","2,500","6,647,168","6,647,168",09/30/2019
-N00027894,Jim Jordan,Ohio,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00027894.jpg,"3,759,481",0,"2,109,894","2,109,894",12/31/2019
-N00028073,John A Yarmuth,Kentucky,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00028073.jpg,"244,762",0,"3,007","3,007",12/31/2019
-N00028122,TJ Cox,California,21,House,https://cdn1.opensecrets.org/congress-members/photos/N00028122.jpg,"923,927","1,136,924","107,739","107,739",09/30/2019
-N00028133,Douglas L Lamborn,Colorado,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00028133.jpg,"159,075","621,161",475,475,09/30/2019
-N00028138,Brian Schatz,Hawaii,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00028138.jpg,"5,385,993","2,248,954","240,677","240,677",09/30/2019
-N00028139,Mazie K Hirono,Hawaii,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00028139.jpg,"4,482,705","182,500","591,137","591,137",09/30/2019
-N00028152,Kevin McCarthy,California,23,House,https://cdn1.opensecrets.org/congress-members/photos/N00028152.jpg,"5,459,472","120,350","849,659","849,659",09/30/2019
-N00028463,Phil Roe,Tennessee,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00028463.jpg,"139,634","23,700","14,085","14,085",12/31/2019
-N00029070,Jim Himes,Connecticut,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00029070.jpg,"447,145","10,000","31,996","31,996",09/30/2019
-N00029139,Bill Foster,Illinois,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00029139.jpg,"744,534","10,000","71,528","71,528",09/30/2019
-N00029147,Andy Harris,Maryland,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00029147.jpg,"560,808","1,449,664","91,870","91,870",09/30/2019
-N00029260,Ann Kirkpatrick,Arizona,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00029260.jpg,"782,760",0,"122,344","122,344",09/30/2019
-N00029277,Gary Peters,Michigan,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00029277.jpg,"9,091,887","2,214,776","1,508,353","1,508,353",09/30/2019
-N00029285,Pete Olson,Texas,22,House,https://cdn1.opensecrets.org/congress-members/photos/N00029285.jpg,"481,948","52,500","7,681","7,681",09/30/2019
-N00029303,Jeff Merkley,Oregon,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00029303.jpg,"8,296,982",0,"3,899,356","3,899,356",12/31/2019
-N00029404,Lee Zeldin,New York,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00029404.jpg,"1,855,879","370,913","245,159","245,159",09/30/2019
-N00029416,Dan Meuser,Pennsylvania,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00029416.jpg,"511,626","15,300","4,218","4,218",12/31/2019
-N00029441,James E Risch,Idaho,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00029441.jpg,"1,318,281","15,000","30,783","30,783",09/30/2019
-N00029459,Rob Wittman,Virginia,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00029459.jpg,"587,640","102,500","54,212","54,212",09/30/2019
-N00029513,Andre Carson,Indiana,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00029513.jpg,"390,483","277,921","6,376","6,376",09/30/2019
-N00029562,Ben Ray Lujan,New Mexico,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00029562.jpg,"2,606,403","10,030","656,908","656,908",09/30/2019
-N00029574,Steve Stivers,Ohio,15,House,https://cdn1.opensecrets.org/congress-members/photos/N00029574.jpg,"1,326,276",0,"7,540","7,540",09/30/2019
-N00029649,Jackie Speier,California,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00029649.jpg,"401,213","47,013","9,309","9,309",09/30/2019
-N00029662,Bill Posey,Florida,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00029662.jpg,"298,908","34,420","15,952","15,952",09/30/2019
-N00029675,Brett Guthrie,Kentucky,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00029675.jpg,"753,385","1,311,780","15,587","15,587",12/31/2019
-N00029736,Glenn Thompson,Pennsylvania,15,House,https://cdn1.opensecrets.org/congress-members/photos/N00029736.jpg,"607,609","23,728","35,661","35,661",09/30/2019
-N00029835,Martin Heinrich,New Mexico,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00029835.jpg,"8,175,327","337,165","1,066,314","1,066,314",09/30/2019
-N00029891,Gerry Connolly,Virginia,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00029891.jpg,"828,215","17,500","116,499","116,499",09/30/2019
-N00030026,Blaine Luetkemeyer,Missouri,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00030026.jpg,"837,681","31,050","5,913","5,913",09/30/2019
-N00030071,Kurt Schrader,Oregon,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00030071.jpg,"736,453","2,000","15,478","15,478",09/30/2019
-N00030184,Cedric Richmond,Louisiana,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00030184.jpg,"554,096","8,500","1,492","1,492",09/30/2019
-N00030191,Dina Titus,Nevada,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00030191.jpg,"301,508","1,709,939","15,276","15,276",09/30/2019
-N00030196,Paul Tonko,New York,20,House,https://cdn1.opensecrets.org/congress-members/photos/N00030196.jpg,"605,713",0,"56,704","56,704",09/30/2019
-N00030245,Bill Cassidy,Louisiana,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00030245.jpg,"6,758,512","7,500","176,185","176,185",09/30/2019
-N00030490,Marcia L Fudge,Ohio,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00030490.jpg,"366,937","46,000","28,815","28,815",12/31/2019
-N00030581,Mike Quigley,Illinois,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00030581.jpg,"498,481","28,760","9,577","9,577",09/30/2019
-N00030600,Judy Chu,California,27,House,https://cdn1.opensecrets.org/congress-members/photos/N00030600.jpg,"672,346","1,699,339","31,088","31,088",12/31/2019
-N00030602,Roger Williams,Texas,25,House,https://cdn1.opensecrets.org/congress-members/photos/N00030602.jpg,"875,791","2,638,079","4,952","4,952",09/30/2019
-N00030608,Michael Bennet,Colorado,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00030608.jpg,"5,604,575","17,500","1,674,590","1,674,590",09/30/2019
-N00030612,Marco Rubio,Florida,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00030612.jpg,"19,946,289","7,300","4,468,834","4,468,834",09/30/2019
-N00030622,Terri A Sewell,Alabama,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00030622.jpg,"831,795",0,"6,145","6,145",09/30/2019
-N00030642,Al Lawson,Florida,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00030642.jpg,"217,273","59,109","2,238","2,238",09/30/2019
-N00030650,Frederica Wilson,Florida,24,House,https://cdn1.opensecrets.org/congress-members/photos/N00030650.jpg,"169,155","839,024",85,85,12/31/2019
-N00030667,Adam Kinzinger,Illinois,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00030667.jpg,"1,114,259",0,"47,800","47,800",12/31/2019
-N00030670,Todd Young,Indiana,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00030670.jpg,"11,893,863","23,055","582,448","582,448",09/30/2019
-N00030673,Bill Huizenga,Michigan,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00030673.jpg,"806,987","27,871","15,951","15,951",09/30/2019
-N00030676,Billy Long,Missouri,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00030676.jpg,"592,887",0,"3,870","3,870",09/30/2019
-N00030693,Suzan DelBene,Washington,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00030693.jpg,"748,364","19,000","59,076","59,076",09/30/2019
-N00030709,Mark Desaulnier,California,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00030709.jpg,"224,688","6,000","15,261","15,261",09/30/2019
-N00030717,Ami Bera,California,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00030717.jpg,"698,139","86,500","49,660","49,660",09/30/2019
-N00030752,Jeff Duncan,South Carolina,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00030752.jpg,"655,727","59,056","152,778","152,778",12/31/2019
-N00030768,Martha Roby,Alabama,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00030768.jpg,"147,649","10,000","1,900","1,900",12/31/2019
-N00030770,Rick Crawford,Arkansas,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00030770.jpg,"380,591","2,740,589","21,649","21,649",09/30/2019
-N00030771,Paul Gosar,Arizona,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00030771.jpg,"194,665","99,714","36,534","36,534",09/30/2019
-N00030780,Cory Gardner,Colorado,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00030780.jpg,"8,976,480","1,300","585,163","585,163",09/30/2019
-N00030788,Tom Graves,Georgia,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00030788.jpg,"695,809",0,374,374,09/30/2019
-N00030815,Chuck Fleischmann,Tennessee,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00030815.jpg,"669,508","3,290,807","1,100","1,100",12/31/2019
-N00030829,Ken Buck,Colorado,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00030829.jpg,"120,687","7,500","1,264","1,264",09/30/2019
-N00030836,Rand Paul,Kentucky,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00030836.jpg,"5,999,196","19,050","977,073","977,073",09/30/2019
-N00030856,John Garamendi,California,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00030856.jpg,"380,067",539,"20,794","20,794",09/30/2019
-N00030875,Ann Kuster,New Hampshire,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00030875.jpg,"1,166,285","64,797","91,846","91,846",09/30/2019
-N00030910,Mo Brooks,Alabama,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00030910.jpg,"238,108",0,"3,449","3,449",09/30/2019
-N00030949,Tom Reed,New York,23,House,https://cdn1.opensecrets.org/congress-members/photos/N00030949.jpg,"1,260,323","41,500","18,943","18,943",09/30/2019
-N00030957,Scott Desjarlais,Tennessee,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00030957.jpg,"161,713","10,000",289,289,09/30/2019
-N00031005,Vicky Hartzler,Missouri,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00031005.jpg,"551,247","687,633","81,190","81,190",09/30/2019
-N00031128,Bob Gibbs,Ohio,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00031128.jpg,"429,056",0,"13,664","13,664",12/31/2019
-N00031129,James Lankford,Oklahoma,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00031129.jpg,"3,894,524","99,808","257,384","257,384",09/30/2019
-N00031177,Mark Amodei,Nevada,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00031177.jpg,"285,309","15,000","3,160","3,160",09/30/2019
-N00031226,Jackie Walorski,Indiana,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00031226.jpg,"803,780","177,916","4,438","4,438",09/30/2019
-N00031227,Larry Bucshon,Indiana,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00031227.jpg,"493,642","22,500","12,293","12,293",12/31/2019
-N00031233,Andy Barr,Kentucky,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00031233.jpg,"1,391,603",0,"26,201","26,201",09/30/2019
-N00031317,Ted Deutch,Florida,22,House,https://cdn1.opensecrets.org/congress-members/photos/N00031317.jpg,"724,052","43,270","21,182","21,182",12/31/2019
-N00031390,Jim Hagedorn,Minnesota,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00031390.jpg,"709,136","11,500","29,986","29,986",09/30/2019
-N00031417,Will Hurd,Texas,23,House,https://cdn1.opensecrets.org/congress-members/photos/N00031417.jpg,"1,081,807","34,500","79,855","79,855",09/30/2019
-N00031545,Bill Flores,Texas,17,House,https://cdn1.opensecrets.org/congress-members/photos/N00031545.jpg,"375,378","95,000","5,295","5,295",09/30/2019
-N00031557,Dennis Heck,Washington,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00031557.jpg,"410,891","66,500","3,366","3,366",09/30/2019
-N00031559,Jaime Herrera Beutler,Washington,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00031559.jpg,"1,114,807","30,000","218,563","218,563",09/30/2019
-N00031647,Mike Kelly,Pennsylvania,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00031647.jpg,"1,034,809","1,367,869","15,010","15,010",09/30/2019
-N00031681,David McKinley,West Virginia,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00031681.jpg,"326,187","828,611",760,760,09/30/2019
-N00031685,Richard Blumenthal,Connecticut,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00031685.jpg,"8,401,744","655,370","878,477","878,477",09/30/2019
-N00031688,John Hoeven,North Dakota,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00031688.jpg,"3,565,642","1,960,261","113,859","113,859",09/30/2019
-N00031696,Mike Lee,Utah,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00031696.jpg,"4,767,825","1,812,603","507,009","507,009",09/30/2019
-N00031782,Tim Scott,South Carolina,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00031782.jpg,"8,194,998","52,105","144,069","144,069",09/30/2019
-N00031820,Chris Coons,Delaware,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00031820.jpg,"3,424,665","48,390","119,232","119,232",09/30/2019
-N00031857,Steve Womack,Arkansas,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00031857.jpg,"424,446",0,"25,200","25,200",12/31/2019
-N00031877,Karen Bass,California,37,House,https://cdn1.opensecrets.org/congress-members/photos/N00031877.jpg,"914,385",0,"6,834","6,834",09/30/2019
-N00031933,Bill Keating,Massachusetts,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00031933.jpg,"249,409","15,000","22,803","22,803",09/30/2019
-N00031938,Justin Amash,Michigan,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00031938.jpg,"444,124","90,043","136,077","136,077",09/30/2019
-N00031958,Steven Palazzo,Mississippi,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00031958.jpg,"293,020","7,500","1,270","1,270",09/30/2019
-N00032019,David Cicilline,Rhode Island,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00032019.jpg,"637,715","28,500","26,396","26,396",09/30/2019
-N00032029,Morgan Griffith,Virginia,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00032029.jpg,"272,781",0,"13,813","13,813",09/30/2019
-N00032088,Bill Johnson,Ohio,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00032088.jpg,"722,702","2,940","12,997","12,997",09/30/2019
-N00032243,Jody Hice,Georgia,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00032243.jpg,"236,614","7,500","15,216","15,216",09/30/2019
-N00032416,Rob Woodall,Georgia,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00032416.jpg,"6,994","704,734",0,0,09/30/2019
-N00032457,Austin Scott,Georgia,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00032457.jpg,"376,450","1,255,897","4,900","4,900",09/30/2019
-N00032546,Ron Johnson,Wisconsin,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00032546.jpg,"17,812,532","11,000","2,554,898","2,554,898",09/30/2019
-N00032838,Joe Manchin,West Virginia,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00032838.jpg,"9,060,157","1,341,106","363,875","363,875",09/30/2019
-N00033030,Jared Huffman,California,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033030.jpg,"341,379","93,528","27,001","27,001",09/30/2019
-N00033054,Steven Daines,Montana,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033054.jpg,"5,266,132","141,800","447,816","447,816",09/30/2019
-N00033085,Ted Cruz,Texas,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033085.jpg,"44,809,601","3,521,744","15,420,265","15,420,265",09/30/2019
-N00033101,Brad Schneider,Illinois,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00033101.jpg,"1,483,215",0,"146,884","146,884",09/30/2019
-N00033106,Ann L Wagner,Missouri,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033106.jpg,"1,599,350","280,106","7,858","7,858",09/30/2019
-N00033177,Tim Kaine,Virginia,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033177.jpg,"20,962,731",0,"2,906,973","2,906,973",09/30/2019
-N00033220,Ted Yoho,Florida,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00033220.jpg,"73,161",0,589,589,09/30/2019
-N00033240,Raja Krishnamoorthi,Illinois,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00033240.jpg,"2,618,031","29,358","75,441","75,441",09/30/2019
-N00033274,Alan Lowenthal,California,47,House,https://cdn1.opensecrets.org/congress-members/photos/N00033274.jpg,"349,637",0,"17,799","17,799",12/31/2019
-N00033281,Tulsi Gabbard,Hawaii,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033281.jpg,"9,003,179",0,"4,215,904","4,215,904",09/30/2019
-N00033310,Brad Wenstrup,Ohio,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033310.jpg,"634,402","64,500","58,612","58,612",09/30/2019
-N00033316,Joaquin Castro,Texas,20,House,https://cdn1.opensecrets.org/congress-members/photos/N00033316.jpg,"168,697","372,350","52,724","52,724",09/30/2019
-N00033363,Tom Cotton,Arkansas,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033363.jpg,"6,861,479","14,000","1,034,976","1,034,976",09/30/2019
-N00033373,Tony Cardenas,California,29,House,https://cdn1.opensecrets.org/congress-members/photos/N00033373.jpg,"410,616","80,550","8,585","8,585",09/30/2019
-N00033390,Cheri Bustos,Illinois,17,House,https://cdn1.opensecrets.org/congress-members/photos/N00033390.jpg,"1,475,798","68,694","156,553","156,553",09/30/2019
-N00033395,Dan Kildee,Michigan,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00033395.jpg,"860,594","1,260,515","47,903","47,903",12/31/2019
-N00033399,George Holding,North Carolina,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033399.jpg,"880,478",0,"10,076","10,076",09/30/2019
-N00033410,Markwayne Mullin,Oklahoma,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033410.jpg,"555,244",0,"2,055","2,055",09/30/2019
-N00033443,Deb Fischer,Nebraska,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033443.jpg,"6,193,289",0,"279,997","279,997",09/30/2019
-N00033449,Val Demings,Florida,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00033449.jpg,"462,193","32,924","19,953","19,953",12/31/2019
-N00033474,Suzanne Bonamici,Oregon,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00033474.jpg,"390,468","55,352","30,912","30,912",09/30/2019
-N00033492,Elizabeth Warren,Massachusetts,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033492.jpg,"60,049,475","36,000","31,931,805","31,931,805",09/30/2019
-N00033495,Susan Brooks,Indiana,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00033495.jpg,"188,520","66,500","2,102","2,102",09/30/2019
-N00033508,Eric Swalwell,California,15,House,https://cdn1.opensecrets.org/congress-members/photos/N00033508.jpg,"1,303,697","17,300","52,104","52,104",09/30/2019
-N00033510,Raul Ruiz,California,36,House,https://cdn1.opensecrets.org/congress-members/photos/N00033510.jpg,"824,360","15,000","95,546","95,546",09/30/2019
-N00033518,Doug Collins,Georgia,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00033518.jpg,"862,651","12,974","110,673","110,673",09/30/2019
-N00033527,David Rouzer,North Carolina,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00033527.jpg,"685,477","18,500","5,976","5,976",09/30/2019
-N00033539,Randy Weber,Texas,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00033539.jpg,"318,013","159,256","7,243","7,243",09/30/2019
-N00033549,Mark Pocan,Wisconsin,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033549.jpg,"393,358","3,634,770","80,431","80,431",09/30/2019
-N00033591,Scott Peters,California,52,House,https://cdn1.opensecrets.org/congress-members/photos/N00033591.jpg,"773,259","7,500","38,950","38,950",09/30/2019
-N00033630,Richard Hudson,North Carolina,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00033630.jpg,"1,087,290","135,800","19,766","19,766",09/30/2019
-N00033631,Mark R Meadows,North Carolina,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00033631.jpg,"848,310",0,"428,683","428,683",09/30/2019
-N00033638,Steven Horsford,Nevada,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00033638.jpg,"1,085,584","41,374","35,216","35,216",09/30/2019
-N00033640,Hakeem Jeffries,New York,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00033640.jpg,"2,037,490","13,750","35,462","35,462",09/30/2019
-N00033720,Richard W Allen,Georgia,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00033720.jpg,"460,507","17,514","32,247","32,247",09/30/2019
-N00033814,Alex Mooney,West Virginia,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033814.jpg,"975,981","24,990","58,916","58,916",12/31/2019
-N00033832,Tom Rice,South Carolina,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00033832.jpg,"1,011,512","24,700","3,600","3,600",12/31/2019
-N00033839,Marc Veasey,Texas,33,House,https://cdn1.opensecrets.org/congress-members/photos/N00033839.jpg,"615,643","44,418","3,633","3,633",09/30/2019
-N00033904,Joyce Beatty,Ohio,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00033904.jpg,"692,182","472,450","15,738","15,738",09/30/2019
-N00033932,Chris Stewart,Utah,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00033932.jpg,"344,805","15,000","8,869","8,869",09/30/2019
-N00033982,Martha McSally,Arizona,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033982.jpg,"8,354,274","85,231","2,952,432","2,952,432",09/30/2019
-N00033983,Kyrsten Sinema,Arizona,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00033983.jpg,"23,627,199",175,"5,767,049","5,767,049",09/30/2019
-N00033987,Doug LaMalfa,California,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00033987.jpg,"443,065","149,750","19,018","19,018",09/30/2019
-N00033997,Pete Aguilar,California,31,House,https://cdn1.opensecrets.org/congress-members/photos/N00033997.jpg,"980,891",0,"138,174","138,174",09/30/2019
-N00034041,Thomas Massie,Kentucky,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00034041.jpg,"120,028",0,"2,884","2,884",09/30/2019
-N00034044,Joe III Kennedy,Massachusetts,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00034044.jpg,"1,517,838",0,"211,817","211,817",09/30/2019
-N00034068,Brenda Lawrence,Michigan,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00034068.jpg,"399,469","5,000","23,683","23,683",09/30/2019
-N00034120,Scott Perry,Pennsylvania,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00034120.jpg,"613,726",0,"147,671","147,671",09/30/2019
-N00034128,Matt Cartwright,Pennsylvania,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00034128.jpg,"867,306","7,532","23,630","23,630",09/30/2019
-N00034224,Paul Cook,California,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00034224.jpg,"333,489","23,000","6,138","6,138",09/30/2019
-N00034254,Julia Brownley,California,26,House,https://cdn1.opensecrets.org/congress-members/photos/N00034254.jpg,"790,235","62,078","76,179","76,179",09/30/2019
-N00034277,Sean Patrick Maloney,New York,18,House,https://cdn1.opensecrets.org/congress-members/photos/N00034277.jpg,"819,649",0,"99,865","99,865",09/30/2019
-N00034349,Filemon Vela,Texas,34,House,https://cdn1.opensecrets.org/congress-members/photos/N00034349.jpg,"433,627","345,550","2,818","2,818",09/30/2019
-N00034453,Derek Kilmer,Washington,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00034453.jpg,"965,880","1,800","38,913","38,913",09/30/2019
-N00034547,Grace Meng,New York,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00034547.jpg,"630,483","34,000","18,695","18,695",12/31/2019
-N00034549,Adriano Espaillat,New York,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00034549.jpg,"719,689",0,"11,246","11,246",12/31/2019
-N00034580,Angus King,Maine,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00034580.jpg,"5,188,522","7,500","657,363","657,363",09/30/2019
-N00034639,Donald M Jr Payne,New Jersey,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00034639.jpg,"259,784","959,582","5,887","5,887",12/31/2019
-N00034784,Rodney Davis,Illinois,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00034784.jpg,"1,504,629",0,"95,211","95,211",09/30/2019
-N00035000,Stacey Plaskett,Virgin Islands,0,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035000.jpg,"127,151","2,246,712",561,561,09/30/2019
-N00035007,David P Joyce,Ohio,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00035007.jpg,"1,236,849","148,560","30,807","30,807",09/30/2019
-N00035187,Mike Rounds,South Dakota,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035187.jpg,"2,779,965","47,558","52,815","52,815",09/30/2019
-N00035215,Robin Kelly,Illinois,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00035215.jpg,"647,114","6,000","36,707","36,707",09/30/2019
-N00035267,Cory Booker,New Jersey,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035267.jpg,"7,259,057","38,440","2,081,676","2,081,676",09/30/2019
-N00035278,Katherine Clark,Massachusetts,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00035278.jpg,"719,221","78,000","24,862","24,862",09/30/2019
-N00035282,Jason Smith,Missouri,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00035282.jpg,"719,419","94,591","13,200","13,200",09/30/2019
-N00035307,Brendan Boyle,Pennsylvania,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00035307.jpg,"616,015","23,981","2,304","2,304",09/30/2019
-N00035311,Mark Walker,North Carolina,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00035311.jpg,"359,666","210,489","14,116","14,116",09/30/2019
-N00035346,Buddy Carter,Georgia,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00035346.jpg,"934,905","262,580","44,806","44,806",09/30/2019
-N00035347,Barry Loudermilk,Georgia,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00035347.jpg,"245,440",0,"5,785","5,785",09/30/2019
-N00035380,Bradley Byrne,Alabama,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00035380.jpg,"3,127,685","3,101,326","61,177","61,177",09/30/2019
-N00035420,Mike Bost,Illinois,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00035420.jpg,"847,891","3,699,610","38,737","38,737",09/30/2019
-N00035431,Seth Moulton,Massachusetts,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00035431.jpg,"658,013","352,599","17,269","17,269",09/30/2019
-N00035440,Tom Emmer,Minnesota,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00035440.jpg,"1,061,473","2,372,073","47,984","47,984",09/30/2019
-N00035451,Alma Adams,North Carolina,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00035451.jpg,"395,160","343,672","16,814","16,814",12/31/2019
-N00035483,Joni Ernst,Iowa,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035483.jpg,"6,511,900","8,500","842,545","842,545",09/30/2019
-N00035492,Thom Tillis,North Carolina,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035492.jpg,"7,321,115","1,334,305","314,912","314,912",09/30/2019
-N00035504,Liz Cheney,Wyoming,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00035504.jpg,"1,414,142","15,706","86,174","86,174",09/30/2019
-N00035516,David Perdue,Georgia,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035516.jpg,"8,791,344","1,313,964","193,493","193,493",09/30/2019
-N00035523,Elise Stefanik,New York,21,House,https://cdn1.opensecrets.org/congress-members/photos/N00035523.jpg,"1,328,707","56,500","60,500","60,500",09/30/2019
-N00035527,Bruce Westerman,Arkansas,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00035527.jpg,"421,858","47,165","6,961","6,961",09/30/2019
-N00035544,Ben Sasse,Nebraska,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035544.jpg,"3,972,394","57,596","149,748","149,748",09/30/2019
-N00035691,Gary Palmer,Alabama,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00035691.jpg,"403,263","30,000",325,325,09/30/2019
-N00035774,Dan Sullivan,Alaska,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00035774.jpg,"4,438,425","7,010","46,803","46,803",09/30/2019
-N00035792,French Hill,Arkansas,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00035792.jpg,"957,083","5,600","13,027","13,027",09/30/2019
-N00035825,Ted Lieu,California,33,House,https://cdn1.opensecrets.org/congress-members/photos/N00035825.jpg,"731,774","38,184","45,915","45,915",09/30/2019
-N00035927,Kathleen Rice,New York,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00035927.jpg,"323,285","5,000","23,003","23,003",09/30/2019
-N00035934,John Katko,New York,24,House,https://cdn1.opensecrets.org/congress-members/photos/N00035934.jpg,"1,545,336","12,600","77,094","77,094",12/31/2019
-N00035972,John Lee Ratcliffe,Texas,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00035972.jpg,"408,460","77,136","19,846","19,846",12/31/2019
-N00036018,Don Beyer,Virginia,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00036018.jpg,"924,488","17,500","49,470","49,470",12/31/2019
-N00036097,Ruben Gallego,Arizona,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00036097.jpg,"782,908",0,"94,532","94,532",09/30/2019
-N00036107,Norma Torres,California,35,House,https://cdn1.opensecrets.org/congress-members/photos/N00036107.jpg,"252,052","88,400","5,826","5,826",09/30/2019
-N00036135,Garret Graves,Louisiana,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00036135.jpg,"616,782","36,535","3,430","3,430",09/30/2019
-N00036149,Debbie Dingell,Michigan,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00036149.jpg,"505,795","2,500","18,638","18,638",09/30/2019
-N00036154,Don Norcross,New Jersey,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00036154.jpg,"974,352",0,"18,499","18,499",09/30/2019
-N00036158,Bonnie Coleman,New Jersey,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00036158.jpg,"214,567","17,586","25,245","25,245",09/30/2019
-N00036274,Paul Mitchell,Michigan,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00036274.jpg,"215,100","2,677,298",450,450,09/30/2019
-N00036275,John Moolenaar,Michigan,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00036275.jpg,"625,095","359,700","31,803","31,803",09/30/2019
-N00036403,Dan Newhouse,Washington,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00036403.jpg,"379,018","15,100","25,328","25,328",09/30/2019
-N00036409,Glenn S Grothman,Wisconsin,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00036409.jpg,"500,250",0,"72,144","72,144",09/30/2019
-N00036633,Ralph Abraham,Louisiana,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00036633.jpg,"18,415","163,718","1,100","1,100",09/30/2019
-N00036915,Kamala Harris,California,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00036915.jpg,"22,796,614","64,014","8,040,019","8,040,019",09/30/2019
-N00036944,Josh Gottheimer,New Jersey,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00036944.jpg,"2,506,013","158,259","51,779","51,779",09/30/2019
-N00036999,Anthony Brown,Maryland,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00036999.jpg,"600,908","488,846","5,749","5,749",09/30/2019
-N00037003,Trent Kelly,Mississippi,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00037003.jpg,"267,449",0,"15,892","15,892",09/30/2019
-N00037015,Salud Carbajal,California,24,House,https://cdn1.opensecrets.org/congress-members/photos/N00037015.jpg,"975,120","122,505","38,127","38,127",09/30/2019
-N00037019,Nanette Barragan,California,44,House,https://cdn1.opensecrets.org/congress-members/photos/N00037019.jpg,"532,608","1,179,256","21,021","21,021",09/30/2019
-N00037031,Darin LaHood,Illinois,18,House,https://cdn1.opensecrets.org/congress-members/photos/N00037031.jpg,"1,178,653",0,"81,274","81,274",09/30/2019
-N00037034,Roger Marshall,Kansas,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00037034.jpg,"1,492,228","37,168","17,041","17,041",09/30/2019
-N00037036,Jamie Raskin,Maryland,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00037036.jpg,"819,354","155,833","101,541","101,541",09/30/2019
-N00037039,Angie Craig,Minnesota,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00037039.jpg,"1,404,410","13,000","165,805","165,805",09/30/2019
-N00037049,Donald John Bacon,Nebraska,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00037049.jpg,"1,058,432","43,600","61,818","61,818",09/30/2019
-N00037161,Catherine Cortez Masto,Nevada,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00037161.jpg,"22,403,831","42,505","7,705,296","7,705,296",09/30/2019
-N00037185,Jim Banks,Indiana,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00037185.jpg,"494,250","113,124","45,151","45,151",09/30/2019
-N00037247,Susie Lee,Nevada,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00037247.jpg,"1,387,047","99,300","50,801","50,801",09/30/2019
-N00037260,Lou Correa,California,46,House,https://cdn1.opensecrets.org/congress-members/photos/N00037260.jpg,"592,559","16,000","9,860","9,860",12/31/2019
-N00037269,Brian Mast,Florida,18,House,https://cdn1.opensecrets.org/congress-members/photos/N00037269.jpg,"2,196,506","761,398","840,534","840,534",12/31/2019
-N00037422,Darren Soto,Florida,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00037422.jpg,"346,979","29,500","3,655","3,655",09/30/2019
-N00037442,Neal Dunn,Florida,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00037442.jpg,"181,950","1,000",850,850,09/30/2019
-N00037515,Tom O'Halleran,Arizona,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00037515.jpg,"854,447","24,063","53,030","53,030",09/30/2019
-N00037615,Jenniffer Gonzalez,Puerto Rico,0,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00037615.jpg,"100,400","15,000",0,0,09/30/2019
-N00038260,James Comer,Kentucky,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00038260.jpg,"329,884","237,474","4,841","4,841",12/31/2019
-N00038285,Jodey Arrington,Texas,19,House,https://cdn1.opensecrets.org/congress-members/photos/N00038285.jpg,"965,292","97,000","8,310","8,310",09/30/2019
-N00038397,Maggie Hassan,New Hampshire,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00038397.jpg,"20,673,141","5,855","6,451,649","6,451,649",09/30/2019
-N00038414,Lisa Blunt Rochester,Delaware,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00038414.jpg,"542,946","262,321","24,659","24,659",09/30/2019
-N00038429,Trey Hollingsworth,Indiana,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00038429.jpg,"567,201","118,630","5,911","5,911",09/30/2019
-N00038450,Dwight Evans,Pennsylvania,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00038450.jpg,"366,630","42,000","22,985","22,985",09/30/2019
-N00038601,Jimmy Panetta,California,20,House,https://cdn1.opensecrets.org/congress-members/photos/N00038601.jpg,"750,211","464,693","29,000","29,000",09/30/2019
-N00038734,Jacky Rosen,Nevada,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00038734.jpg,"26,466,133","134,900","8,539,998","8,539,998",09/30/2019
-N00038742,Tom Suozzi,New York,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00038742.jpg,"1,109,656","335,086","24,677","24,677",09/30/2019
-N00038767,Warren Davidson,Ohio,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00038767.jpg,"471,248",0,"38,234","38,234",12/31/2019
-N00038779,Brian Fitzpatrick,Pennsylvania,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00038779.jpg,"1,327,199","12,500","27,331","27,331",09/30/2019
-N00038781,Lloyd Smucker,Pennsylvania,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00038781.jpg,"441,191",0,"4,094","4,094",09/30/2019
-N00038809,Vicente Gonzalez,Texas,15,House,https://cdn1.opensecrets.org/congress-members/photos/N00038809.jpg,"125,983","180,635","4,495","4,495",09/30/2019
-N00038858,Pramila Jayapal,Washington,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00038858.jpg,"1,078,339","4,000","238,219","238,219",09/30/2019
-N00039090,Drew Ferguson,Georgia,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00039090.jpg,"1,205,964","112,164","55,824","55,824",12/31/2019
-N00039106,Mike Johnson,Louisiana,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00039106.jpg,"481,813","44,131","29,700","29,700",09/30/2019
-N00039122,David Trone,Maryland,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00039122.jpg,"750,097","16,050","3,224","3,224",09/30/2019
-N00039293,Andy Biggs,Arizona,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00039293.jpg,"355,804","40,000","44,834","44,834",09/30/2019
-N00039327,Donald McEachin,Virginia,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00039327.jpg,"298,101","316,679","12,862","12,862",09/30/2019
-N00039330,Mike Gallagher,Wisconsin,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00039330.jpg,"1,382,321","150,000","26,106","26,106",09/30/2019
-N00039503,Matt Gaetz,Florida,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00039503.jpg,"518,562",2,"299,036","299,036",09/30/2019
-N00039533,John Bergman,Michigan,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00039533.jpg,"627,609","22,000","26,539","26,539",09/30/2019
-N00039551,Ted Budd,North Carolina,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00039551.jpg,"900,929","2,500","77,760","77,760",09/30/2019
-N00039777,John Rutherford,Florida,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00039777.jpg,"352,750","32,000","1,800","1,800",12/31/2019
-N00039953,Clay Higgins,Louisiana,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00039953.jpg,"267,604","21,776","9,062","9,062",09/30/2019
-N00040007,Francis Rooney,Florida,19,House,https://cdn1.opensecrets.org/congress-members/photos/N00040007.jpg,"4,642",0,760,760,09/30/2019
-N00040133,Stephanie Murphy,Florida,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00040133.jpg,"1,020,441",0,"26,628","26,628",09/30/2019
-N00040559,Dusty Johnson,South Dakota,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00040559.jpg,"836,102",0,"29,357","29,357",12/31/2019
-N00040597,Jimmy Gomez,California,34,House,https://cdn1.opensecrets.org/congress-members/photos/N00040597.jpg,"489,347","5,000","5,368","5,368",09/30/2019
-N00040666,Harley Rouda,California,48,House,https://cdn1.opensecrets.org/congress-members/photos/N00040666.jpg,"1,634,851",0,"146,555","146,555",09/30/2019
-N00040667,Mike Levin,California,49,House,https://cdn1.opensecrets.org/congress-members/photos/N00040667.jpg,"1,451,915",0,"175,559","175,559",09/30/2019
-N00040712,Ron Estes,Kansas,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00040712.jpg,"851,249",0,"15,866","15,866",09/30/2019
-N00040733,Greg Gianforte,Montana,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00040733.jpg,"332,818",0,"17,860","17,860",12/31/2019
-N00040741,Antonio Delgado,New York,19,House,https://cdn1.opensecrets.org/congress-members/photos/N00040741.jpg,"2,047,287","20,000","216,395","216,395",09/30/2019
-N00040829,Kevin Hern,Oklahoma,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00040829.jpg,"552,713",0,"13,490","13,490",12/31/2019
-N00040853,Josh Harder,California,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00040853.jpg,"2,370,536",0,"220,402","220,402",09/30/2019
-N00040865,Katie Porter,California,45,House,https://cdn1.opensecrets.org/congress-members/photos/N00040865.jpg,"2,441,674",0,"642,865","642,865",09/30/2019
-N00040876,Jason Crow,Colorado,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00040876.jpg,"1,773,967","2,000","117,478","117,478",12/31/2019
-N00040888,Abby Finkenauer,Iowa,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00040888.jpg,"1,283,869",0,"112,266","112,266",09/30/2019
-N00040915,Haley Stevens,Michigan,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00040915.jpg,"1,906,085",0,"164,172","164,172",09/30/2019
-N00040933,Debra Haaland,New Mexico,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00040933.jpg,"610,729","6,000","60,194","60,194",09/30/2019
-N00040949,Chrissy Houlahan,Pennsylvania,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00040949.jpg,"1,228,158","5,141","84,509","84,509",09/30/2019
-N00040989,Colin Allred,Texas,32,House,https://cdn1.opensecrets.org/congress-members/photos/N00040989.jpg,"1,674,892",0,"84,069","84,069",09/30/2019
-N00041002,Jennifer Wexton,Virginia,10,House,https://cdn1.opensecrets.org/congress-members/photos/N00041002.jpg,"1,379,785","5,000","122,887","122,887",09/30/2019
-N00041080,Joseph Neguse,Colorado,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00041080.jpg,"577,807",0,"29,642","29,642",09/30/2019
-N00041104,Cindy Axne,Iowa,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00041104.jpg,"1,463,889",0,"162,485","162,485",09/30/2019
-N00041134,Dean Phillips,Minnesota,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00041134.jpg,"581,200",0,"78,999","78,999",09/30/2019
-N00041154,Mikie Sherrill,New Jersey,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00041154.jpg,"1,841,106",0,"190,437","190,437",09/30/2019
-N00041162,Alexandria Ocasio-Cortez,New York,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00041162.jpg,"3,354,731",0,"2,740,940","2,740,940",09/30/2019
-N00041194,Lizzie Fletcher,Texas,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00041194.jpg,"1,720,107",0,"85,043","85,043",09/30/2019
-N00041221,John Curtis,Utah,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00041221.jpg,"324,653",0,"1,203","1,203",12/31/2019
-N00041335,Russ Fulcher,Idaho,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00041335.jpg,"240,301",0,"6,351","6,351",12/31/2019
-N00041338,Sean Casten,Illinois,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00041338.jpg,"1,736,860",0,"282,732","282,732",09/30/2019
-N00041357,Elissa Slotkin,Michigan,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00041357.jpg,"1,999,967","9,150","217,282","217,282",09/30/2019
-N00041370,Andy Kim,New Jersey,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00041370.jpg,"1,700,706","32,500","223,386","223,386",09/30/2019
-N00041385,Anthony Brindisi,New York,22,House,https://cdn1.opensecrets.org/congress-members/photos/N00041385.jpg,"1,333,960",0,"155,210","155,210",09/30/2019
-N00041394,Kendra Horn,Oklahoma,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00041394.jpg,"1,477,040","4,500","188,637","188,637",09/30/2019
-N00041400,Joe Cunningham,South Carolina,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00041400.jpg,"1,770,816",0,"187,989","187,989",09/30/2019
-N00041418,Abigail Spanberger,Virginia,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00041418.jpg,"1,656,670","9,500","243,932","243,932",09/30/2019
-N00041464,Gil Cisneros,California,39,House,https://cdn1.opensecrets.org/congress-members/photos/N00041464.jpg,"926,227","22,220","79,601","79,601",09/30/2019
-N00041511,Pete Stauber,Minnesota,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00041511.jpg,"867,388",0,"64,259","64,259",09/30/2019
-N00041542,Carol Miller,West Virginia,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00041542.jpg,"275,764","121,000","2,020","2,020",09/30/2019
-N00041561,Debbie Mucarsel-Powell,Florida,26,House,https://cdn1.opensecrets.org/congress-members/photos/N00041561.jpg,"1,556,309",0,"129,273","129,273",09/30/2019
-N00041569,Lauren A Underwood,Illinois,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00041569.jpg,"1,684,480","14,970","313,744","313,744",09/30/2019
-N00041588,Max Rose,New York,11,House,https://cdn1.opensecrets.org/congress-members/photos/N00041588.jpg,"2,130,499","2,700","103,808","103,808",09/30/2019
-N00041594,Tim Burchett,Tennessee,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00041594.jpg,"427,246","41,288","43,511","43,511",09/30/2019
-N00041599,John Rose,Tennessee,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00041599.jpg,"476,960",0,"3,365","3,365",09/30/2019
-N00041606,Kim Schrier,Washington,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00041606.jpg,"1,541,352",0,"175,426","175,426",09/30/2019
-N00041620,Josh Hawley,Missouri,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00041620.jpg,"12,372,541",0,"1,620,640","1,620,640",09/30/2019
-N00041668,Jared Golden,Maine,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00041668.jpg,"906,738","22,500","157,409","157,409",09/30/2019
-N00041690,Anthony Gonzalez,Ohio,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00041690.jpg,"910,155","7,800","19,791","19,791",09/30/2019
-N00041702,Veronica Escobar,Texas,16,House,https://cdn1.opensecrets.org/congress-members/photos/N00041702.jpg,"345,528","16,700","15,834","15,834",09/30/2019
-N00041731,Mike Braun,Indiana,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00041731.jpg,"18,655,048",0,"1,027,000","1,027,000",09/30/2019
-N00041750,Greg Stanton,Arizona,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00041750.jpg,"599,515",0,"44,031","44,031",09/30/2019
-N00041808,Lori Trahan,Massachusetts,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00041808.jpg,"1,121,474","39,179","31,029","31,029",09/30/2019
-N00041843,Tom Malinowski,New Jersey,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00041843.jpg,"1,720,429",0,"148,415","148,415",09/30/2019
-N00041870,Conor Lamb,Pennsylvania,17,House,https://cdn1.opensecrets.org/congress-members/photos/N00041870.jpg,"740,581",0,"109,188","109,188",09/30/2019
-N00041871,Guy Reschenthaler,Pennsylvania,14,House,https://cdn1.opensecrets.org/congress-members/photos/N00041871.jpg,"521,783","22,500","99,365","99,365",09/30/2019
-N00041873,Mark Green,Tennessee,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00041873.jpg,"396,430",0,"40,725","40,725",09/30/2019
-N00041882,Michael Cloud,Texas,27,House,https://cdn1.opensecrets.org/congress-members/photos/N00041882.jpg,"406,572",0,"36,341","36,341",09/30/2019
-N00041954,Jim Baird,Indiana,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00041954.jpg,"123,629",0,"2,172","2,172",09/30/2019
-N00041956,Greg Pence,Indiana,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00041956.jpg,"885,697",0,"425,616","425,616",09/30/2019
-N00041997,Susan Wild,Pennsylvania,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00041997.jpg,"909,235","5,000","118,579","118,579",09/30/2019
-N00042013,Ben McAdams,Utah,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00042013.jpg,"1,338,791","57,788","65,428","65,428",09/30/2019
-N00042056,Debbie Lesko,Arizona,8,House,https://cdn1.opensecrets.org/congress-members/photos/N00042056.jpg,"477,553","20,400","51,050","51,050",09/30/2019
-N00042114,Jesus Garcia,Illinois,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00042114.jpg,"313,238",0,"23,266","23,266",09/30/2019
-N00042126,Steve Watkins,Kansas,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00042126.jpg,"613,308","1,000","12,246","12,246",09/30/2019
-N00042149,Andy Levin,Michigan,9,House,https://cdn1.opensecrets.org/congress-members/photos/N00042149.jpg,"485,989",0,"38,276","38,276",12/31/2019
-N00042161,Chris Pappas,New Hampshire,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00042161.jpg,"854,110",0,"77,500","77,500",09/30/2019
-N00042164,Jeff Van Drew,New Jersey,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00042164.jpg,"1,276,316","78,895","38,295","38,295",09/30/2019
-N00042194,Troy Balderson,Ohio,12,House,https://cdn1.opensecrets.org/congress-members/photos/N00042194.jpg,"770,513","56,383","22,123","22,123",09/30/2019
-N00042224,Dan Crenshaw,Texas,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00042224.jpg,"2,722,631",0,"807,304","807,304",09/30/2019
-N00042237,Lance Gooden,Texas,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00042237.jpg,"732,960",0,"2,360","2,360",09/30/2019
-N00042240,Ron Wright,Texas,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00042240.jpg,"276,933","12,797","4,800","4,800",09/30/2019
-N00042268,Chip Roy,Texas,21,House,https://cdn1.opensecrets.org/congress-members/photos/N00042268.jpg,"1,227,967",0,"234,450","234,450",09/30/2019
-N00042282,Sylvia Garcia,Texas,29,House,https://cdn1.opensecrets.org/congress-members/photos/N00042282.jpg,"254,799",0,"7,634","7,634",09/30/2019
-N00042293,Elaine Luria,Virginia,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00042293.jpg,"1,312,271",0,"124,183","124,183",09/30/2019
-N00042296,Ben Cline,Virginia,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00042296.jpg,"301,547",0,"20,347","20,347",09/30/2019
-N00042353,Tina Smith,Minnesota,null,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00042353.jpg,"3,911,969","15,804","943,753","943,753",09/30/2019
-N00042403,Michael Waltz,Florida,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00042403.jpg,"885,370","30,000","60,783","60,783",12/31/2019
-N00042458,Michael Patrick Guest,Mississippi,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00042458.jpg,"285,986",100,"3,886","3,886",09/30/2019
-N00042467,Xochitl Torres Small,New Mexico,2,House,https://cdn1.opensecrets.org/congress-members/photos/N00042467.jpg,"1,660,920","11,900","189,255","189,255",09/30/2019
-N00042581,Ayanna Pressley,Massachusetts,7,House,https://cdn1.opensecrets.org/congress-members/photos/N00042581.jpg,"773,409",0,"300,383","300,383",09/30/2019
-N00042619,Michael San Nicolas,Guam,0,Senate,https://cdn1.opensecrets.org/congress-members/photos/N00042619.jpg,"13,527","12,525","7,775","7,775",09/30/2019
-N00042626,Sharice Davids,Kansas,3,House,https://cdn1.opensecrets.org/congress-members/photos/N00042626.jpg,"1,554,604","162,994","228,813","228,813",09/30/2019
-N00042649,Rashida Tlaib,Michigan,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00042649.jpg,"1,631,771","42,943","570,550","570,550",12/31/2019
-N00042706,Mary Gay Scanlon,Pennsylvania,5,House,https://cdn1.opensecrets.org/congress-members/photos/N00042706.jpg,"423,314",0,"59,841","59,841",09/30/2019
-N00042715,William Timmons,South Carolina,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00042715.jpg,"579,657","13,000",300,300,09/30/2019
-N00042808,Greg Steube,Florida,17,House,https://cdn1.opensecrets.org/congress-members/photos/N00042808.jpg,"232,788",0,"9,343","9,343",09/30/2019
-N00042811,Donna Shalala,Florida,27,House,https://cdn1.opensecrets.org/congress-members/photos/N00042811.jpg,"946,535","16,623","19,519","19,519",09/30/2019
-N00042813,Lucy McBath,Georgia,6,House,https://cdn1.opensecrets.org/congress-members/photos/N00042813.jpg,"1,671,873",100,"448,060","448,060",09/30/2019
-N00042868,Kelly Armstrong,North Dakota,1,House,https://cdn1.opensecrets.org/congress-members/photos/N00042868.jpg,"321,083",0,"3,385","3,385",09/30/2019
-N00042894,Madeleine Dean,Pennsylvania,4,House,https://cdn1.opensecrets.org/congress-members/photos/N00042894.jpg,"341,337","13,676","30,255","30,255",09/30/2019
-N00043207,Joseph D Morelle,New York,25,House,https://cdn1.opensecrets.org/congress-members/photos/N00043207.jpg,"519,215",0,"15,577","15,577",09/30/2019
-N00043242,John Joyce,Pennsylvania,13,House,https://cdn1.opensecrets.org/congress-members/photos/N00043242.jpg,"375,218",0,"6,269","6,269",09/30/2019
+id,name,state,district,chamber,firstElection,nextElection,image,pacCont,largeCont,smallIndividual,selfFinancing,other,pacRaised,reportDate,raised
+N00000078,Carolyn B Maloney,New York,12,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000078.jpg,"$534,500","$683,784","$39,987","$100,000",$622,"$46,500",12/31/2019,"$1,358,893"
+N00000153,Richard E Neal,Massachusetts,1,House,1988,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000153.jpg,"$1,486,203","$702,661","$7,813",$0,"$344,120","$351,573",12/31/2019,"$2,540,796"
+N00000179,James P McGovern,Massachusetts,2,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000179.jpg,"$179,625","$242,288","$117,178",$0,"$1,900",$0,12/31/2019,"$537,190"
+N00000270,Ed Markey,Massachusetts,null,Senate,2013,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000270.jpg,"$1,075,826","$4,548,135","$1,212,993",$0,"$226,174","$598,277",12/31/2019,"$7,063,136"
+N00000286,Mitt Romney,Utah,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00000286.jpg,"$42,000","$3,827,285","$502,173",$0,"$1,194,987","$240,211",09/30/2019,"$5,566,445"
+N00000362,Jack Reed,Rhode Island,null,Senate,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000362.jpg,"$1,223,845","$1,452,395","$61,168",$0,"$150,667","$1,006,075",12/31/2019,"$2,888,076"
+N00000491,Susan M Collins,Maine,null,Senate,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000491.jpg,"$2,306,939","$6,666,663","$1,042,558",$0,"$776,625","$1,011,354",12/31/2019,"$10,792,785"
+N00000515,Peter Welch,Vermont,1,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000515.jpg,"$238,300","$13,050","$63,294",$0,"$41,452","$10,000",12/31/2019,"$356,095"
+N00000528,Bernie Sanders,Vermont,null,Senate,2006,null,https://cdn1.opensecrets.org/congress-members/photos/N00000528.jpg,"$7,703","$35,253,514","$60,633,472",$0,"$12,070,329","$10,000",12/31/2019,"$107,965,016"
+N00000575,John B Larson,Connecticut,1,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000575.jpg,"$563,662","$136,495","$19,875",$0,$155,"$105,500",12/31/2019,"$720,185"
+N00000615,Rosa L DeLauro,Connecticut,3,House,1990,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000615.jpg,"$292,300","$318,969","$47,976",$0,"$4,780","$78,050",12/31/2019,"$654,464"
+N00000699,Robert Menendez,New Jersey,null,Senate,2006,2024,https://cdn1.opensecrets.org/congress-members/photos/N00000699.jpg,"$1,821,919","$7,148,059","$303,647",$0,"$1,638,370","$1,157,412",09/30/2019,"$10,911,998"
+N00000751,Bill Jr Pascrell,New Jersey,9,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000751.jpg,"$526,100","$354,880","$8,581",$0,"$34,201","$31,000",12/31/2019,"$855,359"
+N00000781,Frank Jr Pallone,New Jersey,6,House,1988,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000781.jpg,"$1,235,550","$643,049","$13,034",$0,"$3,913","$442,206",12/31/2019,"$1,887,720"
+N00000939,Jerrold Nadler,New York,10,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00000939.jpg,"$347,100","$567,588","$106,693",$0,"$38,900","$27,250",12/31/2019,"$1,060,280"
+N00001003,Eliot L Engel,New York,16,House,1988,2020,https://cdn1.opensecrets.org/congress-members/photos/N00001003.jpg,"$150,000","$405,705","$10,226",$0,"$1,200","$20,000",09/30/2019,"$564,730"
+N00001024,Nita M Lowey,New York,17,House,1988,null,https://cdn1.opensecrets.org/congress-members/photos/N00001024.jpg,"$291,700","$230,370","$13,270",$0,"$108,554","$35,000",12/31/2019,"$643,894"
+N00001093,Charles E Schumer,New York,null,Senate,1998,2022,https://cdn1.opensecrets.org/congress-members/photos/N00001093.jpg,"$3,803,053","$13,573,556","$546,092",$0,"$720,306","$3,478,240",09/30/2019,"$18,643,013"
+N00001102,Nydia M Velazquez,New York,7,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00001102.jpg,"$176,500","$300,947","$19,232",$0,"$3,800",$683,12/31/2019,"$492,878"
+N00001171,Gregory W Meeks,New York,5,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00001171.jpg,"$542,350","$275,576","$5,334",$0,"$167,817","$24,307",12/31/2019,"$991,076"
+N00001193,Pete King,New York,2,House,1992,null,https://cdn1.opensecrets.org/congress-members/photos/N00001193.jpg,"$167,475","$130,826","$29,717",$0,"$123,151",0,09/30/2019,"$451,169"
+N00001373,Mike Doyle,Pennsylvania,18,House,1994,2020,https://cdn1.opensecrets.org/congress-members/photos/N00001373.jpg,"$362,750","$143,150","$2,444",$0,$999,"$92,000",12/31/2019,"$507,344"
+N00001489,Pat Toomey,Pennsylvania,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00001489.jpg,"$4,926,368","$15,586,363","$4,728,655",$0,"$1,108,078","$2,268,740",09/30/2019,"$26,349,469"
+N00001692,Eleanor Holmes Norton,District of Columbia,0,Senate,1990,2020,https://cdn1.opensecrets.org/congress-members/photos/N00001692.jpg,"$119,500","$39,800","$1,059",$0,$500,0,12/31/2019,"$159,858"
+N00001758,Chuck Grassley,Iowa,null,Senate,1980,2022,https://cdn1.opensecrets.org/congress-members/photos/N00001758.jpg,"$3,033,734","$4,664,992","$1,230,045",$0,"$712,123","$1,512,552",09/30/2019,"$9,640,896"
+N00001813,Jose E Serrano,New York,15,House,1989,null,https://cdn1.opensecrets.org/congress-members/photos/N00001813.jpg,"$16,500",$900,$351,$0,"$5,001",0,09/30/2019,"$12,750"
+N00001821,Steny H Hoyer,Maryland,5,House,1981,2020,https://cdn1.opensecrets.org/congress-members/photos/N00001821.jpg,"$1,524,040","$747,260","$25,255",$0,"$364,096","$1,684,463",12/31/2019,"$2,660,649"
+N00001955,Ben Cardin,Maryland,null,Senate,2006,2024,https://cdn1.opensecrets.org/congress-members/photos/N00001955.jpg,"$2,012,312","$2,433,734","$147,525",$0,"$9,995","$657,450",09/30/2019,"$4,603,570"
+N00002097,Mark Warner,Virginia,null,Senate,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002097.jpg,"$2,495,059","$5,914,785","$770,883",$0,"$1,436,698","$2,716,192",12/31/2019,"$10,617,427"
+N00002147,Bobby Scott,Virginia,3,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002147.jpg,"$289,050","$82,150","$12,986",$0,$0,"$35,000",12/31/2019,"$384,185"
+N00002221,Richard Burr,North Carolina,null,Senate,2004,2022,https://cdn1.opensecrets.org/congress-members/photos/N00002221.jpg,"$4,010,675","$6,481,681","$512,120",$0,"$1,580,747","$1,704,955",09/30/2019,"$12,585,225"
+N00002260,David Price,North Carolina,4,House,1986,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002260.jpg,"$303,000","$157,210","$45,613",$0,$900,0,12/31/2019,"$504,922"
+N00002408,James E Clyburn,South Carolina,6,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002408.jpg,"$1,105,020","$455,721","$26,305",$0,"$5,371","$540,988",12/31/2019,"$1,581,675"
+N00002577,John Lewis,Georgia,5,House,1986,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002577.jpg,"$237,375","$444,735","$785,342",$0,"$58,203","$7,500",09/30/2019,"$1,409,249"
+N00002674,Sanford Bishop,Georgia,2,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002674.jpg,"$480,790","$149,034","$5,611",$0,$0,"$15,000",12/31/2019,"$635,434"
+N00002884,Alcee L Hastings,Florida,20,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002884.jpg,"$118,752","$85,586","$1,274",$0,"$6,500",$0,12/31/2019,"$212,112"
+N00002893,Lois J Frankel,Florida,21,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002893.jpg,"$170,900","$384,150","$23,751",$0,"$6,763","$12,700",12/31/2019,"$585,563"
+N00002942,Charlie Crist,Florida,13,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00002942.jpg,"$362,402","$1,145,513","$50,201",$0,$903,"$118,000",12/31/2019,"$1,559,019"
+N00003028,Robert B Aderholt,Alabama,4,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003028.jpg,"$368,400","$242,643","$14,924",$0,$353,"$34,000",12/31/2019,"$625,613"
+N00003105,Marsha Blackburn,Tennessee,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00003105.jpg,"$2,707,101","$8,858,717","$1,576,759",$0,"$2,074,858","$661,655",09/30/2019,"$15,217,438"
+N00003132,Jim Cooper,Tennessee,5,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003132.jpg,"$210,250","$292,791","$26,111",$0,$586,0,12/31/2019,"$529,738"
+N00003225,Steve Cohen,Tennessee,9,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003225.jpg,"$188,500","$93,057","$2,093",$0,"$1,007","$30,000",12/31/2019,"$284,657"
+N00003280,Roger Wicker,Mississippi,null,Senate,2007,2024,https://cdn1.opensecrets.org/congress-members/photos/N00003280.jpg,"$2,503,785","$3,420,141","$162,251",$25,"$585,257","$1,631,746",09/30/2019,"$6,671,460"
+N00003288,Bennie G Thompson,Mississippi,2,House,1993,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003288.jpg,"$496,200","$209,677","$8,616",$0,$298,"$61,661",12/31/2019,"$714,791"
+N00003389,Mitch McConnell,Kentucky,null,Senate,1984,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003389.jpg,"$3,506,586","$7,312,191","$2,777,546",$0,"$3,808,581","$4,198,161",12/31/2019,"$17,404,905"
+N00003473,Hal Rogers,Kentucky,5,House,1980,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003473.jpg,"$162,000","$125,450",$100,$0,$80,"$133,542",12/31/2019,"$287,470"
+N00003522,Marcy Kaptur,Ohio,9,House,1982,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003522.jpg,"$367,650","$118,169","$6,519",$0,$0,"$20,000",12/31/2019,"$492,337"
+N00003535,Sherrod Brown,Ohio,null,Senate,2006,2024,https://cdn1.opensecrets.org/congress-members/photos/N00003535.jpg,"$3,368,514","$14,226,338","$6,719,878",$0,"$2,640,592","$3,529,118",09/30/2019,"$26,955,325"
+N00003682,Rob Portman,Ohio,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00003682.jpg,"$5,183,245","$15,207,624","$1,133,883",$0,"$1,906,743","$2,863,636",09/30/2019,"$23,431,502"
+N00003689,Steve Chabot,Ohio,1,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00003689.jpg,"$407,050","$464,248","$43,050",$0,"$8,911","$22,500",09/30/2019,"$923,258"
+N00003813,Pete Visclosky,Indiana,1,House,1984,null,https://cdn1.opensecrets.org/congress-members/photos/N00003813.jpg,"$343,750","$196,330","$64,211",$0,"$75,725","$77,500",12/31/2019,"$528,566"
+N00004118,Debbie Stabenow,Michigan,null,Senate,2000,2024,https://cdn1.opensecrets.org/congress-members/photos/N00004118.jpg,"$3,857,367","$9,174,573","$3,048,249",$0,"$1,138,850","$1,974,148",09/30/2019,"$17,219,047"
+N00004133,Fred Upton,Michigan,6,House,1986,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004133.jpg,"$549,959","$251,840","$40,712",$0,"$119,505","$1,974,148",09/30/2019,"$962,015"
+N00004291,Jim Sensenbrenner,Wisconsin,5,House,1978,null,https://cdn1.opensecrets.org/congress-members/photos/N00004291.jpg,"$51,250","$11,000",$118,$0,$272,0,09/30/2019,"$62,640"
+N00004367,Tammy Baldwin,Wisconsin,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00004367.jpg,"$2,192,849","$16,362,071","$11,085,191",$0,"$1,157,191","$1,026,350",09/30/2019,"$30,797,308"
+N00004403,Ron Kind,Wisconsin,3,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004403.jpg,"$814,237","$122,688","$79,184",$0,"$23,536","$168,584",12/31/2019,"$1,039,645"
+N00004558,Collin Peterson,Minnesota,7,House,1990,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004558.jpg,"$582,620","$135,670","$41,047",$0,"$13,015","$24,000",12/31/2019,"$772,351"
+N00004572,John Thune,South Dakota,null,Senate,2004,2022,https://cdn1.opensecrets.org/congress-members/photos/N00004572.jpg,"$3,303,959","$3,636,760","$599,127",$0,"$1,550,398","$3,769,444",09/30/2019,"$9,090,244"
+N00004614,Kevin Cramer,North Dakota,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00004614.jpg,"$1,548,986","$3,221,130","$517,744",$0,"$796,618","$160,500",09/30/2019,"$6,084,478"
+N00004724,Jan Schakowsky,Illinois,9,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004724.jpg,"$260,150","$674,990","$211,474",$0,"$2,197","$109,500",12/31/2019,"$1,144,416"
+N00004884,Danny K Davis,Illinois,7,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004884.jpg,"$233,950","$29,700","$4,619",$0,$0,0,12/31/2019,"$268,268"
+N00004887,Bobby L Rush,Illinois,1,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004887.jpg,"$172,250","$10,520",$530,$0,"$1,000","$5,000",12/31/2019,"$182,299"
+N00004961,John Shimkus,Illinois,15,House,1996,null,https://cdn1.opensecrets.org/congress-members/photos/N00004961.jpg,"$466,000","$50,350","$27,097",$67,"$15,076","$60,500",09/30/2019,"$528,437"
+N00004981,Dick Durbin,Illinois,null,Senate,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00004981.jpg,"$1,251,340","$2,353,597","$1,417,993",$0,"$1,773,205","$2,260,739",12/31/2019,"$6,796,140"
+N00005195,Roy Blunt,Missouri,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00005195.jpg,"$4,734,669","$7,638,888","$536,949",$0,"$1,177,851","$2,647,262",09/30/2019,"$13,888,352"
+N00005282,Jerry Moran,Kansas,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00005282.jpg,"$2,674,096","$2,212,447","$117,531",$0,"$611,616","$1,629,837",09/30/2019,"$5,615,692"
+N00005285,Pat Roberts,Kansas,null,Senate,1996,null,https://cdn1.opensecrets.org/congress-members/photos/N00005285.jpg,"$756,200","$193,016","$2,211","$46,294","$63,673","$987,695",09/30/2019,"$934,047"
+N00005559,Frank D Lucas,Oklahoma,3,House,1994,2020,https://cdn1.opensecrets.org/congress-members/photos/N00005559.jpg,"$282,350","$55,850","$5,299",$0,"$2,336","$18,000",12/31/2019,"$341,163"
+N00005582,James M Inhofe,Oklahoma,null,Senate,1994,2020,https://cdn1.opensecrets.org/congress-members/photos/N00005582.jpg,"$1,717,193","$1,381,564","$93,684",$0,"$146,089","$1,492,594",12/31/2019,"$3,338,529"
+N00005736,Brian Babin,Texas,36,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00005736.jpg,"$285,532","$371,483","$32,752",$0,"$3,260","$11,000",12/31/2019,"$693,026"
+N00005818,Sheila Jackson Lee,Texas,18,House,1994,2020,https://cdn1.opensecrets.org/congress-members/photos/N00005818.jpg,"$69,500","$329,642","$2,866",$0,$0,$250,12/31/2019,"$402,008"
+N00005883,Kevin Brady,Texas,8,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00005883.jpg,"$1,206,150","$410,527","$2,985",$0,"$264,411","$168,332",12/31/2019,"$1,884,072"
+N00006023,Lloyd Doggett,Texas,35,House,1994,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006023.jpg,"$248,809","$341,700","$29,966",$424,"$109,812",0,12/31/2019,"$730,711"
+N00006052,Mac Thornberry,Texas,13,House,1994,null,https://cdn1.opensecrets.org/congress-members/photos/N00006052.jpg,"$189,275","$285,044","$6,345",$0,"$1,675","$102,000",09/30/2019,"$482,339"
+N00006134,Diana DeGette,Colorado,1,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006134.jpg,"$301,250","$276,631","$53,275",$0,"$1,038","$1,018",12/31/2019,"$630,117"
+N00006236,John A Barrasso,Wyoming,null,Senate,2007,2024,https://cdn1.opensecrets.org/congress-members/photos/N00006236.jpg,"$3,172,765","$3,394,424","$138,684",$0,"$233,063","$2,252,451",09/30/2019,"$6,938,936"
+N00006249,Mike Enzi,Wyoming,null,Senate,1996,null,https://cdn1.opensecrets.org/congress-members/photos/N00006249.jpg,"$381,634","$75,580",$285,$0,"$74,858","$1,263,528",09/30/2019,"$385,611"
+N00006263,Mike Simpson,Idaho,2,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006263.jpg,"$358,103","$124,410","$7,412",$0,$0,"$27,000",12/31/2019,"$489,925"
+N00006267,Mike Crapo,Idaho,null,Senate,1998,2022,https://cdn1.opensecrets.org/congress-members/photos/N00006267.jpg,"$3,258,938","$2,402,143","$118,752",$0,"$430,720","$1,872,086",09/30/2019,"$6,349,114"
+N00006460,David Schweikert,Arizona,6,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006460.jpg,"$249,859","$448,042","$22,963",$0,"$155,452",$0,12/31/2019,"$876,315"
+N00006561,Tom Udall,New Mexico,null,Senate,2008,null,https://cdn1.opensecrets.org/congress-members/photos/N00006561.jpg,"$263,700","$1,054,589","$480,403",$0,"$128,655","$955,533",12/31/2019,"$1,670,044"
+N00006671,Lucille Roybal-Allard,California,40,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006671.jpg,"$207,200","$108,100","$1,722",$0,$0,$0,12/31/2019,"$317,022"
+N00006690,Maxine Waters,California,43,House,1990,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006690.jpg,"$442,811","$296,243","$29,880",$0,"$3,642","$20,000",12/31/2019,"$772,576"
+N00006701,Mark Takano,California,41,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006701.jpg,"$170,807","$383,149","$38,881",$0,"$7,748","$32,500",12/31/2019,"$585,089"
+N00006789,Grace Napolitano,California,32,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006789.jpg,"$223,650","$49,609",$946,$0,$881,0,12/31/2019,"$275,086"
+N00006863,Tom McClintock,California,4,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006863.jpg,"$68,700","$460,762","$292,694",$0,"$124,380","$5,000",12/31/2019,"$946,536"
+N00006897,Brad Sherman,California,30,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00006897.jpg,"$289,750","$272,735","$7,340",$0,"$27,168","$5,000",12/31/2019,"$596,993"
+N00007021,Juan Vargas,California,51,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007021.jpg,"$278,500","$47,100","$1,472",$0,"$1,355",0,12/31/2019,"$328,426"
+N00007099,Ken Calvert,California,42,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007099.jpg,"$347,450","$527,300","$21,344",$0,"$46,931","$94,205",12/31/2019,"$943,024"
+N00007248,Devin Nunes,California,22,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007248.jpg,"$798,928","$2,931,971","$4,137,981",$0,"$222,615","$158,500",12/31/2019,"$8,091,495"
+N00007335,Anna Eshoo,California,18,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007335.jpg,"$561,940","$722,370","$26,215",$0,"$2,905",0,12/31/2019,"$1,307,620"
+N00007360,Nancy Pelosi,California,12,House,1987,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007360.jpg,"$957,891","$1,673,703","$1,733,775",$0,"$1,348,575","$1,710,348",12/31/2019,"$5,713,944"
+N00007364,Dianne Feinstein,California,null,Senate,1992,2024,https://cdn1.opensecrets.org/congress-members/photos/N00007364.jpg,"$1,728,668","$4,390,532","$1,121,711","$4,200,000","$263,869","$818,525",09/30/2019,"$11,704,782"
+N00007419,Mike Thompson,California,5,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007419.jpg,"$783,743","$406,295","$85,953",$0,"$4,225","$61,905",12/31/2019,"$1,280,216"
+N00007479,Zoe Lofgren,California,19,House,1994,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007479.jpg,"$261,100","$290,128","$20,139",$0,"$303,467","$80,169",09/30/2019,"$874,834"
+N00007635,Amata Coleman Radewagen,American Samoa,0,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007635.jpg,"$7,800","$16,101",$475,$0,$400,0,12/31/2019,"$24,776"
+N00007690,Greg Walden,Oregon,2,House,1998,null,https://cdn1.opensecrets.org/congress-members/photos/N00007690.jpg,"$988,700","$385,687","$28,644",$0,"$110,389","$377,886",09/30/2019,"$1,513,419"
+N00007724,Ron Wyden,Oregon,null,Senate,1996,2022,https://cdn1.opensecrets.org/congress-members/photos/N00007724.jpg,"$2,542,801","$6,181,880","$1,356,754",$0,"$530,016","$1,838,764",09/30/2019,"$10,611,454"
+N00007727,Earl Blumenauer,Oregon,3,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007727.jpg,"$505,065","$332,775","$58,343",$0,"$44,935","$90,450",12/31/2019,"$941,118"
+N00007781,Peter DeFazio,Oregon,4,House,1986,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007781.jpg,"$580,000","$247,861","$114,967",$0,"$37,610","$90,003",09/30/2019,"$905,217"
+N00007833,Adam Smith,Washington,9,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007833.jpg,"$377,450","$306,775","$12,866",$0,$0,"$79,600",12/31/2019,"$697,091"
+N00007836,Maria Cantwell,Washington,null,Senate,2000,2024,https://cdn1.opensecrets.org/congress-members/photos/N00007836.jpg,"$29,777","$7,625,590","$2,770,082",$0,"$254,802",0,09/30/2019,"$10,680,258"
+N00007876,Patty Murray,Washington,null,Senate,1992,2022,https://cdn1.opensecrets.org/congress-members/photos/N00007876.jpg,"$3,256,616","$6,166,167","$2,000,645",$0,"$679,225","$1,860,498",09/30/2019,"$12,102,659"
+N00007999,Don Young,Alaska,1,House,1973,2020,https://cdn1.opensecrets.org/congress-members/photos/N00007999.jpg,"$375,195","$272,530","$27,627",$0,"$121,014","$10,000",12/31/2019,"$796,365"
+N00008046,Barbara Lee,California,13,House,1998,2020,https://cdn1.opensecrets.org/congress-members/photos/N00008046.jpg,"$247,850","$460,991","$168,814",$0,"$3,153","$47,500",12/31/2019,"$874,501"
+N00008122,Eddie Bernice Johnson,Texas,30,House,1992,2020,https://cdn1.opensecrets.org/congress-members/photos/N00008122.jpg,"$211,516","$94,510","$5,631",$0,"$2,000",0,12/31/2019,"$309,657"
+N00008799,Kay Granger,Texas,12,House,1996,2020,https://cdn1.opensecrets.org/congress-members/photos/N00008799.jpg,"$737,450","$680,320","$29,297",$0,"$1,982","$112,500",12/31/2019,"$1,445,085"
+N00009585,Adam Schiff,California,28,House,2000,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009585.jpg,"$245,099","$2,553,686","$3,442,699",$0,"$678,833","$227,507",12/31/2019,"$6,920,316"
+N00009604,Susan Davis,California,53,House,2000,null,https://cdn1.opensecrets.org/congress-members/photos/N00009604.jpg,"$89,500","$13,850","$1,265",$0,"$1,125",0,09/30/2019,"$103,489"
+N00009660,Steve Scalise,Louisiana,1,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009660.jpg,$0,"$5,223,796","$5,965,151",$0,"$2,363,671","$773,666",12/31/2019,"$13,552,618"
+N00009724,Jim Langevin,Rhode Island,2,House,2000,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009724.jpg,"$284,934","$287,854","$18,555",$500,"$21,426","$25,000",12/31/2019,"$613,269"
+N00009759,Rick Larsen,Washington,2,House,2000,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009759.jpg,"$395,950","$112,281","$33,059",$0,"$1,047","$7,500",12/31/2019,"$540,242"
+N00009771,Shelley Moore Capito,West Virginia,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009771.jpg,"$1,590,100","$1,388,277","$75,912",$0,"$365,237","$991,729",12/31/2019,"$3,419,525"
+N00009816,Chris Smith,New Jersey,4,House,1980,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009816.jpg,"$238,075","$212,435","$132,759",$0,"$120,966","$6,005",12/31/2019,"$704,234"
+N00009888,Lamar Alexander,Tennessee,null,Senate,2002,null,https://cdn1.opensecrets.org/congress-members/photos/N00009888.jpg,"$433,300","$130,793",$650,$0,"$112,930","$2,880,011",09/30/2019,"$451,813"
+N00009918,Patrick Leahy,Vermont,null,Senate,1974,2022,https://cdn1.opensecrets.org/congress-members/photos/N00009918.jpg,"$1,467,943","$2,752,964","$89,295",$0,"$212,560","$1,603,971",09/30/2019,"$4,522,763"
+N00009920,Richard C Shelby,Alabama,null,Senate,1986,2022,https://cdn1.opensecrets.org/congress-members/photos/N00009920.jpg,"$1,596,350","$1,653,386","$10,555",$0,"$347,797","$3,374,001",09/30/2019,"$3,608,087"
+N00009975,Lindsey Graham,South Carolina,null,Senate,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00009975.jpg,"$1,705,603","$9,449,505","$4,104,986",$0,"$814,005","$1,521,946",12/31/2019,"$16,074,099"
+N00012233,Robert E Latta,Ohio,5,House,2007,2020,https://cdn1.opensecrets.org/congress-members/photos/N00012233.jpg,"$488,525","$287,237","$49,191",$0,$205,"$6,000",12/31/2019,"$824,747"
+N00012460,William L Jr Clay,Missouri,1,House,2000,2020,https://cdn1.opensecrets.org/congress-members/photos/N00012460.jpg,"$390,671","$131,830","$5,457",$0,$350,"$33,500",12/31/2019,"$527,608"
+N00012508,Tom Carper,Delaware,null,Senate,2000,2024,https://cdn1.opensecrets.org/congress-members/photos/N00012508.jpg,"$2,510,992","$1,409,034","$136,361",$0,"$19,937","$1,171,960",09/30/2019,"$4,036,451"
+N00012942,Betty McCollum,Minnesota,4,House,2000,2020,https://cdn1.opensecrets.org/congress-members/photos/N00012942.jpg,"$234,080","$264,835","$32,008",$0,$0,"$64,850",12/31/2019,"$530,922"
+N00013323,Sam Graves,Missouri,6,House,2000,2020,https://cdn1.opensecrets.org/congress-members/photos/N00013323.jpg,"$911,484","$204,600","$5,053",$0,"$8,216","$48,000",12/31/2019,"$1,129,352"
+N00013817,Chellie Pingree,Maine,1,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00013817.jpg,"$84,000","$63,519","$53,411",$0,"$6,490",0,12/31/2019,"$194,440"
+N00013820,Chris Van Hollen,Maryland,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00013820.jpg,"$1,523,154","$8,656,247","$961,806",$0,"$2,133,529","$722,832",09/30/2019,"$13,274,738"
+N00013855,Stephen F Lynch,Massachusetts,8,House,2001,2020,https://cdn1.opensecrets.org/congress-members/photos/N00013855.jpg,"$239,750","$253,450","$4,920",$0,"$10,362","$5,000",12/31/2019,"$508,482"
+N00013873,John Boozman,Arkansas,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00013873.jpg,"$2,029,996","$2,228,297","$132,482",$0,"$242,504","$846,908",09/30/2019,"$4,633,279"
+N00024759,Mike D Rogers,Alabama,3,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024759.jpg,"$370,645","$231,652","$3,275",$0,"$5,488","$47,250",12/31/2019,"$611,059"
+N00024790,Jeanne Shaheen,New Hampshire,null,Senate,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024790.jpg,"$1,717,426","$4,979,713","$2,158,987",$0,"$422,403","$759,603",12/31/2019,"$9,278,531"
+N00024809,Joe Wilson,South Carolina,2,House,2001,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024809.jpg,"$298,500","$229,551","$36,649",$0,"$5,478","$9,000",12/31/2019,"$570,177"
+N00024817,Doug Jones,Alabama,null,Senate,2017,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024817.jpg,"$1,076,952","$3,312,150","$915,679",$0,"$329,235","$304,954",09/30/2019,"$5,634,016"
+N00024842,Joe Courtney,Connecticut,2,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024842.jpg,"$319,000","$131,330","$49,162",$105,"$10,744","$27,500",12/31/2019,"$510,340"
+N00024852,John Cornyn,Texas,null,Senate,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024852.jpg,"$2,663,848","$5,774,607","$1,936,473",$0,"$5,752,377","$4,539,937",12/31/2019,"$16,127,305"
+N00024870,Linda Sanchez,California,38,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024870.jpg,"$499,321","$63,410","$5,370",$0,"$1,647","$65,750",12/31/2019,"$566,453"
+N00024871,David Scott,Georgia,13,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024871.jpg,"$567,900","$46,450",$596,$0,$497,"$22,000",12/31/2019,"$614,448"
+N00024978,Henry Cuellar,Texas,28,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00024978.jpg,"$784,735","$694,710","$8,707","$9,000","$30,060","$35,300",12/31/2019,"$1,527,211"
+N00025095,John Carter,Texas,31,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025095.jpg,"$470,500","$405,412","$62,354",$0,"$139,039","$12,500",12/31/2019,"$1,077,305"
+N00025175,Michael R Turner,Ohio,10,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025175.jpg,"$269,900","$332,713","$21,459",$0,"$168,316","$48,330",12/31/2019,"$792,387"
+N00025219,Michael Burgess,Texas,26,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025219.jpg,"$391,050","$310,718","$13,740",$0,"$2,195","$208,803",12/31/2019,"$713,312"
+N00025237,Steven A King,Iowa,4,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025237.jpg,"$8,520","$130,617","$117,736",$0,"$1,583",$0,12/31/2019,"$258,455"
+N00025280,Tim Ryan,Ohio,13,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025280.jpg,"$113,500","$21,760","$11,598",$0,$401,"$283,785",09/30/2019,"$146,456"
+N00025284,Raul M Grijalva,Arizona,3,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025284.jpg,"$134,199","$197,790","$56,895",$0,"$12,746","$17,800",12/31/2019,"$401,630"
+N00025292,Rob Bishop,Utah,1,House,2002,null,https://cdn1.opensecrets.org/congress-members/photos/N00025292.jpg,$0,$0,$0,$0,$77,"$17,000",09/30/2019,$77
+N00025337,Mario Diaz-Balart,Florida,25,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025337.jpg,"$547,150","$376,850","$1,471",$0,$0,"$38,000",12/31/2019,"$925,471"
+N00025445,David Kustoff,Tennessee,8,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025445.jpg,"$361,300","$673,472","$12,616",$0,"$16,576","$88,715",12/31/2019,"$1,030,812"
+N00025482,Dutch Ruppersberger,Maryland,2,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025482.jpg,"$328,750","$97,390","$11,281",$0,"$2,788","$27,500",09/30/2019,"$434,633"
+N00025726,Tom Cole,Oklahoma,4,House,2002,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025726.jpg,"$422,100","$447,100","$6,975",$0,$428,"$61,500",12/31/2019,"$876,603"
+N00025882,Ed Case,Hawaii,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00025882.jpg,"$166,050","$62,650","$21,100",$0,"$1,336",0,12/31/2019,"$248,463"
+N00026041,Mike Conaway,Texas,11,House,2004,null,https://cdn1.opensecrets.org/congress-members/photos/N00026041.jpg,"$258,500","$164,429",$0,$0,"$38,856","$78,500",12/31/2019,"$384,073"
+N00026050,Lisa Murkowski,Alaska,null,Senate,2002,2022,https://cdn1.opensecrets.org/congress-members/photos/N00026050.jpg,"$2,578,695","$2,893,747","$138,191",$0,"$76,677","$1,282,235",09/30/2019,"$5,687,509"
+N00026106,Debbie Wasserman Schultz,Florida,23,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026106.jpg,"$292,898","$607,111","$77,946",$0,"$10,254","$109,932",12/31/2019,"$988,208"
+N00026148,Louis B Jr Gohmert,Texas,1,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026148.jpg,"$25,287","$200,394","$31,414",$0,$0,0,12/31/2019,"$257,095"
+N00026166,Virginia Foxx,North Carolina,5,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026166.jpg,"$409,550","$669,189","$25,410",$0,"$4,000","$60,000",12/31/2019,"$1,100,148"
+N00026314,Cathy McMorris Rodgers,Washington,5,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026314.jpg,"$709,153","$545,809","$291,481",$0,"$180,950","$88,916",12/31/2019,"$1,727,392"
+N00026335,Daniel Webster,Florida,11,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026335.jpg,"$77,767","$191,550","$30,595",$0,$4,$0,12/31/2019,"$299,915"
+N00026341,Jim Costa,California,16,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026341.jpg,"$625,480","$593,255","$2,829",$0,"$1,903","$10,000",12/31/2019,"$1,219,659"
+N00026368,Tim Walberg,Michigan,7,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026368.jpg,"$438,706","$545,517","$66,580",$0,"$174,832","$7,500",12/31/2019,"$1,225,635"
+N00026427,Ro Khanna,California,17,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026427.jpg,$0,"$1,974,592","$156,995",$0,"$33,964",0,12/31/2019,"$2,097,623"
+N00026460,Michael McCaul,Texas,10,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026460.jpg,"$478,050","$297,270","$72,027",$0,"$740,096","$50,668",12/31/2019,"$1,587,443"
+N00026627,Patrick McHenry,North Carolina,10,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026627.jpg,"$823,450","$270,050","$3,767",$0,"$420,131","$541,207",12/31/2019,"$1,517,398"
+N00026631,Jeff Fortenberry,Nebraska,1,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026631.jpg,"$262,300","$145,600","$9,167",$0,"$61,333","$20,000",12/31/2019,"$478,399"
+N00026686,Al Green,Texas,9,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026686.jpg,"$109,000","$70,900","$12,955",$0,$55,0,12/31/2019,"$192,800"
+N00026710,Kenny Marchant,Texas,24,House,2004,null,https://cdn1.opensecrets.org/congress-members/photos/N00026710.jpg,"$287,251","$82,050",$300,$0,"$74,662","$9,000",12/31/2019,"$444,262"
+N00026790,Emanuel Cleaver,Missouri,5,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026790.jpg,"$464,475","$144,030","$19,940",$0,$0,"$40,000",12/31/2019,"$628,445"
+N00026823,John Kennedy,Louisiana,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00026823.jpg,"$1,568,384","$8,278,287","$248,084",$0,"$35,700","$476,361",09/30/2019,"$10,130,455"
+N00026914,Gwen Moore,Wisconsin,4,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026914.jpg,"$408,073","$162,598","$22,086",$0,"$1,000","$77,351",12/31/2019,"$591,757"
+N00026926,Jerry McNerney,California,9,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026926.jpg,"$224,590","$313,250","$46,445",$0,$26,"$13,750",12/31/2019,"$584,310"
+N00026961,Yvette D Clarke,New York,9,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00026961.jpg,"$437,500","$119,228","$20,923",$0,"$2,500",$0,12/31/2019,"$575,150"
+N00027035,G K Butterfield,North Carolina,1,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027035.jpg,"$342,750","$42,000","$1,419",$0,$75,"$50,500",12/31/2019,"$386,244"
+N00027060,Brian M Higgins,New York,26,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027060.jpg,"$441,945","$190,785","$37,710",$0,"$1,131","$2,500",12/31/2019,"$671,570"
+N00027239,Daniel Lipinski,Illinois,3,House,2004,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027239.jpg,"$502,873","$427,720","$15,119",$0,"$34,527","$11,500",12/31/2019,"$980,239"
+N00027459,Doris Matsui,California,6,House,2005,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027459.jpg,"$421,950","$185,150","$4,809",$0,$500,"$28,000",12/31/2019,"$611,408"
+N00027462,Gus Bilirakis,Florida,12,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027462.jpg,"$363,450","$309,952","$46,498",$0,$250,$0,12/31/2019,"$719,650"
+N00027500,Amy Klobuchar,Minnesota,null,Senate,2006,null,https://cdn1.opensecrets.org/congress-members/photos/N00027500.jpg,"$11,048","$14,629,571","$10,692,038",$0,"$3,400,582","$1,400,517",12/31/2019,"$28,733,238"
+N00027503,Bob Casey,Pennsylvania,null,Senate,2006,2024,https://cdn1.opensecrets.org/congress-members/photos/N00027503.jpg,"$3,623,149","$11,620,371","$3,795,166",$0,"$1,482,471","$1,220,664",09/30/2019,"$20,521,165"
+N00027509,Scott Tipton,Colorado,3,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027509.jpg,"$263,500","$309,763","$39,462",$0,"$121,163",$0,12/31/2019,"$733,888"
+N00027510,Ed Perlmutter,Colorado,7,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027510.jpg,"$496,200","$174,010","$53,873",$0,"$3,770","$87,500",12/31/2019,"$720,312"
+N00027514,Kathy Castor,Florida,14,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027514.jpg,"$238,250","$177,708","$24,218",$0,"$1,003",$9,12/31/2019,"$439,173"
+N00027523,Albio Sires,New Jersey,8,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027523.jpg,"$126,800","$155,300","$1,544",$0,"$1,055",0,12/31/2019,"$284,698"
+N00027533,Sheldon Whitehouse,Rhode Island,null,Senate,2006,2024,https://cdn1.opensecrets.org/congress-members/photos/N00027533.jpg,"$1,397,348","$4,613,774","$204,809",$0,"$149,672","$1,249,776",09/30/2019,"$6,365,606"
+N00027566,Christopher S Murphy,Connecticut,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00027566.jpg,"$1,648,048","$8,688,227","$4,381,938",$0,"$291,214","$968,046",09/30/2019,"$15,009,433"
+N00027605,Jon Tester,Montana,null,Senate,2006,2024,https://cdn1.opensecrets.org/congress-members/photos/N00027605.jpg,"$3,420,466","$12,049,320","$3,956,539",$0,"$1,016,242","$2,092,801",09/30/2019,"$20,442,574"
+N00027623,Adrian Smith,Nebraska,3,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027623.jpg,"$558,850","$147,400","$11,176",$0,"$1,564","$10,000",12/31/2019,"$718,990"
+N00027626,Vernon Buchanan,Florida,16,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027626.jpg,"$785,750","$818,148","$8,782",$0,"$289,308","$112,900",12/31/2019,"$1,323,371"
+N00027658,Kirsten Gillibrand,New York,null,Senate,2009,2024,https://cdn1.opensecrets.org/congress-members/photos/N00027658.jpg,"$1,055,718","$11,624,465","$6,271,532",$0,"$404,708","$3,408,955",09/30/2019,"$19,356,430"
+N00027709,Van Taylor,Texas,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027709.jpg,"$349,906","$613,777","$22,398","$6,551","$162,387","$5,000",12/31/2019,"$1,155,019"
+N00027741,David Loebsack,Iowa,2,House,2006,null,https://cdn1.opensecrets.org/congress-members/photos/N00027741.jpg,"$84,500","$34,292","$5,726",$0,"$17,600","$10,000",09/30/2019,"$106,917"
+N00027751,John Sarbanes,Maryland,3,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027751.jpg,$250,"$382,698","$13,999",$0,$827,"$73,645",12/31/2019,"$396,119"
+N00027783,Ralph Norman,South Carolina,5,House,2017,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027783.jpg,"$130,000","$70,802","$16,227",$0,"$31,457",0,12/31/2019,"$185,572"
+N00027848,Hank Johnson,Georgia,4,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027848.jpg,"$232,550","$15,000","$4,148",$0,"$4,000","$5,000",12/31/2019,"$247,697"
+N00027860,Tammy Duckworth,Illinois,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00027860.jpg,"$1,683,882","$8,820,718","$6,647,168",$0,"$2,267,277","$707,739",09/30/2019,"$19,419,054"
+N00027894,Jim Jordan,Ohio,4,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00027894.jpg,"$192,629","$1,473,966","$2,109,894",$0,"$17,008","$16,450",12/31/2019,"$3,759,481"
+N00028073,John A Yarmuth,Kentucky,3,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00028073.jpg,"$216,990","$24,000","$3,007",$0,$765,"$2,500",12/31/2019,"$244,762"
+N00028122,TJ Cox,California,21,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00028122.jpg,"$386,451","$547,183","$107,739",$0,"$117,445",0,09/30/2019,"$923,927"
+N00028133,Douglas L Lamborn,Colorado,5,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00028133.jpg,"$160,500","$79,125","$1,075",$0,$0,$0,12/31/2019,"$240,700"
+N00028138,Brian Schatz,Hawaii,null,Senate,2012,2022,https://cdn1.opensecrets.org/congress-members/photos/N00028138.jpg,"$1,987,508","$3,027,733","$240,677",$0,"$129,862","$1,136,924",09/30/2019,"$5,385,993"
+N00028139,Mazie K Hirono,Hawaii,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00028139.jpg,"$1,549,068","$2,252,029","$591,137",$0,"$90,466","$621,161",09/30/2019,"$4,482,705"
+N00028152,Kevin McCarthy,California,23,House,2006,2020,https://cdn1.opensecrets.org/congress-members/photos/N00028152.jpg,"$830,685","$917,172","$1,903,780",$0,"$4,231,625","$2,248,954",12/31/2019,"$7,883,261"
+N00028463,Phil Roe,Tennessee,1,House,2008,null,https://cdn1.opensecrets.org/congress-members/photos/N00028463.jpg,"$9,000","$116,549","$14,085",$0,$0,"$182,500",12/31/2019,"$139,634"
+N00029070,Jim Himes,Connecticut,4,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029070.jpg,"$363,000","$244,511","$39,126",$0,"$88,645","$120,350",12/31/2019,"$735,282"
+N00029139,Bill Foster,Illinois,11,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029139.jpg,"$393,500","$429,393","$98,465",$0,"$132,592","$23,700",12/31/2019,"$1,053,950"
+N00029147,Andy Harris,Maryland,1,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029147.jpg,"$211,246","$440,517","$128,426",$0,$390,"$10,000",12/31/2019,"$779,799"
+N00029260,Ann Kirkpatrick,Arizona,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029260.jpg,"$343,000","$323,456","$122,344",$0,"$6,040","$10,000",09/30/2019,"$782,760"
+N00029277,Gary Peters,Michigan,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029277.jpg,"$2,502,012","$4,712,698","$1,508,353",$0,"$368,823","$1,449,664",09/30/2019,"$9,091,887"
+N00029285,Pete Olson,Texas,22,House,2008,null,https://cdn1.opensecrets.org/congress-members/photos/N00029285.jpg,"$341,050","$198,350","$7,681",$0,"$72,132",$0,12/31/2019,"$474,948"
+N00029303,Jeff Merkley,Oregon,null,Senate,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029303.jpg,"$479,226","$3,560,850","$3,899,356",$0,"$357,547","$2,214,776",12/31/2019,"$8,296,982"
+N00029404,Lee Zeldin,New York,1,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029404.jpg,"$775,695","$1,176,220","$391,564",$0,"$225,631","$52,500",12/31/2019,"$2,569,110"
+N00029416,Dan Meuser,Pennsylvania,9,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029416.jpg,"$258,454","$184,270","$4,218","$10,000","$54,685",$0,12/31/2019,"$511,626"
+N00029441,James E Risch,Idaho,null,Senate,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029441.jpg,"$702,771","$756,730","$84,362",$0,"$125,030","$370,913",12/31/2019,"$1,668,892"
+N00029459,Rob Wittman,Virginia,1,House,2007,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029459.jpg,"$233,377","$157,539","$54,212",$0,"$142,513","$15,300",09/30/2019,"$587,640"
+N00029513,Andre Carson,Indiana,7,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029513.jpg,"$220,650","$274,668","$7,706",$0,"$29,137","$15,000",12/31/2019,"$532,160"
+N00029562,Ben Ray Lujan,New Mexico,3,House,2008,null,https://cdn1.opensecrets.org/congress-members/photos/N00029562.jpg,"$593,152","$1,262,458","$656,908",$0,"$93,885","$102,500",09/30/2019,"$2,606,403"
+N00029574,Steve Stivers,Ohio,15,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029574.jpg,"$1,092,102","$464,530","$10,345",$0,"$28,700","$277,921",12/31/2019,"$1,595,677"
+N00029649,Jackie Speier,California,14,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029649.jpg,"$120,300","$344,156","$12,985",$0,"$8,007","$10,030",12/31/2019,"$485,448"
+N00029662,Bill Posey,Florida,8,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029662.jpg,"$186,855","$185,450","$49,134",$0,$56,$0,12/31/2019,"$421,383"
+N00029675,Brett Guthrie,Kentucky,2,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029675.jpg,"$646,060","$89,500","$15,587",$0,"$2,239","$47,013",12/31/2019,"$753,385"
+N00029736,Glenn Thompson,Pennsylvania,15,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029736.jpg,"$275,873","$301,555","$35,661",$0,"$5,480","$34,420",09/30/2019,"$607,609"
+N00029835,Martin Heinrich,New Mexico,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00029835.jpg,"$2,533,265","$4,024,218","$1,066,314",$0,"$551,526","$1,311,780",09/30/2019,"$8,175,327"
+N00029891,Gerry Connolly,Virginia,11,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00029891.jpg,"$441,793","$417,781","$139,552",$0,"$27,258","$23,728",12/31/2019,"$1,026,383"
+N00030026,Blaine Luetkemeyer,Missouri,3,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030026.jpg,"$884,895","$240,535","$9,808",$0,"$6,984","$337,165",12/31/2019,"$1,142,221"
+N00030071,Kurt Schrader,Oregon,5,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030071.jpg,"$755,100","$216,778","$24,590",$0,"$51,003","$17,500",12/31/2019,"$1,047,471"
+N00030184,Cedric Richmond,Louisiana,2,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030184.jpg,"$538,004","$160,400","$1,831",$0,$0,"$31,050",12/31/2019,"$700,235"
+N00030191,Dina Titus,Nevada,1,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030191.jpg,"$201,251","$207,905","$20,109",$0,"$2,060","$2,000",12/31/2019,"$427,205"
+N00030196,Paul Tonko,New York,20,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030196.jpg,"$539,565","$173,938","$70,174",$0,"$1,957","$8,500",12/31/2019,"$785,633"
+N00030245,Bill Cassidy,Louisiana,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030245.jpg,"$1,885,609","$4,280,819","$176,185",$0,"$415,899","$1,709,939",09/30/2019,"$6,758,512"
+N00030490,Marcia L Fudge,Ohio,11,House,2008,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030490.jpg,"$283,436","$54,538","$28,815",$0,$149,$0,12/31/2019,"$366,937"
+N00030581,Mike Quigley,Illinois,5,House,2009,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030581.jpg,"$355,454","$241,575","$10,448",$0,"$1,000","$7,500",12/31/2019,"$606,476"
+N00030600,Judy Chu,California,27,House,2009,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030600.jpg,"$294,750","$350,258","$31,088",$0,"$3,750","$46,000",12/31/2019,"$672,346"
+N00030602,Roger Williams,Texas,25,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030602.jpg,"$358,995","$224,560","$7,612",$0,"$549,515","$28,760",12/31/2019,"$1,140,681"
+N00030608,Michael Bennet,Colorado,null,Senate,2009,null,https://cdn1.opensecrets.org/congress-members/photos/N00030608.jpg,"$4,807","$4,085,616","$2,051,787","$2,800","$686,674","$1,699,339",12/31/2019,"$6,831,684"
+N00030612,Marco Rubio,Florida,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00030612.jpg,"$2,720,389","$11,110,595","$4,468,834",$0,"$1,646,468","$2,638,079",09/30/2019,"$19,946,289"
+N00030622,Terri A Sewell,Alabama,7,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030622.jpg,"$852,550","$170,100","$7,502",$0,$0,"$17,500",12/31/2019,"$1,030,152"
+N00030642,Al Lawson,Florida,5,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030642.jpg,"$222,000","$54,236","$2,368",$0,"$35,558","$7,300",12/31/2019,"$243,045"
+N00030650,Frederica Wilson,Florida,24,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030650.jpg,"$160,180","$8,890",$85,$0,$0,$0,12/31/2019,"$169,155"
+N00030667,Adam Kinzinger,Illinois,16,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030667.jpg,"$153,235","$314,151","$47,800",$0,"$599,074","$59,109",12/31/2019,"$1,114,259"
+N00030670,Todd Young,Indiana,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00030670.jpg,"$2,693,038","$6,778,284","$582,448",$0,"$1,124,655","$839,024",09/30/2019,"$11,893,863"
+N00030673,Bill Huizenga,Michigan,2,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030673.jpg,"$588,317","$251,125","$19,805",$0,"$169,767",0,12/31/2019,"$1,029,013"
+N00030676,Billy Long,Missouri,7,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030676.jpg,"$563,600","$288,100","$4,296",$0,"$6,084","$23,055",12/31/2019,"$862,080"
+N00030693,Suzan DelBene,Washington,1,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030693.jpg,"$577,724","$366,478","$73,909",$0,$20,"$27,871",12/31/2019,"$1,018,090"
+N00030709,Mark Desaulnier,California,11,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030709.jpg,"$194,027","$80,016","$22,972",$0,"$1,000",$0,12/31/2019,"$296,014"
+N00030717,Ami Bera,California,7,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030717.jpg,"$491,593","$442,245","$61,828",$0,"$13,149","$19,000",12/31/2019,"$982,516"
+N00030752,Jeff Duncan,South Carolina,3,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030752.jpg,"$315,795","$166,901","$152,778",$0,"$20,254","$6,000",12/31/2019,"$655,727"
+N00030768,Martha Roby,Alabama,2,House,2010,null,https://cdn1.opensecrets.org/congress-members/photos/N00030768.jpg,"$161,500","$51,900","$1,900",$0,"$67,650","$86,500",12/31/2019,"$147,649"
+N00030770,Rick Crawford,Arkansas,1,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030770.jpg,"$256,836","$242,075","$26,850",$0,"$4,167","$59,056",12/31/2019,"$529,928"
+N00030771,Paul Gosar,Arizona,4,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030771.jpg,"$119,292","$91,100","$47,660",$0,"$7,546","$10,000",12/31/2019,"$265,597"
+N00030780,Cory Gardner,Colorado,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030780.jpg,"$3,221,898","$4,912,875","$960,528",$0,"$1,850,638","$2,740,589",12/31/2019,"$10,945,940"
+N00030788,Tom Graves,Georgia,14,House,2010,null,https://cdn1.opensecrets.org/congress-members/photos/N00030788.jpg,"$548,250","$140,350",$449,$0,"$96,771","$99,714",12/31/2019,"$785,820"
+N00030815,Chuck Fleischmann,Tennessee,3,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030815.jpg,"$232,108","$438,800","$1,100",$0,"$2,500","$1,300",12/31/2019,"$669,508"
+N00030829,Ken Buck,Colorado,4,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030829.jpg,"$121,500","$34,513","$2,124",$0,"$1,491",$0,12/31/2019,"$159,628"
+N00030836,Rand Paul,Kentucky,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00030836.jpg,"$1,024,033","$2,715,184","$977,073",$0,"$1,282,898","$3,290,807",09/30/2019,"$5,999,196"
+N00030856,John Garamendi,California,3,House,2009,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030856.jpg,"$324,274","$207,845","$22,112",$0,$20,"$7,500",12/31/2019,"$554,210"
+N00030875,Ann Kuster,New Hampshire,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030875.jpg,"$605,573","$885,683","$125,384",$0,"$5,916","$19,050",12/31/2019,"$1,622,556"
+N00030910,Mo Brooks,Alabama,5,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030910.jpg,"$101,220","$174,300","$4,135",$0,$655,$539,12/31/2019,"$280,310"
+N00030949,Tom Reed,New York,23,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030949.jpg,"$832,350","$572,782","$34,818",$0,"$279,583","$64,797",12/31/2019,"$1,719,533"
+N00030957,Scott Desjarlais,Tennessee,4,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00030957.jpg,"$45,000","$149,024",$436,$0,$0,$0,12/31/2019,"$194,460"
+N00031005,Vicky Hartzler,Missouri,4,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031005.jpg,"$173,404","$295,596","$81,190",$0,"$1,058","$41,500",09/30/2019,"$551,247"
+N00031128,Bob Gibbs,Ohio,7,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031128.jpg,"$321,286","$94,106","$13,664",$0,$0,"$10,000",12/31/2019,"$429,056"
+N00031129,James Lankford,Oklahoma,null,Senate,2014,2022,https://cdn1.opensecrets.org/congress-members/photos/N00031129.jpg,"$1,572,446","$1,976,161","$257,384",$0,"$88,531","$687,633",09/30/2019,"$3,894,524"
+N00031177,Mark Amodei,Nevada,2,House,2011,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031177.jpg,"$158,300","$218,699","$3,760",$0,"$48,995",$0,12/31/2019,"$429,753"
+N00031226,Jackie Walorski,Indiana,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031226.jpg,"$679,108","$233,250","$7,776",$0,"$258,928","$99,808",12/31/2019,"$1,179,062"
+N00031227,Larry Bucshon,Indiana,8,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031227.jpg,"$316,500","$164,850","$12,293",$0,$0,"$15,000",12/31/2019,"$493,642"
+N00031233,Andy Barr,Kentucky,6,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031233.jpg,"$912,396","$717,052","$43,478",$0,"$154,314","$177,916",12/31/2019,"$1,827,241"
+N00031317,Ted Deutch,Florida,22,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031317.jpg,"$142,302","$561,568","$21,182",$0,"$1,000","$22,500",12/31/2019,"$724,052"
+N00031390,Jim Hagedorn,Minnesota,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031390.jpg,"$344,882","$488,702","$53,161",$100,"$108,500",$0,12/31/2019,"$995,346"
+N00031417,Will Hurd,Texas,23,House,2014,null,https://cdn1.opensecrets.org/congress-members/photos/N00031417.jpg,"$404,375","$317,846","$79,930",$0,"$279,732","$43,270",12/31/2019,"$1,081,882"
+N00031545,Bill Flores,Texas,17,House,2010,null,https://cdn1.opensecrets.org/congress-members/photos/N00031545.jpg,"$263,250","$136,000","$5,295",$0,"$29,166","$11,500",09/30/2019,"$375,378"
+N00031557,Dennis Heck,Washington,10,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00031557.jpg,"$351,175","$129,050","$4,085",$0,$0,"$34,500",12/31/2019,"$484,310"
+N00031559,Jaime Herrera Beutler,Washington,3,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031559.jpg,"$625,406","$511,743","$320,246",$0,"$115,951","$95,000",12/31/2019,"$1,573,345"
+N00031647,Mike Kelly,Pennsylvania,16,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031647.jpg,"$611,089","$285,449","$15,010",$0,"$123,261","$66,500",09/30/2019,"$1,034,809"
+N00031681,David McKinley,West Virginia,1,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031681.jpg,"$371,627","$153,510","$5,074",$0,"$1,800","$30,000",12/31/2019,"$528,410"
+N00031685,Richard Blumenthal,Connecticut,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00031685.jpg,"$1,879,532","$5,601,624","$878,477","$1,237","$40,870","$1,367,869",09/30/2019,"$8,401,744"
+N00031688,John Hoeven,North Dakota,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00031688.jpg,"$1,695,681","$1,469,410","$113,859","$100,000","$186,692","$828,611",09/30/2019,"$3,565,642"
+N00031696,Mike Lee,Utah,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00031696.jpg,"$1,109,670","$3,272,758","$507,009",$0,"$121,615","$655,370",09/30/2019,"$4,767,825"
+N00031782,Tim Scott,South Carolina,null,Senate,2013,2022,https://cdn1.opensecrets.org/congress-members/photos/N00031782.jpg,"$3,794,689","$4,293,485","$144,069",$0,"$37,247","$1,960,261",09/30/2019,"$8,194,998"
+N00031820,Chris Coons,Delaware,null,Senate,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031820.jpg,"$1,258,900","$2,807,771","$136,919","$70,509","$44,163","$1,812,603",12/31/2019,"$4,229,938"
+N00031857,Steve Womack,Arkansas,3,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031857.jpg,"$236,381","$162,865","$25,200",$0,$0,"$52,105",12/31/2019,"$424,446"
+N00031877,Karen Bass,California,37,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031877.jpg,"$419,700","$427,481","$8,372",$0,"$242,525","$48,390",12/31/2019,"$1,098,077"
+N00031933,Bill Keating,Massachusetts,9,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031933.jpg,"$199,765","$121,368","$30,112",$0,$0,0,12/31/2019,"$351,245"
+N00031938,Justin Amash,Michigan,3,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031938.jpg,"$23,367","$539,136","$476,810",$0,"$2,826",$0,12/31/2019,"$1,036,487"
+N00031958,Steven Palazzo,Mississippi,4,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00031958.jpg,"$280,050","$111,038","$1,670",$0,$750,"$15,000",12/31/2019,"$392,007"
+N00032019,David Cicilline,Rhode Island,1,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00032019.jpg,"$207,470","$600,709","$42,229",$0,"$105,781","$90,043",12/31/2019,"$956,189"
+N00032029,Morgan Griffith,Virginia,9,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00032029.jpg,"$286,650","$127,063","$24,551",$0,$0,"$7,500",12/31/2019,"$438,263"
+N00032088,Bill Johnson,Ohio,6,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00032088.jpg,"$547,025","$344,398","$14,878",$0,"$65,575","$28,500",12/31/2019,"$971,875"
+N00032243,Jody Hice,Georgia,10,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00032243.jpg,"$55,150","$192,099","$18,134",$0,$750,0,12/31/2019,"$264,632"
+N00032416,Rob Woodall,Georgia,7,House,2010,null,https://cdn1.opensecrets.org/congress-members/photos/N00032416.jpg,"$2,278",$0,$0,$0,"$4,716","$2,940",09/30/2019,"$6,994"
+N00032457,Austin Scott,Georgia,8,House,2010,2020,https://cdn1.opensecrets.org/congress-members/photos/N00032457.jpg,"$245,800","$212,550","$5,300",$0,"$1,213","$7,500",12/31/2019,"$462,436"
+N00032546,Ron Johnson,Wisconsin,null,Senate,2010,2022,https://cdn1.opensecrets.org/congress-members/photos/N00032546.jpg,"$2,690,628","$12,608,784","$2,554,898",$0,"$41,784","$704,734",09/30/2019,"$17,812,532"
+N00032838,Joe Manchin,West Virginia,null,Senate,2010,2024,https://cdn1.opensecrets.org/congress-members/photos/N00032838.jpg,"$2,706,190","$5,552,798","$363,875",$0,"$437,290","$1,255,897",09/30/2019,"$9,060,157"
+N00033030,Jared Huffman,California,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033030.jpg,"$184,700","$261,977","$35,170",$0,$808,"$11,000",12/31/2019,"$481,039"
+N00033054,Steven Daines,Montana,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033054.jpg,"$1,852,047","$2,318,945","$447,816",$0,"$647,323","$1,341,106",09/30/2019,"$5,266,132"
+N00033085,Ted Cruz,Texas,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00033085.jpg,"$1,434,168","$19,475,477","$15,420,265","$10,000","$8,469,690","$1,341,106",09/30/2019,"$44,809,601"
+N00033101,Brad Schneider,Illinois,10,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033101.jpg,"$475,354","$866,789","$146,884",$0,"$5,813","$93,528",09/30/2019,"$1,483,215"
+N00033106,Ann L Wagner,Missouri,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033106.jpg,"$890,018","$1,008,515","$39,337",$0,"$157,773","$141,800",12/31/2019,"$2,095,643"
+N00033177,Tim Kaine,Virginia,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00033177.jpg,"$2,647,699","$9,110,693","$2,906,973",$0,"$6,297,358","$3,521,744",09/30/2019,"$20,962,731"
+N00033220,Ted Yoho,Florida,3,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033220.jpg,"$46,948","$41,625","$1,379",$0,$633,$0,12/31/2019,"$90,584"
+N00033240,Raja Krishnamoorthi,Illinois,8,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033240.jpg,"$563,300","$2,760,930","$123,251","$1,665",$660,"$280,106",12/31/2019,"$3,448,485"
+N00033274,Alan Lowenthal,California,47,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033274.jpg,"$250,950","$80,675","$17,799",$0,$214,$0,12/31/2019,"$349,637"
+N00033281,Tulsi Gabbard,Hawaii,2,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033281.jpg,"$1,000","$3,888,237","$6,140,605",$75,"$2,417,785",0,12/31/2019,"$12,447,702"
+N00033310,Brad Wenstrup,Ohio,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033310.jpg,"$360,850","$327,564","$85,269",$0,"$79,824","$29,358",12/31/2019,"$853,506"
+N00033316,Joaquin Castro,Texas,20,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033316.jpg,"$112,100","$99,466","$64,797",$0,"$6,661",$0,12/31/2019,"$269,702"
+N00033363,Tom Cotton,Arkansas,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033363.jpg,"$1,359,300","$2,270,497","$1,235,645",$0,"$2,718,004",0,12/31/2019,"$7,583,446"
+N00033373,Tony Cardenas,California,29,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033373.jpg,"$379,850","$173,097","$9,515",$0,"$1,548","$64,500",12/31/2019,"$560,913"
+N00033390,Cheri Bustos,Illinois,17,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033390.jpg,"$956,465","$754,313","$201,741",$0,"$85,151","$372,350",12/31/2019,"$1,997,670"
+N00033395,Dan Kildee,Michigan,5,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033395.jpg,"$598,870","$215,017","$47,903",$0,"$1,195","$14,000",12/31/2019,"$860,594"
+N00033399,George Holding,North Carolina,2,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033399.jpg,"$593,899","$232,020","$10,785",$0,"$144,097","$80,550",12/31/2019,"$980,800"
+N00033410,Markwayne Mullin,Oklahoma,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033410.jpg,"$473,350","$192,325","$2,993",$0,"$96,388","$68,694",12/31/2019,"$765,055"
+N00033443,Deb Fischer,Nebraska,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00033443.jpg,"$2,818,513","$2,730,721","$279,997",$0,"$364,058","$1,260,515",09/30/2019,"$6,193,289"
+N00033449,Val Demings,Florida,10,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033449.jpg,"$268,300","$175,025","$19,953",$0,"$1,085",0,12/31/2019,"$462,193"
+N00033474,Suzanne Bonamici,Oregon,1,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033474.jpg,"$276,000","$153,220","$45,440",$0,$113,$0,12/31/2019,"$474,547"
+N00033492,Elizabeth Warren,Massachusetts,null,Senate,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033492.jpg,"$1,421","$27,822,678","$43,265,498","$5,778","$10,196,188",0,12/31/2019,"$81,291,562"
+N00033495,Susan Brooks,Indiana,5,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033495.jpg,"$151,555","$70,933","$2,102",$0,"$36,068","$32,924",09/30/2019,"$188,520"
+N00033508,Eric Swalwell,California,15,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033508.jpg,"$264,650","$1,262,891","$69,054",$0,"$6,754","$55,352",12/31/2019,"$1,603,349"
+N00033510,Raul Ruiz,California,36,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033510.jpg,"$482,750","$533,218","$130,155",$0,"$3,940","$36,000",12/31/2019,"$1,142,183"
+N00033518,Doug Collins,Georgia,9,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033518.jpg,"$582,852","$574,180","$352,888",$0,"$74,622","$66,500",12/31/2019,"$1,584,541"
+N00033527,David Rouzer,North Carolina,7,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033527.jpg,"$452,354","$293,625","$9,781",$0,"$119,479","$17,300",12/31/2019,"$875,238"
+N00033539,Randy Weber,Texas,14,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033539.jpg,"$128,500","$269,050","$12,014",$0,"$3,480","$15,000",12/31/2019,"$406,084"
+N00033549,Mark Pocan,Wisconsin,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033549.jpg,"$241,376","$146,842","$112,529",$0,$0,"$12,974",12/31/2019,"$500,747"
+N00033591,Scott Peters,California,52,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033591.jpg,"$630,890","$313,167","$47,128","$9,897","$22,242","$18,500",12/31/2019,"$1,023,324"
+N00033630,Richard Hudson,North Carolina,8,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033630.jpg,"$716,199","$616,026","$22,961",$0,"$174,877","$159,256",12/31/2019,"$1,530,063"
+N00033631,Mark Meadows,North Carolina,11,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00033631.jpg,"$163,267","$249,602","$428,683",$0,"$6,758","$3,634,770",09/30/2019,"$848,310"
+N00033638,Steven Horsford,Nevada,4,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033638.jpg,"$828,610","$635,335","$54,425",$0,"$20,692","$7,500",12/31/2019,"$1,539,062"
+N00033640,Hakeem Jeffries,New York,8,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033640.jpg,"$843,002","$1,646,223","$40,496",$0,"$11,247","$135,800",12/31/2019,"$2,518,474"
+N00033720,Richard W Allen,Georgia,12,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033720.jpg,"$144,250","$393,675","$43,088",$0,$900,$0,12/31/2019,"$580,113"
+N00033814,Alex Mooney,West Virginia,2,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033814.jpg,"$289,745","$502,491","$58,916",$0,"$124,830","$41,374",12/31/2019,"$975,981"
+N00033832,Tom Rice,South Carolina,7,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033832.jpg,"$529,300","$477,669","$3,600",$0,$943,"$13,750",12/31/2019,"$1,011,512"
+N00033839,Marc Veasey,Texas,33,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033839.jpg,"$402,186","$212,125","$3,633",$0,"$2,300","$17,514",09/30/2019,"$615,643"
+N00033904,Joyce Beatty,Ohio,3,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033904.jpg,"$774,200","$206,631","$25,478",$0,"$1,000","$24,990",12/31/2019,"$1,007,308"
+N00033932,Chris Stewart,Utah,2,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033932.jpg,"$245,683","$193,300","$13,281",$0,"$21,012","$24,700",12/31/2019,"$473,276"
+N00033982,Martha McSally,Arizona,null,Senate,2019,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033982.jpg,"$1,484,350","$6,026,485","$4,254,370",$0,"$590,437","$44,418",12/31/2019,"$12,355,641"
+N00033983,Kyrsten Sinema,Arizona,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00033983.jpg,"$3,059,987","$13,841,624","$5,767,049",$0,"$958,534","$472,450",09/30/2019,"$23,627,199"
+N00033987,Doug LaMalfa,California,1,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033987.jpg,"$203,610","$339,912","$26,002",$0,"$104,939","$15,000",12/31/2019,"$674,463"
+N00033997,Pete Aguilar,California,31,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00033997.jpg,"$567,100","$477,142","$168,336",$0,"$26,054","$85,231",12/31/2019,"$1,238,633"
+N00034041,Thomas Massie,Kentucky,4,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034041.jpg,"$73,919","$51,977","$4,238",$0,"$27,925",$175,12/31/2019,"$158,058"
+N00034044,Joe III Kennedy,Massachusetts,4,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00034044.jpg,"$303,998","$3,087,789","$322,232",$0,"$208,578","$149,750",12/31/2019,"$3,922,597"
+N00034068,Brenda Lawrence,Michigan,14,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034068.jpg,"$334,927","$172,977","$29,674",$0,$330,$0,12/31/2019,"$537,247"
+N00034120,Scott Perry,Pennsylvania,10,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034120.jpg,"$151,753","$314,143","$147,671",$0,$160,$0,09/30/2019,"$613,726"
+N00034128,Matt Cartwright,Pennsylvania,8,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034128.jpg,"$450,501","$706,726","$41,672",$0,"$7,080",$0,12/31/2019,"$1,191,819"
+N00034224,Paul Cook,California,8,House,2012,null,https://cdn1.opensecrets.org/congress-members/photos/N00034224.jpg,"$195,500","$141,752","$6,138",$0,"$9,900","$5,000",09/30/2019,"$333,489"
+N00034254,Julia Brownley,California,26,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034254.jpg,"$381,400","$452,708","$104,552",$0,"$54,879",$0,12/31/2019,"$993,539"
+N00034277,Sean Patrick Maloney,New York,18,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034277.jpg,"$308,377","$791,046","$149,032",$0,"$101,886","$7,532",12/31/2019,"$1,350,340"
+N00034349,Filemon Vela,Texas,34,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034349.jpg,"$383,010","$141,600","$2,818",$0,"$5,200","$23,000",12/31/2019,"$522,227"
+N00034453,Derek Kilmer,Washington,6,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034453.jpg,"$616,850","$545,085","$53,005",$0,"$1,330","$23,000",12/31/2019,"$1,213,610"
+N00034547,Grace Meng,New York,6,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034547.jpg,"$200,600","$395,853","$18,695",$0,"$15,336","$62,078",12/31/2019,"$630,483"
+N00034549,Adriano Espaillat,New York,13,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034549.jpg,"$159,500","$321,350","$11,246",$0,"$227,594",0,12/31/2019,"$719,689"
+N00034580,Angus King,Maine,null,Senate,2012,2024,https://cdn1.opensecrets.org/congress-members/photos/N00034580.jpg,"$1,335,426","$3,294,868","$657,363","$20,488","$119,625","$345,550",09/30/2019,"$5,188,522"
+N00034639,Donald M Jr Payne,New Jersey,10,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034639.jpg,"$199,430","$55,050","$5,887",$0,$582,"$1,800",12/31/2019,"$259,784"
+N00034784,Rodney Davis,Illinois,13,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00034784.jpg,"$1,273,289","$373,122","$132,289",$0,"$79,312","$34,000",12/31/2019,"$1,858,011"
+N00035000,Stacey Plaskett,Virgin Islands,0,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035000.jpg,"$137,400","$42,659",$564,$0,$0,$0,12/31/2019,"$180,623"
+N00035007,David P Joyce,Ohio,14,House,2012,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035007.jpg,"$683,916","$415,168","$39,857",$0,"$508,278","$7,500",12/31/2019,"$1,647,219"
+N00035187,Mike Rounds,South Dakota,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035187.jpg,"$1,607,157","$1,435,846","$71,033","$4,320","$58,134","$959,582",12/31/2019,"$3,176,490"
+N00035215,Robin Kelly,Illinois,2,House,2013,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035215.jpg,"$516,389","$210,387","$41,635",$250,"$13,828",$0,12/31/2019,"$782,488"
+N00035267,Cory Booker,New Jersey,null,Senate,2013,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035267.jpg,"$598,329","$3,686,880","$2,081,676",$0,"$892,196","$2,246,712",12/31/2019,"$7,259,085"
+N00035278,Katherine Clark,Massachusetts,5,House,2013,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035278.jpg,"$427,760","$484,945","$33,952",$0,"$51,302","$148,560",12/31/2019,"$997,959"
+N00035282,Jason Smith,Missouri,8,House,2013,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035282.jpg,"$672,625","$206,949","$23,744",$0,"$30,062","$47,558",12/31/2019,"$933,379"
+N00035307,Brendan Boyle,Pennsylvania,2,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035307.jpg,"$558,145","$233,577","$3,928",$0,"$13,286","$6,000",12/31/2019,"$808,934"
+N00035311,Mark Walker,North Carolina,6,House,2014,null,https://cdn1.opensecrets.org/congress-members/photos/N00035311.jpg,"$205,250","$243,146","$29,609",$0,"$36,172","$38,440",12/31/2019,"$514,176"
+N00035346,Buddy Carter,Georgia,1,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035346.jpg,"$639,500","$579,541","$60,400",$0,"$10,300","$78,000",12/31/2019,"$1,269,140"
+N00035347,Barry Loudermilk,Georgia,11,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035347.jpg,"$276,300","$99,956","$6,500",$0,$300,"$78,000",12/31/2019,"$383,055"
+N00035380,Bradley Byrne,Alabama,1,House,2013,null,https://cdn1.opensecrets.org/congress-members/photos/N00035380.jpg,"$221,500","$776,970","$86,683",$0,"$2,259,284","$94,591",12/31/2019,"$3,344,436"
+N00035420,Mike Bost,Illinois,12,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035420.jpg,"$538,850","$336,114","$46,986",$0,"$141,603","$23,981",12/31/2019,"$1,063,552"
+N00035431,Seth Moulton,Massachusetts,6,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035431.jpg,"$33,000","$259,533","$18,616",$0,"$418,737","$210,489",12/31/2019,"$729,885"
+N00035440,Tom Emmer,Minnesota,6,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035440.jpg,"$785,301","$307,200","$66,931",$0,"$192,121","$262,580",12/31/2019,"$1,351,552"
+N00035451,Alma Adams,North Carolina,12,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035451.jpg,"$282,565","$94,045","$16,814",$0,"$1,737",$0,12/31/2019,"$395,160"
+N00035483,Joni Ernst,Iowa,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035483.jpg,"$1,852,692","$2,472,793","$1,436,420",$0,"$2,368,305","$3,101,326",12/31/2019,"$8,128,210"
+N00035492,Thom Tillis,North Carolina,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035492.jpg,"$3,432,684","$4,500,309","$519,540",$0,"$753,112","$3,699,610",12/31/2019,"$9,205,645"
+N00035504,Liz Cheney,Wyoming,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035504.jpg,"$651,040","$588,501","$98,681",$0,"$404,637","$352,599",12/31/2019,"$1,742,859"
+N00035516,David Perdue,Georgia,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035516.jpg,"$2,237,275","$4,011,840","$298,116",$0,"$4,082,199","$2,372,073",12/31/2019,"$10,629,428"
+N00035523,Elise Stefanik,New York,21,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035523.jpg,"$906,631","$1,514,387","$1,774,978",$0,"$366,144","$343,672",12/31/2019,"$4,562,140"
+N00035527,Bruce Westerman,Arkansas,4,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035527.jpg,"$384,950","$232,045","$15,372",$0,"$4,167","$8,500",12/31/2019,"$636,534"
+N00035544,Ben Sasse,Nebraska,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035544.jpg,"$1,598,640","$2,043,392","$198,757",$0,"$852,049","$1,334,305",12/31/2019,"$4,692,837"
+N00035691,Gary Palmer,Alabama,6,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035691.jpg,"$207,100","$355,195",$425,$0,"$45,630","$15,706",12/31/2019,"$608,350"
+N00035774,Dan Sullivan,Alaska,null,Senate,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035774.jpg,"$1,486,419","$3,421,210","$88,241",$0,"$574,792","$1,313,964",12/31/2019,"$5,570,662"
+N00035792,French Hill,Arkansas,2,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035792.jpg,"$482,647","$328,300","$13,027",$0,"$133,109","$56,500",09/30/2019,"$957,083"
+N00035825,Ted Lieu,California,33,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035825.jpg,"$262,100","$639,844","$59,677",$0,"$28,257","$47,165",12/31/2019,"$989,877"
+N00035927,Kathleen Rice,New York,4,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035927.jpg,"$180,000","$187,690","$27,363",$0,"$4,881","$57,596",12/31/2019,"$390,171"
+N00035934,John Katko,New York,24,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035934.jpg,"$789,130","$437,104","$77,094",$0,"$242,008","$30,000",12/31/2019,"$1,545,336"
+N00035972,John Lee Ratcliffe,Texas,4,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00035972.jpg,"$187,500","$201,781","$19,846",$0,$666,"$7,010",12/31/2019,"$408,460"
+N00036018,Don Beyer,Virginia,8,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036018.jpg,"$297,315","$576,538","$49,470",$0,"$1,165","$5,600",12/31/2019,"$924,488"
+N00036097,Ruben Gallego,Arizona,7,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036097.jpg,"$468,862","$436,421","$135,972",$0,"$9,350","$38,184",12/31/2019,"$1,031,904"
+N00036107,Norma Torres,California,35,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036107.jpg,"$230,150","$112,360","$7,338",$0,$500,"$5,000",12/31/2019,"$349,347"
+N00036135,Garret Graves,Louisiana,6,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036135.jpg,"$458,459","$254,392","$4,230",$20,"$70,893","$12,600",12/31/2019,"$787,993"
+N00036149,Debbie Dingell,Michigan,12,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036149.jpg,"$441,800","$207,877","$39,292",$0,"$58,773","$77,136",12/31/2019,"$747,741"
+N00036154,Don Norcross,New Jersey,1,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036154.jpg,"$491,000","$464,794","$18,499",$0,$60,"$17,500",09/30/2019,"$974,352"
+N00036158,Bonnie Coleman,New Jersey,12,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036158.jpg,"$173,950","$64,430","$37,590",$0,$203,$0,12/31/2019,"$275,767"
+N00036274,Paul Mitchell,Michigan,10,House,2016,null,https://cdn1.opensecrets.org/congress-members/photos/N00036274.jpg,"$147,500","$67,300",$450,"$24,000","$26,899","$88,400",12/31/2019,"$212,350"
+N00036275,John Moolenaar,Michigan,4,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036275.jpg,"$330,971","$412,658","$37,566",$0,$120,"$36,535",12/31/2019,"$781,314"
+N00036403,Dan Newhouse,Washington,4,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036403.jpg,"$310,262","$158,605","$34,322",$0,"$7,185","$2,500",12/31/2019,"$510,374"
+N00036409,Glenn S Grothman,Wisconsin,6,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036409.jpg,"$195,950","$408,646","$101,948",$0,"$111,481",$0,12/31/2019,"$818,025"
+N00036633,Ralph Abraham,Louisiana,5,House,2014,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036633.jpg,"$26,500","$2,400","$1,100",$0,$89,"$17,586",12/31/2019,"$30,089"
+N00036915,Kamala Harris,California,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00036915.jpg,"$906,259","$13,235,172","$8,040,019",$0,"$615,160","$2,677,298",09/30/2019,"$22,796,614"
+N00036944,Josh Gottheimer,New Jersey,5,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036944.jpg,"$758,389","$2,401,039","$65,168",$0,"$193,388","$359,700",12/31/2019,"$3,417,984"
+N00036999,Anthony Brown,Maryland,4,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00036999.jpg,"$436,052","$301,419","$9,933",$0,"$1,027","$15,100",12/31/2019,"$746,377"
+N00037003,Trent Kelly,Mississippi,1,House,2015,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037003.jpg,"$200,700","$140,525","$18,952",$0,$10,$0,12/31/2019,"$360,187"
+N00037015,Salud Carbajal,California,24,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037015.jpg,"$298,605","$897,253","$48,924",$0,"$12,970","$163,718",12/31/2019,"$1,231,811"
+N00037019,Nanette Barragan,California,44,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037019.jpg,"$298,950","$343,014","$26,245",$0,"$3,914","$163,718",12/31/2019,"$664,295"
+N00037031,Darin LaHood,Illinois,18,House,2015,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037031.jpg,"$961,631","$476,680","$111,708",$0,"$70,911","$64,014",12/31/2019,"$1,620,930"
+N00037034,Roger Marshall,Kansas,1,House,2016,null,https://cdn1.opensecrets.org/congress-members/photos/N00037034.jpg,"$691,024","$996,705","$24,547",$0,"$16,700","$158,259",12/31/2019,"$1,695,575"
+N00037036,Jamie Raskin,Maryland,8,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037036.jpg,"$210,750","$792,499","$143,470",$0,"$2,913","$488,846",12/31/2019,"$1,143,806"
+N00037039,Angie Craig,Minnesota,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037039.jpg,"$744,316","$939,379","$237,804","$5,600","$43,342",0,12/31/2019,"$1,970,441"
+N00037049,Donald John Bacon,Nebraska,2,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037049.jpg,"$593,950","$427,175","$97,349",$65,"$283,154","$122,505",12/31/2019,"$1,401,692"
+N00037161,Catherine Cortez Masto,Nevada,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00037161.jpg,"$1,392,254","$12,223,129","$7,705,296",$0,"$1,983,144","$1,179,256",09/30/2019,"$22,403,831"
+N00037185,Jim Banks,Indiana,3,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037185.jpg,"$251,325","$202,075","$45,151",$0,"$4,300","$1,179,256",09/30/2019,"$494,250"
+N00037247,Susie Lee,Nevada,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037247.jpg,"$564,709","$1,169,783","$82,155",$45,"$172,228",0,12/31/2019,"$1,988,920"
+N00037260,Lou Correa,California,46,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037260.jpg,"$424,400","$162,500","$9,860",$0,"$4,200","$37,168",12/31/2019,"$592,559"
+N00037269,Brian Mast,Florida,18,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037269.jpg,"$406,084","$654,438","$840,534",$0,"$295,450","$155,833",12/31/2019,"$2,196,506"
+N00037422,Darren Soto,Florida,9,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037422.jpg,"$285,750","$57,575","$3,655",$0,$0,"$13,000",09/30/2019,"$346,979"
+N00037442,Neal Dunn,Florida,2,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037442.jpg,"$151,800","$88,250","$5,625",$0,$0,"$43,600",12/31/2019,"$245,675"
+N00037515,Tom O'Halleran,Arizona,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037515.jpg,"$635,535","$524,339","$81,277",$0,"$61,391","$42,505",12/31/2019,"$1,302,542"
+N00037615,Jenniffer Gonzalez,Puerto Rico,0,Senate,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00037615.jpg,"$48,250","$165,945",$150,$0,"$8,000","$113,124",12/31/2019,"$222,344"
+N00038260,James Comer,Kentucky,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038260.jpg,"$202,700","$122,350","$4,841",$0,$7,"$99,300",12/31/2019,"$329,884"
+N00038285,Jodey Arrington,Texas,19,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038285.jpg,"$582,079","$622,254","$9,884",$0,"$15,004","$16,000",12/31/2019,"$1,229,219"
+N00038397,Maggie Hassan,New Hampshire,null,Senate,2016,2022,https://cdn1.opensecrets.org/congress-members/photos/N00038397.jpg,"$1,132,873","$11,517,050","$6,451,649",$0,"$1,571,562","$761,398",09/30/2019,"$20,673,141"
+N00038414,Lisa Blunt Rochester,Delaware,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038414.jpg,"$489,450","$176,481","$31,055",$0,$0,"$29,500",12/31/2019,"$696,986"
+N00038429,Trey Hollingsworth,Indiana,9,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038429.jpg,"$570,750","$89,491","$7,868",$0,$0,"$1,000",12/31/2019,"$668,108"
+N00038450,Dwight Evans,Pennsylvania,3,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038450.jpg,"$357,106","$149,409","$32,344",$0,$290,"$24,063",12/31/2019,"$538,568"
+N00038601,Jimmy Panetta,California,20,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038601.jpg,"$632,527","$266,443","$34,959",$0,"$2,500","$15,000",12/31/2019,"$936,428"
+N00038734,Jacky Rosen,Nevada,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00038734.jpg,"$1,505,352","$14,820,192","$8,539,998",$0,"$1,600,588","$237,474",09/30/2019,"$26,466,133"
+N00038742,Tom Suozzi,New York,3,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038742.jpg,"$469,476","$615,529","$24,677",$0,$25,"$97,000",09/30/2019,"$1,109,656"
+N00038767,Warren Davidson,Ohio,8,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038767.jpg,"$227,002","$185,018","$38,234",$0,"$20,994","$5,855",12/31/2019,"$471,248"
+N00038779,Brian Fitzpatrick,Pennsylvania,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038779.jpg,"$926,525","$462,272","$59,442",$0,"$402,655","$262,321",12/31/2019,"$1,850,893"
+N00038781,Lloyd Smucker,Pennsylvania,11,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038781.jpg,"$373,000","$199,450","$7,289",$0,"$113,027","$118,630",12/31/2019,"$692,766"
+N00038809,Vicente Gonzalez,Texas,15,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038809.jpg,"$475,500","$91,700","$6,036",$0,"$185,111","$42,000",12/31/2019,"$388,125"
+N00038858,Pramila Jayapal,Washington,7,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00038858.jpg,"$187,000","$913,625","$286,339",$200,"$8,934","$464,693",12/31/2019,"$1,396,098"
+N00039090,Drew Ferguson,Georgia,3,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039090.jpg,"$804,701","$301,240","$55,824",$0,"$44,199","$134,900",12/31/2019,"$1,205,964"
+N00039106,Mike Johnson,Louisiana,4,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039106.jpg,"$247,002","$293,240","$31,233",$0,"$1,991","$335,086",12/31/2019,"$569,484"
+N00039122,David Trone,Maryland,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039122.jpg,$0,"$260,520","$19,161","$925,000","$2,598",0,12/31/2019,"$1,202,082"
+N00039293,Andy Biggs,Arizona,5,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039293.jpg,"$173,680","$224,585","$81,123",$0,"$28,980","$12,500",12/31/2019,"$450,408"
+N00039327,Donald McEachin,Virginia,4,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039327.jpg,"$278,000","$93,835","$15,220",$0,$246,0,12/31/2019,"$386,809"
+N00039330,Mike Gallagher,Wisconsin,8,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039330.jpg,"$416,650","$1,171,962","$44,544",$0,"$151,767","$180,635",12/31/2019,"$1,784,923"
+N00039503,Matt Gaetz,Florida,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039503.jpg,"$43,550","$409,300","$582,416",$0,"$31,250","$4,000",12/31/2019,"$1,004,016"
+N00039533,John Bergman,Michigan,1,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039533.jpg,"$301,900","$366,082","$47,244",$0,"$139,849","$112,164",12/31/2019,"$855,074"
+N00039551,Ted Budd,North Carolina,13,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039551.jpg,"$465,325","$542,339","$114,966",$0,"$111,259","$44,131",12/31/2019,"$1,233,889"
+N00039777,John Rutherford,Florida,4,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039777.jpg,"$225,200","$124,750","$1,800",$0,"$1,000","$16,050",12/31/2019,"$352,750"
+N00039953,Clay Higgins,Louisiana,3,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00039953.jpg,"$86,800","$238,668","$9,882",$0,"$2,540","$40,000",12/31/2019,"$332,809"
+N00040007,Francis Rooney,Florida,19,House,2016,null,https://cdn1.opensecrets.org/congress-members/photos/N00040007.jpg,$0,"$1,400",$760,$0,"$2,482","$316,679",09/30/2019,"$4,642"
+N00040133,Stephanie Murphy,Florida,7,House,2016,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040133.jpg,"$915,849","$464,154","$34,611",$0,"$5,913","$150,000",12/31/2019,"$1,408,701"
+N00040559,Dusty Johnson,South Dakota,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040559.jpg,"$239,650","$481,849","$29,357",$0,"$85,246",$2,12/31/2019,"$836,102"
+N00040597,Jimmy Gomez,California,34,House,2017,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040597.jpg,"$487,822","$204,488","$6,875",$0,"$2,655","$22,000",12/31/2019,"$696,529"
+N00040666,Harley Rouda,California,48,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040666.jpg,"$489,760","$1,350,615","$190,485",$0,"$62,696","$2,500",12/31/2019,"$2,093,556"
+N00040667,Mike Levin,California,49,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040667.jpg,"$372,032","$1,183,926","$234,759",$0,"$113,412","$32,000",12/31/2019,"$1,904,129"
+N00040712,Ron Estes,Kansas,4,House,2017,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040712.jpg,"$470,917","$365,234","$15,866",$0,$768,"$21,776",09/30/2019,"$851,249"
+N00040733,Greg Gianforte,Montana,1,House,2017,null,https://cdn1.opensecrets.org/congress-members/photos/N00040733.jpg,"$131,475","$49,570","$17,860",$0,"$133,914",$0,12/31/2019,"$332,818"
+N00040741,Antonio Delgado,New York,19,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040741.jpg,"$268,271","$2,218,104","$310,025",$0,"$7,784",0,12/31/2019,"$2,804,183"
+N00040829,Kevin Hern,Oklahoma,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040829.jpg,"$319,851","$289,250","$13,490",$0,"$69,878",0,12/31/2019,"$552,713"
+N00040853,Josh Harder,California,10,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040853.jpg,"$474,337","$2,292,470","$300,235",$0,"$117,983","$5,000",12/31/2019,"$3,185,025"
+N00040865,Katie Porter,California,45,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040865.jpg,"$476,183","$1,897,493","$1,006,056",$0,"$88,485",0,12/31/2019,"$3,468,217"
+N00040876,Jason Crow,Colorado,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040876.jpg,"$366,866","$1,260,772","$117,478",$0,"$28,852",0,12/31/2019,"$1,773,967"
+N00040888,Abby Finkenauer,Iowa,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040888.jpg,"$632,198","$1,027,470","$172,601",$0,"$53,321",$0,12/31/2019,"$1,885,590"
+N00040915,Haley Stevens,Michigan,11,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040915.jpg,"$725,830","$1,469,494","$225,710",$0,"$58,143",0,12/31/2019,"$2,479,176"
+N00040933,Debra Haaland,New Mexico,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040933.jpg,"$133,256","$562,013","$86,832",$0,"$40,603","$20,000",12/31/2019,"$822,703"
+N00040949,Chrissy Houlahan,Pennsylvania,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040949.jpg,"$510,638","$900,091","$130,851",$0,"$134,920",$0,12/31/2019,"$1,676,499"
+N00040989,Colin Allred,Texas,32,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00040989.jpg,"$421,510","$1,747,044","$126,481",$0,"$33,978",0,12/31/2019,"$2,329,013"
+N00041002,Jennifer Wexton,Virginia,10,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041002.jpg,"$374,030","$1,362,438","$154,959",$0,"$10,026",$0,12/31/2019,"$1,881,400"
+N00041080,Joseph Neguse,Colorado,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041080.jpg,"$190,317","$470,271","$44,017",$0,"$6,852","$2,000",12/31/2019,"$711,456"
+N00041104,Cindy Axne,Iowa,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041104.jpg,"$410,256","$830,883","$162,485",$0,"$60,264",0,09/30/2019,"$1,463,889"
+N00041134,Dean Phillips,Minnesota,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041134.jpg,$0,"$723,447","$124,549",$0,"$45,514",0,12/31/2019,"$893,510"
+N00041154,Mikie Sherrill,New Jersey,11,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041154.jpg,"$659,813","$1,526,900","$257,666",$0,"$150,588","$6,000",12/31/2019,"$2,594,967"
+N00041162,Alexandria Ocasio-Cortez,New York,14,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041162.jpg,"$19,690","$1,106,010","$4,218,916",$0,"$36,530","$5,141",12/31/2019,"$5,308,086"
+N00041194,Lizzie Fletcher,Texas,7,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041194.jpg,"$577,649","$1,515,256","$116,450",$495,"$55,129",0,12/31/2019,"$2,264,978"
+N00041221,John Curtis,Utah,3,House,2017,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041221.jpg,"$229,000","$119,450","$1,203",$0,"$25,000","$5,000",12/31/2019,"$324,653"
+N00041335,Russ Fulcher,Idaho,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041335.jpg,"$162,250","$72,000","$6,351",$0,$300,0,12/31/2019,"$240,301"
+N00041338,Sean Casten,Illinois,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041338.jpg,"$557,668","$1,390,989","$365,489",$0,"$61,525",0,12/31/2019,"$2,375,670"
+N00041357,Elissa Slotkin,Michigan,8,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041357.jpg,"$325,471","$2,258,022","$452,486",$0,"$228,865",0,12/31/2019,"$3,264,845"
+N00041370,Andy Kim,New Jersey,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041370.jpg,"$378,137","$1,624,181","$293,321",$0,"$302,603",0,12/31/2019,"$2,598,242"
+N00041385,Anthony Brindisi,New York,22,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041385.jpg,"$526,488","$1,163,350","$221,132",$0,"$325,821",$0,12/31/2019,"$2,236,790"
+N00041394,Kendra Horn,Oklahoma,5,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041394.jpg,"$365,157","$1,326,412","$266,846",$0,"$319,555",0,12/31/2019,"$2,277,970"
+N00041400,Joe Cunningham,South Carolina,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041400.jpg,"$97,292","$1,924,332","$271,558",$0,"$374,918",0,12/31/2019,"$2,668,099"
+N00041418,Abigail Spanberger,Virginia,7,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041418.jpg,"$404,843","$1,534,494","$414,053",$0,"$212,969",0,12/31/2019,"$2,566,359"
+N00041464,Gil Cisneros,California,39,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041464.jpg,"$492,811","$606,120","$118,901","$19,741","$91,798",0,12/31/2019,"$1,329,371"
+N00041511,Pete Stauber,Minnesota,8,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041511.jpg,"$465,100","$445,980","$93,140",$0,"$209,760","$9,150",12/31/2019,"$1,213,979"
+N00041542,Carol Miller,West Virginia,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041542.jpg,"$272,245","$131,850","$4,063",$0,"$6,044","$32,500",12/31/2019,"$402,114"
+N00041561,Debbie Mucarsel-Powell,Florida,26,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041561.jpg,"$469,086","$1,433,384","$163,245",$0,"$60,657",0,12/31/2019,"$2,126,372"
+N00041569,Lauren A Underwood,Illinois,14,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041569.jpg,"$369,828","$1,400,666","$427,676",$0,"$362,306","$4,500",12/31/2019,"$2,560,476"
+N00041588,Max Rose,New York,11,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041588.jpg,"$379,105","$2,315,573","$177,142",$0,"$482,456",0,12/31/2019,"$3,354,275"
+N00041594,Tim Burchett,Tennessee,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041594.jpg,"$110,000","$338,149","$74,457",$0,$0,"$9,500",12/31/2019,"$522,606"
+N00041599,John Rose,Tennessee,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041599.jpg,"$250,450","$345,500","$4,360","$18,365","$89,072","$22,220",12/31/2019,"$707,747"
+N00041606,Kim Schrier,Washington,8,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041606.jpg,"$427,487","$1,431,124","$234,303",$0,"$36,070",0,12/31/2019,"$2,128,984"
+N00041620,Josh Hawley,Missouri,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00041620.jpg,"$1,186,241","$8,143,498","$1,620,640",$0,"$1,422,162","$121,000",09/30/2019,"$12,372,541"
+N00041668,Jared Golden,Maine,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041668.jpg,"$243,006","$798,570","$204,849",$0,"$281,818",0,12/31/2019,"$1,528,243"
+N00041690,Anthony Gonzalez,Ohio,16,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041690.jpg,"$685,096","$401,845","$27,241",$0,"$86,001","$14,970",12/31/2019,"$1,200,183"
+N00041702,Veronica Escobar,Texas,16,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041702.jpg,"$243,550","$214,249","$24,928",$0,"$4,338","$2,700",12/31/2019,"$487,065"
+N00041731,Mike Braun,Indiana,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00041731.jpg,"$911,217","$5,371,469","$1,027,000","$10,531,496","$813,865","$41,288",09/30/2019,"$18,655,048"
+N00041750,Greg Stanton,Arizona,9,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041750.jpg,"$315,911","$499,644","$69,130",$0,$275,0,12/31/2019,"$884,409"
+N00041808,Lori Trahan,Massachusetts,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041808.jpg,"$343,650","$810,917","$157,934",$0,"$12,867",0,12/31/2019,"$1,325,367"
+N00041843,Tom Malinowski,New Jersey,7,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041843.jpg,"$312,931","$1,757,023","$205,919",$0,"$54,834",0,12/31/2019,"$2,330,706"
+N00041870,Conor Lamb,Pennsylvania,17,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041870.jpg,"$281,747","$864,844","$174,007",$0,"$4,952","$22,500",12/31/2019,"$1,325,551"
+N00041871,Guy Reschenthaler,Pennsylvania,14,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041871.jpg,"$407,915","$220,542","$149,544",$0,"$3,008","$7,800",12/31/2019,"$781,008"
+N00041873,Mark Green,Tennessee,7,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041873.jpg,"$34,100","$234,547","$40,725",$0,"$87,059","$16,700",09/30/2019,"$396,430"
+N00041882,Michael Cloud,Texas,27,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041882.jpg,"$96,765","$326,802","$39,427","$1,000","$1,400",0,12/31/2019,"$462,594"
+N00041954,Jim Baird,Indiana,4,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041954.jpg,"$103,500","$74,280","$3,207",$0,"$12,493",0,12/31/2019,"$168,494"
+N00041956,Greg Pence,Indiana,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041956.jpg,"$150,100","$257,425","$614,256",$0,"$203,321","$39,179",12/31/2019,"$1,225,101"
+N00041997,Susan Wild,Pennsylvania,7,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00041997.jpg,"$419,184","$821,035","$174,373",$25,"$10,692",0,12/31/2019,"$1,425,308"
+N00042013,Ben McAdams,Utah,4,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042013.jpg,"$680,527","$1,411,516","$148,304",$0,"$5,579",0,12/31/2019,"$2,234,768"
+N00042056,Debbie Lesko,Arizona,8,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042056.jpg,"$167,450","$231,824","$75,292",$0,"$145,140","$22,500",12/31/2019,"$619,705"
+N00042114,Jesus Garcia,Illinois,4,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042114.jpg,"$211,800","$174,093","$24,756",$0,"$4,463",$0,12/31/2019,"$406,186"
+N00042126,Steve Watkins,Kansas,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042126.jpg,"$270,774","$293,155","$24,081",$0,"$150,836",0,12/31/2019,"$738,845"
+N00042149,Andy Levin,Michigan,9,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042149.jpg,"$159,357","$288,632","$38,276",$75,$350,$0,12/31/2019,"$485,989"
+N00042161,Chris Pappas,New Hampshire,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042161.jpg,"$364,109","$707,611","$110,618",$0,"$24,897",0,12/31/2019,"$1,207,235"
+N00042164,Jeff Van Drew,New Jersey,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042164.jpg,"$521,104","$923,524","$183,006",$0,"$12,275",0,12/31/2019,"$1,615,358"
+N00042194,Troy Balderson,Ohio,12,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042194.jpg,"$526,192","$335,208","$29,538",$0,"$125,969","$5,000",12/31/2019,"$1,016,906"
+N00042224,Dan Crenshaw,Texas,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042224.jpg,"$431,730","$2,037,970","$1,581,582",$0,"$223,621","$57,788",12/31/2019,"$4,274,903"
+N00042237,Lance Gooden,Texas,5,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042237.jpg,"$406,050","$322,550","$2,360",$0,"$2,000","$20,400",09/30/2019,"$732,960"
+N00042240,Ron Wright,Texas,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042240.jpg,"$121,595","$135,500","$9,754",$0,"$130,812",0,12/31/2019,"$397,660"
+N00042268,Chip Roy,Texas,21,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042268.jpg,"$159,607","$1,022,804","$312,082",$0,"$105,503","$1,000",12/31/2019,"$1,599,996"
+N00042282,Sylvia Garcia,Texas,29,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042282.jpg,"$294,300","$68,690","$9,144",$0,"$34,623",0,12/31/2019,"$337,511"
+N00042293,Elaine Luria,Virginia,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042293.jpg,"$347,200","$1,171,733","$204,497",$0,"$213,002",0,12/31/2019,"$1,936,432"
+N00042296,Ben Cline,Virginia,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042296.jpg,"$154,100","$210,110","$25,670",$0,$0,0,12/31/2019,"$389,879"
+N00042353,Tina Smith,Minnesota,null,Senate,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042353.jpg,"$1,328,895","$2,547,690","$1,357,303","$5,600","$343,068","$78,895",12/31/2019,"$5,582,556"
+N00042403,Michael Waltz,Florida,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042403.jpg,"$234,800","$493,871","$60,783",$0,"$95,917","$56,383",12/31/2019,"$885,370"
+N00042458,Michael Patrick Guest,Mississippi,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042458.jpg,"$159,650","$195,133","$3,987",$0,"$10,831",$0,12/31/2019,"$347,937"
+N00042467,Xochitl Torres Small,New Mexico,2,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042467.jpg,"$524,406","$1,424,179","$270,689",$0,"$352,100",0,12/31/2019,"$2,571,374"
+N00042581,Ayanna Pressley,Massachusetts,7,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042581.jpg,"$73,584","$474,803","$368,527",$0,"$11,798","$12,797",12/31/2019,"$928,711"
+N00042619,Michael San Nicolas,Guam,0,Senate,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042619.jpg,$0,"$15,000","$7,775","$1,900","$1,000",0,12/31/2019,"$25,675"
+N00042626,Sharice Davids,Kansas,3,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042626.jpg,"$577,099","$1,214,733","$300,112",$0,"$33,134",0,12/31/2019,"$2,125,077"
+N00042649,Rashida Tlaib,Michigan,13,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042649.jpg,"$38,354","$1,036,296","$570,550",$0,"$13,429",0,12/31/2019,"$1,631,771"
+N00042706,Mary Gay Scanlon,Pennsylvania,5,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042706.jpg,"$178,551","$384,822","$95,374",$0,"$3,301",$0,12/31/2019,"$662,048"
+N00042715,William Timmons,South Carolina,4,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042715.jpg,"$265,350","$107,550",$400,"$256,842","$30,115","$15,804",12/31/2019,"$660,257"
+N00042808,Greg Steube,Florida,17,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042808.jpg,"$152,400","$156,550","$16,112",$0,"$3,795","$15,804",12/31/2019,"$328,857"
+N00042811,Donna Shalala,Florida,27,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042811.jpg,"$338,606","$1,205,551","$32,496",$0,"$29,389","$30,000",12/31/2019,"$1,547,264"
+N00042813,Lucy McBath,Georgia,6,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042813.jpg,"$254,751","$958,600","$448,060",$0,"$10,463",$100,09/30/2019,"$1,671,873"
+N00042868,Kelly Armstrong,North Dakota,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042868.jpg,"$355,055","$78,927","$3,500",$0,"$10,000","$11,900",12/31/2019,"$447,481"
+N00042894,Madeleine Dean,Pennsylvania,4,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00042894.jpg,"$270,869","$119,491","$30,255",$0,"$79,278",0,09/30/2019,"$341,337"
+N00043207,Joseph D Morelle,New York,25,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043207.jpg,"$324,341","$156,062","$15,577",$0,"$23,235",0,09/30/2019,"$519,215"
+N00043242,John Joyce,Pennsylvania,13,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043242.jpg,"$331,850","$206,650","$8,834",$0,"$8,300","$12,525",12/31/2019,"$539,033"
+N00043290,Rick Scott,Florida,null,Senate,2018,2024,https://cdn1.opensecrets.org/congress-members/photos/N00043290.jpg,"$1,063,298","$15,695,825","$2,712,212","$63,573,383","$2,642,982","$162,994",09/30/2019,"$85,687,701"
+N00043298,Cindy Hyde-Smith,Mississippi,null,Senate,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043298.jpg,"$545,205","$614,145","$88,075",$0,"$52,420","$42,943",12/31/2019,"$1,299,844"
+N00043319,Ross Spano,Florida,15,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043319.jpg,"$190,300","$290,299","$16,408",$0,"$3,221",0,12/31/2019,"$493,785"
+N00043379,Bryan Steil,Wisconsin,1,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043379.jpg,"$634,011","$762,243","$89,969",$0,"$168,205","$13,000",12/31/2019,"$1,654,428"
+N00043421,Jahana Hayes,Connecticut,5,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043421.jpg,"$298,000","$378,688","$131,409",$0,"$46,481",0,12/31/2019,"$854,578"
+N00043541,Denver Riggleman,Virginia,5,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043541.jpg,"$809,550","$204,460","$62,721",$0,$648,"$16,623",12/31/2019,"$1,076,083"
+N00043581,Ilhan Omar,Minnesota,5,House,2018,2020,https://cdn1.opensecrets.org/congress-members/photos/N00043581.jpg,"$40,232","$1,172,741","$1,742,970",$0,"$5,016",$100,12/31/2019,"$2,960,958"
+N00044027,Greg Murphy,North Carolina,3,House,2019,2020,https://cdn1.opensecrets.org/congress-members/photos/N00044027.jpg,"$314,147","$679,671","$88,504","$38,000","$11,840",0,12/31/2019,"$1,132,163"
+N00044065,Fred Keller,Pennsylvania,12,House,2019,2020,https://cdn1.opensecrets.org/congress-members/photos/N00044065.jpg,"$266,608","$480,529","$106,559","$2,900","$34,175","$13,676",12/31/2019,"$890,771"
+N00044335,Dan Bishop,North Carolina,9,House,2019,2020,https://cdn1.opensecrets.org/congress-members/photos/N00044335.jpg,"$495,091","$1,677,929","$706,891","$50,000","$19,350",0,12/31/2019,"$2,910,560"
+N00046125,Kelly Loeffler,Georgia,null,Senate,2020,2020,https://cdn1.opensecrets.org/congress-members/photos/N00046125.jpg,"$125,500","$312,610","$21,591","$5,000,000",$0,0,12/31/2019,"$5,459,701"

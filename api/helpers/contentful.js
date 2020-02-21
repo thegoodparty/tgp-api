@@ -37,11 +37,11 @@ const mapResponse = items => {
       const elementId = item.sys.id;
       if (itemId === 'appPartyScreen') {
         mappedResponse.appPartyScreen = mapAppPartyScreen(item.fields);
-      } else if (itemId === 'candidate') {
-        if (!mappedResponse.candidates) {
-          mappedResponse.candidates = [];
-        }
-        mappedResponse.candidates.push(mapCandidate(item.fields));
+      // } else if (itemId === 'candidate') {
+        // if (!mappedResponse.candidates) {
+        //   mappedResponse.candidates = [];
+        // }
+        // mappedResponse.candidates.push(mapCandidate(item.fields));
       } else if (itemId === 'mapClickArea') {
         if (!mappedResponse.mapClickArea) {
           mappedResponse.mapClickArea = [];
@@ -115,19 +115,19 @@ const mapQuotes = quotes => {
   return flatQuotes;
 };
 
-const mapCandidate = fields => {
-  const flatResponse = {};
-  const { name, role, bio, site, districtNumber, state, avatarPhoto } = fields;
-  flatResponse.name = name;
-  flatResponse.role = role;
-  flatResponse.bio = extendText(bio);
-  flatResponse.site = site;
-  flatResponse.districtNumber = districtNumber;
-  flatResponse.state = state;
-  flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
-
-  return flatResponse;
-};
+// const mapCandidate = fields => {
+//   const flatResponse = {};
+//   const { name, role, bio, site, districtNumber, state, avatarPhoto } = fields;
+//   flatResponse.name = name;
+//   flatResponse.role = role;
+//   flatResponse.bio = extendText(bio);
+//   flatResponse.site = site;
+//   flatResponse.districtNumber = districtNumber;
+//   flatResponse.state = state;
+//   flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
+//
+//   return flatResponse;
+// };
 
 const mapEvent = (fields, id) => {
   const flatResponse = {};
