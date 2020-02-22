@@ -48,6 +48,7 @@ module.exports = {
         totalRaised,
         largeDonorsPerc,
         largeDonorPerHour,
+        isIncumbent: true,
       };
 
       const senateIncumbents = [];
@@ -63,6 +64,7 @@ module.exports = {
           totalRaised,
           largeDonorsPerc,
           largeDonorPerHour,
+          isIncumbent: true,
         });
       }
 
