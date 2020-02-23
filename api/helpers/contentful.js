@@ -50,7 +50,10 @@ const mapResponse = items => {
         if (!mappedResponse.faqArticles) {
           mappedResponse.faqArticles = [];
         }
-        mappedResponse.faqArticles.push(item.fields);
+        mappedResponse.faqArticles.push({
+          ...item.fields,
+          id: elementId,
+        });
       } else if (itemId === 'event') {
         if (!mappedResponse.events) {
           mappedResponse.events = [];
