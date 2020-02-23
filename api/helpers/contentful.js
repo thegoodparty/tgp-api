@@ -7,7 +7,6 @@ module.exports = {
 
   inputs: {},
 
-
   fn: async function(inputs, exits) {
     const contentfulSpaceId =
       sails.config.custom.contentfulSpaceId || sails.config.contentfulSpaceId;
@@ -35,38 +34,35 @@ const mapResponse = items => {
     if (item && item.sys && item.sys.contentType && item.sys.contentType.sys) {
       const itemId = item.sys.contentType.sys.id;
       const elementId = item.sys.id;
-      if (itemId === 'appPartyScreen') {
-        mappedResponse.appPartyScreen = mapAppPartyScreen(item.fields);
+      // if (itemId === 'appPartyScreen') {
+      // mappedResponse.appPartyScreen = mapAppPartyScreen(item.fields);
       // } else if (itemId === 'candidate') {
-        // if (!mappedResponse.candidates) {
-        //   mappedResponse.candidates = [];
-        // }
-        // mappedResponse.candidates.push(mapCandidate(item.fields));
-      } else if (itemId === 'mapClickArea') {
-        if (!mappedResponse.mapClickArea) {
-          mappedResponse.mapClickArea = [];
-        }
-        mappedResponse.mapClickArea.push(item.fields);
-      } else if (itemId === 'faqArticle') {
+      // if (!mappedResponse.candidates) {
+      //   mappedResponse.candidates = [];
+      // }
+      // mappedResponse.candidates.push(mapCandidate(item.fields));
+      // } else if (itemId === 'mapClickArea') {
+      //   if (!mappedResponse.mapClickArea) {
+      //     mappedResponse.mapClickArea = [];
+      //   }
+      //   mappedResponse.mapClickArea.push(item.fields);
+      if (itemId === 'faqArticle') {
         if (!mappedResponse.faqArticles) {
           mappedResponse.faqArticles = [];
         }
-        // front end needs an id.
-        mappedResponse.faqArticles.push({
-          ...item.fields,
-          body: extendText(item.fields.body),
-          id: elementId,
-        });
+        mappedResponse.faqArticles.push(item.fields);
       } else if (itemId === 'event') {
         if (!mappedResponse.events) {
           mappedResponse.events = [];
         }
         mappedResponse.events.push(mapEvent(item.fields, elementId));
-      } else if (itemId === 'appVersion') {
-        mappedResponse.appVersion = item.fields.version;
-      } else if (itemId === 'generalElectionDate') {
-        mappedResponse.generalElectionDate = item.fields.date;
       }
+
+      // } else if (itemId === 'appVersion') {
+      //   mappedResponse.appVersion = item.fields.version;
+      // } else if (itemId === 'generalElectionDate') {
+      //   mappedResponse.generalElectionDate = item.fields.date;
+      // }
     }
   });
   // need to order the event chronologically and separate the past events.
@@ -74,46 +70,46 @@ const mapResponse = items => {
   splitPastEvents(mappedResponse);
   return mappedResponse;
 };
+//
+// const mapAppPartyScreen = fields => {
+//   const flatResponse = {};
+//   const {
+//     quotes,
+//     section1Header,
+//     section1Paragraph,
+//     section2Header,
+//     section2Paragraph,
+//     videoPlaceholder,
+//     video,
+//     section3Header,
+//     section3Paragraph,
+//   } = fields;
+//
+//   flatResponse.quotes = mapQuotes(quotes);
+//   flatResponse.section1Header = extendText(section1Header);
+//   flatResponse.section2Header = extendText(section2Header);
+//   flatResponse.section3Header = extendText(section3Header);
+//   flatResponse.section1Paragraph = extendText(section1Paragraph);
+//   flatResponse.section2Paragraph = extendText(section2Paragraph);
+//   flatResponse.section3Paragraph = extendText(section3Paragraph);
+//   flatResponse.videoPlaceholder = extractMediaFile(videoPlaceholder);
+//   flatResponse.videoPlaceholderDimensions = extractImageDimensions(
+//     videoPlaceholder,
+//   );
+//   flatResponse.video = extractMediaFile(video);
+//
+//   // console.log(flatResponse);
+//
+//   return flatResponse;
+// };
 
-const mapAppPartyScreen = fields => {
-  const flatResponse = {};
-  const {
-    quotes,
-    section1Header,
-    section1Paragraph,
-    section2Header,
-    section2Paragraph,
-    videoPlaceholder,
-    video,
-    section3Header,
-    section3Paragraph,
-  } = fields;
-
-  flatResponse.quotes = mapQuotes(quotes);
-  flatResponse.section1Header = extendText(section1Header);
-  flatResponse.section2Header = extendText(section2Header);
-  flatResponse.section3Header = extendText(section3Header);
-  flatResponse.section1Paragraph = extendText(section1Paragraph);
-  flatResponse.section2Paragraph = extendText(section2Paragraph);
-  flatResponse.section3Paragraph = extendText(section3Paragraph);
-  flatResponse.videoPlaceholder = extractMediaFile(videoPlaceholder);
-  flatResponse.videoPlaceholderDimensions = extractImageDimensions(
-    videoPlaceholder,
-  );
-  flatResponse.video = extractMediaFile(video);
-
-  // console.log(flatResponse);
-
-  return flatResponse;
-};
-
-const mapQuotes = quotes => {
-  const flatQuotes = [];
-  quotes.map(quote => {
-    flatQuotes.push(quote.fields);
-  });
-  return flatQuotes;
-};
+// const mapQuotes = quotes => {
+//   const flatQuotes = [];
+//   quotes.map(quote => {
+//     flatQuotes.push(quote.fields);
+//   });
+//   return flatQuotes;
+// };
 
 // const mapCandidate = fields => {
 //   const flatResponse = {};
@@ -145,7 +141,7 @@ const mapEvent = (fields, id) => {
   flatResponse.id = id;
   flatResponse.title = title;
   flatResponse.dateAndTime = dateAndTime;
-  flatResponse.description = extendText(description);
+  flatResponse.description = description;
   flatResponse.timeZone = timeZone;
   flatResponse.eventDuration = eventDuration;
   if (presenter) {
@@ -214,27 +210,27 @@ const extractMediaFile = img => {
   return null;
 };
 
-const extractImageDimensions = img => {
-  if (img && img.fields && img.fields.file) {
-    return img.fields.file.details.image;
-  }
-  return null;
-};
-
-const extendText = text => {
-  if (!text) {
-    return text;
-  }
-
-  // replace *text* with <Text style={{fontWeight="bold"}}>text</Text>
-  const bold = /\*(.*?)\*/gim;
-  const boldedText = text.replace(bold, function($0, $1) {
-    return $1 ? '<Text style={{fontWeight: "bold"}}>' + $1 + '</Text>' : $0;
-  });
-
-  // replace :tgp with <Image /> tag
-  return boldedText.replace(
-    /:tgp/g,
-    '<Image source={{ uri: "https://assets.thegoodparty.org/heart-text.png"}} resizeMode="contain" style={{height: 20, width: 20 }}  />',
-  );
-};
+// const extractImageDimensions = img => {
+//   if (img && img.fields && img.fields.file) {
+//     return img.fields.file.details.image;
+//   }
+//   return null;
+// };
+//
+// const extendText = text => {
+//   if (!text) {
+//     return text;
+//   }
+//
+//   // replace *text* with <Text style={{fontWeight="bold"}}>text</Text>
+//   const bold = /\*(.*?)\*/gim;
+//   const boldedText = text.replace(bold, function($0, $1) {
+//     return $1 ? '<Text style={{fontWeight: "bold"}}>' + $1 + '</Text>' : $0;
+//   });
+//
+//   // replace :tgp with <Image /> tag
+//   return boldedText.replace(
+//     /:tgp/g,
+//     '<Image source={{ uri: "https://assets.thegoodparty.org/heart-text.png"}} resizeMode="contain" style={{height: 20, width: 20 }}  />',
+//   );
+// };
