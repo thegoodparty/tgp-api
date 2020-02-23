@@ -1,10 +1,5 @@
-const mailgun = require('mailgun.js');
-
 module.exports = {
-  friendlyName: 'MAIL GUN Sender',
-
-  description:
-    'Send email via mailgun. https://github.com/auth0/node-jsonwebtoken',
+  friendlyName: 'Incumbent Helper',
 
   inputs: {
     incumbent: {
@@ -23,8 +18,7 @@ module.exports = {
       const largeDonorPerHour =
         (totalRaised - incumbent.smallContributions) / hours;
 
-      return exits.success({totalRaised, largeDonorsPerc, largeDonorPerHour});
-
+      return exits.success({ totalRaised, largeDonorsPerc, largeDonorPerHour });
     } catch (e) {
       return exits.badRequest({
         message: 'Error calculating incumbent numbers',
