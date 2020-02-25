@@ -10,7 +10,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { incumbent } = inputs;
-
       const totalRaised = incumbent.raised + incumbent.pacRaised;
       const largeDonorsPerc =
         (totalRaised - incumbent.smallContributions) / totalRaised;
@@ -20,6 +19,7 @@ module.exports = {
 
       return exits.success({ totalRaised, largeDonorsPerc, largeDonorPerHour });
     } catch (e) {
+      console.log(e);
       return exits.badRequest({
         message: 'Error calculating incumbent numbers',
       });

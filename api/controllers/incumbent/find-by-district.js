@@ -36,20 +36,22 @@ module.exports = {
       const { state, district } = inputs;
       const houseRep = await Incumbent.findOne({ state, district });
       const senateReps = await Incumbent.find({ state, chamber: 'Senate' });
+      let houseIncumbent;
+      if (houseRep) {
+        const {
+          totalRaised,
+          largeDonorsPerc,
+          largeDonorPerHour,
+        } = await sails.helpers.incumbentHelper(houseRep);
 
-      const {
-        totalRaised,
-        largeDonorsPerc,
-        largeDonorPerHour,
-      } = await sails.helpers.incumbentHelper(houseRep);
-
-      const houseIncumbent = {
-        ...houseRep,
-        totalRaised,
-        largeDonorsPerc,
-        largeDonorPerHour,
-        isIncumbent: true,
-      };
+        houseIncumbent = {
+          ...houseRep,
+          totalRaised,
+          largeDonorsPerc,
+          largeDonorPerHour,
+          isIncumbent: true,
+        };
+      }
 
       const senateIncumbents = [];
       for (let i = 0; i < senateReps.length; i++) {

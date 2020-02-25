@@ -28,18 +28,10 @@ module.exports = {
       const calcCand = [];
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
-        const {
-          totalRaised,
-          largeDonorsPerc,
-          largeDonorPerHour,
-          isGood
-        } = await sails.helpers.presidentialHelper(candidate);
+        const { isGood } = await sails.helpers.presidentialHelper(candidate);
 
         calcCand.push({
           ...candidate,
-          totalRaised,
-          largeDonorsPerc,
-          largeDonorPerHour,
           isGood,
         });
       }

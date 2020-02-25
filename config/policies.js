@@ -17,7 +17,7 @@ module.exports.policies = {
    ***************************************************************************/
 
   'admin/*': ['isAuthenticated', 'isAdmin'],
-  // 'seed/*': ['isAuthenticated', 'isAdmin'],
+  'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
@@ -28,5 +28,6 @@ module.exports.policies = {
   'incumbent/*': true,
   'presidential/*': true,
   'race-candidate/*': true,
-  'seed/*': true,
+  'candidate/*': true,
+  // 'seed/*': true,
 };

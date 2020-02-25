@@ -17,17 +17,21 @@ module.exports = {
       const { candidate } = inputs;
 
       const totalRaised = candidate.combinedRaised;
-      const largeDonorsPerc =
+      const largeDonorPerc =
         (totalRaised - candidate.smallContributions) / totalRaised;
+      const smallDonorPerc = candidate.smallContributions / totalRaised;
       const hours = 10000;
-      const largeDonorPerHour = (totalRaised * largeDonorsPerc) / hours;
+      const largeDonorPerHour = (totalRaised * largeDonorPerc) / hours;
+      const smallDonorPerHour = (totalRaised * smallDonorPerc) / hours;
 
-      const isGood = largeDonorsPerc < 0.5;
+      const isGood = largeDonorPerc < 0.5;
 
       return exits.success({
         totalRaised,
-        largeDonorsPerc,
+        largeDonorPerc,
+        smallDonorPerc,
         largeDonorPerHour,
+        smallDonorPerHour,
         isGood,
       });
     } catch (e) {
