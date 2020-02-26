@@ -61,6 +61,7 @@ const mapCand = csvRow => {
     dateCampaign,
     dateOutside,
     image,
+    isIncumbent,
   } = csvRow;
 
   let party;
@@ -69,10 +70,6 @@ const mapCand = csvRow => {
   } catch {
     party = '';
   }
-
-  console.log('$$$$$$$$$$$$$');
-  console.log(combinedRaised);
-  console.log(strNumToInt(combinedRaised));
 
   return {
     openSecretsId: id,
@@ -87,6 +84,7 @@ const mapCand = csvRow => {
     otherFunds: strNumToInt(other),
     campaignReportDate: dateCampaign + '',
     outsideReportDate: dateOutside + '',
+    isIncumbent: isIncumbent === 'yes' ? true : false,
   };
 };
 
@@ -115,6 +113,7 @@ const createEntries = async rows => {
         otherFunds,
         campaignReportDate,
         outsideReportDate,
+        isIncumbent
       } = row;
       const candidate = await PresidentialCandidate.findOrCreate(
         { openSecretsId },
@@ -134,6 +133,7 @@ const createEntries = async rows => {
         otherFunds,
         campaignReportDate,
         outsideReportDate,
+        isIncumbent
       });
 
       console.log(

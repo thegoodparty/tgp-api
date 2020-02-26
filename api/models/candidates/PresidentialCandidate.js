@@ -52,6 +52,9 @@ module.exports = {
     info: {
       type: 'string',
     },
+    isIncumbent: {
+      type: 'boolean',
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
