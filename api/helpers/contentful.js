@@ -34,18 +34,6 @@ const mapResponse = items => {
     if (item && item.sys && item.sys.contentType && item.sys.contentType.sys) {
       const itemId = item.sys.contentType.sys.id;
       const elementId = item.sys.id;
-      // if (itemId === 'appPartyScreen') {
-      // mappedResponse.appPartyScreen = mapAppPartyScreen(item.fields);
-      // } else if (itemId === 'candidate') {
-      // if (!mappedResponse.candidates) {
-      //   mappedResponse.candidates = [];
-      // }
-      // mappedResponse.candidates.push(mapCandidate(item.fields));
-      // } else if (itemId === 'mapClickArea') {
-      //   if (!mappedResponse.mapClickArea) {
-      //     mappedResponse.mapClickArea = [];
-      //   }
-      //   mappedResponse.mapClickArea.push(item.fields);
       if (itemId === 'faqArticle') {
         if (!mappedResponse.faqArticles) {
           mappedResponse.faqArticles = [];
@@ -59,13 +47,15 @@ const mapResponse = items => {
           mappedResponse.events = [];
         }
         mappedResponse.events.push(mapEvent(item.fields, elementId));
+      } else if (itemId === 'presidentialCandidate') {
+        if (!mappedResponse.presidentialCandidates) {
+          mappedResponse.presidentialCandidates = [];
+        }
+        mappedResponse.presidentialCandidates.push({
+          info: item.fields.info,
+          name: item.fields.name,
+        });
       }
-
-      // } else if (itemId === 'appVersion') {
-      //   mappedResponse.appVersion = item.fields.version;
-      // } else if (itemId === 'generalElectionDate') {
-      //   mappedResponse.generalElectionDate = item.fields.date;
-      // }
     }
   });
   // need to order the event chronologically and separate the past events.

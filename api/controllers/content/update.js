@@ -29,7 +29,7 @@ module.exports = {
       const content = await sails.helpers.contentful();
 
       // process content - create new DB entries based on content
-      // await processContent(content);
+      await processContent(content);
 
       // now that we created or updated the candidates from the CMS,
       // we want to replace the candidates in the response with the
@@ -70,56 +70,18 @@ module.exports = {
     }
   },
 };
-//
-// const processContent = async content => {
-//   // create or update candidates based on cms candidates;
-//   const candidates = content.candidates;
-//   if (candidates) {
-//     candidates.map(async cmsCandidate => {
-//       const candidate = await Candidate.find({ name: cmsCandidate.name });
-//       const longStateName = states[cmsCandidate.state.toUpperCase()];
-//       const state = await State.findOrCreate(
-//         { shortName: cmsCandidate.state.toLowerCase() },
-//         {
-//           name: longStateName,
-//           shortName: cmsCandidate.state.toLowerCase(),
-//         },
-//       );
-//
-//       const congDistrict = await CongDistrict.findOrCreate(
-//         {
-//           code: cmsCandidate.districtNumber,
-//           state: state.id,
-//         },
-//         {
-//           name: `${longStateName} ${cmsCandidate.districtNumber} congressional district`,
-//           code: cmsCandidate.districtNumber,
-//           state: state.id,
-//           ocdDivisionId: `ocd-division/country:us/stats:${cmsCandidate.state.toLowerCase()}/cd:${
-//             cmsCandidate.districtNumber
-//           }`,
-//         },
-//       );
-//
-//       if (candidate.length === 0) {
-//         // candidate doesn't exist in our db, create a new one.
-//         // first create the state if doesn't exist
-//
-//         await Candidate.create({
-//           ...cmsCandidate,
-//           state: state.id,
-//           congDistrict: congDistrict.id,
-//         });
-//       } else {
-//         await Candidate.updateOne({ name: cmsCandidate.name }).set({
-//           ...cmsCandidate,
-//           state: state.id,
-//           congDistrict: congDistrict.id,
-//         });
-//       }
-//     });
-//   }
-// };
+
+const processContent = async content => {
+  // create or update candidates based on cms candidates;
+  const candidates = content.presidentialCandidates;
+  if (candidates) {
+    candidates.map(async cmsCandidate => {
+      await PresidentialCandidate.updateOne({ name: cmsCandidate.name }).set({
+        info: JSON.stringify(cmsCandidate.info),
+      });
+    });
+  }
+};
 //
 // const statesWithCandidates = async () => {
 //   const allStates = await State.find().populate('candidates');

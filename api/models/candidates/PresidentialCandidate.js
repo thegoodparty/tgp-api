@@ -49,6 +49,9 @@ module.exports = {
     outsideReportDate: {
       type: 'string',
     },
+    info: {
+      type: 'string',
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
