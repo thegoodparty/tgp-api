@@ -16,8 +16,14 @@ module.exports = {
       const hours = incumbent.chamber === 'House' ? 2000 : 10000;
       const largeDonorPerHour =
         (totalRaised - incumbent.smallContributions) / hours;
+      const isGood = largeDonorsPerc < 0.5;
 
-      return exits.success({ totalRaised, largeDonorsPerc, largeDonorPerHour });
+      return exits.success({
+        totalRaised,
+        largeDonorsPerc,
+        largeDonorPerHour,
+        isGood,
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({

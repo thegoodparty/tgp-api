@@ -42,6 +42,7 @@ module.exports = {
           totalRaised,
           largeDonorsPerc,
           largeDonorPerHour,
+          isGood,
         } = await sails.helpers.incumbentHelper(houseRep);
 
         houseIncumbent = {
@@ -49,30 +50,46 @@ module.exports = {
           totalRaised,
           largeDonorsPerc,
           largeDonorPerHour,
+          isGood,
           isIncumbent: true,
         };
       }
 
-      const senateIncumbents = [];
+      const good = [];
+      const notGood = [];
       for (let i = 0; i < senateReps.length; i++) {
         const rep = senateReps[i];
         const {
           totalRaised,
           largeDonorsPerc,
           largeDonorPerHour,
+          isGood,
         } = await sails.helpers.incumbentHelper(rep);
-        senateIncumbents.push({
-          ...rep,
-          totalRaised,
-          largeDonorsPerc,
-          largeDonorPerHour,
-          isIncumbent: true,
-        });
+
+        if (isGood) {
+          good.push({
+            ...rep,
+            totalRaised,
+            largeDonorsPerc,
+            largeDonorPerHour,
+            isGood,
+            isIncumbent: true,
+          });
+        } else {
+          notGood.push({
+            ...rep,
+            totalRaised,
+            largeDonorsPerc,
+            largeDonorPerHour,
+            isGood,
+            isIncumbent: true,
+          });
+        }
       }
 
       return exits.success({
         houseIncumbent,
-        senateIncumbents,
+        senateIncumbents: { good, notGood },
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
