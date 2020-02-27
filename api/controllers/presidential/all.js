@@ -24,20 +24,30 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const candidates = await PresidentialCandidate.find();
-      const calcCand = [];
+      const candidates = await PresidentialCandidate.find().sort([
+        { isIncumbent: 'DESC' },
+        { name: 'ASC' },
+      ]);
+      const good = [];
+      const notGood = [];
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
         const { isGood } = await sails.helpers.presidentialHelper(candidate);
-
-        calcCand.push({
-          ...candidate,
-          isGood,
-        });
+        if (isGood) {
+          good.push({
+            ...candidate,
+            isGood,
+          });
+        } else {
+          notGood.push({
+            ...candidate,
+            isGood,
+          });
+        }
       }
 
       return exits.success({
-        presidential: calcCand,
+        presidential: { good, notGood },
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
