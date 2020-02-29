@@ -108,7 +108,7 @@ module.exports = {
         const subject = `Please Confirm your email address - The Good Party`;
         const message = `Hi ${name},<br/> <br/>
                          Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
-                         <a href="https://dev.thegoodparty.org/email-confirmation?token=${user.emailConfToken}">Confirm Email</a>`;
+                         <a href="https://dev.thegoodparty.org/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
         const messageHeader = 'Please confirm your email';
         await sails.helpers.mailgunSender(
           email,
