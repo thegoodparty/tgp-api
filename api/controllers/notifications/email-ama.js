@@ -30,7 +30,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      await sails.helpers.mailgunSender(inputs.message);
+      await sails.helpers.mailgunAmaSender(inputs.message);
       return exits.success({
         message: 'Email Sent Successfully',
       });

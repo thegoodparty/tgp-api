@@ -7,44 +7,34 @@ module.exports = {
     'Send email via mailgun. https://github.com/auth0/node-jsonwebtoken',
 
   inputs: {
-    email: {
-      friendlyName: 'Email',
-      type: 'string',
-    },
-    name: {
-      friendlyName: 'Name',
-      type: 'string',
-    },
-    subject: {
-      friendlyName: 'Emails Subject',
-      type: 'string',
-    },
-    messageHeader: {
-      friendlyName: 'Message',
-      description: 'Message from user',
-      type: 'string',
-    },
     message: {
       friendlyName: 'Message',
       description: 'Message from user',
       type: 'string',
     },
+
+    callback: {
+      friendlyName: 'callback',
+      description: 'callback',
+      type: 'ref',
+    },
   },
+
+
 
   fn: async function(inputs, exits) {
     try {
-      const { message, messageHeader, email, name, subject } = inputs;
       const MAILGUN_API =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
       mg.messages
-        .create('mg.thegoodparty.org', {
-          from: 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>',
-          to: email,
-          subject,
-          text: message,
-          html: html(message, messageHeader, subject),
+        .create('sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org', {
+          from: 'TGP APP - AMA <ask@thegoodparty.org>',
+          to: ['ask@thegoodparty.org'],
+          subject: 'AMA form submitted on TGP App',
+          text: inputs.message,
+          // html: html(inputs.message),
         })
         .then(msg => {}) // logs response data
         .catch(err => {
@@ -63,7 +53,7 @@ module.exports = {
   },
 };
 
-const html = (msg, messageHeader, subject) => {
+const html = msg => {
   return `
   <table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#e9e9e9">
   <tr>
@@ -71,7 +61,7 @@ const html = (msg, messageHeader, subject) => {
 
       <div
           style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
-        ${subject}
+        AMA form submitted on TGP App
       </div>
 
       <center>
@@ -103,7 +93,7 @@ const html = (msg, messageHeader, subject) => {
                       class="body-text">
                     <h2
                         style="font-family: Arial, sans-serif; font-size:34px; line-height:40px; color:#333333; font-weight:bold; padding:0 20px; margin:0; text-align:center"
-                        class="body-text">${messageHeader}</h2>
+                        class="body-text">AMA Form submitted on TGP APP</h2>
                   </td>
                 </tr>
 

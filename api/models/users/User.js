@@ -13,14 +13,14 @@ module.exports = {
     phone: {
       type: 'string',
       required: false,
-      unique: true,
+      // unique: true,
       maxLength: 11,
       example: '3101234567',
     },
 
     email: {
       type: 'string',
-      required: false,
+      required: true,
       isEmail: true,
       unique: true,
       maxLength: 200,
@@ -65,6 +65,12 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
       description: 'Was the phone verified via sms',
+    },
+
+    isEmailVerified: {
+      type: 'boolean',
+      defaultsTo: false,
+      description: 'Was the email verified',
     },
 
     avatar: {
@@ -141,6 +147,8 @@ module.exports = {
       'passwordResetTokenExpiresAt',
       'createdAt',
       'updatedAt',
+      'emailConfToken',
+      'emailConfTokenDateCreated',
     ]);
   },
 
@@ -169,8 +177,11 @@ module.exports = {
         }
       }
 
-      if(values.email) {
-
+      if (values.email) {
+        const token = await sails.helpers.strings.random('url-friendly');
+        values.emailConfToken = token;
+        values.emailConfTokenDateCreated =
+          Date.now() + sails.config.custom.passwordResetTokenTTL;
       }
 
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.
@@ -184,7 +195,9 @@ module.exports = {
     // check if the newly created user exists in invited table. If so, update all those who invited the new user.
     // then remove the row from invited table.
     try {
-      const { id, phone, name } = newUser;
+      const { id, phone } = newUser;
+
+      // invited logic
       const invitedPhone = await Invited.findOne({ phone });
       if (!invitedPhone) {
         return next();

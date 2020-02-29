@@ -8,16 +8,23 @@
 module.exports = {
   friendlyName: 'register user',
 
-  description: 'register a user with email, password first and last name',
+  description: 'register a user with email and name',
 
   inputs: {
-    phone: {
-      description: 'User Phone',
+    email: {
+      description: 'User Email',
+      type: 'string',
+      required: true,
+      isEmail: true,
+    },
+
+    name: {
+      description: 'User Name',
       type: 'string',
       required: true,
     },
     verify: {
-      description: 'Should verify phone via sms? ',
+      description: 'Send an email?',
       type: 'boolean',
       defaultsTo: true,
     },
@@ -47,13 +54,7 @@ module.exports = {
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
     try {
-      const { phone, verify, districtId, addresses } = inputs;
-      const phoneError = !/^\d{10}$/.test(phone);
-      if (phoneError) {
-        return exits.badRequest({
-          message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
-        });
-      }
+      const { email, name, verify, districtId, addresses } = inputs;
 
       let displayAddress, normalizedAddress, zip;
       if (addresses) {
@@ -69,8 +70,10 @@ module.exports = {
       if (zip) {
         zipCode = await ZipCode.findOne({ zip });
       }
+
       const userAttr = {
-        phone,
+        email,
+        name,
       };
       if (zipCode) {
         userAttr.zipCode = zipCode.id;
@@ -80,7 +83,7 @@ module.exports = {
       }
       const user = await User.findOrCreate(
         {
-          phone,
+          email,
         },
         {
           ...userAttr,
@@ -90,7 +93,7 @@ module.exports = {
       );
 
       if (verify) {
-        userAttr.isVerified = false;
+        userAttr.isEmailVerified = false;
       }
 
       // need to update in case the user was already in the db.
@@ -102,18 +105,43 @@ module.exports = {
 
       // send sms to the newly created user.
       if (verify) {
-        await sails.helpers.smsVerify(`+1${phone}`);
+        const subject = `Please Confirm your email address - The Good Party`;
+        const message = `Hi ${name},<br/> <br/>
+                         Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
+                         <a href="https://dev.thegoodparty.org/email-confirmation?token=${user.emailConfToken}">Confirm Email</a>`;
+        const messageHeader = 'Please confirm your email';
+        await sails.helpers.mailgunSender(
+          email,
+          name,
+          subject,
+          messageHeader,
+          message,
+        );
       }
 
-      const userWithZip = await User.findOne({ id: user.id })
-        .populate('zipCode')
-        .populate('congDistrict');
+      // const userWithZip = await User.findOne({ id: user.id })
+      //   .populate('zipCode')
+      //   .populate('congDistrict');
       return exits.success({
-        user: userWithZip,
+        user,
       });
     } catch (e) {
       console.log('register error', JSON.stringify(e));
       return exits.badRequest({ message: 'Error registering account.' });
     }
   },
+};
+
+const sendEmail = async (name, email) => {
+  // Import `util`.
+  var util = require('util');
+
+  // Import `mailgun` and `mailcomposer`
+  var Mailgun = require('mailgun-js');
+  var mailcomposer = require('mailcomposer');
+
+  var mailgun = Mailgun({
+    apiKey: sails.config.custom.mailgunApiKey,
+    domain: 'www.thegoodparty.org',
+  });
 };
