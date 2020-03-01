@@ -36,6 +36,14 @@ module.exports = {
       description: 'Addresses collected from user during account creation.',
       type: 'string',
     },
+    zip: {
+      description: 'zip collected from user during account creation.',
+      type: 'string',
+    },
+    feedback: {
+      description: 'Message from the user',
+      type: 'string',
+    },
   },
 
   exits: {
@@ -54,20 +62,40 @@ module.exports = {
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
     try {
-      const { email, name, verify, districtId, addresses } = inputs;
+      const {
+        email,
+        name,
+        verify,
+        districtId,
+        addresses,
+        zip,
+        feedback,
+      } = inputs;
 
-      let displayAddress, normalizedAddress, zip;
+      const userExists = await User.findOne({
+        email,
+      });
+      if (userExists) {
+        return exits.badRequest({
+          message: `${email} already exists in our system.`,
+          exists: true,
+        });
+      }
+
+      let displayAddress, normalizedAddress, addressZip;
       if (addresses) {
         const address = JSON.parse(addresses);
         displayAddress = address.displayAddress;
         normalizedAddress = address.normalizedAddress
           ? JSON.stringify(address.normalizedAddress)
           : address.normalizedAddress;
-        zip = address.zip;
+        addressZip = address.zip;
       }
       let zipCode;
 
-      if (zip) {
+      if (addressZip) {
+        zipCode = await ZipCode.findOne({ addressZip });
+      } else if (zip) {
         zipCode = await ZipCode.findOne({ zip });
       }
 
@@ -81,26 +109,26 @@ module.exports = {
       if (districtId) {
         userAttr.congDistrict = districtId;
       }
-      const user = await User.findOrCreate(
-        {
-          email,
-        },
-        {
-          ...userAttr,
-          displayAddress,
-          normalizedAddress,
-        },
-      );
-
+      if (displayAddress) {
+        userAttr.displayAddress = displayAddress;
+      }
+      if (normalizedAddress) {
+        userAttr.normalizedAddress = normalizedAddress;
+      }
+      if (feedback) {
+        userAttr.feedback = feedback;
+      }
       if (verify) {
         userAttr.isEmailVerified = false;
       }
 
+      const user = await User.create({
+        ...userAttr,
+      }).fetch();
+
       // need to update in case the user was already in the db.
       await User.updateOne({ id: user.id }).set({
         ...userAttr,
-        displayAddress,
-        normalizedAddress,
       });
 
       // send sms to the newly created user.
@@ -119,9 +147,6 @@ module.exports = {
         );
       }
 
-      // const userWithZip = await User.findOne({ id: user.id })
-      //   .populate('zipCode')
-      //   .populate('congDistrict');
       return exits.success({
         user,
       });
@@ -130,18 +155,4 @@ module.exports = {
       return exits.badRequest({ message: 'Error registering account.' });
     }
   },
-};
-
-const sendEmail = async (name, email) => {
-  // Import `util`.
-  var util = require('util');
-
-  // Import `mailgun` and `mailcomposer`
-  var Mailgun = require('mailgun-js');
-  var mailcomposer = require('mailcomposer');
-
-  var mailgun = Mailgun({
-    apiKey: sails.config.custom.mailgunApiKey,
-    domain: 'www.thegoodparty.org',
-  });
 };

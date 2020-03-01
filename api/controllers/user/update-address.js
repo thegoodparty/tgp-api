@@ -13,6 +13,10 @@ module.exports = {
       description: 'Addresses collected from user during account creation.',
       type: 'string',
     },
+    zip: {
+      description: 'Zip code.',
+      type: 'string',
+    },
   },
 
   exits: {
@@ -29,24 +33,26 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const user = this.req.user;
-      const { addresses, districtId } = inputs;
-      if (!addresses && !districtId) {
+      const { addresses, districtId, zip } = inputs;
+      if (!addresses && !districtId && !zip) {
         return exits.badRequest({
-          message: 'Address or districtId are required',
+          message: 'Address, zip or districtId are required',
         });
       }
-      let displayAddress, normalizedAddress, zip;
+      let displayAddress, normalizedAddress, addressZip;
       if (addresses) {
         const address = JSON.parse(addresses);
         displayAddress = address.displayAddress;
         normalizedAddress = address.normalizedAddress
           ? JSON.stringify(address.normalizedAddress)
           : address.normalizedAddress;
-        zip = address.zip;
+        addressZip = address.zip;
       }
       let zipCode;
 
-      if (zip) {
+      if (addressZip) {
+        zipCode = await ZipCode.findOne({ addressZip });
+      } else if (zip) {
         zipCode = await ZipCode.findOne({ zip });
       }
 
@@ -57,19 +63,20 @@ module.exports = {
       if (districtId) {
         userAttr.congDistrict = districtId;
       }
+      if (displayAddress) {
+        userAttr.displayAddress = displayAddress;
+      }
+      if (normalizedAddress) {
+        userAttr.normalizedAddress = normalizedAddress;
+      }
 
-      await User.updateOne({ id: user.id }).set({
+
+      const user = await User.updateOne({ id: user.id }).set({
         ...userAttr,
-        displayAddress,
-        normalizedAddress,
       });
 
-      const userWithZip = await User.findOne({ id: user.id })
-        .populate('zipCode')
-        .populate('congDistrict');
-
       return exits.success({
-        user: userWithZip,
+        user,
       });
     } catch (e) {
       console.log(e);
