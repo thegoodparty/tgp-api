@@ -198,8 +198,7 @@ module.exports = {
       if (values.email) {
         const token = await sails.helpers.strings.random('url-friendly');
         values.emailConfToken = token;
-        values.emailConfTokenDateCreated =
-          Date.now() + sails.config.custom.passwordResetTokenTTL;
+        values.emailConfTokenDateCreated = Date.now();
       }
 
       // calling the callback next() with an argument returns an error. Useful for canceling the entire operation if some criteria fails.

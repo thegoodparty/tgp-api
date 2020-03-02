@@ -35,7 +35,7 @@ module.exports = {
     // if validation fails.
     try {
       const { email } = inputs;
-      const user = await User.findOne({
+      let user = await User.findOne({
         email,
       });
       if (!user) {
@@ -44,6 +44,12 @@ module.exports = {
           message: 'Email Resent',
         });
       }
+
+      const token = await sails.helpers.strings.random('url-friendly');
+      user = await User.updateOne({ email }).set({
+        emailConfToken: token,
+        emailConfTokenDateCreated: Date.now(),
+      });
 
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const subject = `Please Confirm your email address - The Good Party`;
