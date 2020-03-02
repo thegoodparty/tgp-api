@@ -1,5 +1,5 @@
 /**
- * user/register.js
+ * entrance/register.js
  *
  * @description :: Stand Alone action2 for signing up a user.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
@@ -157,10 +157,11 @@ module.exports = {
 
       // send sms to the newly created user.
       if (verify) {
+        const appBase = sails.config.custom.appBase || sails.config.appBase;
         const subject = `Please Confirm your email address - The Good Party`;
         const message = `Hi ${name},<br/> <br/>
                          Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
-                         <a href="https://dev.thegoodparty.org/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
+                         <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
         const messageHeader = 'Please confirm your email';
         await sails.helpers.mailgunSender(
           email,
