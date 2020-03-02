@@ -44,6 +44,18 @@ module.exports = {
       description: 'Message from the user',
       type: 'string',
     },
+    presidentialRank: {
+      description: 'stringified array of presidential candidates IDs',
+      type: 'string',
+    },
+    senateRank: {
+      description: 'stringified array of senate candidates IDs',
+      type: 'string',
+    },
+    houseRank: {
+      description: 'stringified array of house candidates IDs',
+      type: 'string',
+    },
   },
 
   exits: {
@@ -70,6 +82,9 @@ module.exports = {
         addresses,
         zip,
         feedback,
+        presidentialRank,
+        senateRank,
+        houseRank,
       } = inputs;
 
       const userExists = await User.findOne({
@@ -117,6 +132,15 @@ module.exports = {
       }
       if (feedback) {
         userAttr.feedback = feedback;
+      }
+      if (presidentialRank) {
+        userAttr.presidentialRank = presidentialRank;
+      }
+      if (senateRank) {
+        userAttr.senateRank = senateRank;
+      }
+      if (houseRank) {
+        userAttr.houseRank = houseRank;
       }
       if (verify) {
         userAttr.isEmailVerified = false;

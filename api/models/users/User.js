@@ -100,6 +100,24 @@ module.exports = {
       description: 'date that the token was created',
     },
 
+    presidentialRank: {
+      type: 'string',
+      required: false,
+      description: 'array of presidential candidates IDs',
+    },
+
+    senateRank: {
+      type: 'string',
+      required: false,
+      description: 'array of senate candidates IDs',
+    },
+
+    houseRank: {
+      type: 'string',
+      required: false,
+      description: 'array of house candidates IDs',
+    },
+
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
