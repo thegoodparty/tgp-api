@@ -137,15 +137,8 @@ module.exports = {
      ***************************************************************************/
     cors: {
       allRoutes: true,
-      allowOrigins: [
-        'http://localhost:4000',
-        'https://admin-dev.thegoodparty.org',
-        'https://dev.thegoodparty.org',
-        'https://www.thegoodparty.org',
-      ],
-      allowCredentials: true,
-      allowRequestMethods: 'GET, POST, PUT, DELETE, OPTIONS, HEAD',
-      allowRequestHeaders: 'content-type, authorization',
+      allowOrigins: '*',
+      allowCredentials: false,
     },
   },
 
@@ -343,7 +336,6 @@ module.exports = {
   custom: {
     // baseUrl: 'https://example.com',
     // internalEmailAddress: 'support@example.com',
-
     // mailgunDomain: 'mg.example.com',
     // mailgunSecret: 'key-prod_fake_bd32301385130a0bafe030c',
     // stripeSecret: 'sk_prod__fake_Nfgh82401348jaDa3lkZ0d9Hm',

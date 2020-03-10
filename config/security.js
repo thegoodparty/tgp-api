@@ -30,6 +30,7 @@ module.exports.security = {
   cors: {
     allRoutes: true,
     allowOrigins: [
+      'http://localhost:4000',
       'https://admin-dev.thegoodparty.org',
     ],
     allowCredentials: true,
