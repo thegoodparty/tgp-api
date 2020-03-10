@@ -43,7 +43,7 @@ module.exports = {
           largeDonorsPerc,
           largeDonorPerHour,
           isGood,
-        } = await sails.helpers.incumbentHelper(houseRep);
+        } = await sails.helpers.incumbentHelper(houseRep, 'House');
 
         houseIncumbent = {
           ...houseRep,
@@ -64,7 +64,7 @@ module.exports = {
           largeDonorsPerc,
           largeDonorPerHour,
           isGood,
-        } = await sails.helpers.incumbentHelper(rep);
+        } = await sails.helpers.incumbentHelper(rep, 'Senate');
 
         if (isGood) {
           good.push({

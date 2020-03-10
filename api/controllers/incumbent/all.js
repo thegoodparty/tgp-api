@@ -32,7 +32,7 @@ module.exports = {
           totalRaised,
           largeDonorsPerc,
           largeDonorPerHour,
-        } = await sails.helpers.incumbentHelper(incumbent);
+        } = await sails.helpers.incumbentHelper(incumbent, incumbent.chamber);
 
         calcIncumbents.push({
           ...incumbent,

@@ -24,7 +24,10 @@ module.exports = {
       const largeDonorPerHour = (totalRaised * largeDonorPerc) / hours;
       const smallDonorPerHour = (totalRaised * smallDonorPerc) / hours;
 
-      const isGood = largeDonorPerc < 0.5;
+      let isGood = false;
+      if (totalRaised < 10000000 || largeDonorPerc < 0.5) {
+        isGood = true;
+      }
 
       return exits.success({
         totalRaised,
