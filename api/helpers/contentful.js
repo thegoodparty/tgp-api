@@ -47,6 +47,8 @@ const mapResponse = items => {
           mappedResponse.events = [];
         }
         mappedResponse.events.push(mapEvent(item.fields, elementId));
+      } else if (itemId === 'partyPage') {
+        mappedResponse.partyPage = item.fields;
       } else if (itemId === 'presidentialCandidate') {
         if (!mappedResponse.presidentialCandidates) {
           mappedResponse.presidentialCandidates = [];
