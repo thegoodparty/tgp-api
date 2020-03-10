@@ -11,15 +11,11 @@ module.exports = {
     'Login user with email and password. Return the user and jwt access token.',
 
   inputs: {
-    phone: {
+    email: {
       description: 'User Phone',
       type: 'string',
       required: true,
-    },
-    verify: {
-      description: 'Should verify phone via sms? ',
-      type: 'boolean',
-      defaultsTo: true,
+      isEmail: true,
     },
   },
 
@@ -36,43 +32,43 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { phone, verify } = inputs;
-      const phoneError = !/^\d{10}$/.test(phone);
+      const { email } = inputs;
 
-      if (phoneError) {
-        return exits.badRequest({
-          message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
-        });
-      }
-      const user = await User.findOne({ phone })
-        .populate('congDistrict')
-        .populate('zipCode');
+      const user = await User.findOne({ email });
       if (!user) {
-        return exits.badRequest({ message: 'Login Failed' });
+        return exits.success(); //we don't disclose whether we have a user in the db or not
       }
-      if (verify) {
-        await User.updateOne({ id: user.id }).set({
-          isPhoneVerified: false,
-        });
 
-        // await sails.helpers.passwords.checkPassword(
-        //   inputs.password,
-        //   user.encryptedPassword,
-        // );
-        await sails.helpers.smsVerify(`+1${phone}`);
+      let randomCode = parseInt(Math.random() * 1000000);
+      if (randomCode < 100000) {
+        randomCode += 124000;
       }
-      let token = null;
-      if (!verify && user.isPhoneVerified) {
-        token = await sails.helpers.jwtSign({ id: user.id, phone: user.phone });
-      }
-      return exits.success({
-        user,
-        token,
+
+      await User.updateOne({ email }).set({
+        emailConfToken: randomCode,
+        emailConfTokenDateCreated: Date.now(),
       });
+
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      const subject = 'Login code - The Good Party';
+      const message = `Hi ${user.name},<br/> <br/>
+                         Please use the code below to complete your login process.<br/>
+                         This code will expire in 24 hours. <br/> <br/>
+                         <h2>${randomCode}</h2>`;
+      const messageHeader = 'Login Code';
+      await sails.helpers.mailgunSender(
+        email,
+        user.name,
+        subject,
+        messageHeader,
+        message,
+      );
+
+      return exits.success();
     } catch (err) {
       console.log('login error');
       console.log(err);
-      return exits.badRequest({ message: 'Login Failed' });
+      return exits.success();
     }
   },
 };

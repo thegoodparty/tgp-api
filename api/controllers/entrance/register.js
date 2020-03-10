@@ -158,7 +158,7 @@ module.exports = {
       // send sms to the newly created user.
       if (verify) {
         const appBase = sails.config.custom.appBase || sails.config.appBase;
-        const subject = `Please Confirm your email address - The Good Party`;
+        const subject = 'Please Confirm your email address - The Good Party';
         const message = `Hi ${name},<br/> <br/>
                          Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
                          <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
