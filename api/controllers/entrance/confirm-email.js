@@ -63,8 +63,11 @@ module.exports = {
 
       const token = await sails.helpers.jwtSign({ id: user.id, email });
 
+      const userWithZip = await User.findOne({ id: user.id })
+        .populate('zipCode')
+
       return exits.success({
-        user,
+        user: userWithZip,
         token,
       });
     }
