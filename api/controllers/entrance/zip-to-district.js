@@ -42,7 +42,6 @@ module.exports = {
         return exits.notFound({
           message: 'Failed to find zip code',
           zipCode,
-          db: sails.config.datastores.default.url,
         });
       }
 

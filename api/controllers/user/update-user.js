@@ -5,8 +5,8 @@ module.exports = {
 
   inputs: {
     name: {
-      description: 'First Name',
-      example: 'John',
+      description: 'Full Name',
+      example: 'John Smith',
       required: false,
       type: 'string',
       maxLength: 120,
@@ -18,6 +18,14 @@ module.exports = {
       required: false,
       type: 'string',
       isEmail: true,
+    },
+
+    phone: {
+      description: 'Phone Number',
+      example: '3101234567',
+      required: false,
+      type: 'string',
+      maxLength: 11,
     },
 
     feedback: {
@@ -42,7 +50,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { name, email, feedback } = inputs;
+      const { name, email, feedback, phone } = inputs;
       if (!name && !email && !feedback) {
         return exits.badRequest({
           message: 'Name, Feedback or Email are required',
@@ -59,12 +67,13 @@ module.exports = {
       if (email) {
         updateFields.email = email;
       }
+      if (phone) {
+        updateFields.phone = phone;
+      }
 
       await User.updateOne({ id: reqUser.id }).set(updateFields);
 
-      const user = await User.findOne({ id: reqUser.id })
-        .populate('congDistrict')
-        .populate('zipCode');
+      const user = await User.findOne({ id: reqUser.id });
 
       return exits.success({
         user,

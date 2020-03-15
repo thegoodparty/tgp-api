@@ -14,6 +14,7 @@ module.exports = {
       friendlyName: 'Message',
       description: 'Message from user',
       type: 'string',
+      required: true
     },
   },
 
@@ -30,7 +31,18 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      await sails.helpers.mailgunAmaSender(inputs.message);
+      const { message } = inputs;
+      const subject = 'Ama Form Sent';
+      const messageHeader = 'Ama Form Sent';
+      const email = 'ask@thegoodparty.org';
+      const name = 'TGP Admin'
+      await sails.helpers.mailgunSender(
+        email,
+        name,
+        subject,
+        messageHeader,
+        message,
+      );
       return exits.success({
         message: 'Email Sent Successfully',
       });
