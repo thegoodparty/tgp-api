@@ -70,13 +70,17 @@ module.exports = {
         userAttr.normalizedAddress = normalizedAddress;
       }
 
-
-      const user = await User.updateOne({ id: user.id }).set({
+      const updatedUser = await User.updateOne({ id: user.id }).set({
         ...userAttr,
       });
 
+      const updatedZipCode = await ZipCode.findOne({
+        id: user.zipCode,
+      }).populate('cds');
+      updatedUser.zipCode = updatedZipCode;
+
       return exits.success({
-        user,
+        user: updatedUser,
       });
     } catch (e) {
       console.log(e);
