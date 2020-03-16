@@ -34,6 +34,13 @@ module.exports = {
       type: 'string',
       maxLength: 140,
     },
+
+    zip: {
+      description: 'User ZipCode',
+      required: false,
+      type: 'string',
+      maxLength: 5,
+    },
   },
 
   exits: {
@@ -50,10 +57,10 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { name, email, feedback, phone } = inputs;
-      if (!name && !email && !feedback) {
+      const { name, email, feedback, phone, zip } = inputs;
+      if (!name && !email && !feedback && !zip && !phone) {
         return exits.badRequest({
-          message: 'Name, Feedback or Email are required',
+          message: 'Name, Feedback, Zip or Email are required',
         });
       }
 
@@ -66,14 +73,25 @@ module.exports = {
       }
       if (email) {
         updateFields.email = email;
+        await sendEmail(reqUser.email, email);
       }
       if (phone) {
         updateFields.phone = phone;
+      }
+      if (zip) {
+        let zipCode = await ZipCode.findOne({ zip });
+        if (zipCode) {
+          updateFields.zipCode = zipCode.id;
+        }
       }
 
       await User.updateOne({ id: reqUser.id }).set(updateFields);
 
       const user = await User.findOne({ id: reqUser.id });
+      const zipCode = await ZipCode.findOne({
+        id: user.zipCode,
+      }).populate('cds');
+      user.zipCode = zipCode;
 
       return exits.success({
         user,
@@ -85,4 +103,27 @@ module.exports = {
       });
     }
   },
+};
+
+const sendEmail = async (reqEmail, email) => {
+  const token = await sails.helpers.strings.random('url-friendly');
+  const user = await User.updateOne({ email: reqEmail }).set({
+    emailConfToken: token,
+    emailConfTokenDateCreated: Date.now(),
+    isEmailVerified: false,
+  });
+
+  const appBase = sails.config.custom.appBase || sails.config.appBase;
+  const subject = `Please Confirm your email address - The Good Party`;
+  const message = `Hi ${user.name},<br/> <br/>
+                         Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
+                         <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
+  const messageHeader = 'Please confirm your email';
+  await sails.helpers.mailgunSender(
+    email,
+    user.name,
+    subject,
+    messageHeader,
+    message,
+  );
 };
