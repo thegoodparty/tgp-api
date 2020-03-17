@@ -38,7 +38,6 @@ module.exports = {
         largeDonorPerHour,
         smallDonorPerc,
         smallDonorPerHour,
-        isGood,
       } = await sails.helpers.presidentialHelper(candidate);
 
       return exits.success({
@@ -48,7 +47,6 @@ module.exports = {
         largeDonorPerHour,
         smallDonorPerc,
         smallDonorPerHour,
-        isGood,
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);

@@ -28,26 +28,26 @@ module.exports = {
         { isIncumbent: 'DESC' },
         { name: 'ASC' },
       ]);
-      const good = [];
-      const notGood = [];
-      for (let i = 0; i < candidates.length; i++) {
-        const candidate = candidates[i];
-        const { isGood } = await sails.helpers.presidentialHelper(candidate);
-        if (isGood) {
-          good.push({
-            ...candidate,
-            isGood,
-          });
-        } else {
-          notGood.push({
-            ...candidate,
-            isGood,
-          });
-        }
-      }
+      // const good = [];
+      // const notGood = [];
+      // for (let i = 0; i < candidates.length; i++) {
+      //   const candidate = candidates[i];
+      //   const { isGood } = await sails.helpers.presidentialHelper(candidate);
+      //   if (isGood) {
+      //     good.push({
+      //       ...candidate,
+      //       isGood,
+      //     });
+      //   } else {
+      //     notGood.push({
+      //       ...candidate,
+      //       isGood,
+      //     });
+      //   }
+      // }
 
       return exits.success({
-        presidential: { good, notGood },
+        presidential: candidates,
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
