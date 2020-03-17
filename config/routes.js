@@ -75,6 +75,7 @@ module.exports.routes = {
 
   'GET    /api/v1/race-candidate/find-by-district':
     'race-candidate/find-by-district',
+  'GET    /api/v1/race-candidate/find-by-state': 'race-candidate/find-by-state',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
   'GET    /api/v1/presidential/find': 'presidential/find',
