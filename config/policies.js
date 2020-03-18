@@ -28,6 +28,6 @@ module.exports.policies = {
   'incumbent/*': true,
   'presidential/*': true,
   'race-candidate/*': true,
-  'candidate/*': true,
+  'candidates/*': true,
   'seed/*': true,
 };

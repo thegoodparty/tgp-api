@@ -79,5 +79,6 @@ module.exports.routes = {
     'race-candidate/senate-by-state',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
-  'GET    /api/v1/presidential/find': 'presidential/find',
+
+  'GET    /api/v1/candidates/find': 'candidates/find',
 };
