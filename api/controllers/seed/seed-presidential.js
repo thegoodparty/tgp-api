@@ -49,20 +49,30 @@ module.exports = {
 
 const mapCand = csvRow => {
   const {
-    id,
     name,
     candidate,
     combinedRaised,
-    largeContributions,
-    smallIndividual,
-    selfFinancing,
-    federalFunds,
-    other,
     dateCampaign,
     dateOutside,
-    image,
-    isIncumbent,
+    contributionName1,
+    contributionName2,
+    contributionName3,
+    contributionName4,
+    contributionName5,
+    contributionValue1,
+    contributionValue2,
+    contributionValue3,
+    contributionValue4,
+    contributionValue5,
   } = csvRow;
+
+  const candidateHref = csvRow['candidate-href'];
+  const candName = candidate.split('(')[0].trim();
+  const id = candidateHref.replace(
+    'https://www.opensecrets.org/2020-presidential-race/candidate?id=',
+    '',
+  );
+  const image = csvRow['image-src'];
 
   let party;
   try {
@@ -70,21 +80,40 @@ const mapCand = csvRow => {
   } catch {
     party = '';
   }
+  const names = [
+    contributionName1,
+    contributionName2,
+    contributionName3,
+    contributionName4,
+    contributionName5,
+  ];
+  const values = [
+    contributionValue1,
+    contributionValue2,
+    contributionValue3,
+    contributionValue4,
+    contributionValue5,
+  ];
+  const smallContributions = findValue(
+    names,
+    values,
+    'Small Individual Contributions (< $200)',
+  );
+
+  const isIncumbent = name.includes('Incumbent');
+  console.log(name);
+  console.log(isIncumbent);
 
   return {
     openSecretsId: id,
-    name,
+    name: candName,
     party,
     image,
     combinedRaised: strNumToInt(combinedRaised),
-    largeContributions: strNumToInt(largeContributions),
-    smallContributions: strNumToInt(smallIndividual),
-    selfFinancing: strNumToInt(selfFinancing),
-    federalFunds: strNumToInt(federalFunds),
-    otherFunds: strNumToInt(other),
+    smallContributions: strNumToInt(smallContributions),
     campaignReportDate: dateCampaign + '',
     outsideReportDate: dateOutside + '',
-    isIncumbent: isIncumbent === 'yes' ? true : false,
+    isIncumbent,
   };
 };
 
@@ -97,43 +126,45 @@ const strNumToInt = strNum => {
 
 const createEntries = async rows => {
   let row;
+  // first set all candidates to inactive, we will selective turn them active after
+
+  await PresidentialCandidate.update({}).set({
+    isActive: false,
+  });
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
       const {
         openSecretsId,
         name,
-        image,
+        // image,
         party,
         combinedRaised,
-        largeContributions,
         smallContributions,
-        selfFinancing,
-        federalFunds,
-        otherFunds,
         campaignReportDate,
         outsideReportDate,
-        isIncumbent
+        isIncumbent,
       } = row;
+
       const candidate = await PresidentialCandidate.findOrCreate(
         { openSecretsId },
         {
           ...row,
+          isActive: true,
         },
       );
 
-      await PresidentialCandidate.updateOne({ openSecretsId }).set({
-        image,
+      await PresidentialCandidate.updateOne({
+        openSecretsId,
+      }).set({
+        // image,
         party,
         combinedRaised,
-        largeContributions,
         smallContributions,
-        selfFinancing,
-        federalFunds,
-        otherFunds,
         campaignReportDate,
         outsideReportDate,
-        isIncumbent
+        isIncumbent,
+        isActive: true,
       });
 
       console.log(
@@ -150,4 +181,16 @@ const createEntries = async rows => {
     }
   }
   console.log('seed completed');
+};
+
+const findValue = (names, values, name) => {
+  if (!names || !values || names.length !== values.length) {
+    return '';
+  }
+  for (let i = 0; i < names.length; i++) {
+    if (names[i] === name) {
+      return values[i];
+    }
+  }
+  return '';
 };

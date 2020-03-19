@@ -28,19 +28,7 @@ module.exports = {
     combinedRaised: {
       type: 'number',
     },
-    largeContributions: {
-      type: 'number',
-    },
     smallContributions: {
-      type: 'number',
-    },
-    selfFinancing: {
-      type: 'number',
-    },
-    federalFunds: {
-      type: 'number',
-    },
-    otherFunds: {
       type: 'number',
     },
     campaignReportDate: {
@@ -53,6 +41,9 @@ module.exports = {
       type: 'string',
     },
     isIncumbent: {
+      type: 'boolean',
+    },
+    isActive: {
       type: 'boolean',
     },
   },

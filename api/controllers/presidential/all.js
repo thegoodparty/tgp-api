@@ -24,10 +24,9 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const candidates = await PresidentialCandidate.find().sort([
-        { isIncumbent: 'DESC' },
-        { name: 'ASC' },
-      ]);
+      const candidates = await PresidentialCandidate.find({
+        isActive: true,
+      }).sort([{ isIncumbent: 'DESC' }, { name: 'ASC' }]);
       // const good = [];
       // const notGood = [];
       // for (let i = 0; i < candidates.length; i++) {

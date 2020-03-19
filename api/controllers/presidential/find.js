@@ -32,21 +32,9 @@ module.exports = {
       const { id } = inputs;
       const candidate = await PresidentialCandidate.findOne({ id });
 
-      const {
-        totalRaised,
-        largeDonorPerc,
-        largeDonorPerHour,
-        smallDonorPerc,
-        smallDonorPerHour,
-      } = await sails.helpers.presidentialHelper(candidate);
 
       return exits.success({
         ...candidate,
-        totalRaised,
-        largeDonorPerc,
-        largeDonorPerHour,
-        smallDonorPerc,
-        smallDonorPerHour,
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
