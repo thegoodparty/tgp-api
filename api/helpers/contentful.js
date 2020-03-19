@@ -55,9 +55,13 @@ const mapResponse = items => {
         if (!mappedResponse.presidentialCandidates) {
           mappedResponse.presidentialCandidates = [];
         }
+        console.log('fileds', item.fields);
         mappedResponse.presidentialCandidates.push({
           info: item.fields.info,
           name: item.fields.name,
+          website: item.fields.website,
+          facebook: item.fields.facebook,
+          twitter: item.fields.twitter,
         });
       }
     }

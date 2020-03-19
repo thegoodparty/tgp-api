@@ -77,7 +77,12 @@ const processContent = async content => {
   if (candidates) {
     candidates.map(async cmsCandidate => {
       await PresidentialCandidate.updateOne({ name: cmsCandidate.name }).set({
-        info: JSON.stringify(cmsCandidate.info),
+        info: JSON.stringify({
+          bio: JSON.stringify(cmsCandidate.info),
+          facebook: cmsCandidate.facebook,
+          twitter: cmsCandidate.twitter,
+          website: cmsCandidate.website,
+        }),
       });
     });
   }
