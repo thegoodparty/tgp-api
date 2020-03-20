@@ -40,10 +40,11 @@ module.exports = {
       let stateUsers;
       let districtUsers;
       if (shortState) {
-        stateUsers = await User.count({ shortState });
+        const lowerShortState = shortState.toLowerCase();
+        stateUsers = await User.count({ shortState: lowerShortState });
         if (districtNumber) {
           districtUsers = await User.count({
-            shortState,
+            shortState: lowerShortState,
             districtNumber,
           });
         }
