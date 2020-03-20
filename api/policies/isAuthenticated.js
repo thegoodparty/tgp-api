@@ -17,7 +17,9 @@ module.exports = async function(req, res, next) {
         token = credentials;
       }
     } else {
-      return res.status(401).json({ err: 'Format is Authorization: Bearer [token]' });
+      return res
+        .status(401)
+        .json({ err: 'Format is Authorization: Bearer [token]' });
     }
   } else {
     //authorization header is not present
@@ -31,12 +33,8 @@ module.exports = async function(req, res, next) {
     // if (!userRecord.isEmailVerified) {
     //   return res.status(401).json({ err: 'Phone is not verified' });
     // }
-    if (userRecord.encryptedPassword === user.encryptedPassword) {
-      req.user = userRecord;
-      return next();
-    } else {
-      return res.status(401).json({ err: 'Invalid token' });
-    }
+    req.user = userRecord;
+    return next();
   } catch (err) {
     return res.status(401).json({ err: 'Invalid token' });
   }

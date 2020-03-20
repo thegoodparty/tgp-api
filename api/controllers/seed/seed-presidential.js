@@ -137,7 +137,7 @@ const createEntries = async rows => {
       const {
         openSecretsId,
         name,
-        // image,
+        image,
         party,
         combinedRaised,
         smallContributions,
@@ -157,7 +157,7 @@ const createEntries = async rows => {
       await PresidentialCandidate.updateOne({
         openSecretsId,
       }).set({
-        // image,
+        image,
         party,
         combinedRaised,
         smallContributions,
