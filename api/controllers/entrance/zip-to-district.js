@@ -4,6 +4,9 @@
  * @description :: First step of account creation - search zip code to find district
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
+
+const senateThreshold = require('../../../data/senateThreshold');
+
 module.exports = {
   friendlyName: 'Zip To District',
 
@@ -37,16 +40,18 @@ module.exports = {
       const { zip } = inputs;
 
       const zipCode = await ZipCode.findOne({ zip }).populate('cds');
-
       if (!zipCode) {
         return exits.notFound({
           message: 'Failed to find zip code',
           zipCode,
         });
       }
+      const { stateShort } = zipCode;
+      const senateThresholds = senateThreshold[stateShort];
 
       return exits.success({
         ...zipCode,
+        senateThresholds,
       });
     } catch (err) {
       console.log('zip to district error');

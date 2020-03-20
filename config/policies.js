@@ -29,5 +29,6 @@ module.exports.policies = {
   'presidential/*': true,
   'race-candidate/*': true,
   'candidates/*': true,
+  'counts/*': true,
   'seed/*': true,
 };

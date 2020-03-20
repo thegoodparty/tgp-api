@@ -112,10 +112,16 @@ module.exports = {
       description: 'array of senate candidates IDs',
     },
 
-    houseRank: {
+    // adding (denormalized) state and district for quick lookups.
+    shortState: {
       type: 'string',
       required: false,
-      description: 'array of house candidates IDs',
+      description: 'short state (ca)',
+    },
+    districtNumber: {
+      type: 'number',
+      required: false,
+      description: 'cong district number',
     },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗

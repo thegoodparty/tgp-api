@@ -59,9 +59,12 @@ module.exports = {
       const userAttr = {};
       if (zipCode) {
         userAttr.zipCode = zipCode.id;
+        userAttr.shortState = zipCode.stateShort;
       }
       if (districtId) {
+        const congDistrict = await CongDistrict.findOne({ id: districtId });
         userAttr.congDistrict = districtId;
+        userAttr.districtNumber = congDistrict.code;
       }
       if (displayAddress) {
         userAttr.displayAddress = displayAddress;

@@ -27,34 +27,42 @@ module.exports = {
       description: 'Send an email?',
       type: 'boolean',
       defaultsTo: true,
+      required: false,
     },
     districtId: {
       description: 'Selected district id',
       type: 'number',
+      required: false,
     },
     addresses: {
       description: 'Addresses collected from user during account creation.',
       type: 'string',
+      required: false,
     },
     zip: {
       description: 'zip collected from user during account creation.',
       type: 'string',
+      required: false,
     },
     feedback: {
       description: 'Message from the user',
       type: 'string',
+      required: false,
     },
     presidentialRank: {
       description: 'stringified array of presidential candidates IDs',
       type: 'string',
+      required: false,
     },
     senateRank: {
       description: 'stringified array of senate candidates IDs',
       type: 'string',
+      required: false,
     },
     houseRank: {
       description: 'stringified array of house candidates IDs',
       type: 'string',
+      required: false,
     },
   },
 
@@ -78,7 +86,6 @@ module.exports = {
         email,
         name,
         verify,
-        districtId,
         addresses,
         zip,
         feedback,
@@ -86,6 +93,8 @@ module.exports = {
         senateRank,
         houseRank,
       } = inputs;
+
+      let { districtId } = inputs;
 
       const userExists = await User.findOne({
         email,
@@ -120,10 +129,30 @@ module.exports = {
       };
       if (zipCode) {
         userAttr.zipCode = zipCode.id;
+        userAttr.shortState = zipCode.stateShort;
       }
+      if (zipCode && !districtId) {
+        console.log('here1', zipCode);
+        // districtId wasn't specified - take the first one in the array
+        let { approxPctArr } = zipCode;
+        console.log('here2', approxPctArr);
+        if (approxPctArr) {
+          console.log('here3');
+          approxPctArr = JSON.parse(approxPctArr);
+          console.log('here4', approxPctArr);
+          districtId = approxPctArr[0].districtId;
+          console.log('here5', districtId);
+        }
+      }
+
       if (districtId) {
+        console.log('districtID1', districtId);
+        const congDistrict = await CongDistrict.findOne({ id: districtId });
         userAttr.congDistrict = districtId;
+        userAttr.districtNumber = congDistrict.code;
+        console.log('districtID2', congDistrict.code);
       }
+
       if (displayAddress) {
         userAttr.displayAddress = displayAddress;
       }
@@ -155,28 +184,33 @@ module.exports = {
         ...userAttr,
       });
 
+      const userWithZip = await User.findOne({ id: user.id });
+
+      const userZipCode = await ZipCode.findOne({
+        id: userWithZip.zipCode,
+      }).populate('cds');
+      userWithZip.zipCode = userZipCode;
+
       // send sms to the newly created user.
-      if (verify) {
-        const appBase = sails.config.custom.appBase || sails.config.appBase;
-        const subject = 'Please Confirm your email address - The Good Party';
-        const message = `Hi ${name},<br/> <br/>
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      const subject = 'Please Confirm your email address - The Good Party';
+      const message = `Hi ${name},<br/> <br/>
                          Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
                          <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
-        const messageHeader = 'Please confirm your email';
-        await sails.helpers.mailgunSender(
-          email,
-          name,
-          subject,
-          messageHeader,
-          message,
-        );
-      }
+      const messageHeader = 'Please confirm your email';
+      await sails.helpers.mailgunSender(
+        email,
+        name,
+        subject,
+        messageHeader,
+        message,
+      );
 
       return exits.success({
-        user,
+        user: userWithZip,
       });
     } catch (e) {
-      console.log('register error', JSON.stringify(e));
+      console.log('register error', e);
       return exits.badRequest({ message: 'Error registering account.' });
     }
   },
