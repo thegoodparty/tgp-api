@@ -38,18 +38,19 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { state, district } = inputs;
-      const upperState = state.toUpperCase();
+      const lowerState = state.toLowerCase();
 
       const houseIncumbents = await Incumbent.find({
-        state: upperState,
+        state: lowerState,
         district,
         chamber: 'House',
       }).sort('name ASC');
 
       const houseCandidates = await RaceCandidate.find({
-        state: upperState,
+        state: lowerState,
         district,
         chamber: 'House',
+        isActive: true,
       });
 
       houseCandidates.forEach(candidate => {

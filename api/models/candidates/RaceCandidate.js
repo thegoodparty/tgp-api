@@ -13,7 +13,7 @@ module.exports = {
     uuid: {
       type: 'string',
       required: true,
-      unique: true
+      unique: true,
     },
     name: {
       type: 'string',
@@ -37,20 +37,11 @@ module.exports = {
     raised: {
       type: 'number',
     },
-    largeContributions: {
-      type: 'number',
-    },
     smallContributions: {
       type: 'number',
     },
-    pac: {
-      type: 'number',
-    },
-    selfFinancing: {
-      type: 'number',
-    },
-    other: {
-      type: 'number',
+    isActive: {
+      type: 'boolean',
     },
   },
   customToJSON: function() {
