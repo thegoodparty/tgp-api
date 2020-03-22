@@ -1,0 +1,148 @@
+{
+  "_id": "presidential-race",
+  "startUrl": ["https://www.opensecrets.org/2020-presidential-race"],
+  "selectors": [
+    {
+      "id": "candidate",
+      "type": "SelectorLink",
+      "parentSelectors": ["_root"],
+      "selector": ".Candidates--list-item.u-mt4 a",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "name",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "h1",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "combinedRaised",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "tr:nth-of-type(2) td:nth-of-type(4)",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue1",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": ".HorizontalStackedBar--legend tr:nth-of-type(1) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue2",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": ".HorizontalStackedBar--legend tr:nth-of-type(2) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue3",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": ".HorizontalStackedBar--legend tr:nth-of-type(3) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue4",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": ".HorizontalStackedBar--legend tr:nth-of-type(4) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue5",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": ".HorizontalStackedBar--legend tr:nth-of-type(5) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "dateCampaign",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "tr:nth-of-type(6) td.number:nth-of-type(2)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "dateOutside",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "tr:nth-of-type(6) td:nth-of-type(3)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName1",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "td.-color1",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName2",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "td.-color2",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName3",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "td.-color3",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName4",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "td.-color4",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName5",
+      "type": "SelectorText",
+      "parentSelectors": ["candidate"],
+      "selector": "td.-color5",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "image",
+      "type": "SelectorImage",
+      "parentSelectors": ["_root"],
+      "selector": ".Candidates--list-item.u-mt4 img",
+      "multiple": true,
+      "delay": 0
+    }
+  ]
+}

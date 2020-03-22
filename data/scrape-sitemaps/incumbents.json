@@ -1,0 +1,50 @@
+{
+  "_id": "incumbents",
+  "startUrl": ["https://dev.thegoodparty.org/scrape/incumbents/"],
+  "selectors": [
+    {
+      "id": "openSecretsId",
+      "type": "SelectorLink",
+      "parentSelectors": ["_root"],
+      "selector": "a",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "name",
+      "type": "SelectorText",
+      "parentSelectors": ["openSecretsId"],
+      "selector": "div.Congress--profile-bio-name",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "nameDistrict",
+      "type": "SelectorText",
+      "parentSelectors": ["openSecretsId"],
+      "selector": "h1",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "reportDate",
+      "type": "SelectorText",
+      "parentSelectors": ["openSecretsId"],
+      "selector": "span.c-blue",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "raised",
+      "type": "SelectorText",
+      "parentSelectors": ["openSecretsId"],
+      "selector": "tr:contains('Raised:') div",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    }
+  ]
+}

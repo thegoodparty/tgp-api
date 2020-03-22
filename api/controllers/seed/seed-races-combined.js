@@ -144,18 +144,56 @@ const createEntries = async rows => {
   await RaceCandidate.update({}).set({
     isActive: false,
   });
+
+  await Incumbent.update({}).set({
+    isActive: false,
+  });
+
   // delete all incumbent to scrape first
   await IncumbentToScrape.destroy({});
 
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
-      const { openSecretsId, uuid, name } = row;
+      const {
+        openSecretsId,
+        uuid,
+        name,
+        state,
+        district,
+        party,
+        chamber,
+        raised,
+        smallContributions,
+      } = row;
 
       if (openSecretsId) {
         // incumbent - save for later scraping.
         await IncumbentToScrape.create({ openSecretsId });
-        console.log('incumbent saved', openSecretsId);
+        await Incumbent.findOrCreate(
+          { openSecretsId },
+          {
+            openSecretsId,
+            name,
+            state,
+            district,
+            party,
+            chamber,
+            smallContributions,
+            isActive: true,
+          },
+        );
+
+        await Incumbent.updateOne({ openSecretsId }).set({
+          openSecretsId,
+          name,
+          state,
+          district,
+          party,
+          chamber,
+          smallContributions,
+          isActive: true,
+        });
       } else {
         const candidate = await RaceCandidate.findOrCreate(
           { uuid },

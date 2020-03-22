@@ -1,0 +1,171 @@
+{
+  "_id": "races-by-state",
+  "startUrl": ["https://thegoodparty.org/races"],
+  "selectors": [
+    {
+      "id": "state",
+      "type": "SelectorLink",
+      "parentSelectors": ["_root"],
+      "selector": ".wrapper div a",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "district",
+      "type": "SelectorLink",
+      "parentSelectors": ["state"],
+      "selector": "strong a",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "allCandidates",
+      "type": "SelectorLink",
+      "parentSelectors": ["district"],
+      "selector": "p:nth-of-type(2) a",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "Candidate",
+      "type": "SelectorElement",
+      "parentSelectors": ["allCandidates"],
+      "selector": "div.Members--list-item",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "name",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "h2",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "raised",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "tr:nth-of-type(1) td.Members--number",
+      "multiple": false,
+      "regex": "[\\d,.]+",
+      "delay": 0
+    },
+    {
+      "id": "contributionName1",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "div:nth-of-type(1) tr:nth-of-type(1) td:nth-of-type(1)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName2",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "div:nth-of-type(1) tr:nth-of-type(2) td:nth-of-type(1)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName3",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "div:nth-of-type(1) tr:nth-of-type(3) td:nth-of-type(1)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName4",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "tr:nth-of-type(4) td:nth-of-type(1)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionName5",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "tr:nth-of-type(5) td:nth-of-type(1)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue1",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "div:nth-of-type(1) tr:nth-of-type(1) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue2",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "div:nth-of-type(1) tr:nth-of-type(2) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue3",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "div:nth-of-type(1) tr:nth-of-type(3) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue4",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "tr:nth-of-type(4) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "contributionValue5",
+      "type": "SelectorText",
+      "parentSelectors": ["Candidate"],
+      "selector": "tr:nth-of-type(5) td:nth-of-type(2)",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "incumbentLink",
+      "type": "SelectorLink",
+      "parentSelectors": ["Candidate"],
+      "selector": "a",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "image",
+      "type": "SelectorImage",
+      "parentSelectors": ["incumbentLink"],
+      "selector": ".Congress--profile-photo img",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "reportDate",
+      "type": "SelectorText",
+      "parentSelectors": ["incumbentLink"],
+      "selector": "span.c-blue",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    }
+  ]
+}

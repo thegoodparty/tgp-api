@@ -35,14 +35,14 @@ module.exports = {
     raised: {
       type: 'number',
     },
-    pacRaised: {
-      type: 'number',
-    },
     smallContributions: {
       type: 'number',
     },
     reportDate: {
       type: 'string',
+    },
+    isActive: {
+      type: 'boolean',
     },
   },
   customToJSON: function() {
