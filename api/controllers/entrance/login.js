@@ -50,7 +50,7 @@ module.exports = {
       });
 
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const subject = 'Login code - The Good Party';
+      const subject = `Your Good Party login code is: ${randomCode}`;
       const message = `Hi ${user.name},<br/> <br/>
                          Please use the code below to complete your login process.<br/>
                          This code will expire in 24 hours. <br/> <br/>
