@@ -46,29 +46,12 @@ module.exports = {
 };
 
 const mapIncumbents = csvRow => {
-  const {
-    id,
-    name,
-    state,
-    chamber,
-    district,
-    image,
-    raised,
-    pacRaised,
-    smallIndividual,
-    reportDate,
-  } = csvRow;
+  const { openSecretsId, reportDate, raised, image } = csvRow;
 
   return {
-    openSecretsId: id,
-    name,
-    state: states_hash[state],
-    chamber: chamber,
-    district: district === 'null' || !district ? -1 : parseInt(district, 10),
+    openSecretsId,
     image,
     raised: strNumToInt(raised),
-    pacRaised: strNumToInt(pacRaised),
-    smallContributions: strNumToInt(smallIndividual),
     reportDate: reportDate + '',
   };
 };
@@ -85,122 +68,19 @@ const createEntries = async rows => {
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
-      const {
-        openSecretsId,
-        name,
-        chamber,
-        state,
-        district,
-        image,
-        raised,
-        pacRaised,
-        smallContributions,
-        reportDate,
-      } = row;
-
-      const incumbent = await Incumbent.findOrCreate(
-        { openSecretsId },
-        {
-          openSecretsId,
-          name,
-          chamber,
-          state,
-          district,
-          image,
-          raised,
-          pacRaised,
-          smallContributions,
-          reportDate,
-        },
-      );
+      const { openSecretsId, reportDate, raised, image } = row;
 
       await Incumbent.updateOne({ openSecretsId }).set({
-        openSecretsId,
-        name,
-        chamber,
-        state,
-        district,
-        image,
-        raised,
-        pacRaised,
-        smallContributions,
         reportDate,
+        raised,
+        image,
       });
 
-      console.log(
-        'completed row ' +
-          i +
-          ' incumbent: ' +
-          incumbent.name +
-          ' ' +
-          incumbent.openSecretsId,
-      );
+      console.log('completed row ' + i);
     } catch (e) {
       console.log('error in seed. ' + i);
       console.log(e);
     }
   }
   console.log('seed completed');
-};
-
-const states_hash = {
-  Alabama: 'AL',
-  Alaska: 'AK',
-  'American Samoa': 'AS',
-  Arizona: 'AZ',
-  Arkansas: 'AR',
-  California: 'CA',
-  Colorado: 'CO',
-  Connecticut: 'CT',
-  Delaware: 'DE',
-  'District Of Columbia': 'DC',
-  'Federated States Of Micronesia': 'FM',
-  Florida: 'FL',
-  Georgia: 'GA',
-  Guam: 'GU',
-  Hawaii: 'HI',
-  Idaho: 'ID',
-  Illinois: 'IL',
-  Indiana: 'IN',
-  Iowa: 'IA',
-  Kansas: 'KS',
-  Kentucky: 'KY',
-  Louisiana: 'LA',
-  Maine: 'ME',
-  'Marshall Islands': 'MH',
-  Maryland: 'MD',
-  Massachusetts: 'MA',
-  Michigan: 'MI',
-  Minnesota: 'MN',
-  Mississippi: 'MS',
-  Missouri: 'MO',
-  Montana: 'MT',
-  Nebraska: 'NE',
-  Nevada: 'NV',
-  'New Hampshire': 'NH',
-  'New Jersey': 'NJ',
-  'New Mexico': 'NM',
-  'New York': 'NY',
-  'North Carolina': 'NC',
-  'North Dakota': 'ND',
-  'Northern Mariana Islands': 'MP',
-  Ohio: 'OH',
-  Oklahoma: 'OK',
-  Oregon: 'OR',
-  Palau: 'PW',
-  Pennsylvania: 'PA',
-  'Puerto Rico': 'PR',
-  'Rhode Island': 'RI',
-  'South Carolina': 'SC',
-  'South Dakota': 'SD',
-  Tennessee: 'TN',
-  Texas: 'TX',
-  Utah: 'UT',
-  Vermont: 'VT',
-  'Virgin Islands': 'VI',
-  Virginia: 'VA',
-  Washington: 'WA',
-  'West Virginia': 'WV',
-  Wisconsin: 'WI',
-  Wyoming: 'WY',
 };
