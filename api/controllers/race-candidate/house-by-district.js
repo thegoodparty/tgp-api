@@ -44,6 +44,7 @@ module.exports = {
         state: lowerState,
         district,
         chamber: 'House',
+        isActive: true,
       }).sort('name ASC');
 
       const houseCandidates = await RaceCandidate.find({
