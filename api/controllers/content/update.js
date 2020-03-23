@@ -76,7 +76,10 @@ const processContent = async content => {
   const candidates = content.presidentialCandidates;
   if (candidates) {
     candidates.map(async cmsCandidate => {
-      await PresidentialCandidate.updateOne({ name: cmsCandidate.name }).set({
+      await PresidentialCandidate.updateOne({
+        name: cmsCandidate.name,
+        isActive: true,
+      }).set({
         info: JSON.stringify({
           bio: JSON.stringify(cmsCandidate.info),
           facebook: cmsCandidate.facebook,
