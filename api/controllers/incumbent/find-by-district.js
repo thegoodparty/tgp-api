@@ -12,11 +12,9 @@ module.exports = {
   inputs: {
     state: {
       type: 'string',
-      required: true,
     },
     district: {
       type: 'string',
-      required: true,
     },
   },
 
@@ -34,62 +32,32 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { state, district } = inputs;
-      const houseRep = await Incumbent.findOne({ state, district });
-      const senateReps = await Incumbent.find({ state, chamber: 'Senate' });
-      let houseIncumbent;
-      if (houseRep) {
-        const {
-          totalRaised,
-          largeDonorsPerc,
-          largeDonorPerHour,
-          isGood,
-        } = await sails.helpers.incumbentHelper(houseRep, 'House');
-
-        houseIncumbent = {
-          ...houseRep,
-          totalRaised,
-          largeDonorsPerc,
-          largeDonorPerHour,
-          isGood,
+      let incumbent;
+      if (state && district) {
+        const lowerState = state.toLowerCase();
+        incumbent = await Incumbent.findOne({
+          state: lowerState,
+          district,
+          chamber: 'House',
+          isActive: true,
+        });
+      } else if (state) {
+        const lowerState = state.toLowerCase();
+        incumbent = await Incumbent.findOne({
+          state: lowerState,
+          chamber: 'Senate',
+          isActive: true,
+        });
+      } else {
+        incumbent = await PresidentialCandidate.findOne({
           isIncumbent: true,
-        };
-      }
-
-      const good = [];
-      const notGood = [];
-      for (let i = 0; i < senateReps.length; i++) {
-        const rep = senateReps[i];
-        const {
-          totalRaised,
-          largeDonorsPerc,
-          largeDonorPerHour,
-          isGood,
-        } = await sails.helpers.incumbentHelper(rep, 'Senate');
-
-        if (isGood) {
-          good.push({
-            ...rep,
-            totalRaised,
-            largeDonorsPerc,
-            largeDonorPerHour,
-            isGood,
-            isIncumbent: true,
-          });
-        } else {
-          notGood.push({
-            ...rep,
-            totalRaised,
-            largeDonorsPerc,
-            largeDonorPerHour,
-            isGood,
-            isIncumbent: true,
-          });
-        }
+          isActive: true,
+        });
+        delete incumbent.info
       }
 
       return exits.success({
-        houseIncumbent,
-        senateIncumbents: { good, notGood },
+        incumbent,
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);

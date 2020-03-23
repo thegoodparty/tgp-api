@@ -34,16 +34,16 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { state } = inputs;
-      const upperState = state.toUpperCase();
+      const lowerState = state.toLowerCase();
 
       const senateCandidates = await RaceCandidate.find({
-        state: upperState,
+        state: lowerState,
         chamber: 'Senate',
         isActive: true,
       }).sort('name ASC');
 
       const senateIncumbents = await Incumbent.find({
-        state: upperState,
+        state: lowerState,
         chamber: 'Senate',
         isActive: true,
       }).sort('name ASC');
