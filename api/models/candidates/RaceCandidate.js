@@ -43,6 +43,12 @@ module.exports = {
     isActive: {
       type: 'boolean',
     },
+    isApproved: {
+      type: 'boolean',
+    },
+    isCertified: {
+      type: 'boolean',
+    },
   },
 
   customToJSON: function() {

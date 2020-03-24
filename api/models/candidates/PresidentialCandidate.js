@@ -46,6 +46,12 @@ module.exports = {
     isActive: {
       type: 'boolean',
     },
+    isApproved: {
+      type: 'boolean',
+    },
+    isCertified: {
+      type: 'boolean',
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
