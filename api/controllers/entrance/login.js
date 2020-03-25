@@ -49,13 +49,12 @@ module.exports = {
         emailConfTokenDateCreated: Date.now(),
       });
 
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
       const subject = `Your Good Party login code is: ${randomCode}`;
       const message = `Hi ${user.name},<br/> <br/>
                          Please use the code below to complete your login process.<br/>
                          This code will expire in 24 hours. <br/> <br/>
                          <h2>${randomCode}</h2>`;
-      const messageHeader = 'Login Code';
+      const messageHeader = `Your Good Party login code is: ${randomCode}`;
       await sails.helpers.mailgunSender(
         email,
         user.name,
