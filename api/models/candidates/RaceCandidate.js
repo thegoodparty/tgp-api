@@ -49,6 +49,18 @@ module.exports = {
     isCertified: {
       type: 'boolean',
     },
+    facebook: {
+      type: 'string',
+    },
+    twitter: {
+      type: 'string',
+    },
+    website: {
+      type: 'string',
+    },
+    info: {
+      type: 'string',
+    },
   },
 
   customToJSON: function() {

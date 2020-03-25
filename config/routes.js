@@ -66,6 +66,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-presidential': 'seed/seed-presidential',
   'POST    /api/v1/seed/seed-race-candidates': 'seed/seed-race-candidates',
   'GET    /api/v1/seed/seed-races-combined': 'seed/seed-races-combined',
+  'GET    /api/v1/seed/seed-ballotpedia': 'seed/seed-ballotpedia',
 
   'GET    /api/v1/district/state': 'district/state',
   'GET    /api/v1/district/total-supporters': 'district/total-supporters',
@@ -80,8 +81,7 @@ module.exports.routes = {
     'race-candidate/house-by-district',
   'GET    /api/v1/race-candidate/senate-by-state':
     'race-candidate/senate-by-state',
-  'GET    /api/v1/race-candidate/all':
-    'race-candidate/all',
+  'GET    /api/v1/race-candidate/all': 'race-candidate/all',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
 
