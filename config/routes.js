@@ -80,6 +80,8 @@ module.exports.routes = {
     'race-candidate/house-by-district',
   'GET    /api/v1/race-candidate/senate-by-state':
     'race-candidate/senate-by-state',
+  'GET    /api/v1/race-candidate/all':
+    'race-candidate/all',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
 
