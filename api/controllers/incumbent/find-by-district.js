@@ -41,6 +41,18 @@ module.exports = {
           chamber: 'House',
           isActive: true,
         });
+        if (!incumbent) {
+          const raceCand = await RaceCandidate.find({
+            state: lowerState,
+            district,
+            chamber: 'House',
+            isActive: true,
+          }).sort([{ raised: 'DESC' }]);
+          incumbent = raceCand.length > 0 ? raceCand[0] : null;
+          if (incumbent) {
+            incumbent.isFakeIncumbent = true;
+          }
+        }
       } else if (state) {
         const lowerState = state.toLowerCase();
         incumbent = await Incumbent.findOne({
@@ -48,12 +60,23 @@ module.exports = {
           chamber: 'Senate',
           isActive: true,
         });
+        if (!incumbent) {
+          const raceCand = await RaceCandidate.find({
+            state: lowerState,
+            chamber: 'Senate',
+            isActive: true,
+          }).sort([{ raised: 'DESC' }]);
+          incumbent = raceCand.length > 0 ? raceCand[0] : null;
+          if (incumbent) {
+            incumbent.isFakeIncumbent = true;
+          }
+        }
       } else {
         incumbent = await PresidentialCandidate.findOne({
           isIncumbent: true,
           isActive: true,
         });
-        delete incumbent.info
+        delete incumbent.info;
       }
 
       return exits.success({
