@@ -35,6 +35,9 @@ module.exports = {
     raised: {
       type: 'number',
     },
+    party: {
+      type: 'string',
+    },
     smallContributions: {
       type: 'number',
     },
