@@ -58,6 +58,7 @@ const mapCand = csvRow => {
   } = csvRow;
 
   const image = csvRow['image-src'];
+  const source = csvRow['idName-href'];
   const contactLinksHref1 = csvRow['contactLinks1-href'];
   const contactLinksHref2 = csvRow['contactLinks2-href'];
   const contactLinksHref3 = csvRow['contactLinks3-href'];
@@ -109,6 +110,7 @@ const mapCand = csvRow => {
     twitter: twitter || '',
     website: website || '',
     info: candidateConnection ? encodeURI(candidateConnection) : '',
+    source
   };
 };
 
