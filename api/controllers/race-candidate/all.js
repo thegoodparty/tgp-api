@@ -37,7 +37,7 @@ module.exports = {
       const where = { isActive: true };
       if (onlyNoData) {
         where.source = null;
-        where.source = ''; // on local!
+       // where.source = ''; // on local!
       }
       const incumbents = await Incumbent.find({
         where,
