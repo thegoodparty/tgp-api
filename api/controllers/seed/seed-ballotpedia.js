@@ -7,7 +7,11 @@ module.exports = {
 
   description: 'Candidates database seed',
 
-  inputs: {},
+  inputs: {
+    secondPass: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
@@ -22,16 +26,21 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const { secondPass } = inputs;
       const results = [];
+      let filename = '../../../data/ballotpedia.csv';
+      if (secondPass) {
+        filename = '../../../data/ballotpedia-no-match.csv';
+      }
       // load district csv and convert it to an array.
-      fs.createReadStream(path.join(__dirname, '../../../data/ballotpedia.csv'))
+      fs.createReadStream(path.join(__dirname, filename))
         .pipe(csv())
         .on('data', async data => {
-          results.push(mapCand(data));
+          results.push(mapCand(data, secondPass));
         })
         .on('end', async () => {
           // console.log(results);
-          await createEntries(results);
+          await createEntries(results, secondPass);
           return exits.success({
             seed: `seeded ${results.length} candidates`,
           });
@@ -45,7 +54,7 @@ module.exports = {
   },
 };
 
-const mapCand = csvRow => {
+const mapCand = (csvRow, secondPass) => {
   const {
     idName,
     candidateConnection,
@@ -55,10 +64,11 @@ const mapCand = csvRow => {
     contactLinks4,
     contactLinks5,
     contactLinks6,
+    nameState,
   } = csvRow;
 
   const image = csvRow['image-src'];
-  const source = csvRow['idName-href'];
+  const source = secondPass ? csvRow['nameState-href'] : csvRow['idName-href'];
   const contactLinksHref1 = csvRow['contactLinks1-href'];
   const contactLinksHref2 = csvRow['contactLinks2-href'];
   const contactLinksHref3 = csvRow['contactLinks3-href'];
@@ -110,31 +120,51 @@ const mapCand = csvRow => {
     twitter: twitter || '',
     website: website || '',
     info: candidateConnection ? encodeURI(candidateConnection) : '',
-    source
+    source,
+    nameState,
   };
 };
 
-const createEntries = async rows => {
+const createEntries = async (rows, secondPass) => {
   let row;
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
-      const { id, isIncumbent } = row;
-      console.log('isIncumbent', isIncumbent)
-      if (isIncumbent) {
-        console.log('incumbent id', id)
-        if(id ===148){
-          console.log('*************')
-          console.log(row)
-          console.log('*************')
+      const { id, isIncumbent, nameState } = row;
+
+      if (secondPass) {
+        const stateplus = nameState.split('(')[1];
+        if (stateplus) {
+          const longState = stateplus.replace(')', '');
+          const shortState = states_hash[longState];
+          let candidate;
+          if (isIncumbent) {
+            candidate = await Incumbent.findOne({ id });
+          } else {
+            candidate = await RaceCandidate.findOne({ id });
+          }
+          if (shortState && candidate.state === shortState.toLowerCase()) {
+            if (isIncumbent) {
+              await Incumbent.updateOne({ id }).set({
+                ...row,
+              });
+            } else {
+              await RaceCandidate.updateOne({ id }).set({
+                ...row,
+              });
+            }
+          }
         }
-        await Incumbent.updateOne({ id }).set({
-          ...row,
-        });
       } else {
-        await RaceCandidate.updateOne({ id }).set({
-          ...row,
-        });
+        if (isIncumbent) {
+          await Incumbent.updateOne({ id }).set({
+            ...row,
+          });
+        } else {
+          await RaceCandidate.updateOne({ id }).set({
+            ...row,
+          });
+        }
       }
 
       console.log('completed row ' + i + ' candidate: ' + id);
@@ -177,4 +207,66 @@ const findChannel = (channelName, channels) => {
     return channelFound[2];
   }
   return null;
+};
+
+const states_hash = {
+  Alabama: 'AL',
+  Alaska: 'AK',
+  'American Samoa': 'AS',
+  Arizona: 'AZ',
+  Arkansas: 'AR',
+  California: 'CA',
+  Colorado: 'CO',
+  Connecticut: 'CT',
+  Delaware: 'DE',
+  'District Of Columbia': 'DC',
+  'Federated States Of Micronesia': 'FM',
+  Florida: 'FL',
+  Georgia: 'GA',
+  Guam: 'GU',
+  Hawaii: 'HI',
+  Idaho: 'ID',
+  Illinois: 'IL',
+  Indiana: 'IN',
+  Iowa: 'IA',
+  Kansas: 'KS',
+  Kentucky: 'KY',
+  Louisiana: 'LA',
+  Maine: 'ME',
+  'Marshall Islands': 'MH',
+  Maryland: 'MD',
+  Massachusetts: 'MA',
+  Michigan: 'MI',
+  Minnesota: 'MN',
+  Mississippi: 'MS',
+  Missouri: 'MO',
+  Montana: 'MT',
+  Nebraska: 'NE',
+  Nevada: 'NV',
+  'New Hampshire': 'NH',
+  'New Jersey': 'NJ',
+  'New Mexico': 'NM',
+  'New York': 'NY',
+  'North Carolina': 'NC',
+  'North Dakota': 'ND',
+  'Northern Mariana Islands': 'MP',
+  Ohio: 'OH',
+  Oklahoma: 'OK',
+  Oregon: 'OR',
+  Palau: 'PW',
+  Pennsylvania: 'PA',
+  'Puerto Rico': 'PR',
+  'Rhode Island': 'RI',
+  'South Carolina': 'SC',
+  'South Dakota': 'SD',
+  Tennessee: 'TN',
+  Texas: 'TX',
+  Utah: 'UT',
+  Vermont: 'VT',
+  'Virgin Islands': 'VI',
+  Virginia: 'VA',
+  Washington: 'WA',
+  'West Virginia': 'WV',
+  Wisconsin: 'WI',
+  Wyoming: 'WY',
 };
