@@ -9,7 +9,11 @@ module.exports = {
 
   description: 'Find all candidates',
 
-  inputs: {},
+  inputs: {
+    onlyNoData: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
@@ -28,8 +32,14 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const { onlyNoData } = inputs;
+
+      const where = { isActive: true };
+      if (onlyNoData) {
+        where.image = '';
+      }
       const incumbents = await Incumbent.find({
-        where: { isActive: true },
+        where,
         select: ['id', 'name', 'chamber'],
       });
 
@@ -38,7 +48,7 @@ module.exports = {
       });
 
       const candidates = await RaceCandidate.find({
-        where: { isActive: true },
+        where,
         select: ['id', 'name', 'chamber'],
       });
 
