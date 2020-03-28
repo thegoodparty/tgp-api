@@ -65,6 +65,7 @@ const mapCand = (csvRow, secondPass) => {
     contactLinks5,
     contactLinks6,
     nameState,
+    district,
   } = csvRow;
 
   const image = csvRow['image-src'];
@@ -107,6 +108,17 @@ const mapCand = (csvRow, secondPass) => {
   const twitter = findChannel('Twitter', socialChannels);
   const website = findChannel('website', socialChannels);
 
+  let districtNumber;
+  let chamberName;
+  if (district) {
+    if (district.includes('House')) {
+      chamberName = 'House';
+      districtNumber = parseInt(district.split('District ')[1]);
+    } else if (district.includes('Senate')) {
+      chamberName = 'Senate';
+    }
+  }
+
   const nameArr = idName.split('|');
   const id = nameArr[0];
   const name = nameArr[1];
@@ -122,15 +134,19 @@ const mapCand = (csvRow, secondPass) => {
     info: candidateConnection ? encodeURI(candidateConnection) : '',
     source,
     nameState,
+    chamberName,
+    districtNumber,
   };
 };
 
 const createEntries = async (rows, secondPass) => {
   let row;
+  let counter = 0;
+
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
-      const { id, isIncumbent, nameState } = row;
+      const { id, isIncumbent, nameState, chamberName, districtNumber } = row;
 
       if (secondPass) {
         const stateplus = nameState.split('(')[1];
@@ -143,7 +159,18 @@ const createEntries = async (rows, secondPass) => {
           } else {
             candidate = await RaceCandidate.findOne({ id });
           }
-          if (shortState && candidate.state === shortState.toLowerCase()) {
+          if (
+            candidate.chamber === 'House' &&
+            candidate.district !== districtNumber
+          ) {
+            continue;
+          }
+          if (
+            shortState &&
+            candidate.state === shortState.toLowerCase() &&
+            chamberName === candidate.chamber
+          ) {
+            counter++;
             if (isIncumbent) {
               await Incumbent.updateOne({ id }).set({
                 ...row,
@@ -176,7 +203,7 @@ const createEntries = async (rows, secondPass) => {
       console.log(e);
     }
   }
-  console.log('seed completed');
+  console.log('seed completed. Updated Entries: ' + counter);
 };
 
 const findChannel = (channelName, channels) => {

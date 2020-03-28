@@ -36,7 +36,7 @@ module.exports = {
 
       const where = { isActive: true };
       if (onlyNoData) {
-        where.image = '';
+        where.source = '';
       }
       const incumbents = await Incumbent.find({
         where,
