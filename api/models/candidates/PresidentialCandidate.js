@@ -39,18 +39,23 @@ module.exports = {
     },
     info: {
       type: 'string',
+      allowNull: true,
     },
     isIncumbent: {
       type: 'boolean',
+      allowNull: true,
     },
     isActive: {
       type: 'boolean',
+      allowNull: true,
     },
     isApproved: {
       type: 'boolean',
+      allowNull: true,
     },
     isCertified: {
       type: 'boolean',
+      allowNull: true,
     },
   },
   customToJSON: function() {

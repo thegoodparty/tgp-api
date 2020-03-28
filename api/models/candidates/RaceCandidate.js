@@ -42,27 +42,35 @@ module.exports = {
     },
     isActive: {
       type: 'boolean',
+      allowNull: true,
     },
     isApproved: {
       type: 'boolean',
+      allowNull: true,
     },
     isCertified: {
       type: 'boolean',
+      allowNull: true,
     },
     facebook: {
       type: 'string',
+      allowNull: true,
     },
     twitter: {
       type: 'string',
+      allowNull: true,
     },
     website: {
       type: 'string',
+      allowNull: true,
     },
     info: {
       type: 'string',
+      allowNull: true,
     },
     source: {
       type: 'string',
+      allowNull: true,
     },
   },
 
