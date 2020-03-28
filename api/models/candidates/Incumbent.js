@@ -67,7 +67,6 @@ module.exports = {
     },
     source: {
       type: 'string',
-      defaultsTo: null
     },
   },
   customToJSON: function() {
