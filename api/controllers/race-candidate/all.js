@@ -35,13 +35,14 @@ module.exports = {
       const { onlyNoData } = inputs;
 
       const where = { isActive: true };
+      const select = ['id', 'name', 'chamber', 'state', 'district'];
       if (onlyNoData) {
         where.image = '';
-       // where.source = ''; // on local!
+        // where.source = ''; // on local!
       }
       const incumbents = await Incumbent.find({
         where,
-        select: ['id', 'name', 'chamber'],
+        select,
       });
 
       incumbents.forEach(incumbent => {
@@ -50,7 +51,7 @@ module.exports = {
 
       const candidates = await RaceCandidate.find({
         where,
-        select: ['id', 'name', 'chamber'],
+        select,
       });
 
       return exits.success({
