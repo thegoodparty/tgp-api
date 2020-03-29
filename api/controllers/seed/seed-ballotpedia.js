@@ -66,6 +66,7 @@ const mapCand = (csvRow, secondPass) => {
     contactLinks6,
     nameState,
     district,
+    state,
   } = csvRow;
 
   const image = csvRow['image-src'];
@@ -134,6 +135,7 @@ const mapCand = (csvRow, secondPass) => {
     info: candidateConnection ? encodeURI(candidateConnection) : '',
     source,
     nameState,
+    ballotState: state,
     chamberName,
     districtNumber,
   };
@@ -146,13 +148,19 @@ const createEntries = async (rows, secondPass) => {
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
-      const { id, isIncumbent, nameState, chamberName, districtNumber } = row;
+      const {
+        id,
+        isIncumbent,
+        nameState,
+        chamberName,
+        districtNumber,
+        ballotState,
+      } = row;
 
       if (secondPass) {
         const stateplus = nameState.split('(')[1];
         if (stateplus) {
-          const longState = stateplus.replace(')', '');
-          const shortState = states_hash[longState];
+          const shortState = states_hash[ballotState];
           let candidate;
           if (isIncumbent) {
             candidate = await Incumbent.findOne({ id });
