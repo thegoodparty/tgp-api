@@ -80,9 +80,13 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    needsSecondPass: {
+      type: 'boolean',
+      allowNull: true,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
-    return _.omit(this, ['createdAt', 'updatedAt']);
+    return _.omit(this, ['createdAt', 'updatedAt', 'needsSecondPass']);
   },
 };

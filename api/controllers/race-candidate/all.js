@@ -37,8 +37,7 @@ module.exports = {
       const where = { isActive: true };
       const select = ['id', 'name', 'chamber', 'state', 'district'];
       if (onlyNoData) {
-        where.image = '';
-        // where.source = ''; // on local!
+        where.needsSecondPass = true;
       }
       const incumbents = await Incumbent.find({
         where,

@@ -147,6 +147,16 @@ const createEntries = async (rows, secondPass) => {
   let row;
   let counter = 0;
 
+  // set all to second pass and then turn off one by one.
+  if (!secondPass) {
+    await Incumbent.update({ isActive: true }).set({
+      needsSecondPass: true,
+    });
+    await RaceCandidate.update({ isActive: true }).set({
+      needsSecondPass: true,
+    });
+  }
+
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
@@ -184,10 +194,12 @@ const createEntries = async (rows, secondPass) => {
             if (isIncumbent) {
               await Incumbent.updateOne({ id }).set({
                 ...row,
+                needsSecondPass: false,
               });
             } else {
               await RaceCandidate.updateOne({ id }).set({
                 ...row,
+                needsSecondPass: false,
               });
             }
           }
@@ -196,10 +208,12 @@ const createEntries = async (rows, secondPass) => {
         if (isIncumbent) {
           await Incumbent.updateOne({ id }).set({
             ...row,
+            needsSecondPass: false,
           });
         } else {
           await RaceCandidate.updateOne({ id }).set({
             ...row,
+            needsSecondPass: false,
           });
         }
       }
