@@ -46,35 +46,39 @@ module.exports = {
     },
     isActive: {
       type: 'boolean',
-      allowNull: true
+      allowNull: true,
     },
     isApproved: {
       type: 'boolean',
-      allowNull: true
+      allowNull: true,
     },
     isCertified: {
       type: 'boolean',
-      allowNull: true
+      allowNull: true,
     },
     facebook: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
     },
     twitter: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
     },
     website: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
     },
     info: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
+    },
+    campaignWebsite: {
+      type: 'string',
+      allowNull: true,
     },
     source: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
     },
   },
   customToJSON: function() {

@@ -68,6 +68,10 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    campaignWebsite: {
+      type: 'string',
+      allowNull: true,
+    },
     source: {
       type: 'string',
       allowNull: true,

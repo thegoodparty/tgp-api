@@ -58,6 +58,7 @@ const mapCand = (csvRow, secondPass) => {
   const {
     idName,
     candidateConnection,
+    campaignWebsite,
     contactLinks1,
     contactLinks2,
     contactLinks3,
@@ -133,6 +134,7 @@ const mapCand = (csvRow, secondPass) => {
     twitter: twitter || '',
     website: website || '',
     info: candidateConnection ? encodeURI(candidateConnection) : '',
+    campaignWebsite: campaignWebsite ? encodeURI(campaignWebsite) : '',
     source,
     nameState,
     ballotState: state,
