@@ -115,10 +115,42 @@ const sendEmail = async (reqEmail, email) => {
 
   const appBase = sails.config.custom.appBase || sails.config.appBase;
   const subject = `Please Confirm your email address - The Good Party`;
-  const message = `Hi ${user.name},<br/> <br/>
-                         Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
-                         <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
-  const messageHeader = 'Please confirm your email';
+  const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+                     <tr>
+                        <td>
+                          <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
+                            Please confirm your email
+                          </h2>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+                            Hi ${user.name}!,<br/> <br>
+                          </p>
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td>
+                            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+                              Welcome to The Good Party!  Please tap to 
+                              <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">confirm your email</a>, 
+                              so we can get you counted.
+                            </p>
+                         </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <br/><br/><br/>
+                          <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                            Confirm Email                              
+                          </a>
+                        </td>
+                      </tr>
+                    </table>`;
+
+  const messageHeader = '';
   await sails.helpers.mailgunSender(
     email,
     user.name,

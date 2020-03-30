@@ -50,11 +50,28 @@ module.exports = {
       });
 
       const subject = `Your Good Party login code is: ${randomCode}`;
-      const message = `Hi ${user.name},<br/> <br/>
-                         Please use the code below to complete your login process.<br/>
-                         This code will expire in 24 hours. <br/> <br/>
-                         <h2>${randomCode}</h2>`;
-      const messageHeader = `Your Good Party login code is: ${randomCode}`;
+      const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+                          <tr>
+                            <td>
+                              <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+                                Hi ${user.name},<br/> <br/>Your Login Code is:
+                              </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">${randomCode}</h2>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+                                Please use this code to complete you login at The Good Party.  This code will expire in 24 hours.
+                              </p>
+                             </td>
+                          </tr>
+                        </table>`;
+      const messageHeader = '';
       await sails.helpers.mailgunSender(
         email,
         user.name,

@@ -78,25 +78,3 @@ module.exports = {
   },
 };
 
-const sendEmail = async (reqEmail, email) => {
-  const token = await sails.helpers.strings.random('url-friendly');
-  const user = await User.updateOne({ email: reqEmail }).set({
-    emailConfToken: token,
-    emailConfTokenDateCreated: Date.now(),
-    isEmailVerified: false,
-  });
-
-  const appBase = sails.config.custom.appBase || sails.config.appBase;
-  const subject = `Please Confirm your email address - The Good Party`;
-  const message = `Hi ${user.name},<br/> <br/>
-                         Welcome to The Good Party! In order to get counted, you need to confirm your email address. <br/> <br/>
-                         <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">Confirm Email</a>`;
-  const messageHeader = 'Please confirm your email';
-  await sails.helpers.mailgunSender(
-    email,
-    user.name,
-    subject,
-    messageHeader,
-    message,
-  );
-};
