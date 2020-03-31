@@ -134,7 +134,7 @@ We are using [conventional commits](https://www.conventionalcommits.org/)
 ```
 1) seed.js (districts) /api/v1/seed/seed
 2) seed-presidential /api/v1/seed/seed-presidential
-3) seed-races-combined /api/v1/seed/seed-braces-combined
+3) seed-races-combined /api/v1/seed/seed-races-combined
 4) seed-incumbents (adds data to incumbents from opensecrets) /api/v1/seed/seed-incumbents
 5) seed-ballotpedia /api/v1/seed/seed-ballotpedia
 6) seed-ballotpedia with not data (second run) - /api/v1/seed/seed-ballotpedia?secondPass=true

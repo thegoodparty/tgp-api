@@ -60,7 +60,7 @@ module.exports.routes = {
   'POST   /api/v1/admin/candidate': 'admin/create-candidate',
   'GET    /api/v1/admin/candidates': 'admin/all-candidates',
 
-  'POST    /api/v1/seed/seed': 'seed/seed',
+  'GET    /api/v1/seed/seed': 'seed/seed',
   'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',
   'GET    /api/v1/seed/seed-incumbents': 'seed/seed-incumbents',
   'GET    /api/v1/seed/seed-presidential': 'seed/seed-presidential',

@@ -49,7 +49,7 @@ module.exports = {
         emailConfTokenDateCreated: Date.now(),
       });
 
-      const subject = `Your Good Party login code is: ${randomCode}`;
+      const subject = `Your Good Party code is: ${randomCode}`;
       const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
                           <tr>
                             <td>

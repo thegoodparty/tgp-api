@@ -180,8 +180,9 @@ const createEntries = async (rows, secondPass) => {
             candidate = await RaceCandidate.findOne({ id });
           }
           if (
-            candidate.chamber === 'House' &&
-            candidate.district !== districtNumber
+            !candidate ||
+            (candidate.chamber === 'House' &&
+              candidate.district !== districtNumber)
           ) {
             continue;
           }
