@@ -42,6 +42,21 @@ module.exports = {
       maxLength: 140,
     },
 
+    socialId: {
+      type: 'string',
+      required: false,
+      description: 'Social Channel Id',
+      allowNull: true,
+    },
+
+    socialProvider: {
+      type: 'string',
+      required: false,
+      description: 'Social Channel',
+      example: 'facebook',
+      allowNull: true,
+    },
+
     displayAddress: {
       type: 'string',
       required: false,

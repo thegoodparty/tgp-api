@@ -64,6 +64,23 @@ module.exports = {
       type: 'string',
       required: false,
     },
+
+    socialId: {
+      type: 'string',
+      required: false,
+      description: 'Social Channel Id',
+    },
+
+    socialProvider: {
+      type: 'string',
+      required: false,
+      description: 'Social Channel',
+    },
+    socialPic: {
+      type: 'string',
+      required: false,
+      description: 'Social Channel profile image url',
+    },
   },
 
   exits: {
@@ -92,6 +109,9 @@ module.exports = {
         presidentialRank,
         senateRank,
         houseRank,
+        socialId,
+        socialProvider,
+        socialPic,
       } = inputs;
 
       let { districtId } = inputs;
@@ -132,25 +152,18 @@ module.exports = {
         userAttr.shortState = zipCode.stateShort;
       }
       if (zipCode && !districtId) {
-        console.log('here1', zipCode);
         // districtId wasn't specified - take the first one in the array
         let { approxPctArr } = zipCode;
-        console.log('here2', approxPctArr);
         if (approxPctArr) {
-          console.log('here3');
           approxPctArr = JSON.parse(approxPctArr);
-          console.log('here4', approxPctArr);
           districtId = approxPctArr[0].districtId;
-          console.log('here5', districtId);
         }
       }
 
       if (districtId) {
-        console.log('districtID1', districtId);
         const congDistrict = await CongDistrict.findOne({ id: districtId });
         userAttr.congDistrict = districtId;
         userAttr.districtNumber = congDistrict.code;
-        console.log('districtID2', congDistrict.code);
       }
 
       if (displayAddress) {
@@ -173,6 +186,15 @@ module.exports = {
       }
       if (verify) {
         userAttr.isEmailVerified = false;
+      }
+      if (socialId) {
+        userAttr.socialId = socialId;
+      }
+      if (socialProvider) {
+        userAttr.socialIProvider = socialProvider;
+      }
+      if (socialPic) {
+        userAttr.avatar = socialPic;
       }
 
       const user = await User.create({
