@@ -17,6 +17,11 @@ module.exports = {
       required: true,
       isEmail: true,
     },
+    socialPic: {
+      description: 'Avatar Image url',
+      type: 'string',
+      required: false,
+    },
   },
 
   exits: {
@@ -32,7 +37,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { email } = inputs;
+      const { email, socialPic } = inputs;
 
       const user = await User.findOne({ email });
       if (!user) {
@@ -44,10 +49,15 @@ module.exports = {
         randomCode += 124000;
       }
 
-      await User.updateOne({ email }).set({
+      const updatedFileds = {
         emailConfToken: randomCode,
         emailConfTokenDateCreated: Date.now(),
-      });
+      };
+      if (socialPic && !user.avatar) {
+        updatedFileds.avatar = socialPic;
+      }
+
+      await User.updateOne({ email }).set(updatedFileds);
 
       const subject = `Your Good Party code is: ${randomCode}`;
       const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
