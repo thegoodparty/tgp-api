@@ -81,6 +81,11 @@ module.exports = {
       required: false,
       description: 'Social Channel profile image url',
     },
+    socialToken: {
+      description: 'Social Token that needs to be verified',
+      type: 'string',
+      required: false,
+    },
   },
 
   exits: {
@@ -112,6 +117,7 @@ module.exports = {
         socialId,
         socialProvider,
         socialPic,
+        socialToken,
       } = inputs;
 
       let { districtId } = inputs;
@@ -196,6 +202,19 @@ module.exports = {
       if (socialPic) {
         userAttr.avatar = socialPic;
       }
+      if (socialPic || socialProvider || socialId) {
+        try {
+          await sails.helpers.verifySocialToken(
+            email,
+            socialToken,
+            socialProvider,
+          );
+        } catch (e) {
+          return exits.badRequest({
+            message: 'Invalid Token',
+          });
+        }
+      }
 
       const user = await User.create({
         ...userAttr,
@@ -213,10 +232,11 @@ module.exports = {
       }).populate('cds');
       userWithZip.zipCode = userZipCode;
 
-      // send sms to the newly created user.
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const subject = 'Please Confirm your email address - The Good Party';
-      const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+      if (!socialPic && !socialProvider && !socialId) {
+        // send sms to the newly created user.
+        const appBase = sails.config.custom.appBase || sails.config.appBase;
+        const subject = 'Please Confirm your email address - The Good Party';
+        const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
 <tr>
                             <td>
                               <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
@@ -250,14 +270,15 @@ module.exports = {
                             </td>
                           </tr>
                         </table>`;
-      const messageHeader = '';
-      await sails.helpers.mailgunSender(
-        email,
-        name,
-        subject,
-        messageHeader,
-        message,
-      );
+        const messageHeader = '';
+        await sails.helpers.mailgunSender(
+          email,
+          name,
+          subject,
+          messageHeader,
+          message,
+        );
+      }
 
       return exits.success({
         user: userWithZip,
