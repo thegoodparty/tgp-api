@@ -9,16 +9,11 @@ module.exports = async function uploadAvatar(req, res) {
     });
   }
 
-  const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
-  const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
-
-  var s3Bucket = new AWS.S3({
-    accessKeyId: s3Key,
-    secretAccessKey: s3Secret,
-    params: { Bucket: 'uploads.thegoodparty.org', ACL: 'public-read' },
-  });
-
-  const buf = new Buffer(base64Avatar, 'base64');
+  const cleanBase64 = base64Avatar.replace(
+    /^data:image\/[a-z=\;\.]+;base64,/,
+    '',
+  );
+  const buf = new Buffer(cleanBase64, 'base64');
   const uuid =
     Math.random()
       .toString(36)
@@ -33,54 +28,45 @@ module.exports = async function uploadAvatar(req, res) {
     ContentEncoding: 'base64',
     ContentType: `image/${fileExt}`,
   };
-  s3Bucket.putObject(data, function(err, data) {
-    if (err) {
-      console.log(err);
-      console.log('Error uploading data: ', data);
-      // return res.badRequest({
-      //   message: 'Error uploading data.',
-      // });
-    } else {
-      console.log('succesfully uploaded the image!');
-      // return res.ok();
-    }
-  });
+
+  await uploadToS3(data);
   const user = await User.updateOne({ id: req.user.id }).set({
     avatar: `https://s3-us-west-2.amazonaws.com/uploads.thegoodparty.org/${fileName}`,
   });
-  const userWithZip = await User.findOne({ id: req.user.id })
-    .populate('zipCode')
-    .populate('congDistrict');
+
+  const userWithZip = await User.findOne({ id: req.user.id });
+  const zipCode = await ZipCode.findOne({
+    id: user.zipCode,
+  }).populate('cds');
+  user.zipCode = zipCode;
 
   return res.ok({
     user: userWithZip,
   });
+};
 
-  // console.log(req.param('avatar'));
+const uploadToS3 = data => {
+  const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
+  const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
 
-  // console.log(req.file('avatar'));
-  /*
-  req.file('avatar').upload(
-    // {
-    //   adapter: require('skipper-s3'),
-    //   key: s3Key,
-    //   secret: s3Secret,
-    //   bucket: 'uploads.thegoodparty.org',
-    // },
-    function(err, filesUploaded) {
-      console.log('uploadAvatar2');
+  var s3Bucket = new AWS.S3({
+    accessKeyId: s3Key,
+    secretAccessKey: s3Secret,
+    params: { Bucket: 'uploads.thegoodparty.org', ACL: 'public-read' },
+  });
+  return new Promise((resolve, reject) => {
+    s3Bucket.putObject(data, function(err, data) {
       if (err) {
-        console.log('Error', err);
-        return res.serverError(err);
+        console.log(err);
+        console.log('Error uploading data: ', data);
+        // return res.badRequest({
+        //   message: 'Error uploading data.',
+        // });
+        reject();
+      } else {
+        console.log('succesfully uploaded the image!');
+        resolve();
       }
-      console.log('filesUploaded', filesUploaded);
-      console.log('req.allParams()', req.allParams());
-
-      return res.ok({
-        files: filesUploaded,
-        textParams: req.allParams(),
-      });
-    },
-  );
-  */
+    });
+  });
 };

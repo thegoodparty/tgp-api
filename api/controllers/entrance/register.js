@@ -44,11 +44,7 @@ module.exports = {
       type: 'string',
       required: false,
     },
-    feedback: {
-      description: 'Message from the user',
-      type: 'string',
-      required: false,
-    },
+
     presidentialRank: {
       description: 'stringified array of presidential candidates IDs',
       type: 'string',
@@ -110,7 +106,6 @@ module.exports = {
         verify,
         addresses,
         zip,
-        feedback,
         presidentialRank,
         senateRank,
         houseRank,
@@ -178,9 +173,7 @@ module.exports = {
       if (normalizedAddress) {
         userAttr.normalizedAddress = normalizedAddress;
       }
-      if (feedback) {
-        userAttr.feedback = feedback;
-      }
+
       if (presidentialRank) {
         userAttr.presidentialRank = presidentialRank;
       }
