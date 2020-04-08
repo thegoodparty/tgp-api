@@ -40,12 +40,6 @@ module.exports.routes = {
   'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'PUT    /api/v1/user/upload-avatar': 'user/upload-avatar',
-  'POST    /api/v1/user/find-crew': 'user/find-crew', // post because of payload size.
-  'PUT    /api/v1/user/invite-contact': 'user/invite-contact',
-  'PUT    /api/v1/user/invite-all-contacts': 'user/invite-all-contacts',
-  'GET    /api/v1/user/recruited-by-user': 'user/recruited-by-user',
-  'GET    /api/v1/user/crew-member': 'user/crew-member',
-  'POST    /api/v1/user/save-contacts': 'user/save-contacts',
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 

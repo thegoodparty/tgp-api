@@ -82,6 +82,11 @@ module.exports = {
       type: 'string',
       required: false,
     },
+    referrer: {
+      description: 'uuid of the inviting user',
+      type: 'string',
+      required: false,
+    },
   },
 
   exits: {
@@ -113,6 +118,7 @@ module.exports = {
         socialProvider,
         socialPic,
         socialToken,
+        referrer,
       } = inputs;
 
       let { districtId } = inputs;
@@ -195,6 +201,13 @@ module.exports = {
       if (socialPic) {
         userAttr.avatar = socialPic;
       }
+      if (referrer) {
+        const referrerUser = await User.findOne({ uuid: referrer });
+        if (referrerUser) {
+          userAttr.referrer = referrerUser.id;
+        }
+      }
+
       if (socialPic || socialProvider || socialId) {
         try {
           await sails.helpers.verifySocialToken(
@@ -209,14 +222,15 @@ module.exports = {
         }
       }
 
+      const uuid = Math.random()
+        .toString(36)
+        .substring(2, 12);
+
+      console.log('uuid', uuid);
       const user = await User.create({
+        uuid,
         ...userAttr,
       }).fetch();
-
-      // need to update in case the user was already in the db.
-      await User.updateOne({ id: user.id }).set({
-        ...userAttr,
-      });
 
       const userWithZip = await User.findOne({ id: user.id });
 

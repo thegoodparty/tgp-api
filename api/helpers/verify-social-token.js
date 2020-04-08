@@ -37,20 +37,24 @@ module.exports = {
 
     let tokenEmail;
     if (socialProvider === 'google') {
+      console.log('google1');
       // https://developers.google.com/identity/sign-in/web/backend-auth
       const CLIENT_ID =
         sails.config.custom.googleClientId || sails.config.googleClientId;
       const client = new OAuth2Client(CLIENT_ID);
+      console.log('google2');
       const ticket = await client.verifyIdToken({
         idToken: socialToken,
         audience: CLIENT_ID,
       });
+      console.log('google3');
       const payload = ticket.getPayload();
       tokenEmail = payload.email;
-
+      console.log('google4');
       if (tokenEmail !== email) {
         throw 'badRequest';
       }
+      console.log('google5');
     } else if (socialProvider === 'facebook') {
       // step 1 - verify the access token is valid
       const facebookAppId =
@@ -68,7 +72,6 @@ module.exports = {
         console.log('inspectTokenResponse', inspectTokenResponse);
         throw 'badRequest';
       }
-
       //step 2 get email from user id
       const emailOptions = {
         uri: `https://graph.facebook.com/${inspectTokenResponse.data.user_id}?fields=email&access_token=${socialToken}`,
@@ -81,6 +84,8 @@ module.exports = {
         throw 'badRequest';
       }
     }
+    console.log('done helper 6');
+
     return exits.success({ message: 'Valid token' });
   },
 };

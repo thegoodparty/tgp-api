@@ -27,6 +27,14 @@ module.exports = {
       example: 'mary.sue@example.com',
     },
 
+    uuid: {
+      type: 'string',
+      required: true,
+      unique: true,
+      maxLength: 200,
+      example: 'random string',
+    },
+
     name: {
       type: 'string',
       required: false,
@@ -93,17 +101,6 @@ module.exports = {
       description: 'Uploaded avatar image',
     },
 
-    invited: {
-      type: 'string',
-      required: false,
-      description: 'array of phone numbers the user invited.',
-    },
-
-    crew: {
-      type: 'string',
-      required: false,
-      description: 'array of user ids that are in the user crew',
-    },
     emailConfToken: {
       type: 'string',
       required: false,
@@ -169,18 +166,15 @@ module.exports = {
       model: 'zipCode',
     },
 
-    // many to many relationship with itself. a user can recruit many users and a user can be recruited by many users.
-    recruitedBy: {
+    // has many to itself - a user can invite many users.
+    crew: {
       collection: 'user',
-      via: 'recruits',
-    },
-    recruits: {
-      collection: 'user',
-      via: 'recruitedBy',
+      via: 'referrer',
     },
 
-    rawContacts: {
-      model: 'rawContacts',
+
+    referrer: {
+      model: 'user',
     },
   },
 
@@ -239,6 +233,7 @@ module.exports = {
     // check if the newly created user exists in invited table. If so, update all those who invited the new user.
     // then remove the row from invited table.
     try {
+      /*
       const { id, phone } = newUser;
 
       // invited logic
@@ -265,11 +260,12 @@ module.exports = {
       // remove row from invited table.
       const deleted = await Invited.destroyOne({ id: invitedPhone.id });
       console.log('deleted', deleted);
+      */
 
       return next();
     } catch (e) {
       console.log('error', e);
-      return next(e);
+      return next();
     }
   },
 };
