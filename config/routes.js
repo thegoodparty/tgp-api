@@ -40,6 +40,7 @@ module.exports.routes = {
   'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'PUT    /api/v1/user/upload-avatar': 'user/upload-avatar',
+  'GET    /api/v1/user/crew': 'user/crew',
 
   'GET    /api/v1/elections/user-elections': 'elections/user-elections',
 

@@ -24,12 +24,18 @@ module.exports = {
     try {
       console.log('recruited by user1');
       const user = await User.findOne({ id: this.req.user.id }).populate(
-        'recruits',
+        'crew',
       );
-      console.log('recruited by user2');
-      console.log('recruited by user2', user);
+      const crew = [];
+      user.crew.forEach(userCrew => {
+        crew.push({
+          avatar: userCrew.avatar,
+          name: fullFirstLastInitials(userCrew.name),
+          uuid: userCrew.uuid,
+        });
+      });
       return exits.success({
-        user,
+        crew,
       });
     } catch (e) {
       console.log('error at user/recruited-by-user');
@@ -38,3 +44,17 @@ module.exports = {
     }
   },
 };
+
+function fullFirstLastInitials(name) {
+  if (!name || typeof name !== 'string') {
+    return '';
+  }
+  const names = name.split(' ');
+  if (names.length > 1) {
+    return `${names[0]} ${names[names.length - 1].charAt(0)}.`;
+  }
+  if (names.length === 1) {
+    return names[0];
+  }
+  return '';
+}
