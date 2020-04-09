@@ -141,6 +141,11 @@ module.exports = {
       required: false,
       description: 'cong district number',
     },
+    guestReferrer: {
+      type: 'string',
+      required: false,
+      description: 'guest uuid that was used to invited the user.',
+    },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗

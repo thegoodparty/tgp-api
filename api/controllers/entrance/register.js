@@ -87,6 +87,11 @@ module.exports = {
       type: 'string',
       required: false,
     },
+    guestUuid: {
+      description: 'uuid that was generated on the front end',
+      type: 'string',
+      required: false,
+    },
   },
 
   exits: {
@@ -119,6 +124,7 @@ module.exports = {
         socialPic,
         socialToken,
         referrer,
+        guestUuid,
       } = inputs;
 
       let { districtId } = inputs;
@@ -205,6 +211,9 @@ module.exports = {
         const referrerUser = await User.findOne({ uuid: referrer });
         if (referrerUser) {
           userAttr.referrer = referrerUser.id;
+        } else {
+          // invited by a guest with a referrer (uuid) that was generated on the front end.
+          userAttr.guestReferrer = referrer;
         }
       }
 
@@ -222,15 +231,26 @@ module.exports = {
         }
       }
 
-      const uuid = Math.random()
-        .toString(36)
-        .substring(2, 12);
+      const uuid =
+        guestUuid ||
+        Math.random()
+          .toString(36)
+          .substring(2, 12);
 
-      console.log('uuid', uuid);
       const user = await User.create({
         uuid,
         ...userAttr,
       }).fetch();
+
+      // find all the users that were invited by this user
+      const referredUsers = await User.find({ guestReferrer: uuid });
+      for (let i = 0; i < referredUsers.length; i++) {
+        const referredUser = referredUsers[i];
+        await User.updateOne({ id: referredUser.id }).set({
+          referrer: user.id,
+          guestReferrer: '',
+        });
+      }
 
       const userWithZip = await User.findOne({ id: user.id });
 
