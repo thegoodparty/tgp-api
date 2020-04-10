@@ -22,7 +22,6 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      console.log('recruited by user1');
       const user = await User.findOne({ id: this.req.user.id }).populate(
         'crew',
       );
