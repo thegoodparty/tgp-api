@@ -46,7 +46,8 @@ module.exports = {
 };
 
 const mapIncumbents = csvRow => {
-  const { openSecretsId, reportDate, raised, image } = csvRow;
+  const { openSecretsId, reportDate, raised } = csvRow;
+  const image = csvRow['image-src']
 
   return {
     openSecretsId,
