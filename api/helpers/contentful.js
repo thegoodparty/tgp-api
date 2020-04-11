@@ -51,6 +51,10 @@ const mapResponse = items => {
         mappedResponse.partyPage = item.fields;
       } else if (itemId === 'sharePage') {
         mappedResponse.sharePage = item.fields;
+      } else if (itemId === 'privacyPage') {
+        mappedResponse.privacyPage = item.fields;
+      } else if (itemId === 'researchPage') {
+        mappedResponse.researchPage = item.fields;
       } else if (itemId === 'presidentialCandidate') {
         if (!mappedResponse.presidentialCandidates) {
           mappedResponse.presidentialCandidates = [];
