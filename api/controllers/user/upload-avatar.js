@@ -64,7 +64,6 @@ const uploadToS3 = data => {
         // });
         reject();
       } else {
-        console.log('succesfully uploaded the image!');
         resolve();
       }
     });

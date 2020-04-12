@@ -49,8 +49,6 @@ const mapResponse = items => {
         mappedResponse.events.push(mapEvent(item.fields, elementId));
       } else if (itemId === 'partyPage') {
         mappedResponse.partyPage = item.fields;
-      } else if (itemId === 'sharePage') {
-        mappedResponse.sharePage = item.fields;
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'researchPage') {
@@ -74,60 +72,6 @@ const mapResponse = items => {
   splitPastEvents(mappedResponse);
   return mappedResponse;
 };
-//
-// const mapAppPartyScreen = fields => {
-//   const flatResponse = {};
-//   const {
-//     quotes,
-//     section1Header,
-//     section1Paragraph,
-//     section2Header,
-//     section2Paragraph,
-//     videoPlaceholder,
-//     video,
-//     section3Header,
-//     section3Paragraph,
-//   } = fields;
-//
-//   flatResponse.quotes = mapQuotes(quotes);
-//   flatResponse.section1Header = extendText(section1Header);
-//   flatResponse.section2Header = extendText(section2Header);
-//   flatResponse.section3Header = extendText(section3Header);
-//   flatResponse.section1Paragraph = extendText(section1Paragraph);
-//   flatResponse.section2Paragraph = extendText(section2Paragraph);
-//   flatResponse.section3Paragraph = extendText(section3Paragraph);
-//   flatResponse.videoPlaceholder = extractMediaFile(videoPlaceholder);
-//   flatResponse.videoPlaceholderDimensions = extractImageDimensions(
-//     videoPlaceholder,
-//   );
-//   flatResponse.video = extractMediaFile(video);
-//
-//   // console.log(flatResponse);
-//
-//   return flatResponse;
-// };
-
-// const mapQuotes = quotes => {
-//   const flatQuotes = [];
-//   quotes.map(quote => {
-//     flatQuotes.push(quote.fields);
-//   });
-//   return flatQuotes;
-// };
-
-// const mapCandidate = fields => {
-//   const flatResponse = {};
-//   const { name, role, bio, site, districtNumber, state, avatarPhoto } = fields;
-//   flatResponse.name = name;
-//   flatResponse.role = role;
-//   flatResponse.bio = extendText(bio);
-//   flatResponse.site = site;
-//   flatResponse.districtNumber = districtNumber;
-//   flatResponse.state = state;
-//   flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
-//
-//   return flatResponse;
-// };
 
 const mapEvent = (fields, id) => {
   const flatResponse = {};
@@ -213,28 +157,3 @@ const extractMediaFile = img => {
   }
   return null;
 };
-
-// const extractImageDimensions = img => {
-//   if (img && img.fields && img.fields.file) {
-//     return img.fields.file.details.image;
-//   }
-//   return null;
-// };
-//
-// const extendText = text => {
-//   if (!text) {
-//     return text;
-//   }
-//
-//   // replace *text* with <Text style={{fontWeight="bold"}}>text</Text>
-//   const bold = /\*(.*?)\*/gim;
-//   const boldedText = text.replace(bold, function($0, $1) {
-//     return $1 ? '<Text style={{fontWeight: "bold"}}>' + $1 + '</Text>' : $0;
-//   });
-//
-//   // replace :tgp with <Image /> tag
-//   return boldedText.replace(
-//     /:tgp/g,
-//     '<Image source={{ uri: "https://assets.thegoodparty.org/heart-text.png"}} resizeMode="contain" style={{height: 20, width: 20 }}  />',
-//   );
-// };
