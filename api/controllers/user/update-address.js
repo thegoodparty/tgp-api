@@ -62,9 +62,14 @@ module.exports = {
         userAttr.shortState = zipCode.stateShort;
       }
       if (districtId) {
-        const congDistrict = await CongDistrict.findOne({ id: districtId });
+        const congDistrict = await CongDistrict.findOne({
+          id: districtId,
+        }).populate('state');
         userAttr.congDistrict = districtId;
         userAttr.districtNumber = congDistrict.code;
+        userAttr.shortState = congDistrict.state
+          ? congDistrict.state.shortName
+          : '';
       }
       if (displayAddress) {
         userAttr.displayAddress = displayAddress;
