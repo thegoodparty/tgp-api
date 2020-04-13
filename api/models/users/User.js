@@ -140,6 +140,7 @@ module.exports = {
       type: 'number',
       required: false,
       description: 'cong district number',
+      allowNull: true,
     },
     guestReferrer: {
       type: 'string',
@@ -176,7 +177,6 @@ module.exports = {
       collection: 'user',
       via: 'referrer',
     },
-
 
     referrer: {
       model: 'user',

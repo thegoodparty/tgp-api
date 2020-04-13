@@ -81,7 +81,10 @@ module.exports = {
       if (zip) {
         let zipCode = await ZipCode.findOne({ zip });
         if (zipCode) {
+          const { stateShort } = zipCode;
           updateFields.zipCode = zipCode.id;
+          updateFields.shortState = stateShort;
+          updateFields.districtNumber = null;
         }
       }
 
