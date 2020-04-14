@@ -128,6 +128,7 @@ module.exports = {
       } = inputs;
 
       let { districtId } = inputs;
+      let sendToken = false;
 
       const userExists = await User.findOne({
         email,
@@ -216,7 +217,6 @@ module.exports = {
           userAttr.guestReferrer = referrer;
         }
       }
-
       if (socialPic || socialProvider || socialId) {
         try {
           await sails.helpers.verifySocialToken(
@@ -224,6 +224,7 @@ module.exports = {
             socialToken,
             socialProvider,
           );
+          sendToken = true;
         } catch (e) {
           return exits.badRequest({
             message: 'Invalid Token',
@@ -306,9 +307,14 @@ module.exports = {
           message,
         );
       }
+      let token;
+      if (sendToken) {
+        token = await sails.helpers.jwtSign({ id: user.id, email });
+      }
 
       return exits.success({
         user: userWithZip,
+        token,
       });
     } catch (e) {
       console.log('register error', e);

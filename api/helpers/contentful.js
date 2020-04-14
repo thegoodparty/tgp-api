@@ -51,6 +51,8 @@ const mapResponse = items => {
         mappedResponse.partyPage = item.fields;
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
+      } else if (itemId === 'appVersion') {
+        mappedResponse.appVersion = item.fields;
       } else if (itemId === 'researchPage') {
         mappedResponse.researchPage = item.fields;
       } else if (itemId === 'presidentialCandidate') {
