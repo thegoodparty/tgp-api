@@ -160,10 +160,6 @@ module.exports = {
       model: 'congDistrict',
     },
 
-    houseDistrict: {
-      model: 'houseDistrict',
-    },
-
     senateDistrict: {
       model: 'senateDistrict',
     },

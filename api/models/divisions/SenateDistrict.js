@@ -67,11 +67,6 @@ module.exports = {
       via: 'senateDistrict',
     },
 
-    // an election has one district (a district has many elecions)
-    elections: {
-      collection: 'election',
-      via: 'senateDistrict',
-    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

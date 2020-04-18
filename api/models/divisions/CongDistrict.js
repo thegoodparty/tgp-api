@@ -78,11 +78,6 @@ module.exports = {
       via: 'congDistrict',
     },
 
-    // an election has one district (a district has many elections)
-    elections: {
-      collection: 'election',
-      via: 'congDistrict',
-    },
   },
 
   customToJSON: function() {

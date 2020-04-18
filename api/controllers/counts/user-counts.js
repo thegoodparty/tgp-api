@@ -35,7 +35,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { districtNumber, shortState } = inputs;
-
       const totalUsers = await User.count();
       let stateUsers;
       let districtUsers;
@@ -49,17 +48,38 @@ module.exports = {
           });
         }
       }
-      // const totalUsers = await User.count({ senateDistrict: senats[i].id });
+      let threshold = 65853514; // presidential
+      if (shortState) {
+        const lowerShortState = shortState.toLowerCase();
+        const state = await State.findOne({ shortName: lowerShortState });
+        threshold =
+          Math.max(
+            state.writeInThreshold,
+            state.writeInThresholdWithPresident,
+          ) + 1;
+        if (districtNumber) {
+          const district = await CongDistrict.findOne({
+            state: state.id,
+            code: districtNumber,
+          });
+          threshold =
+            Math.max(
+              district.writeInThreshold,
+              district.writeInThresholdWithPresident,
+            ) + 1;
+        }
+      }
 
       return exits.success({
         totalUsers,
         stateUsers,
         districtUsers,
+        threshold,
       });
     } catch (err) {
-      console.log('zip to district error');
+      console.log('error user counts');
       console.log(err);
-      return exits.badRequest({ message: 'Zip code search failed' });
+      return exits.badRequest({ message: 'error user counts' });
     }
   },
 };

@@ -64,18 +64,8 @@ module.exports = {
       via: 'state',
     },
 
-    houseDistricts: {
-      collection: 'houseDistrict',
-      via: 'state',
-    },
-
     senateDistricts: {
       collection: 'senateDistrict',
-      via: 'state',
-    },
-
-    elections: {
-      collection: 'election',
       via: 'state',
     },
 

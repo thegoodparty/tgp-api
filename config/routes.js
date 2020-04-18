@@ -42,8 +42,6 @@ module.exports.routes = {
   'PUT    /api/v1/user/upload-avatar': 'user/upload-avatar',
   'GET    /api/v1/user/crew': 'user/crew',
 
-  'GET    /api/v1/elections/user-elections': 'elections/user-elections',
-
   'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
 
   'PUT    /api/v1/admin/make-admin': 'admin/make-admin',
