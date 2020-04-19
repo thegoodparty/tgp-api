@@ -20,9 +20,9 @@ module.exports = {
     },
   },
 
-
   fn: async function(inputs, exits) {
-    const verify = await jwt.verify(inputs.token, sails.config.custom.jwtSecret);
+    const jwtSecret = sails.config.custom.jwtSecret || sails.config.jwtSecret;
+    const verify = await jwt.verify(inputs.token, jwtSecret);
     return await exits.success(verify);
   },
 };
