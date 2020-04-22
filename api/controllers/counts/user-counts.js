@@ -35,16 +35,22 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { districtNumber, shortState } = inputs;
-      const totalUsers = await User.count();
+      const totalUsers = await User.count({
+        presidentialRank: { nin: ['[]', ''] }, // nin = not in
+      });
       let stateUsers;
       let districtUsers;
       if (shortState) {
         const lowerShortState = shortState.toLowerCase();
-        stateUsers = await User.count({ shortState: lowerShortState });
+        stateUsers = await User.count({
+          shortState: lowerShortState,
+          senateRank: { '!=': '' },
+        });
         if (districtNumber) {
           districtUsers = await User.count({
             shortState: lowerShortState,
             districtNumber,
+            houseRank: { '!=': '' },
           });
         }
       }
