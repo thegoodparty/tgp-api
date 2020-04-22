@@ -4,8 +4,6 @@
  * @description :: Server-side controller action for handling incoming requests.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
-const { OAuth2Client } = require('google-auth-library');
-const request = require('request-promise');
 
 module.exports = {
   friendlyName: 'Login user',

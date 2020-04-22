@@ -10,7 +10,7 @@ module.exports = async function uploadAvatar(req, res) {
   }
 
   const cleanBase64 = base64Avatar.replace(
-    /^data:image\/[A-Za-z0-9\_\=\;\.]+;base64,/,
+    /^data:image\/.*;base64,/,
     '',
   );
   const buf = new Buffer(cleanBase64, 'base64');
