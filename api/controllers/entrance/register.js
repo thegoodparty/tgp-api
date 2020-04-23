@@ -170,7 +170,9 @@ module.exports = {
         let { approxPctArr } = zipCode;
         if (approxPctArr) {
           approxPctArr = JSON.parse(approxPctArr);
-          districtId = approxPctArr[0].districtId;
+          if (approxPctArr.length > 0) {
+            districtId = approxPctArr[0].districtId;
+          }
         }
       }
 
