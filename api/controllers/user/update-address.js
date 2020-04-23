@@ -70,6 +70,22 @@ module.exports = {
         userAttr.shortState = congDistrict.state
           ? congDistrict.state.shortName
           : '';
+      } else if (zipCode) {
+        // no districtId but with zipCode - assign the first district in the zipCode
+        let { approxPctArr } = zipCode;
+        if (approxPctArr) {
+          approxPctArr = JSON.parse(approxPctArr);
+          if (approxPctArr.length > 0) {
+            const congDistrict = await CongDistrict.findOne({
+              id: approxPctArr[0].districtId,
+            }).populate('state');
+            userAttr.congDistrict = congDistrict.id;
+            userAttr.districtNumber = congDistrict.code;
+            userAttr.shortState = congDistrict.state
+              ? congDistrict.state.shortName
+              : '';
+          }
+        }
       }
       if (displayAddress) {
         userAttr.displayAddress = displayAddress;

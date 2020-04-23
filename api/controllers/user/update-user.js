@@ -85,6 +85,21 @@ module.exports = {
           updateFields.zipCode = zipCode.id;
           updateFields.shortState = stateShort;
           updateFields.districtNumber = null;
+
+          let { approxPctArr } = zipCode;
+          if (approxPctArr) {
+            approxPctArr = JSON.parse(approxPctArr);
+            if (approxPctArr.length > 0) {
+              const congDistrict = await CongDistrict.findOne({
+                id: approxPctArr[0].districtId,
+              }).populate('state');
+              updateFields.congDistrict = congDistrict.id;
+              updateFields.districtNumber = congDistrict.code;
+              updateFields.shortState = congDistrict.state
+                ? congDistrict.state.shortName
+                : '';
+            }
+          }
         }
       }
 
