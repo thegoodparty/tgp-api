@@ -49,10 +49,8 @@ module.exports = {
       }
     } else if (socialProvider === 'facebook') {
       // step 1 - verify the access token is valid
-      console.log('1. verify social facebook');
       const facebookAppId =
         sails.config.custom.facebookAppId || sails.config.facebookAppId;
-      console.log('2. facebookAppId', facebookAppId);
       const facebookAppSecret =
         sails.config.custom.facebookAppSecret || sails.config.facebookAppSecret;
 
@@ -61,12 +59,8 @@ module.exports = {
         json: true,
       };
 
-      console.log('3. options.url', options.url);
-
       const inspectTokenResponse = await request(options);
-      console.log('4. inspectTokenResponse', inspectTokenResponse);
       if (!inspectTokenResponse.data.is_valid) {
-        console.log('5. invalid');
         throw 'badRequest';
       }
       //step 2 get email from user id
@@ -75,16 +69,11 @@ module.exports = {
         json: true,
       };
 
-      console.log('6. emailOptions.uri', emailOptions.uri);
       const tokenEmail = await request(emailOptions);
-      console.log('7. tokenEmail', tokenEmail);
       if (tokenEmail.email !== email) {
-        console.log('8. tokenEmail.email', tokenEmail.email);
-        console.log('9. email', email);
         throw 'badRequest';
       }
     }
-    console.log('done helper 10');
 
     return exits.success({ message: 'Valid token' });
   },
