@@ -43,7 +43,7 @@ module.exports = {
       const { presidentialRank, senateRank, houseRank } = inputs;
 
       const updateFields = {};
-      if (presidentialRank) {
+      if (presidentialRank || presidentialRank === '') {
         updateFields.presidentialRank = presidentialRank;
       }
       if (senateRank || senateRank === '') {
