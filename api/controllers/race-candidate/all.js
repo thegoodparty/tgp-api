@@ -35,7 +35,7 @@ module.exports = {
       const { onlyNoData } = inputs;
 
       const where = { isActive: true };
-      const select = ['id', 'name', 'chamber', 'state', 'district'];
+      const select = ['id', 'name', 'chamber', 'state', 'district', 'source'];
       if (onlyNoData) {
         where.needsSecondPass = true;
       }
