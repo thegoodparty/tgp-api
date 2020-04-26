@@ -41,23 +41,17 @@ module.exports = {
     try {
       const reqUser = this.req.user;
       const { presidentialRank, senateRank, houseRank } = inputs;
-      if (!presidentialRank && !senateRank && !houseRank) {
-        return exits.badRequest({
-          message: 'presidentialRank, senateRank or houseRank are required',
-        });
-      }
 
       const updateFields = {};
       if (presidentialRank) {
         updateFields.presidentialRank = presidentialRank;
       }
-      if (senateRank) {
+      if (senateRank || senateRank === '') {
         updateFields.senateRank = senateRank;
       }
-      if (houseRank) {
+      if (houseRank || houseRank === '') {
         updateFields.houseRank = houseRank;
       }
-
       await User.updateOne({ id: reqUser.id }).set(updateFields);
 
       const user = await User.findOne({ id: reqUser.id });
@@ -77,4 +71,3 @@ module.exports = {
     }
   },
 };
-
