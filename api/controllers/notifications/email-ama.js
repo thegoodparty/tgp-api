@@ -14,7 +14,7 @@ module.exports = {
       friendlyName: 'Message',
       description: 'Message from user',
       type: 'string',
-      required: true
+      required: true,
     },
   },
 
@@ -35,13 +35,14 @@ module.exports = {
       const subject = 'Ama Form Sent';
       const messageHeader = 'Ama Form Sent';
       const email = 'ask@thegoodparty.org';
-      const name = 'TGP Admin'
+      const name = 'TGP Admin';
+      const msgWithLineBreaks = message.replace(/\r\n|\r|\n/g, '</br>');
       await sails.helpers.mailgunSender(
         email,
         name,
         subject,
         messageHeader,
-        message,
+        msgWithLineBreaks,
       );
       return exits.success({
         message: 'Email Sent Successfully',
