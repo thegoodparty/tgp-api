@@ -138,6 +138,7 @@ We are using [conventional commits](https://www.conventionalcommits.org/)
 4) seed-incumbents (adds data to incumbents from opensecrets) /api/v1/seed/seed-incumbents
 5) seed-ballotpedia /api/v1/seed/seed-ballotpedia
 6) seed-ballotpedia with not data (second run) - /api/v1/seed/seed-ballotpedia?secondPass=true
+7) seed-ballotpedia manual match (third run) - /api/v1/seed/seed-ballotpedia?manualResults=true
 ```
 
 ### Links
