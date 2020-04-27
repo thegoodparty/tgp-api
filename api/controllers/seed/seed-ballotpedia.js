@@ -11,6 +11,9 @@ module.exports = {
     secondPass: {
       type: 'boolean',
     },
+    manualResults: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -26,12 +29,15 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { secondPass } = inputs;
+      const { secondPass, manualResults } = inputs;
       const results = [];
       let filename = '../../../data/ballotpedia.csv';
       if (secondPass) {
         filename = '../../../data/ballotpedia-no-match.csv';
+      } else if (manualResults) {
+        filename = '../../../data/ballotpedia-manual-match-results.csv';
       }
+
       // load district csv and convert it to an array.
       fs.createReadStream(path.join(__dirname, filename))
         .pipe(csv())
@@ -40,7 +46,7 @@ module.exports = {
         })
         .on('end', async () => {
           // console.log(results);
-          await createEntries(results, secondPass);
+          await createEntries(results, secondPass, manualResults);
           return exits.success({
             seed: `seeded ${results.length} candidates`,
           });
@@ -143,12 +149,12 @@ const mapCand = (csvRow, secondPass) => {
   };
 };
 
-const createEntries = async (rows, secondPass) => {
+const createEntries = async (rows, secondPass, manualResults) => {
   let row;
   let counter = 0;
 
   // set all to second pass and then turn off one by one.
-  if (!secondPass) {
+  if (!secondPass && !manualResults) {
     await Incumbent.update({ isActive: true }).set({
       needsSecondPass: true,
     });
