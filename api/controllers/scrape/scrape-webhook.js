@@ -68,8 +68,14 @@ module.exports = {
         });
         writeStream.end();
         const base = 'https://api-dev.thegoodparty.org/api/v1';
-        if(sitemapName === 'presidential-race') {
+        if (sitemapName === 'presidential-race') {
           request(`${base}/seed/seed-presidential`);
+        } else if (sitemapName === 'races-combined') {
+          request(`${base}/seed/seed-races-combined`);
+        } else if (sitemapName === 'incumbents') {
+          request(`${base}/seed/seed-incumbents`);
+        } else if (sitemapName === 'ballotpedia') {
+          request(`${base}/seed/seed-ballotpedia`);
         }
         return exits.success({ message: 'ok' });
       }
