@@ -67,7 +67,7 @@ module.exports = {
           console.log('wrote all data to file');
         });
         writeStream.end();
-        const base = 'http://localhost:1337/api/v1';
+        const base = 'https://api-dev.thegoodparty.org/api/v1';
         if(sitemapName === 'presidential-race') {
           request(`${base}/seed/seed-presidential`);
         }
