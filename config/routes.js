@@ -85,4 +85,6 @@ module.exports.routes = {
   'GET    /api/v1/candidates/find': 'candidates/find',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
+
+  'POST    /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
 };
