@@ -25,7 +25,7 @@ module.exports = {
       const results = [];
       // load district csv and convert it to an array.
       fs.createReadStream(
-        path.join(__dirname, '../../../data/presidential-race.csv'),
+        path.join(__dirname, '../../../data/presidential-race-org.csv'),
       )
         .pipe(csv())
         .on('data', async data => {
@@ -128,9 +128,9 @@ const createEntries = async rows => {
   let row;
   // first set all candidates to inactive, we will selective turn them active after
 
-  await PresidentialCandidate.update({}).set({
-    isActive: false,
-  });
+  // await PresidentialCandidate.update({}).set({
+  //   isActive: false,
+  // });
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
