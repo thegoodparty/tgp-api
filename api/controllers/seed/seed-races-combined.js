@@ -112,7 +112,7 @@ const mapCand = csvRow => {
   const smallContributions = findValue(
     names,
     values,
-    'Small Individual Contributions (≤ $200)',
+    'Small Individual Contributions',
   );
 
   const uuid = `${candName}_${stateDistrict.toLowerCase()}`;
@@ -215,7 +215,7 @@ const createEntries = async rows => {
         );
       }
     } catch (e) {
-      console.log('error in presidential seed. ' + i);
+      console.log('error in races combined seed. ' + i);
       console.log(e);
     }
   }
@@ -227,7 +227,7 @@ const findValue = (names, values, name) => {
     return '';
   }
   for (let i = 0; i < names.length; i++) {
-    if (names[i] === name) {
+    if (names[i].indexOf(name) === 0) {
       return values[i];
     }
   }
