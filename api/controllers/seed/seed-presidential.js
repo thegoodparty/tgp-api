@@ -25,7 +25,7 @@ module.exports = {
       const results = [];
       // load district csv and convert it to an array.
       fs.createReadStream(
-        path.join(__dirname, '../../../data/presidential-race-org.csv'),
+        path.join(__dirname, '../../../data/presidential-race.csv'),
       )
         .pipe(csv())
         .on('data', async data => {
