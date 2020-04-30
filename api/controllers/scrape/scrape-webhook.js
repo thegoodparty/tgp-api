@@ -51,7 +51,7 @@ module.exports = {
         sails.config.custom.webScraperApiToken ||
         sails.config.webScraperApiToken;
 
-      if (status === 'finished') {
+      if (status === 'finished' || status === 'shelved') {
         const downloadLink = `https://api.webscraper.io/api/v1/scraping-job/${jobId}/csv?api_token=${token}`;
         const options = {
           uri: downloadLink,
