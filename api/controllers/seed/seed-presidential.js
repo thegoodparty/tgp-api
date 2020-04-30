@@ -167,14 +167,14 @@ const createEntries = async rows => {
         isActive: true,
       });
 
-      console.log(
-        'completed row ' +
-          i +
-          ' candidate: ' +
-          name +
-          ' ' +
-          candidate.openSecretsId,
-      );
+      // console.log(
+      //   'completed row ' +
+      //     i +
+      //     ' candidate: ' +
+      //     name +
+      //     ' ' +
+      //     candidate.openSecretsId,
+      // );
     } catch (e) {
       console.log('error in presidential seed. ' + i);
       console.log(e);
@@ -188,7 +188,7 @@ const findValue = (names, values, name) => {
     return '';
   }
   for (let i = 0; i < names.length; i++) {
-    if (names[i] === name) {
+    if (names[i].indexOf(name) === 0) {
       return values[i];
     }
   }

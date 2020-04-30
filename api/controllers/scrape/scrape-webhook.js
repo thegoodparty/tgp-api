@@ -44,6 +44,9 @@ module.exports = {
       const jobId = inputs.scrapingjob_id;
       const sitemapName = inputs.sitemap_name;
       const { status } = inputs;
+      console.log(
+        `scrape webhook. jobId: ${jobId}. Sitemap name: ${sitemapName}. Status: ${status}`,
+      );
       const token =
         sails.config.custom.webScraperApiToken ||
         sails.config.webScraperApiToken;
@@ -69,12 +72,16 @@ module.exports = {
         writeStream.end();
         const base = 'https://api-dev.thegoodparty.org/api/v1';
         if (sitemapName === 'presidential-race') {
+          console.log('scrape: running presidential seed');
           request(`${base}/seed/seed-presidential`);
         } else if (sitemapName === 'races-combined') {
+          console.log('scrape: running races seed');
           request(`${base}/seed/seed-races-combined`);
         } else if (sitemapName === 'incumbents') {
+          console.log('scrape: running incumbents seed');
           request(`${base}/seed/seed-incumbents`);
         } else if (sitemapName === 'ballotpedia') {
+          console.log('scrape: running ballotpedia seed');
           request(`${base}/seed/seed-ballotpedia`);
         }
         return exits.success({ message: 'ok' });

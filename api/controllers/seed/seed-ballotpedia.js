@@ -225,7 +225,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
         }
       }
 
-      console.log('completed row ' + i + ' candidate: ' + id);
+      // console.log('completed row ' + i + ' candidate: ' + id);
     } catch (e) {
       console.log('error in seed. ' + i);
       console.log('---');
@@ -234,7 +234,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
       console.log(e);
     }
   }
-  console.log('seed completed. Updated Entries: ' + counter);
+  console.log('Ballotpedia seed completed. Updated Entries: ' + counter);
 };
 
 const findChannel = (channelName, channels) => {

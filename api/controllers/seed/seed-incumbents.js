@@ -77,7 +77,7 @@ const createEntries = async rows => {
         image,
       });
 
-      console.log('completed row ' + i);
+      // console.log('completed row ' + i);
     } catch (e) {
       console.log('error in seed. ' + i);
       console.log(e);
