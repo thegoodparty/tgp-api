@@ -39,6 +39,7 @@ module.exports = {
     try {
       const { id, chamber, isIncumbent } = inputs;
       let candidate;
+
       if (chamber === 'presidential') {
         candidate = await PresidentialCandidate.findOne({ id, isActive: true });
       } else {
@@ -57,6 +58,30 @@ module.exports = {
           });
         }
       }
+
+      const { state, district } = candidate || {};
+      const incumbent = await sails.helpers.incumbentByDistrictHelper(
+        state,
+        district,
+      );
+      let incumbentRaised = 50000000;
+      if (chamber !== 'presidential') {
+        if (candidate.isIncumbent) {
+          incumbentRaised = candidate.raised;
+        } else {
+          incumbentRaised = incumbent
+            ? incumbent.raised || incumbent.combinedRaised
+            : false;
+          incumbentRaised = incumbentRaised ? incumbentRaised / 2 : false;
+        }
+      }
+
+      const { isGood } = await sails.helpers.goodnessHelper(
+        candidate,
+        chamber,
+        incumbentRaised,
+      );
+      candidate.isGood = isGood;
 
       return exits.success({
         ...candidate,

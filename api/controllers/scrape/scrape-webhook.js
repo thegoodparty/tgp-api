@@ -59,7 +59,6 @@ module.exports = {
         };
 
         const csvFile = await request(options);
-        console.log(csvFile);
         const filename = path.join(
           __dirname,
           `../../../data/${sitemapName}.csv`,

@@ -63,8 +63,14 @@ module.exports = {
         incumbent.combinedRaised = incumbent.raised + incumbent.pacRaised;
       });
 
+      const candidates = [...houseIncumbents, ...houseCandidates];
+      const sortedCandidates = await sails.helpers.goodNotGoodSplitHelper(
+        candidates,
+        'house',
+      );
+
       return exits.success({
-        houseCandidates: [...houseIncumbents, ...houseCandidates],
+        houseCandidates: sortedCandidates.candidates,
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
