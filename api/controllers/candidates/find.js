@@ -76,12 +76,13 @@ module.exports = {
         }
       }
 
-      const { isGood } = await sails.helpers.goodnessHelper(
+      const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
         chamber,
         incumbentRaised,
       );
       candidate.isGood = isGood;
+      candidate.isBigMoney = isBigMoney;
 
       return exits.success({
         ...candidate,

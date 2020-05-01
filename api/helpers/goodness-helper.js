@@ -32,8 +32,6 @@ module.exports = {
         },
       };
 
-      let isGood = false;
-      let isNotGood = false;
       const {
         combinedRaised,
         smallContributions,
@@ -59,19 +57,13 @@ module.exports = {
       }
       // large funding
       if (largeDonorPerc <= 0.5 && isApproved) {
-        isGood = true;
+        return exits.success({ isGood: true });
       } else if (largeDonorPerc > 0.5) {
-        isNotGood = true;
+        return exits.success({ isGood: false, isBigMoney: true });
       } else if (largeDonorPerc <= 0.5 && !isApproved) {
-        isNotGood = true;
+        return exits.success({ isGood: false, isBigMoney: false });
       }
 
-      if (isGood) {
-        return exits.success({ isGood: true });
-      }
-      if (isNotGood) {
-        return exits.success({ isGood: false });
-      }
       return exits.success({ isGood: null });
     } catch (e) {
       return exits.badRequest({
