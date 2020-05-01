@@ -76,6 +76,11 @@ const mapCand = (csvRow, secondPass) => {
     state,
   } = csvRow;
 
+  if (!idName) {
+    console.log('no idName');
+    return {};
+  }
+
   const image = csvRow['image-src'];
   const source = secondPass ? csvRow['nameState-href'] : csvRow['idName-href'];
   const contactLinksHref1 = csvRow['contactLinks1-href'];
