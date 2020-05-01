@@ -50,7 +50,6 @@ module.exports = {
       if (isCertified) {
         return exits.success({ isGood: true });
       }
-
       if (totalRaised < raisedByIncumbent) {
         // small funding
         if (isApproved) {
@@ -59,9 +58,11 @@ module.exports = {
         return exits.success({ isGood: null });
       }
       // large funding
-      if (largeDonorPerc <= 0.5) {
+      if (largeDonorPerc <= 0.5 && isApproved) {
         isGood = true;
       } else if (largeDonorPerc > 0.5) {
+        isNotGood = true;
+      } else if (largeDonorPerc <= 0.5 && !isApproved) {
         isNotGood = true;
       }
 
