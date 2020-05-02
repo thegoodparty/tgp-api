@@ -51,13 +51,13 @@ module.exports = {
       if (totalRaised < raisedByIncumbent) {
         // small funding
         if (isApproved) {
-          return exits.success({ isGood: true });
+          return exits.success({ isGood: true, isBigMoney: false });
         }
-        return exits.success({ isGood: null });
+        return exits.success({ isGood: null, isBigMoney: false });
       }
       // large funding
       if (largeDonorPerc <= 0.5 && isApproved) {
-        return exits.success({ isGood: true });
+        return exits.success({ isGood: true, isBigMoney: true });
       } else if (largeDonorPerc > 0.5) {
         return exits.success({ isGood: false, isBigMoney: true });
       } else if (largeDonorPerc <= 0.5 && !isApproved) {
