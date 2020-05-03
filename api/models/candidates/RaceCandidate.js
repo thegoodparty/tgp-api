@@ -48,6 +48,12 @@ module.exports = {
       type: 'boolean',
       allowNull: true,
     },
+    isAligned: {
+      type: 'string',
+      defaultsTo: 'unknown',
+      isIn: ['unknown', 'yes', 'no'],
+      allowNull: true,
+    },
     isCertified: {
       type: 'boolean',
       allowNull: true,

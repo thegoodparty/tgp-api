@@ -147,6 +147,11 @@ module.exports = {
       required: false,
       description: 'guest uuid that was used to invited the user.',
     },
+    isAdmin: {
+      type: 'boolean',
+      defaultsTo: false,
+      required: false,
+    },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
@@ -192,28 +197,16 @@ module.exports = {
     ]);
   },
 
-  // hash password and save it in encryptedPassword.
-  // using hashPassword helper from sails-hook-organics
   beforeCreate: async function(values, next) {
-    // Hash password
     try {
-      // const hashedPassword = await sails.helpers.passwords.hashPassword(
-      //   values.password,
-      // );
-      // values.encryptedPassword = hashedPassword;
-      // // Delete the passwords so that they are not stored in the DB
-      // values.password = '';
-
-      if (values.phone) {
+      if (values.email) {
         // set role. Voter by default (if non is provided).
-        const adminPhones =
-          sails.config.custom.adminPhones || sails.config.adminPhones;
-        if (adminPhones && adminPhones.includes(values.phone)) {
-          values.role = sails.config.custom.rolesEnums.ADMIN;
+        const adminEmails =
+          sails.config.custom.adminEmails || sails.config.adminEmails;
+        if (adminEmails && adminEmails.includes(values.email)) {
+          values.isAdmin = true;
         } else {
-          if (values.role !== sails.config.custom.rolesEnums.CANDIDATE) {
-            values.role = sails.config.custom.rolesEnums.VOTER;
-          }
+          values.isAdmin = false;
         }
       }
 
@@ -228,45 +221,6 @@ module.exports = {
       return next();
     } catch (e) {
       return next(e);
-    }
-  },
-  afterCreate: async function(newUser, next) {
-    // check if the newly created user exists in invited table. If so, update all those who invited the new user.
-    // then remove the row from invited table.
-    try {
-      /*
-      const { id, phone } = newUser;
-
-      // invited logic
-      const invitedPhone = await Invited.findOne({ phone });
-      if (!invitedPhone) {
-        return next();
-      }
-      const invitedBy = JSON.parse(invitedPhone.invitedBy);
-      const invitedByIds = [];
-      // send message to the users that invited the new recruit
-      for (let i = 0; i < invitedBy.length; i++) {
-        invitedByIds.push(invitedBy[i].id);
-        const inviter = await User.findOne({ id: invitedBy[i].id });
-        if (inviter) {
-          await sails.helpers.sendSms(
-            `+1${inviter.phone}`,
-            `Good News: ${invitedBy[i].name}  just joined the Good Party! 🙏❤️🎉 https://exp.host/@tgp-expo/tgp-native-apps`,
-          );
-        }
-      }
-
-      await User.addToCollection(id, 'recruitedBy', invitedByIds);
-
-      // remove row from invited table.
-      const deleted = await Invited.destroyOne({ id: invitedPhone.id });
-      console.log('deleted', deleted);
-      */
-
-      return next();
-    } catch (e) {
-      console.log('error', e);
-      return next();
     }
   },
 };

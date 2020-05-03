@@ -36,7 +36,7 @@ module.exports = {
         combinedRaised,
         smallContributions,
         raised,
-        isApproved,
+        isAligned,
         isCertified,
       } = candidate;
       const totalRaised = combinedRaised || raised;
@@ -50,17 +50,17 @@ module.exports = {
       }
       if (totalRaised < raisedByIncumbent) {
         // small funding
-        if (isApproved) {
+        if (isAligned === 'yes') {
           return exits.success({ isGood: true, isBigMoney: false });
         }
         return exits.success({ isGood: null, isBigMoney: false });
       }
       // large funding
-      if (largeDonorPerc <= 0.5 && isApproved) {
+      if (largeDonorPerc <= 0.5 && isAligned === 'yes') {
         return exits.success({ isGood: true, isBigMoney: true });
       } else if (largeDonorPerc > 0.5) {
         return exits.success({ isGood: false, isBigMoney: true });
-      } else if (largeDonorPerc <= 0.5 && !isApproved) {
+      } else if (largeDonorPerc <= 0.5 && isAligned === 'no') {
         return exits.success({ isGood: false, isBigMoney: false });
       }
 
