@@ -71,9 +71,6 @@ module.exports = {
         );
         candidate.isGood = isGood;
         candidate.isBigMoney = isBigMoney;
-        console.log(
-          `Name: ${candidate.name}, isGood: ${isGood}, isBigMoney: ${isBigMoney}`,
-        );
       }
 
       return exits.success({
