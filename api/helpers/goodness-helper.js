@@ -63,8 +63,11 @@ module.exports = {
       } else if (largeDonorPerc <= 0.5 && isAligned === 'no') {
         return exits.success({ isGood: false, isBigMoney: false });
       }
-
-      return exits.success({ isGood: null });
+      if (largeDonorPerc > 0.5) {
+        return exits.success({ isGood: null, isBigMoney: true });
+      } else {
+        return exits.success({ isGood: null, isBigMoney: false });
+      }
     } catch (e) {
       return exits.badRequest({
         message: 'Error evaluating goodness',
