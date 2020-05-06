@@ -60,6 +60,8 @@ module.exports.routes = {
   'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',
   'GET    /api/v1/seed/seed-incumbents': 'seed/seed-incumbents',
   'GET    /api/v1/seed/seed-presidential': 'seed/seed-presidential',
+  'GET    /api/v1/seed/seed-presidential-source':
+    'seed/seed-presidential-source',
   'GET    /api/v1/seed/seed-races-combined': 'seed/seed-races-combined',
   'GET    /api/v1/seed/seed-ballotpedia': 'seed/seed-ballotpedia',
   'GET    /api/v1/seed/seed-ballotpedia-manual-match':

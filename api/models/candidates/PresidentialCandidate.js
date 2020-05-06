@@ -63,6 +63,10 @@ module.exports = {
       type: 'boolean',
       allowNull: true,
     },
+    source: {
+      type: 'string',
+      allowNull: true,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
