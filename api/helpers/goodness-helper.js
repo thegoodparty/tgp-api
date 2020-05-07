@@ -57,7 +57,7 @@ module.exports = {
       }
       // large funding
       if (largeDonorPerc <= 0.5 && isAligned === 'yes') {
-        return exits.success({ isGood: true, isBigMoney: true });
+        return exits.success({ isGood: true, isBigMoney: false });
       } else if (largeDonorPerc > 0.5) {
         return exits.success({ isGood: false, isBigMoney: true });
       } else if (largeDonorPerc <= 0.5 && isAligned === 'no') {
