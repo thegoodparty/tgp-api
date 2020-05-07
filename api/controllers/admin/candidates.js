@@ -48,15 +48,22 @@ module.exports = {
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
         const { state, district } = candidate || {};
-        const incumbent = await sails.helpers.incumbentByDistrictHelper(
-          state,
-          district,
-        );
+        let incumbent;
+
         let incumbentRaised = 50000000;
         if (chamber !== 'presidential') {
           if (candidate.isIncumbent) {
             incumbentRaised = candidate.raised;
+            incumbent = await sails.helpers.incumbentByDistrictHelper();
           } else {
+            if (chamber === 'senate') {
+              incumbent = await sails.helpers.incumbentByDistrictHelper(state);
+            } else {
+              incumbent = await sails.helpers.incumbentByDistrictHelper(
+                state,
+                district,
+              );
+            }
             incumbentRaised = incumbent
               ? incumbent.raised || incumbent.combinedRaised
               : false;
