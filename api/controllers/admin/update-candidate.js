@@ -43,6 +43,7 @@ module.exports = {
         candidate = await Incumbent.updateOne({
           id,
         }).set(updatedFields);
+        candidate.isIncumbent = true;
       } else {
         candidate = await RaceCandidate.updateOne({
           id,
