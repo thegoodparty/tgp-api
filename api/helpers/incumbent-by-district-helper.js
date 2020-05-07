@@ -6,7 +6,7 @@ module.exports = {
       type: 'string',
     },
     district: {
-      type: 'string',
+      type: 'number',
     },
   },
 
