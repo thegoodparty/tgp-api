@@ -51,22 +51,48 @@ module.exports = {
       if (totalRaised < raisedByIncumbent) {
         // small funding
         if (isAligned === 'yes') {
-          return exits.success({ isGood: true, isBigMoney: false });
+          return exits.success({
+            isGood: true,
+            isBigMoney: false,
+            isMajor: false,
+          });
         }
-        return exits.success({ isGood: null, isBigMoney: false });
+        return exits.success({
+          isGood: null,
+          isBigMoney: false,
+          isMajor: false,
+        });
       }
       // large funding
       if (largeDonorPerc <= 0.5 && isAligned === 'yes') {
-        return exits.success({ isGood: true, isBigMoney: false });
+        console.log('goodness3');
+        return exits.success({
+          isGood: true,
+          isBigMoney: false,
+          isMajor: true,
+        });
       } else if (largeDonorPerc > 0.5) {
-        return exits.success({ isGood: false, isBigMoney: true });
+        console.log('goodness4');
+        return exits.success({
+          isGood: false,
+          isBigMoney: true,
+          isMajor: true,
+        });
       } else if (largeDonorPerc <= 0.5 && isAligned === 'no') {
-        return exits.success({ isGood: false, isBigMoney: false });
+        return exits.success({
+          isGood: false,
+          isBigMoney: false,
+          isMajor: true,
+        });
       }
       if (largeDonorPerc > 0.5) {
-        return exits.success({ isGood: null, isBigMoney: true });
+        return exits.success({ isGood: null, isBigMoney: true, isMajor: true });
       } else {
-        return exits.success({ isGood: null, isBigMoney: false });
+        return exits.success({
+          isGood: null,
+          isBigMoney: false,
+          isMajor: true,
+        });
       }
     } catch (e) {
       return exits.badRequest({

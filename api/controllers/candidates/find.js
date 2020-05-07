@@ -59,11 +59,19 @@ module.exports = {
         }
       }
 
+      let incumbent;
       const { state, district } = candidate || {};
-      const incumbent = await sails.helpers.incumbentByDistrictHelper(
-        state,
-        district,
-      );
+      if (chamber === 'presidential') {
+        ({ incumbent } = await sails.helpers.incumbentByDistrictHelper());
+      } else if (chamber === 'senate') {
+        ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(state));
+      } else if (chamber === 'house') {
+        ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(
+          state,
+          district,
+        ));
+      }
+
       let incumbentRaised = 50000000;
       if (chamber !== 'presidential') {
         if (candidate.isIncumbent) {
@@ -76,6 +84,7 @@ module.exports = {
         }
       }
 
+
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
         chamber,
@@ -83,6 +92,7 @@ module.exports = {
       );
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
+
 
       return exits.success({
         ...candidate,
