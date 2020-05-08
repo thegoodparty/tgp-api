@@ -67,7 +67,7 @@ module.exports = {
         writeStream.write(csvFile, 'binary');
         writeStream.on('finish', () => {
           console.log('wrote all data to file');
-          const base = 'https://api-dev.thegoodparty.org/api/v1';
+          const base = 'https://api.thegoodparty.org/api/v1';
           if (sitemapName === 'presidential-race') {
             console.log('scrape: running presidential seed');
             request(`${base}/seed/seed-presidential`);
