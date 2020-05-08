@@ -54,15 +54,17 @@ module.exports = {
         if (chamber !== 'presidential') {
           if (candidate.isIncumbent) {
             incumbentRaised = candidate.raised;
-            incumbent = await sails.helpers.incumbentByDistrictHelper();
+            ({ incumbent } = await sails.helpers.incumbentByDistrictHelper());
           } else {
             if (chamber === 'senate') {
-              incumbent = await sails.helpers.incumbentByDistrictHelper(state);
+              ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(
+                state,
+              ));
             } else {
-              incumbent = await sails.helpers.incumbentByDistrictHelper(
+              ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(
                 state,
                 district,
-              );
+              ));
             }
             incumbentRaised = incumbent
               ? incumbent.raised || incumbent.combinedRaised
@@ -71,12 +73,12 @@ module.exports = {
           }
         }
 
-        if (candidate.id === 57 && chamber === 'house') {
-          console.log('---------', candidate.name, '-----------');
-          console.log('cand', candidate);
-          console.log('incumbent', incumbent);
-          console.log('incumbentRaised', incumbentRaised);
-        }
+        // if (candidate.id === 57 && chamber === 'house') {
+        //   console.log('---------', candidate.name, '-----------');
+        //   console.log('cand', candidate);
+        //   console.log('incumbent', incumbent);
+        //   console.log('incumbentRaised', incumbentRaised);
+        // }
 
         const {
           isGood,
