@@ -51,23 +51,32 @@ module.exports = {
         sails.config.custom.webScraperApiToken ||
         sails.config.webScraperApiToken;
 
+      let fileType = 'csv';
+      if (sitemapName === 'ballotpedia') {
+        fileType = 'json';
+      }
+
       if (status === 'finished' || status === 'shelved') {
-        const downloadLink = `https://api.webscraper.io/api/v1/scraping-job/${jobId}/csv?api_token=${token}`;
+        const downloadLink = `https://api.webscraper.io/api/v1/scraping-job/${jobId}/${fileType}?api_token=${token}`;
         const options = {
           uri: downloadLink,
           method: 'GET',
         };
 
-        const csvFile = await request(options);
+        const binaryFile = await request(options);
+
         const filename = path.join(
           __dirname,
-          `../../../data/${sitemapName}.csv`,
+          `../../../data/${sitemapName}.${
+            fileType === 'json' ? 'txt' : fileType // json comes as single line objects instead of a json file.
+          }`,
         );
         const writeStream = fs.createWriteStream(filename);
-        writeStream.write(csvFile, 'binary');
+        writeStream.write(binaryFile);
+
         writeStream.on('finish', () => {
           console.log('wrote all data to file');
-          const base = 'https://api-dev.thegoodparty.org/api/v1';
+          const base = 'http://localhost:1337/api/v1';
           if (sitemapName === 'presidential-race') {
             console.log('scrape: running presidential seed');
             request(`${base}/seed/seed-presidential`);

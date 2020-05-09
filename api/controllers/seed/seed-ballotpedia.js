@@ -1,6 +1,7 @@
 const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 module.exports = {
   friendlyName: 'Seed - Race Candidates',
@@ -31,26 +32,30 @@ module.exports = {
     try {
       const { secondPass, manualResults } = inputs;
       const results = [];
-      let filename = '../../../data/ballotpedia.csv';
+      let filename = '../../../data/ballotpedia.txt';
       if (secondPass) {
         filename = '../../../data/ballotpedia-no-match.csv';
       } else if (manualResults) {
         filename = '../../../data/ballotpedia-manual-match-results.csv';
       }
 
-      // load district csv and convert it to an array.
-      fs.createReadStream(path.join(__dirname, filename))
-        .pipe(csv())
-        .on('data', async data => {
-          results.push(mapCand(data, secondPass));
-        })
-        .on('end', async () => {
-          // console.log(results);
-          await createEntries(results, secondPass, manualResults);
-          return exits.success({
-            seed: `seeded ${results.length} candidates`,
-          });
-        });
+      const fileStream = fs.createReadStream(path.join(__dirname, filename));
+      // Note: we use the crlfDelay option to recognize all instances of CR LF
+      // ('\r\n') in input.txt as a single line break.
+      const rl = readline.createInterface({
+        input: fileStream,
+        crlfDelay: Infinity,
+      });
+      for await (const line of rl) {
+        // Each line in input.txt will be successively available here as `line`.
+
+        const lineObj = JSON.parse(line);
+        results.push(mapCand(lineObj, secondPass));
+      }
+      await createEntries(results, secondPass, manualResults);
+      return exits.success({
+        seed: `seeded candidates`,
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({
@@ -190,6 +195,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
           } else {
             candidate = await RaceCandidate.findOne({ id });
           }
+          console.log('candidate', candidate);
           if (
             !candidate ||
             (candidate.chamber === 'House' &&
@@ -217,6 +223,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
           }
         }
       } else {
+        counter++;
         if (isIncumbent) {
           await Incumbent.updateOne({ id }).set({
             ...row,
@@ -230,7 +237,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
         }
       }
 
-      // console.log('completed row ' + i + ' candidate: ' + id);
+      console.log('completed row ' + i + ' candidate: ' + id);
     } catch (e) {
       console.log('error in seed. ' + i);
       console.log('---');
