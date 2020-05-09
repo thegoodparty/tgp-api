@@ -1,6 +1,4 @@
 const request = require('request-promise');
-const fs = require('fs');
-const path = require('path');
 
 module.exports = {
   friendlyName: 'Scrape webhook',
@@ -51,48 +49,35 @@ module.exports = {
         sails.config.custom.webScraperApiToken ||
         sails.config.webScraperApiToken;
 
-      let fileType = 'csv';
-      if (sitemapName === 'ballotpedia') {
-        fileType = 'json';
-      }
+      const fileType = 'json';
 
       if (status === 'finished' || status === 'shelved') {
         const downloadLink = `https://api.webscraper.io/api/v1/scraping-job/${jobId}/${fileType}?api_token=${token}`;
-        const options = {
-          uri: downloadLink,
-          method: 'GET',
+        console.log('getting file from web scraper');
+        const binaryFile = await request(downloadLink);
+
+        const data = {
+          Key: `${sitemapName}.txt`,
+          Body: binaryFile,
         };
-
-        const binaryFile = await request(options);
-
-        const filename = path.join(
-          __dirname,
-          `../../../data/${sitemapName}.${
-            fileType === 'json' ? 'txt' : fileType // json comes as single line objects instead of a json file.
-          }`,
-        );
-        const writeStream = fs.createWriteStream(filename);
-        writeStream.write(binaryFile);
-
-        writeStream.on('finish', () => {
-          console.log('wrote all data to file');
-          const base = 'http://localhost:1337/api/v1';
-          if (sitemapName === 'presidential-race') {
-            console.log('scrape: running presidential seed');
-            request(`${base}/seed/seed-presidential`);
-          } else if (sitemapName === 'races-combined') {
-            console.log('scrape: running races seed');
-            request(`${base}/seed/seed-races-combined`);
-          } else if (sitemapName === 'incumbents') {
-            console.log('scrape: running incumbents seed');
-            request(`${base}/seed/seed-incumbents`);
-          } else if (sitemapName === 'ballotpedia') {
-            console.log('scrape: running ballotpedia seed');
-            request(`${base}/seed/seed-ballotpedia`);
-          }
-          return exits.success({ message: 'ok' });
-        });
-        writeStream.end();
+        console.log('uploading to s3...');
+        await sails.helpers.s3Uploader(data, 'scrape.thegoodparty.org');
+        console.log('upload complete');
+        const devBase = 'https://api-dev.thegoodparty.org/api/v1';
+        if (sitemapName === 'presidential-race') {
+          console.log('scrape: running presidential seed');
+          request(`${devBase}/seed/seed-presidential`);
+        } else if (sitemapName === 'races-combined') {
+          console.log('scrape: running races seed');
+          request(`${devBase}/seed/seed-races-combined`);
+        } else if (sitemapName === 'incumbents') {
+          console.log('scrape: running incumbents seed');
+          request(`${devBase}/seed/seed-incumbents`);
+        } else if (sitemapName === 'ballotpedia') {
+          console.log('scrape: running ballotpedia seed');
+          request(`${devBase}/seed/seed-ballotpedia`);
+        }
+        return exits.success({ message: 'ok' });
       }
     } catch (e) {
       console.log(e);

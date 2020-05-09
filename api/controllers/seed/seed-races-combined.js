@@ -22,22 +22,21 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const filename = 'races-combined.txt';
+      const { content } = await sails.helpers.getSitemapHelper(filename);
+      const lines = content.split('\n');
       const results = [];
-      // load district csv and convert it to an array.
-      fs.createReadStream(
-        path.join(__dirname, '../../../data/races-combined.csv'),
-      )
-        .pipe(csv())
-        .on('data', async data => {
-          results.push(mapCand(data));
-        })
-        .on('end', async () => {
-          // console.log(results);
-          await createEntries(results);
-          return exits.success({
-            seed: `seeded ${results.length} candidates`,
-          });
-        });
+      lines.forEach(line => {
+        if (typeof line === 'string' && line !== '') {
+          const lineObj = JSON.parse(line);
+          results.push(mapCand(lineObj));
+        }
+      });
+
+      await createEntries(results);
+      return exits.success({
+        seed: `seeded ${results.length} candidates`,
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({

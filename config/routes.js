@@ -27,15 +27,12 @@ module.exports.routes = {
 
   'POST   /api/v1/entrance/send-password-recovery-email':
     'entrance/send-password-recovery-email',
-  'PUT   /api/v1/entrance/update-password-and-login':
-    'entrance/update-password-and-login',
 
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
 
   'POST   /api/v1/role/create': 'role/create',
 
   'GET    /api/v1/user/check': 'user/check',
-  'PUT    /api/v1/user/change-password': 'user/change-password',
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
   'PUT    /api/v1/user/delete-user-ranking': 'user/delete-user-ranking',

@@ -31,27 +31,25 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { secondPass, manualResults } = inputs;
-      const results = [];
-      let filename = '../../../data/ballotpedia.txt';
+
+      let filename = 'ballotpedia.txt';
       if (secondPass) {
-        filename = '../../../data/ballotpedia-no-match.csv';
+        filename = 'ballotpedia-no-match.txt';
       } else if (manualResults) {
-        filename = '../../../data/ballotpedia-manual-match-results.csv';
+        filename = 'ballotpedia-manual-match-results.txt';
       }
 
-      const fileStream = fs.createReadStream(path.join(__dirname, filename));
-      // Note: we use the crlfDelay option to recognize all instances of CR LF
-      // ('\r\n') in input.txt as a single line break.
-      const rl = readline.createInterface({
-        input: fileStream,
-        crlfDelay: Infinity,
+      const { content } = await sails.helpers.getSitemapHelper(filename);
+      const lines = content.split('\n');
+      const results = [];
+
+      lines.forEach(line => {
+        if (typeof line === 'string' && line !== '') {
+          const lineObj = JSON.parse(line);
+          results.push(mapCand(lineObj, secondPass));
+        }
       });
-      for await (const line of rl) {
-        // Each line in input.txt will be successively available here as `line`.
 
-        const lineObj = JSON.parse(line);
-        results.push(mapCand(lineObj, secondPass));
-      }
       await createEntries(results, secondPass, manualResults);
       return exits.success({
         seed: `seeded candidates`,
