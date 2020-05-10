@@ -24,19 +24,25 @@ module.exports = {
     try {
       const filename = 'presidential-race.txt';
       const { content } = await sails.helpers.getSitemapHelper(filename);
-      const lines = content.split('\n');
-      const results = [];
-      lines.forEach(line => {
-        if (typeof line === 'string' && line !== '') {
-          const lineObj = JSON.parse(line);
-          results.push(mapCand(lineObj));
-        }
-      });
+      if (typeof content === 'undefined') {
+        const lines = content.split('\n');
+        const results = [];
+        lines.forEach(line => {
+          if (typeof line === 'string' && line !== '') {
+            const lineObj = JSON.parse(line);
+            results.push(mapCand(lineObj));
+          }
+        });
 
-      await createEntries(results);
-      return exits.success({
-        seed: `seeded ${results.length} candidates`,
-      });
+        await createEntries(results);
+        return exits.success({
+          seed: `seeded ${results.length} candidates`,
+        });
+      } else {
+        return exits.badRequest({
+          message: 'Error getting candidates1',
+        });
+      }
     } catch (e) {
       console.log(e);
       return exits.badRequest({

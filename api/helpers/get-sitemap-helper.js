@@ -15,7 +15,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { fileName } = inputs;
-      const content = await request(
+      const [content, err] = await request(
         `https://s3-us-west-2.amazonaws.com/scrape.thegoodparty.org/${fileName}`,
       );
       return exits.success({

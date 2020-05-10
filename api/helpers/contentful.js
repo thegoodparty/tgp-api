@@ -118,7 +118,10 @@ const splitPastEvents = response => {
 
     const timeZoneHours = timeZoneToHours(event.timeZone);
     today.setHours(today.getHours() + timeZoneHours + serverHoursOffset);
+    console.log('event.dateAndTime', event.dateAndTime);
     const eventDate = new Date(event.dateAndTime);
+    event.utcTime = eventDate.getTime();
+
     if (eventDate < today) {
       pastEvents.push(event);
     } else {
