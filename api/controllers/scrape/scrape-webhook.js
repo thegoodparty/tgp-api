@@ -76,6 +76,9 @@ module.exports = {
         } else if (sitemapName === 'ballotpedia') {
           console.log('scrape: running ballotpedia seed');
           request(`${devBase}/seed/seed-ballotpedia`);
+        } else if (sitemapName === 'ballotpedia-2nd-run') {
+          console.log('scrape: running ballotpedia 2nd run seed');
+          request(`${devBase}/seed/seed-ballotpedia?secondPass=true`);
         }
         return exits.success({ message: 'ok' });
       }
