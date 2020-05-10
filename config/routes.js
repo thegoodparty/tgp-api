@@ -45,7 +45,7 @@ module.exports.routes = {
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
   'PUT    /api/v1/admin/make-admin': 'admin/make-admin',
-  'GET    /api/v1/admin/all-users': 'admin/all-users',
+  'GET    /api/v1/admin/users': 'admin/all-users',
   'GET    /api/v1/admin/thresholds': 'admin/thresholds',
   'GET    /api/v1/admin/cd-with-count': 'admin/cd-with-count',
   'GET    /api/v1/admin/senate-with-count': 'admin/senate-with-count',
