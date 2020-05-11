@@ -209,9 +209,9 @@ const createEntries = async rows => {
           isActive: true,
         });
 
-        // console.log(
-        //   'completed row ' + i + ' candidate: ' + name + ' ' + candidate.uuid,
-        // );
+        console.log(
+          'completed row ' + i + ' candidate: ' + name + ' ' + candidate.uuid,
+        );
       }
     } catch (e) {
       console.log('error in races combined seed. ' + i);
