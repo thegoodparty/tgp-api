@@ -24,13 +24,17 @@ module.exports = {
     try {
       const filename = 'presidential-race.txt';
       const { content } = await sails.helpers.getSitemapHelper(filename);
-      if (typeof content === 'undefined') {
+      if (typeof content !== 'undefined') {
         const lines = content.split('\n');
         const results = [];
         lines.forEach(line => {
           if (typeof line === 'string' && line !== '') {
-            const lineObj = JSON.parse(line);
-            results.push(mapCand(lineObj));
+            try {
+              const lineObj = JSON.parse(line);
+              results.push(mapCand(lineObj));
+            } catch (e) {
+              console.log('failed on line: ', line);
+            }
           }
         });
 
@@ -40,7 +44,7 @@ module.exports = {
         });
       } else {
         return exits.badRequest({
-          message: 'Error getting candidates1',
+          message: 'Error getting candidates',
         });
       }
     } catch (e) {
