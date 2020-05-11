@@ -34,7 +34,7 @@ module.exports = {
 
       let filename = 'ballotpedia.txt';
       if (secondPass) {
-        filename = 'ballotpedia-no-match.txt';
+        filename = 'ballotpedia-2nd-run.txt';
       } else if (manualResults) {
         filename = 'ballotpedia-manual-match-results.txt';
       }
