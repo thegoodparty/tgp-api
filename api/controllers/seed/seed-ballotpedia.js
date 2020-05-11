@@ -45,8 +45,12 @@ module.exports = {
 
       lines.forEach(line => {
         if (typeof line === 'string' && line !== '') {
-          const lineObj = JSON.parse(line);
-          results.push(mapCand(lineObj, secondPass));
+          try {
+            const lineObj = JSON.parse(line);
+            results.push(mapCand(lineObj, secondPass));
+          } catch (e) {
+            console.log('failed on line: ', line);
+          }
         }
       });
 

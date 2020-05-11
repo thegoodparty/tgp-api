@@ -59,6 +59,10 @@ module.exports = {
         }
       }
 
+      if (!candidate) {
+        return exits.notFound();
+      }
+
       let incumbent;
       const { state, district } = candidate || {};
       if (chamber === 'presidential') {
@@ -84,7 +88,6 @@ module.exports = {
         }
       }
 
-
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
         chamber,
@@ -92,7 +95,6 @@ module.exports = {
       );
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
-
 
       return exits.success({
         ...candidate,
