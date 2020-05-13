@@ -97,6 +97,7 @@ const mapEvent = (fields, id) => {
     dateAndTime,
     description,
     timeZone,
+    displayDate,
     eventDuration,
     presenter,
     location,
@@ -109,6 +110,7 @@ const mapEvent = (fields, id) => {
   flatResponse.dateAndTime = dateAndTime;
   flatResponse.description = description;
   flatResponse.timeZone = timeZone;
+  flatResponse.displayDate = displayDate;
   flatResponse.eventDuration = eventDuration;
   flatResponse.location = location;
   if (presenter) {
