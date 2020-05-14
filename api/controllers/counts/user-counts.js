@@ -58,21 +58,25 @@ module.exports = {
       if (shortState) {
         const lowerShortState = shortState.toLowerCase();
         const state = await State.findOne({ shortName: lowerShortState });
-        threshold =
-          Math.max(
-            state.writeInThreshold,
-            state.writeInThresholdWithPresident,
-          ) + 1;
+        if (state) {
+          threshold =
+            Math.max(
+              state.writeInThreshold,
+              state.writeInThresholdWithPresident,
+            ) + 1;
+        }
         if (districtNumber) {
           const district = await CongDistrict.findOne({
             state: state.id,
             code: districtNumber,
           });
-          threshold =
-            Math.max(
-              district.writeInThreshold,
-              district.writeInThresholdWithPresident,
-            ) + 1;
+          if (district) {
+            threshold =
+              Math.max(
+                district.writeInThreshold,
+                district.writeInThresholdWithPresident,
+              ) + 1;
+          }
         }
       }
 
