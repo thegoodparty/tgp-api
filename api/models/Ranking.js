@@ -33,6 +33,13 @@ module.exports = {
       example: 'presidential',
     },
 
+    isIncumbent: {
+      type: 'boolean',
+      required: false,
+      description: 'is the candidate incumbent',
+      example: false,
+    },
+
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝

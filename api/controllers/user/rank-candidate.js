@@ -24,6 +24,13 @@ module.exports = {
       required: true,
       type: 'string',
     },
+
+    isIncumbent: {
+      description: 'is the candidate an incumbent',
+      example: false,
+      required: false,
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -40,13 +47,14 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { rank, candidateId, chamber } = inputs;
+      const { rank, candidateId, chamber, isIncumbent } = inputs;
       // first make sure the user doesn't have that ranking already.
 
       const existingRanking = await Ranking.find({
         user: reqUser.id,
         chamber,
         candidate: candidateId,
+        isIncumbent,
       });
       if (existingRanking.length > 0) {
         return exits.badRequest({
@@ -54,20 +62,17 @@ module.exports = {
         });
       }
 
-      const newRanking = await Ranking.create({
+      await Ranking.create({
         user: reqUser.id,
         chamber,
         candidate: candidateId,
         rank,
       });
-      // await User.updateOne({ id: reqUser.id }).set(updateFields);
 
-      const user = await User.findOne({ id: reqUser.id });
+      const user = await User.findOne({ id: reqUser.id }).populate('rankings');
       const zipCode = await ZipCode.findOne({
         id: user.zipCode,
-      })
-        .populate('cds')
-        .populate('rankings');
+      }).populate('cds');
       user.zipCode = zipCode;
 
       return exits.success({
