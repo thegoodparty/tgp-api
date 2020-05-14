@@ -49,9 +49,11 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { email, socialPic, socialToken, socialProvider } = inputs;
+      const lowerCaseEmail = email.toLowerCase();
+
       try {
         await sails.helpers.verifySocialToken(
-          email,
+          lowerCaseEmail,
           socialToken,
           socialProvider,
         );
@@ -61,20 +63,23 @@ module.exports = {
         });
       }
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
         return exits.badRequest({
-          message: `The email ${email} is not in our system. Please create an account first.`,
+          message: `The email ${lowerCaseEmail} is not in our system. Please create an account first.`,
           noUser: true,
         }); //we don't disclose whether we have a user in the db or not
       }
       if (socialPic && !user.avatar) {
-        await User.updateOne({ email }).set({
+        await User.updateOne({ email: lowerCaseEmail }).set({
           avatar: socialPic,
         });
       }
 
-      const token = await sails.helpers.jwtSign({ id: user.id, email });
+      const token = await sails.helpers.jwtSign({
+        id: user.id,
+        email: lowerCaseEmail,
+      });
 
       const userWithZip = await User.findOne({ id: user.id });
 

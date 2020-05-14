@@ -24,7 +24,8 @@ module.exports = {
   fn: async function(inputs) {
     // Find the record for this user.
     // (Even if no such user exists, pretend it worked to discourage sniffing.)
-    const userRecord = await User.findOne({ email: inputs.email });
+    const lowerCaseEmail = inputs.email.toLowerCase();
+    const userRecord = await User.findOne({ email: lowerCaseEmail });
     if (!userRecord) {
       return;
     } //

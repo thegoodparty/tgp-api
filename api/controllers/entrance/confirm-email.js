@@ -29,8 +29,9 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     const { email, token } = inputs;
+    const lowerCaseEmail = email.toLowerCase();
 
-    const userRecord = await User.findOne({ email });
+    const userRecord = await User.findOne({ email: lowerCaseEmail });
     if (!userRecord) {
       return exits.badRequest({
         message: 'Failed to confirm email',
@@ -55,13 +56,16 @@ module.exports = {
     }
 
     if (userRecord.emailConfToken === token) {
-      const user = await User.updateOne({ email }).set({
+      const user = await User.updateOne({ email: lowerCaseEmail }).set({
         emailConfToken: '',
         emailConfTokenDateCreated: '',
         isEmailVerified: true,
       });
 
-      const token = await sails.helpers.jwtSign({ id: user.id, email });
+      const token = await sails.helpers.jwtSign({
+        id: user.id,
+        email: lowerCaseEmail,
+      });
 
       const userWithZip = await User.findOne({ id: user.id });
 
