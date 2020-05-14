@@ -63,21 +63,27 @@ module.exports = {
         console.log('uploading to s3...');
         await sails.helpers.s3Uploader(data, 'scrape.thegoodparty.org');
         console.log('upload complete');
+        const prodBase = 'https://api.thegoodparty.org/api/v1';
         const devBase = 'https://api-dev.thegoodparty.org/api/v1';
         if (sitemapName === 'presidential-race') {
           console.log('scrape: running presidential seed');
+          request(`${prodBase}/seed/seed-presidential`);
           request(`${devBase}/seed/seed-presidential`);
         } else if (sitemapName === 'races-combined') {
           console.log('scrape: running races seed');
+          request(`${prodBase}/seed/seed-races-combined`);
           request(`${devBase}/seed/seed-races-combined`);
         } else if (sitemapName === 'incumbents') {
           console.log('scrape: running incumbents seed');
+          request(`${prodBase}/seed/seed-incumbents`);
           request(`${devBase}/seed/seed-incumbents`);
         } else if (sitemapName === 'ballotpedia') {
           console.log('scrape: running ballotpedia seed');
+          request(`${prodBase}/seed/seed-ballotpedia`);
           request(`${devBase}/seed/seed-ballotpedia`);
         } else if (sitemapName === 'ballotpedia-2nd-run') {
           console.log('scrape: running ballotpedia 2nd run seed');
+          request(`${prodBase}/seed/seed-ballotpedia?secondPass=true`);
           request(`${devBase}/seed/seed-ballotpedia?secondPass=true`);
         }
         return exits.success({ message: 'ok' });
