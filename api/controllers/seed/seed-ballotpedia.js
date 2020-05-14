@@ -1,6 +1,7 @@
 const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
 
 module.exports = {
   friendlyName: 'Seed - Race Candidates',
@@ -30,27 +31,33 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { secondPass, manualResults } = inputs;
-      const results = [];
-      let filename = '../../../data/ballotpedia.csv';
+
+      let filename = 'ballotpedia.txt';
       if (secondPass) {
-        filename = '../../../data/ballotpedia-no-match.csv';
+        filename = 'ballotpedia-2nd-run.txt';
       } else if (manualResults) {
-        filename = '../../../data/ballotpedia-manual-match-results.csv';
+        filename = 'ballotpedia-manual-match-results.txt';
       }
 
-      // load district csv and convert it to an array.
-      fs.createReadStream(path.join(__dirname, filename))
-        .pipe(csv())
-        .on('data', async data => {
-          results.push(mapCand(data, secondPass));
-        })
-        .on('end', async () => {
-          // console.log(results);
-          await createEntries(results, secondPass, manualResults);
-          return exits.success({
-            seed: `seeded ${results.length} candidates`,
-          });
-        });
+      const { content } = await sails.helpers.getSitemapHelper(filename);
+      const lines = content.split('\n');
+      const results = [];
+
+      lines.forEach(line => {
+        if (typeof line === 'string' && line !== '') {
+          try {
+            const lineObj = JSON.parse(line);
+            results.push(mapCand(lineObj, secondPass));
+          } catch (e) {
+            console.log('failed on line: ', line);
+          }
+        }
+      });
+
+      await createEntries(results, secondPass, manualResults);
+      return exits.success({
+        seed: `seeded candidates`,
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({
@@ -190,6 +197,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
           } else {
             candidate = await RaceCandidate.findOne({ id });
           }
+          console.log('candidate', candidate);
           if (
             !candidate ||
             (candidate.chamber === 'House' &&
@@ -217,6 +225,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
           }
         }
       } else {
+        counter++;
         if (isIncumbent) {
           await Incumbent.updateOne({ id }).set({
             ...row,
@@ -230,7 +239,7 @@ const createEntries = async (rows, secondPass, manualResults) => {
         }
       }
 
-      // console.log('completed row ' + i + ' candidate: ' + id);
+      console.log('completed row ' + i + ' candidate: ' + id);
     } catch (e) {
       console.log('error in seed. ' + i);
       console.log('---');

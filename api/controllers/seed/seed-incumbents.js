@@ -22,20 +22,21 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const filename = 'incumbents.txt';
+      const { content } = await sails.helpers.getSitemapHelper(filename);
+      const lines = content.split('\n');
       const results = [];
-      // load district csv and convert it to an array.
-      fs.createReadStream(path.join(__dirname, '../../../data/incumbents.csv'))
-        .pipe(csv())
-        .on('data', async data => {
-          results.push(mapIncumbents(data));
-        })
-        .on('end', async () => {
-          console.log(results);
-          await createEntries(results);
-          return exits.success({
-            seed: `seeded ${results.length} incumbents`,
-          });
-        });
+      lines.forEach(line => {
+        if (typeof line === 'string' && line !== '') {
+          const lineObj = JSON.parse(line);
+          results.push(mapCand(lineObj));
+        }
+      });
+
+      await createEntries(results);
+      return exits.success({
+        seed: `seeded ${results.length} candidates`,
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({
@@ -45,9 +46,9 @@ module.exports = {
   },
 };
 
-const mapIncumbents = csvRow => {
+const mapCand = csvRow => {
   const { openSecretsId, reportDate, raised } = csvRow;
-  const image = csvRow['image-src']
+  const image = csvRow['image-src'];
 
   return {
     openSecretsId,

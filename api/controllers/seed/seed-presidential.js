@@ -22,22 +22,31 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const results = [];
-      // load district csv and convert it to an array.
-      fs.createReadStream(
-        path.join(__dirname, '../../../data/presidential-race.csv'),
-      )
-        .pipe(csv())
-        .on('data', async data => {
-          results.push(mapCand(data));
-        })
-        .on('end', async () => {
-          console.log(results);
-          await createEntries(results);
-          return exits.success({
-            seed: `seeded ${results.length} candidates`,
-          });
+      const filename = 'presidential-race.txt';
+      const { content } = await sails.helpers.getSitemapHelper(filename);
+      if (typeof content !== 'undefined') {
+        const lines = content.split('\n');
+        const results = [];
+        lines.forEach(line => {
+          if (typeof line === 'string' && line !== '') {
+            try {
+              const lineObj = JSON.parse(line);
+              results.push(mapCand(lineObj));
+            } catch (e) {
+              console.log('failed on line: ', line);
+            }
+          }
         });
+
+        await createEntries(results);
+        return exits.success({
+          seed: `seeded ${results.length} candidates`,
+        });
+      } else {
+        return exits.badRequest({
+          message: 'Error getting candidates',
+        });
+      }
     } catch (e) {
       console.log(e);
       return exits.badRequest({

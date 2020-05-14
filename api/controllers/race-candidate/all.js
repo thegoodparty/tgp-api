@@ -37,7 +37,7 @@ module.exports = {
       const where = { isActive: true };
       const select = ['id', 'name', 'chamber', 'state', 'district', 'source'];
       if (onlyNoData) {
-        where.needsSecondPass = true;
+        where.source = null;
       }
       const incumbents = await Incumbent.find({
         where,

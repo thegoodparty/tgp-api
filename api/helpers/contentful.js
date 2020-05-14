@@ -55,6 +55,21 @@ const mapResponse = items => {
         mappedResponse.appVersion = item.fields;
       } else if (itemId === 'researchPage') {
         mappedResponse.researchPage = item.fields;
+      } else if (itemId === 'creatorsProject') {
+        if (!mappedResponse.creatorsProjects) {
+          mappedResponse.creatorsProjects = [];
+        }
+        const images = [];
+        if (item.fields.images && item.fields.images.length > 0) {
+          item.fields.images.forEach(image => {
+            images.push(extractMediaFile(image));
+          });
+        }
+        mappedResponse.creatorsProjects.push({
+          ...item.fields,
+          images,
+          id: elementId,
+        });
       } else if (itemId === 'presidentialCandidate') {
         if (!mappedResponse.presidentialCandidates) {
           mappedResponse.presidentialCandidates = [];
@@ -82,6 +97,7 @@ const mapEvent = (fields, id) => {
     dateAndTime,
     description,
     timeZone,
+    displayDate,
     eventDuration,
     presenter,
     location,
@@ -94,6 +110,7 @@ const mapEvent = (fields, id) => {
   flatResponse.dateAndTime = dateAndTime;
   flatResponse.description = description;
   flatResponse.timeZone = timeZone;
+  flatResponse.displayDate = displayDate;
   flatResponse.eventDuration = eventDuration;
   flatResponse.location = location;
   if (presenter) {
@@ -119,6 +136,8 @@ const splitPastEvents = response => {
     const timeZoneHours = timeZoneToHours(event.timeZone);
     today.setHours(today.getHours() + timeZoneHours + serverHoursOffset);
     const eventDate = new Date(event.dateAndTime);
+    event.utcTime = eventDate.getTime();
+
     if (eventDate < today) {
       pastEvents.push(event);
     } else {

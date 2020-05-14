@@ -2,7 +2,7 @@
 
 [Sails v1](https://sailsjs.com) based node.js api for [The Good Party](https://thegoodparty.org/).
 
-<img src="https://thegoodparty.org/assets/images/image04.svg" align="center"
+<img src="https://assets.thegoodparty.org/share.jpg" align="center"
      title="The Good Party" width="100%">
 
 ## Getting Started
@@ -22,12 +22,6 @@ Here are the steps to get started:
 npm install sails -g
 ```
 
-or
-
-```
-yarn global add sails
-```
-
 Clone this repo
 
 ```
@@ -40,11 +34,6 @@ install dependencies
 npm i
 ```
 
-or
-
-```
-yarn
-```
 
 You will need to add a local file: config/local.js file (which is git-ignored):
 
@@ -61,11 +50,6 @@ And now you are ready to start:
 npm start
 ```
 
-or
-
-```
-yarn start
-```
 
 For Dev Environment install Nodemon
 
@@ -73,23 +57,14 @@ For Dev Environment install Nodemon
 npm install -g nodemon
 ```
 
-or
 
-```javascript
-yarn global add nodemon
-```
 
 and run:
 
 ```
-npm run start-dev
+npm run dev
 ```
 
-or
-
-```
-yarn run start-dev
-```
 
 ### Running the tests
 
