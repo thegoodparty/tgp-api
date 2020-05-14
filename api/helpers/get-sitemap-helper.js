@@ -18,6 +18,10 @@ module.exports = {
       const content = await request(
         `https://s3-us-west-2.amazonaws.com/scrape.thegoodparty.org/${fileName}`,
       );
+      if (!content || content.length === 0) {
+        console.log(`empty file on s3 ${fileName}`);
+        throw new Error(`empty file on s3 ${fileName}`);
+      }
       return exits.success({
         content,
       });
