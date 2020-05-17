@@ -45,18 +45,8 @@ module.exports = {
       required: false,
     },
 
-    presidentialRank: {
-      description: 'stringified array of presidential candidates IDs',
-      type: 'string',
-      required: false,
-    },
-    senateRank: {
-      description: 'stringified array of senate candidates IDs',
-      type: 'string',
-      required: false,
-    },
-    houseRank: {
-      description: 'stringified array of house candidates IDs',
+    ranking: {
+      description: 'stringified array of Ranking objects',
       type: 'string',
       required: false,
     },
@@ -116,9 +106,7 @@ module.exports = {
         verify,
         addresses,
         zip,
-        presidentialRank,
-        senateRank,
-        houseRank,
+        ranking,
         socialId,
         socialProvider,
         socialPic,
@@ -189,15 +177,6 @@ module.exports = {
         userAttr.normalizedAddress = normalizedAddress;
       }
 
-      if (presidentialRank) {
-        userAttr.presidentialRank = presidentialRank;
-      }
-      if (senateRank) {
-        userAttr.senateRank = senateRank;
-      }
-      if (houseRank) {
-        userAttr.houseRank = houseRank;
-      }
       if (verify) {
         userAttr.isEmailVerified = false;
       }
@@ -253,6 +232,22 @@ module.exports = {
           referrer: user.id,
           guestReferrer: '',
         });
+      }
+
+      // convert the guest ranking (from cookies) to actual ranking in our system.
+      if (ranking) {
+        const rankingArr = JSON.parse(ranking);
+        console.log('rankingArr', ranking);
+        for (let i = 0; i < rankingArr.length; i++) {
+          const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
+          await Ranking.create({
+            user: user.id,
+            chamber,
+            candidate,
+            rank,
+            isIncumbent,
+          });
+        }
       }
 
       const userWithZip = await User.findOne({ id: user.id });
