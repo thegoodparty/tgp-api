@@ -51,8 +51,9 @@ module.exports = {
 
 const migrateChamber = async (oldRanking, chamber, user) => {
   for (let i = 0; i < oldRanking.length; i++) {
+    let skipCreate = false;
     console.log(
-      `migrating chamber ${chamber}, oldRanking: ${oldRanking}, for user: ${user.name}`,
+      `migrating chamber ${chamber}, oldRanking: ${oldRanking[i]}, for user: ${user.name}`,
     );
     let candidate;
     if (chamber !== 'presidential') {
@@ -68,7 +69,7 @@ const migrateChamber = async (oldRanking, chamber, user) => {
             candidate ? candidate.name : 'no cand'
           }, user district: ${user.districtNumber}`,
         );
-        continue;
+        skipCreate = true;
       }
     } else {
       candidate = await PresidentialCandidate.findOne({ id: oldRanking[i] });
@@ -108,16 +109,18 @@ const migrateChamber = async (oldRanking, chamber, user) => {
       console.log(
         `not migrating non good candidates ranking. candidate: ${candidate.name}`,
       );
-      continue;
+      skipCreate = true;
     }
 
-    await Ranking.create({
-      user: user.id,
-      chamber,
-      candidate: oldRanking[i],
-      isIncumbent: false,
-      rank: i + 1,
-      userState: user.shortState,
-    });
+    if (!skipCreate) {
+      await Ranking.create({
+        user: user.id,
+        chamber,
+        candidate: oldRanking[i],
+        isIncumbent: false,
+        rank: i + 1,
+        userState: user.shortState,
+      });
+    }
   }
 };
