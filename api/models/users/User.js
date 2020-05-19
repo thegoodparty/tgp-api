@@ -146,11 +146,13 @@ module.exports = {
       type: 'string',
       required: false,
       description: 'guest uuid that was used to invited the user.',
+      allowNull: true,
     },
     isAdmin: {
       type: 'boolean',
       defaultsTo: false,
       required: false,
+      allowNull: true,
     },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
