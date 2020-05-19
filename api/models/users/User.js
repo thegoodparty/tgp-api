@@ -173,6 +173,11 @@ module.exports = {
       model: 'zipCode',
     },
 
+    rankings: {
+      collection: 'ranking',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',

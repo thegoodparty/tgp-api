@@ -35,10 +35,13 @@ module.exports.routes = {
   'GET    /api/v1/user/check': 'user/check',
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
-  'PUT    /api/v1/user/delete-user-ranking': 'user/delete-user-ranking',
+  'PUT    /api/v1/user/delete-user-ranking': 'user/ranking/delete-user-ranking',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'PUT    /api/v1/user/upload-avatar': 'user/upload-avatar',
   'GET    /api/v1/user/crew': 'user/crew',
+  'POST   /api/v1/user/rank-candidate': 'user/ranking/rank-candidate',
+  'DELETE /api/v1/user/rank-candidate': 'user/ranking/delete-rank-candidate',
+  'GET   /api/v1/user/ranking': 'user/ranking/user-ranking',
 
   'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
 
@@ -63,6 +66,8 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-ballotpedia': 'seed/seed-ballotpedia',
   'GET    /api/v1/seed/seed-ballotpedia-manual-match':
     'seed/seed-ballotpedia-manual-match',
+  'GET    /api/v1/seed/migrate-rankings':
+    'seed/temp-migrate-rankings',
 
   'GET    /api/v1/district/state': 'district/state',
   'GET    /api/v1/district/total-supporters': 'district/total-supporters',
