@@ -72,6 +72,7 @@ const migrateChamber = async (oldRanking, chamber, user) => {
       candidate: oldRanking[i],
       isIncumbent: false,
       rank: i + 1,
+      userState: user.shortState,
     });
   }
 };

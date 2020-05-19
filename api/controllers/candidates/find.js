@@ -88,6 +88,12 @@ module.exports = {
         }
       }
 
+      const rankingCount = await Ranking.count({
+        candidate: candidate.id,
+        chamber,
+        isIncumbent,
+      });
+
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
         chamber,
@@ -98,6 +104,7 @@ module.exports = {
 
       return exits.success({
         ...candidate,
+        rankingCount,
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);

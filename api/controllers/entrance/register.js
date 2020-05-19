@@ -246,6 +246,7 @@ module.exports = {
             candidate,
             rank,
             isIncumbent,
+            userState: user.shortState
           });
         }
       }

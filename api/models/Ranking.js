@@ -40,6 +40,13 @@ module.exports = {
       example: false,
     },
 
+    userState: { // denormalized for performance
+      type: 'string',
+      required: true,
+      description: 'denormalized user state ',
+      example: 'ca',
+    },
+
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝

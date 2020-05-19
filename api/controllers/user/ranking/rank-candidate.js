@@ -67,6 +67,7 @@ module.exports = {
         chamber,
         candidate: candidateId,
         rank,
+        userState: reqUser.shortState
       });
 
       const user = await User.findOne({ id: reqUser.id }).populate('rankings');
