@@ -65,7 +65,42 @@ const migrateChamber = async (oldRanking, chamber, user) => {
       ) {
         continue;
       }
+
+      // don't migrate non good candidates
+      let incumbentRaised = 50000000;
+      let incumbent;
+      if (chamber !== 'presidential') {
+        if (candidate.isIncumbent) {
+          incumbentRaised = candidate.raised;
+          ({ incumbent } = await sails.helpers.incumbentByDistrictHelper());
+        } else {
+          if (chamber === 'senate') {
+            ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(
+              candidate.state,
+            ));
+          } else {
+            ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(
+              candidate.state,
+              candidate.district,
+            ));
+          }
+          incumbentRaised = incumbent
+            ? incumbent.raised || incumbent.combinedRaised
+            : false;
+          incumbentRaised = incumbentRaised ? incumbentRaised / 2 : false;
+        }
+      }
+      const { isGood } = await sails.helpers.goodnessHelper(
+        candidate,
+        chamber,
+        incumbentRaised,
+      );
+
+      if (isGood === false) {
+        continue;
+      }
     }
+
     await Ranking.create({
       user: user.id,
       chamber,
