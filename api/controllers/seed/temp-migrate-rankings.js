@@ -21,6 +21,7 @@ module.exports = {
       const users = await User.find();
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
+        console.log(`migrating user ${user.name}`);
         let { presidentialRank, senateRank, houseRank } = user;
         presidentialRank =
           presidentialRank && presidentialRank !== ''
@@ -32,9 +33,13 @@ module.exports = {
 
         const senateValues = Object.values(senateRank)[0] || [];
         const houseValues = Object.values(houseRank)[0] || [];
+        console.log('11111');
         await migrateChamber(presidentialRank, 'presidential', user);
+        console.log('22222');
         await migrateChamber(senateValues, 'senate', user);
+        console.log('33333');
         await migrateChamber(houseValues, 'house', user);
+        console.log('44444');
 
         return exits.success({
           seed: `Migrated ${users.length} users`,
