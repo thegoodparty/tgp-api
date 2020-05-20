@@ -90,8 +90,22 @@ module.exports = {
         }
       }
 
+      let threshold = 38658139; // presidential
+      const stateRecord = await State.findOne({ shortName: lowerState });
+      if (stateRecord) {
+        threshold =
+          Math.max(
+            state.writeInThreshold,
+            state.writeInThresholdWithPresident,
+          ) + 1;
+      }
+
       return exits.success({
-        senateCandidates: { ...sortedCandidates.candidates, topRank },
+        senateCandidates: {
+          ...sortedCandidates.candidates,
+          topRank,
+          threshold,
+        },
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
