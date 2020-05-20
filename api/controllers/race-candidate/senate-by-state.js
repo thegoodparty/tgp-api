@@ -95,8 +95,8 @@ module.exports = {
       if (stateRecord) {
         threshold =
           Math.max(
-            state.writeInThreshold,
-            state.writeInThresholdWithPresident,
+            stateRecord.writeInThreshold,
+            stateRecord.writeInThresholdWithPresident,
           ) + 1;
       }
 
