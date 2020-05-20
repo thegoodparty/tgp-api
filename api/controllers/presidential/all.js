@@ -81,7 +81,7 @@ module.exports = {
           });
         }
       }
-      let votesNeeded = 65853512;
+      let votesNeeded = 38658139;
       if (userState) {
         votesNeeded = votesThreshold[userState];
       }

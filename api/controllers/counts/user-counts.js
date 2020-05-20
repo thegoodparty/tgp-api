@@ -54,7 +54,7 @@ module.exports = {
           });
         }
       }
-      let threshold = 65853514; // presidential
+      let threshold = 38658139; // presidential
       if (shortState) {
         const lowerShortState = shortState.toLowerCase();
         const state = await State.findOne({ shortName: lowerShortState });
