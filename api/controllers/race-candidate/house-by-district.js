@@ -109,9 +109,19 @@ module.exports = {
             congDistrict.writeInThresholdWithPresident,
           ) + 1;
       }
+      let goodEmptyBlock;
+      if (sortedCandidates.candidates.good.length === 0) {
+        const emptyBlockId = parseInt(district, 10) * -1;
+        goodEmptyBlock = await Ranking.count({
+          candidate: emptyBlockId,
+          userState: lowerState,
+          chamber: 'house',
+          isIncumbent: false,
+        });
+      }
 
       return exits.success({
-        houseCandidates: { ...sortedCandidates.candidates, topRank, threshold },
+        houseCandidates: { ...sortedCandidates.candidates, topRank, threshold, goodEmptyBlock },
       });
     } catch (e) {
       console.log('Error in find incumbent by id', e);
