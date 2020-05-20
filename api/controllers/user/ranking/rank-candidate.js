@@ -67,22 +67,18 @@ module.exports = {
         chamber,
         candidate: candidateId,
         rank,
-        userState: reqUser.shortState
+        userState: reqUser.shortState,
       });
 
-      const user = await User.findOne({ id: reqUser.id }).populate('rankings');
-      const zipCode = await ZipCode.findOne({
-        id: user.zipCode,
-      }).populate('cds');
-      user.zipCode = zipCode;
+      const ranking = await Ranking.find({ user: reqUser.id });
 
       return exits.success({
-        user,
+        ranking,
       });
     } catch (e) {
       console.log(e);
       return exits.badRequest({
-        message: 'Error saving address',
+        message: 'Error ranking candidate',
       });
     }
   },
