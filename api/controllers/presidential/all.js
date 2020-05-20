@@ -81,9 +81,9 @@ module.exports = {
           });
         }
       }
-      let votesNeeded = 38658139;
+      let threshold = 38658139;
       if (userState) {
-        votesNeeded = votesThreshold[userState];
+        threshold = votesThreshold[userState];
       }
 
       return exits.success({
@@ -92,7 +92,7 @@ module.exports = {
           notGood,
           unknown,
           topRank,
-          votesNeeded,
+          threshold,
         },
       });
     } catch (e) {
