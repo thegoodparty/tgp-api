@@ -107,7 +107,7 @@ module.exports = {
         rankingCount,
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find candidate', e);
       return exits.notFound();
     }
   },

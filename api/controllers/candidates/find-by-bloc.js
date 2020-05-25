@@ -88,7 +88,7 @@ module.exports = {
         ...candidate,
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find by bloc', e);
       return exits.notFound();
     }
   },

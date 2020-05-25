@@ -64,7 +64,7 @@ module.exports = {
         incumbent,
       });
     } catch (e) {
-      console.log('Error in find incumbent by district', e);
+      console.log('Error in find incumbent by district helper', e);
       return exits.notFound();
     }
   },

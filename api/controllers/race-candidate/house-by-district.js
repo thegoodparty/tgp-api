@@ -124,7 +124,7 @@ module.exports = {
         houseCandidates: { ...sortedCandidates.candidates, topRank, threshold, goodEmptyBlock },
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find house cand', e);
       return exits.notFound();
     }
   },

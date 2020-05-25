@@ -108,7 +108,7 @@ module.exports = {
         },
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find senate by id', e);
       return exits.notFound();
     }
   },
