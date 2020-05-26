@@ -40,8 +40,7 @@ module.exports = {
       const { id, title, feedback } = inputs;
       const subject = `FAQ Feedback - ${title}`;
       const messageHeader = `FAQ Feedback - ${title}`;
-      const email = 'tomer@thegoodparty.org';
-      // const email = 'ask@thegoodparty.org';
+      const email = 'ask@thegoodparty.org';
       const name = 'TGP Admin';
       const msgWithLineBreaks = feedback
         ? `<h3>Yes, was helpful</h3><br/>
