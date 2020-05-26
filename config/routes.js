@@ -15,6 +15,7 @@ module.exports.routes = {
 
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/update': 'content/update',
+  'POST    /api/v1/content/article-feedback': 'content/article-feedback',
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
@@ -66,8 +67,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-ballotpedia': 'seed/seed-ballotpedia',
   'GET    /api/v1/seed/seed-ballotpedia-manual-match':
     'seed/seed-ballotpedia-manual-match',
-  'GET    /api/v1/seed/migrate-rankings':
-    'seed/temp-migrate-rankings',
+  'GET    /api/v1/seed/migrate-rankings': 'seed/temp-migrate-rankings',
 
   'GET    /api/v1/district/state': 'district/state',
   'GET    /api/v1/district/total-supporters': 'district/total-supporters',
