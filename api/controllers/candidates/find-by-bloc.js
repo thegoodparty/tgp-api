@@ -85,7 +85,8 @@ module.exports = {
       }
 
       return exits.success({
-        ...candidate,
+        id: candidate.id,
+        name: candidate.name,
       });
     } catch (e) {
       console.log('Error in find by bloc', e);
