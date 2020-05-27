@@ -90,6 +90,18 @@ module.exports = {
         }
       }
 
+      // if good is empty, check for empty bloc ranking
+      if (sortedCandidates.candidates.good.length === 0) {
+        const ranking = await Ranking.count({
+          candidate: -1,
+          chamber: 'senate',
+          isIncumbent: false,
+        });
+        if (ranking > topRank) {
+          topRank = ranking;
+        }
+      }
+
       let threshold = 38658139; // presidential
       const stateRecord = await State.findOne({ shortName: lowerState });
       if (stateRecord) {
@@ -100,11 +112,22 @@ module.exports = {
           ) + 1;
       }
 
+      let goodEmptyBloc;
+      if (sortedCandidates.candidates.good.length === 0) {
+        goodEmptyBloc = await Ranking.count({
+          candidate: -1,
+          userState: lowerState,
+          chamber: 'senate',
+          isIncumbent: false,
+        });
+      }
+
       return exits.success({
         senateCandidates: {
           ...sortedCandidates.candidates,
           topRank,
           threshold,
+          goodEmptyBloc,
         },
       });
     } catch (e) {
