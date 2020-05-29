@@ -45,18 +45,8 @@ module.exports = {
       required: false,
     },
 
-    presidentialRank: {
-      description: 'stringified array of presidential candidates IDs',
-      type: 'string',
-      required: false,
-    },
-    senateRank: {
-      description: 'stringified array of senate candidates IDs',
-      type: 'string',
-      required: false,
-    },
-    houseRank: {
-      description: 'stringified array of house candidates IDs',
+    ranking: {
+      description: 'stringified array of Ranking objects',
       type: 'string',
       required: false,
     },
@@ -116,9 +106,7 @@ module.exports = {
         verify,
         addresses,
         zip,
-        presidentialRank,
-        senateRank,
-        houseRank,
+        ranking,
         socialId,
         socialProvider,
         socialPic,
@@ -129,13 +117,14 @@ module.exports = {
 
       let { districtId } = inputs;
       let sendToken = false;
+      const lowerCaseEmail = email.toLowerCase();
 
       const userExists = await User.findOne({
-        email,
+        email: lowerCaseEmail,
       });
       if (userExists) {
         return exits.badRequest({
-          message: `${email} already exists in our system.`,
+          message: `${lowerCaseEmail} already exists in our system.`,
           exists: true,
         });
       }
@@ -158,7 +147,7 @@ module.exports = {
       }
 
       const userAttr = {
-        email,
+        email: lowerCaseEmail,
         name,
       };
       if (zipCode) {
@@ -189,15 +178,6 @@ module.exports = {
         userAttr.normalizedAddress = normalizedAddress;
       }
 
-      if (presidentialRank) {
-        userAttr.presidentialRank = presidentialRank;
-      }
-      if (senateRank) {
-        userAttr.senateRank = senateRank;
-      }
-      if (houseRank) {
-        userAttr.houseRank = houseRank;
-      }
       if (verify) {
         userAttr.isEmailVerified = false;
       }
@@ -222,7 +202,7 @@ module.exports = {
       if (socialPic || socialProvider || socialId) {
         try {
           await sails.helpers.verifySocialToken(
-            email,
+            lowerCaseEmail,
             socialToken,
             socialProvider,
           );
@@ -253,6 +233,23 @@ module.exports = {
           referrer: user.id,
           guestReferrer: '',
         });
+      }
+
+      // convert the guest ranking (from cookies) to actual ranking in our system.
+      if (ranking) {
+        const rankingArr = JSON.parse(ranking);
+        console.log('rankingArr', ranking);
+        for (let i = 0; i < rankingArr.length; i++) {
+          const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
+          await Ranking.create({
+            user: user.id,
+            chamber,
+            candidate,
+            rank,
+            isIncumbent,
+            userState: user.shortState
+          });
+        }
       }
 
       const userWithZip = await User.findOne({ id: user.id });
@@ -286,7 +283,7 @@ module.exports = {
                             <td>
                                 <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
                                   Welcome to The Good Party!  Please tap to 
-                                  <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">confirm your email</a>, 
+                                  <a href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}">confirm your email</a>, 
                                   so we can get you counted.
                                 </p>
                              </td>
@@ -294,7 +291,7 @@ module.exports = {
                           <tr>
                             <td>
                               <br/><br/><br/>
-                              <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                              <a href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
                                 Confirm Email                              
                               </a>
                             </td>
@@ -302,7 +299,7 @@ module.exports = {
                         </table>`;
         const messageHeader = '';
         await sails.helpers.mailgunSender(
-          email,
+          lowerCaseEmail,
           name,
           subject,
           messageHeader,
@@ -311,7 +308,10 @@ module.exports = {
       }
       let token;
       if (sendToken) {
-        token = await sails.helpers.jwtSign({ id: user.id, email });
+        token = await sails.helpers.jwtSign({
+          id: user.id,
+          email: lowerCaseEmail,
+        });
       }
 
       return exits.success({

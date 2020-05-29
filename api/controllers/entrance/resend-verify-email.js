@@ -36,26 +36,23 @@ module.exports = {
     // if validation fails.
     try {
       const { email } = inputs;
-      console.log('resend0', email);
+      const lowerCaseEmail = email.toLowerCase();
 
       let user = await User.findOne({
-        email,
+        email: lowerCaseEmail,
       });
-      console.log('resend1 user ', user);
       if (!user) {
         // don't reveal if the user exists in database or not.
         return exits.success({
           message: 'Email Resent',
         });
       }
-      console.log('resend2');
       const token = await sails.helpers.strings.random('url-friendly');
-      console.log('resend3');
-      user = await User.updateOne({ email }).set({
+
+      user = await User.updateOne({ email: lowerCaseEmail }).set({
         emailConfToken: token,
         emailConfTokenDateCreated: Date.now(),
       });
-      console.log('resend4');
 
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const subject = `Please Confirm your email address - The Good Party`;
@@ -79,7 +76,7 @@ module.exports = {
                             <td>
                                 <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
                                   Welcome to The Good Party!  Please tap to 
-                                  <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">confirm your email</a>, 
+                                  <a href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}">confirm your email</a>, 
                                   so we can get you counted.
                                 </p>
                              </td>
@@ -87,22 +84,20 @@ module.exports = {
                           <tr>
                             <td>
                               <br/><br/><br/>  
-                              <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                              <a href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
                                 Confirm Email                              
                               </a>
                             </td>
                           </tr>
                         </table>`;
       const messageHeader = '';
-      console.log('resend5');
       await sails.helpers.mailgunSender(
-        email,
+        lowerCaseEmail,
         user.name,
         subject,
         messageHeader,
         message,
       );
-      console.log('resend6');
 
       return exits.success({
         message: 'Email Resent',

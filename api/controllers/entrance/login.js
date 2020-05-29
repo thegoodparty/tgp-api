@@ -33,8 +33,9 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { email } = inputs;
+      const lowerCaseEmail = email.toLowerCase();
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
         return exits.success(); //we don't disclose whether we have a user in the db or not
       }
@@ -44,7 +45,7 @@ module.exports = {
         randomCode += 124000;
       }
 
-      await User.updateOne({ email }).set({
+      await User.updateOne({ email: lowerCaseEmail }).set({
         emailConfToken: randomCode,
         emailConfTokenDateCreated: Date.now(),
       });
@@ -73,7 +74,7 @@ module.exports = {
                         </table>`;
       const messageHeader = '';
       await sails.helpers.mailgunSender(
-        email,
+        lowerCaseEmail,
         user.name,
         subject,
         messageHeader,

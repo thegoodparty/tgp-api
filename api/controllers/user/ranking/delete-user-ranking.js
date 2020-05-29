@@ -19,25 +19,18 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-
-      await User.updateOne({ id: reqUser.id }).set({
-        houseRank: '',
-        senateRank: '',
+      await Ranking.destroy({
+        chamber: { '!=': 'presidential' },
+        user: reqUser.id,
       });
-
-      const user = await User.findOne({ id: reqUser.id });
-      const zipCode = await ZipCode.findOne({
-        id: user.zipCode,
-      }).populate('cds');
-      user.zipCode = zipCode;
 
       return exits.success({
-        user,
+        message: 'Ranking deleted',
       });
     } catch (e) {
-      console.log(e);
+      console.log('error deleting ranking', e);
       return exits.badRequest({
-        message: 'Error saving address',
+        message: 'Error deleting ranking',
       });
     }
   },

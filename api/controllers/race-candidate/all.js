@@ -57,7 +57,7 @@ module.exports = {
         allCandidates: [...incumbents, ...candidates],
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find race-cand by id', e);
       return exits.notFound();
     }
   },

@@ -63,11 +63,75 @@ module.exports = {
         'senate',
       );
 
+      let topRank = 0;
+      for (let i = 0; i < sortedCandidates.candidates.good.length; i++) {
+        const candidate = sortedCandidates.candidates.good[i];
+        const ranking = await Ranking.count({
+          candidate: candidate.id,
+          chamber: 'senate',
+          isIncumbent: candidate.isIncumbent,
+        });
+        candidate.ranking = ranking;
+        if (ranking > topRank) {
+          topRank = ranking;
+        }
+      }
+
+      for (let i = 0; i < sortedCandidates.candidates.unknown.length; i++) {
+        const candidate = sortedCandidates.candidates.unknown[i];
+        const ranking = await Ranking.count({
+          candidate: candidate.id,
+          chamber: 'senate',
+          isIncumbent: candidate.isIncumbent,
+        });
+        candidate.ranking = ranking;
+        if (ranking > topRank) {
+          topRank = ranking;
+        }
+      }
+
+      // if good is empty, check for empty bloc ranking
+      if (sortedCandidates.candidates.good.length === 0) {
+        const ranking = await Ranking.count({
+          candidate: -1,
+          chamber: 'senate',
+          isIncumbent: false,
+        });
+        if (ranking > topRank) {
+          topRank = ranking;
+        }
+      }
+
+      let threshold = 38658139; // presidential
+      const stateRecord = await State.findOne({ shortName: lowerState });
+      if (stateRecord) {
+        threshold =
+          Math.max(
+            stateRecord.writeInThreshold,
+            stateRecord.writeInThresholdWithPresident,
+          ) + 1;
+      }
+
+      let goodEmptyBloc;
+      if (sortedCandidates.candidates.good.length === 0) {
+        goodEmptyBloc = await Ranking.count({
+          candidate: -1,
+          userState: lowerState,
+          chamber: 'senate',
+          isIncumbent: false,
+        });
+      }
+
       return exits.success({
-        senateCandidates: sortedCandidates.candidates,
+        senateCandidates: {
+          ...sortedCandidates.candidates,
+          topRank,
+          threshold,
+          goodEmptyBloc,
+        },
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find senate by id', e);
       return exits.notFound();
     }
   },

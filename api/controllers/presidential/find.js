@@ -37,7 +37,7 @@ module.exports = {
         ...candidate,
       });
     } catch (e) {
-      console.log('Error in find incumbent by id', e);
+      console.log('Error in find presidnetial by id', e);
       return exits.notFound();
     }
   },

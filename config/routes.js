@@ -15,6 +15,7 @@ module.exports.routes = {
 
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/update': 'content/update',
+  'POST    /api/v1/content/article-feedback': 'content/article-feedback',
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
@@ -35,10 +36,13 @@ module.exports.routes = {
   'GET    /api/v1/user/check': 'user/check',
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
-  'PUT    /api/v1/user/delete-user-ranking': 'user/delete-user-ranking',
+  'PUT    /api/v1/user/delete-user-ranking': 'user/ranking/delete-user-ranking',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'PUT    /api/v1/user/upload-avatar': 'user/upload-avatar',
   'GET    /api/v1/user/crew': 'user/crew',
+  'POST   /api/v1/user/rank-candidate': 'user/ranking/rank-candidate',
+  'DELETE /api/v1/user/rank-candidate': 'user/ranking/delete-rank-candidate',
+  'GET   /api/v1/user/ranking': 'user/ranking/user-ranking',
 
   'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
 
@@ -57,6 +61,7 @@ module.exports.routes = {
   'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',
   'GET    /api/v1/seed/seed-incumbents': 'seed/seed-incumbents',
   'GET    /api/v1/seed/seed-presidential': 'seed/seed-presidential',
+  'GET    /api/v1/seed/seed-presidential-add1': 'seed/seed-presidential-add1',
   'GET    /api/v1/seed/seed-presidential-source':
     'seed/seed-presidential-source',
   'GET    /api/v1/seed/seed-races-combined': 'seed/seed-races-combined',
@@ -80,6 +85,7 @@ module.exports.routes = {
   'GET    /api/v1/presidential/all': 'presidential/all',
 
   'GET    /api/v1/candidates/find': 'candidates/find',
+  'GET    /api/v1/candidates/find-by-bloc': 'candidates/find-by-bloc',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
