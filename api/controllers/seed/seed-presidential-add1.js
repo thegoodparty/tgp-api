@@ -24,7 +24,7 @@ module.exports = {
         party: 'LP',
         image: 'http://assets.thegoodparty.org/candidates/jorgenson.jpg',
         combinedRaised: 22365,
-        smallContributions: 22365,
+        smallContributions: 0,
         campaignReportDate: 'March 31, 2020',
         outsideReportDate: 'March 31, 2020',
         isActive: true,
