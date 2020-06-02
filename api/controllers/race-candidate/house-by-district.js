@@ -15,7 +15,7 @@ module.exports = {
       required: true,
     },
     district: {
-      type: 'string',
+      type: 'number',
       required: true,
     },
   },
