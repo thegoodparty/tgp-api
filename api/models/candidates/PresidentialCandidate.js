@@ -67,6 +67,11 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    order: {
+      type: 'number',
+      allowNull: true,
+      defaultsTo: 99,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

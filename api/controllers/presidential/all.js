@@ -36,7 +36,7 @@ module.exports = {
       const { userState } = inputs;
       const candidates = await PresidentialCandidate.find({
         isActive: true,
-      }).sort([{ isIncumbent: 'DESC' }, { combinedRaised: 'DESC' }]);
+      }).sort([{ isIncumbent: 'DESC' }, { order: 'ASC' }]);
       const good = [];
       const notGood = [];
       const unknown = [];
