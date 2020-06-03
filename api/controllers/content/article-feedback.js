@@ -22,46 +22,50 @@ module.exports = {
       type: 'boolean',
       required: true,
     },
+    uuid: {
+      type: 'string',
+      required: true,
+    },
   },
 
   exits: {
     success: {
-      description: 'Email sent',
+      description: 'Feedback Saved',
       responseType: 'ok',
     },
     badRequest: {
-      description: 'Error sending email',
+      description: 'Error saving feedback',
       responseType: 'badRequest',
     },
   },
 
   fn: async function(inputs, exits) {
     try {
-      const { id, title, feedback } = inputs;
-      const subject = `FAQ Feedback - ${title}`;
-      const messageHeader = `FAQ Feedback - ${title}`;
-      const email = 'ask@thegoodparty.org';
-      const name = 'TGP Admin';
-      const msgWithLineBreaks = feedback
-        ? `<h3>Yes, was helpful</h3><br/>
-          <a href="https://thegoodparty.org/party/faqs?article=${id}">https://thegoodparty.org/party/faqs?article=${id}</a>`
-        : `<h3>No was not helpful</h3><br/>
-          <a href="https://thegoodparty.org/party/faqs?article=${id}">https://thegoodparty.org/party/faqs?article=${id}</a>`;
-      await sails.helpers.mailgunSender(
-        email,
-        name,
-        subject,
-        messageHeader,
-        msgWithLineBreaks,
+      const { id, uuid, title, feedback } = inputs;
+      const dbFeedback = await HelpfulArticle.findOrCreate(
+        {
+          cmsId: id,
+          uuid,
+        },
+        {
+          cmsId: id,
+          uuid,
+          isHelpful: feedback,
+        },
       );
+
+      await HelpfulArticle.updateOne({ id: dbFeedback.id }).set({
+        isHelpful: feedback,
+      });
+
       return exits.success({
-        message: 'Feedback Sent Successfully',
+        message: 'Feedback Saved Successfully',
       });
     } catch (err) {
-      console.log('Error sending feedback');
+      console.log('Error saving feedback');
       console.log(err);
       return exits.badRequest({
-        message: 'Error sending feedback',
+        message: 'Error  saving feedback',
       });
     }
   },
