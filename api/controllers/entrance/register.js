@@ -238,7 +238,6 @@ module.exports = {
       // convert the guest ranking (from cookies) to actual ranking in our system.
       if (ranking) {
         const rankingArr = JSON.parse(ranking);
-        console.log('rankingArr', ranking);
         for (let i = 0; i < rankingArr.length; i++) {
           const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
           await Ranking.create({
@@ -247,7 +246,7 @@ module.exports = {
             candidate,
             rank,
             isIncumbent,
-            userState: user.shortState
+            userState: user.shortState,
           });
         }
       }

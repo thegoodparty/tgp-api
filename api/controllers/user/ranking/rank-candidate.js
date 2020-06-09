@@ -25,6 +25,13 @@ module.exports = {
       type: 'string',
     },
 
+    state: {
+      description: 'State for ranking',
+      example: 'ca',
+      required: false,
+      type: 'string',
+    },
+
     isIncumbent: {
       description: 'is the candidate an incumbent',
       example: false,
@@ -46,8 +53,8 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const reqUser = this.req.user;
-      const { rank, candidateId, chamber, isIncumbent } = inputs;
+      let reqUser = this.req.user;
+      const { rank, candidateId, chamber, state, isIncumbent } = inputs;
       // first make sure the user doesn't have that ranking already.
 
       const existingRanking = await Ranking.find({
@@ -60,6 +67,18 @@ module.exports = {
         return exits.badRequest({
           message: 'User already ranked this candidate',
         });
+      }
+      if (!reqUser.shortState || reqUser.shortState == '') {
+        if (state) {
+          reqUser = await User.updateOne({ id: req.user.id }).set({
+            shortState: state,
+          });
+        } else {
+          return exits.badRequest({
+            message: 'User is missing a state',
+            missingState: true,
+          });
+        }
       }
 
       await Ranking.create({
