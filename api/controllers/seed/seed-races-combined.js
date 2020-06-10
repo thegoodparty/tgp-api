@@ -69,10 +69,10 @@ const mapCand = csvRow => {
   const candName = name.split('(')[0].trim();
   let id;
   if (incumbentLinkHref) {
-    id = incumbentLinkHref.replace(
-      'https://www.opensecrets.org/members-of-congress/summary?cid=',
-      '',
-    );
+    const linkArr = incumbentLinkHref.split('?cid=');
+    if (linkArr && linkArr.length >0) {
+      id = linkArr[1];
+    }
   }
   const stateDistrict = districtHref.replace(
     'https://www.opensecrets.org/races/summary?cycle=2020&id=',
@@ -166,7 +166,7 @@ const createEntries = async rows => {
         smallContributions,
       } = row;
 
-      if (openSecretsId) {
+      if (openSecretsId && openSecretsId.length < 10) {
         // incumbent - save for later scraping.
         await IncumbentToScrape.create({ openSecretsId });
         await Incumbent.findOrCreate(
