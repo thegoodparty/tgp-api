@@ -77,10 +77,16 @@ const mapCand = csvRow => {
 
   const candidateHref = csvRow['candidate-href'];
   const candName = candidate.split('(')[0].trim();
-  const id = candidateHref.replace(
-    'https://www.opensecrets.org/2020-presidential-race/candidate?id=',
-    '',
-  );
+  // const id = candidateHref.replace(
+  //   'https://www.opensecrets.org/2020-presidential-race/candidate?id=',
+  //   '',
+  // );
+  let id;
+
+  const linkArr = candidateHref.split('?id=');
+  if (linkArr && linkArr.length > 0) {
+    id = linkArr[1];
+  }
   const image = csvRow['image-src'];
 
   let party;
