@@ -65,9 +65,11 @@ const mapResponse = items => {
             images.push(extractMediaFile(image));
           });
         }
+        const creatorPhoto = extractMediaFile(item.fields.creatorPhoto);
         mappedResponse.creatorsProjects.push({
           ...item.fields,
           images,
+          creatorPhoto,
           id: elementId,
         });
       } else if (itemId === 'presidentialCandidate') {
