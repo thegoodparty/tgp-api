@@ -109,11 +109,13 @@ module.exports = {
 
       let threshold = 38658139; // presidential
       const stateRecord = await State.findOne({ shortName: lowerState });
-
-      const congDistrict = await CongDistrict.findOne({
-        state: stateRecord.id,
-        code: district,
-      });
+      let congDistrict;
+      if (stateRecord) {
+        congDistrict = await CongDistrict.findOne({
+          state: stateRecord.id,
+          code: district,
+        });
+      }
       if (congDistrict) {
         threshold =
           Math.max(

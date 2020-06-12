@@ -1,5 +1,260 @@
 ZIPCode,Sequence,State,PrimaryCity,PrimaryCounty,District,ApproxPct
-00501,1,NY,Holtsville,Suffolk,1,100
-00544,1,NY,Holtsville,Suffolk,1,100
-00601,1,PR,Adjuntas,Adjuntas,98,98
-00601,1,PR,Adjuntas1,Adjuntas1,97,2
+89834,1,NV,Tuscarora,Elko,2,100
+89835,1,NV,Wells,Elko,2,100
+89883,1,NV,West Wendover,Elko,2,100
+90001,1,CA,Los Angeles,Los Angeles,40,88
+90001,2,CA,Los Angeles,Los Angeles,44,7
+90001,3,CA,Los Angeles,Los Angeles,43,5
+90002,1,CA,Los Angeles,Los Angeles,44,78
+90002,2,CA,Los Angeles,Los Angeles,43,21
+90002,3,CA,Los Angeles,Los Angeles,40,1
+90003,1,CA,Los Angeles,Los Angeles,43,55
+90003,2,CA,Los Angeles,Los Angeles,40,37
+90003,3,CA,Los Angeles,Los Angeles,37,8
+90004,1,CA,Los Angeles,Los Angeles,34,75
+90004,2,CA,Los Angeles,Los Angeles,28,21
+90004,3,CA,Los Angeles,Los Angeles,33,4
+90005,1,CA,Los Angeles,Los Angeles,34,91
+90005,2,CA,Los Angeles,Los Angeles,37,7
+90005,3,CA,Los Angeles,Los Angeles,33,1
+90005,4,CA,Los Angeles,Los Angeles,28,1
+90006,1,CA,Los Angeles,Los Angeles,34,100
+90007,1,CA,Los Angeles,Los Angeles,37,94
+90007,2,CA,Los Angeles,Los Angeles,34,5
+90007,3,CA,Los Angeles,Los Angeles,40,1
+90008,1,CA,Los Angeles,Los Angeles,37,100
+90009,1,CA,Los Angeles,Los Angeles,43,100
+90010,1,CA,Los Angeles,Los Angeles,34,93
+90010,2,CA,Los Angeles,Los Angeles,33,6
+90010,3,CA,Los Angeles,Los Angeles,37,1
+90011,1,CA,Los Angeles,Los Angeles,40,99
+90011,2,CA,Los Angeles,Los Angeles,37,1
+90012,1,CA,Los Angeles,Los Angeles,34,97
+90012,2,CA,Los Angeles,Los Angeles,28,1
+90012,3,CA,Los Angeles,Los Angeles,27,1
+90012,4,CA,Los Angeles,Los Angeles,33,1
+90013,1,CA,Los Angeles,Los Angeles,34,100
+90014,1,CA,Los Angeles,Los Angeles,34,100
+90015,1,CA,Los Angeles,Los Angeles,34,87
+90015,2,CA,Los Angeles,Los Angeles,37,10
+90015,3,CA,Los Angeles,Los Angeles,40,1
+90015,4,CA,Los Angeles,Los Angeles,35,1
+90015,5,CA,Los Angeles,Los Angeles,44,1
+90016,1,CA,Los Angeles,Los Angeles,37,100
+90017,1,CA,Los Angeles,Los Angeles,34,100
+90018,1,CA,Los Angeles,Los Angeles,37,93
+90018,2,CA,Los Angeles,Los Angeles,34,6
+90018,3,CA,Los Angeles,Los Angeles,35,1
+90019,1,CA,Los Angeles,Los Angeles,37,79
+90019,2,CA,Los Angeles,Los Angeles,34,20
+90019,3,CA,Los Angeles,Los Angeles,40,1
+90020,1,CA,Los Angeles,Los Angeles,34,98
+90020,2,CA,Los Angeles,Los Angeles,33,2
+90021,1,CA,Los Angeles,Los Angeles,34,97
+90021,2,CA,Los Angeles,Los Angeles,40,3
+90022,1,CA,Los Angeles,Los Angeles,40,98
+90022,2,CA,Los Angeles,Los Angeles,38,1
+90022,3,CA,Los Angeles,Los Angeles,34,1
+90023,1,CA,Los Angeles,Los Angeles,34,73
+90023,2,CA,Los Angeles,Los Angeles,40,27
+90024,1,CA,Los Angeles,Los Angeles,33,83
+90024,2,CA,Los Angeles,Los Angeles,37,17
+90025,1,CA,Los Angeles,Los Angeles,37,88
+90025,2,CA,Los Angeles,Los Angeles,33,12
+90026,1,CA,Los Angeles,Los Angeles,28,68
+90026,2,CA,Los Angeles,Los Angeles,34,32
+90027,1,CA,Los Angeles,Los Angeles,28,100
+90028,1,CA,Los Angeles,Los Angeles,28,100
+90029,1,CA,Los Angeles,Los Angeles,28,99
+90029,2,CA,Los Angeles,Los Angeles,34,1
+90030,1,CA,Los Angeles,Los Angeles,34,100
+90031,1,CA,Los Angeles,Los Angeles,34,91
+90031,2,CA,Los Angeles,Los Angeles,28,9
+90032,1,CA,Los Angeles,Los Angeles,34,98
+90032,2,CA,Los Angeles,Los Angeles,28,1
+90032,3,CA,Los Angeles,Los Angeles,27,1
+90033,1,CA,Los Angeles,Los Angeles,34,98
+90033,2,CA,Los Angeles,Los Angeles,38,1
+90033,3,CA,Los Angeles,Los Angeles,32,1
+90034,1,CA,Los Angeles,Los Angeles,37,100
+90035,1,CA,Los Angeles,Los Angeles,37,99
+90035,2,CA,Los Angeles,Los Angeles,33,1
+90036,1,CA,Los Angeles,Los Angeles,33,81
+90036,2,CA,Los Angeles,Los Angeles,37,13
+90036,3,CA,Los Angeles,Los Angeles,28,6
+90037,1,CA,Los Angeles,Los Angeles,37,77
+90037,2,CA,Los Angeles,Los Angeles,40,23
+90038,1,CA,Los Angeles,Los Angeles,28,99
+90038,2,CA,Los Angeles,Los Angeles,34,1
+90039,1,CA,Los Angeles,Los Angeles,28,99
+90039,2,CA,Los Angeles,Los Angeles,34,1
+90040,1,CA,Los Angeles,Los Angeles,40,99
+90040,2,CA,Los Angeles,Los Angeles,38,1
+90041,1,CA,Los Angeles,Los Angeles,34,99
+90041,2,CA,Los Angeles,Los Angeles,28,1
+90042,1,CA,Los Angeles,Los Angeles,34,98
+90042,2,CA,Los Angeles,Los Angeles,28,1
+90042,3,CA,Los Angeles,Los Angeles,27,1
+90043,1,CA,Los Angeles,Los Angeles,37,99
+90043,2,CA,Los Angeles,Los Angeles,43,1
+90044,1,CA,Los Angeles,Los Angeles,43,60
+90044,2,CA,Los Angeles,Los Angeles,37,40
+90045,1,CA,Los Angeles,Los Angeles,43,98
+90045,2,CA,Los Angeles,Los Angeles,37,1
+90045,3,CA,Los Angeles,Los Angeles,33,1
+90046,1,CA,Los Angeles,Los Angeles,28,98
+90046,2,CA,Los Angeles,Los Angeles,33,1
+90046,3,CA,Los Angeles,Los Angeles,30,1
+90047,1,CA,Los Angeles,Los Angeles,43,54
+90047,2,CA,Los Angeles,Los Angeles,37,46
+90048,1,CA,Los Angeles,Los Angeles,33,82
+90048,2,CA,Los Angeles,Los Angeles,28,14
+90048,3,CA,Los Angeles,Los Angeles,37,4
+90049,1,CA,Los Angeles,Los Angeles,33,99
+90049,2,CA,Los Angeles,Los Angeles,30,1
+90050,1,CA,Los Angeles,Los Angeles,34,100
+90051,1,CA,Los Angeles,Los Angeles,34,100
+90052,1,CA,Los Angeles,Los Angeles,40,100
+90053,1,CA,Los Angeles,Los Angeles,34,100
+90054,1,CA,Los Angeles,Los Angeles,34,100
+90055,1,CA,Los Angeles,Los Angeles,34,100
+90056,1,CA,Los Angeles,Los Angeles,37,99
+90056,2,CA,Los Angeles,Los Angeles,43,1
+90057,1,CA,Los Angeles,Los Angeles,34,100
+90058,1,CA,Los Angeles,Los Angeles,40,94
+90058,2,CA,Los Angeles,Los Angeles,34,6
+90059,1,CA,Los Angeles,Los Angeles,44,86
+90059,2,CA,Los Angeles,Los Angeles,43,13
+90059,3,CA,Los Angeles,Los Angeles,37,1
+90060,1,CA,Los Angeles,Los Angeles,34,100
+90061,1,CA,Los Angeles,Los Angeles,44,54
+90061,2,CA,Los Angeles,Los Angeles,43,46
+90062,1,CA,Los Angeles,Los Angeles,37,100
+90063,1,CA,Los Angeles,Los Angeles,34,85
+90063,2,CA,Los Angeles,Los Angeles,40,14
+90063,3,CA,Los Angeles,Los Angeles,27,1
+90064,1,CA,Los Angeles,Los Angeles,37,92
+90064,2,CA,Los Angeles,Los Angeles,33,8
+90065,1,CA,Los Angeles,Los Angeles,34,97
+90065,2,CA,Los Angeles,Los Angeles,28,3
+90066,1,CA,Los Angeles,Los Angeles,37,97
+90066,2,CA,Los Angeles,Los Angeles,43,2
+90066,3,CA,Los Angeles,Los Angeles,33,1
+90067,1,CA,Los Angeles,Los Angeles,37,100
+90068,1,CA,Los Angeles,Los Angeles,28,96
+90068,2,CA,Los Angeles,Los Angeles,30,4
+90069,1,CA,West Hollywood,Los Angeles,28,99
+90069,2,CA,West Hollywood,Los Angeles,33,1
+90070,1,CA,Los Angeles,Los Angeles,34,100
+90071,1,CA,Los Angeles,Los Angeles,34,100
+90072,1,CA,Los Angeles,Los Angeles,28,100
+90073,1,CA,Los Angeles,Los Angeles,33,100
+90074,1,CA,Los Angeles,Los Angeles,34,100
+90075,1,CA,Los Angeles,Los Angeles,34,100
+90076,1,CA,Los Angeles,Los Angeles,34,100
+90077,1,CA,Los Angeles,Los Angeles,33,97
+90077,2,CA,Los Angeles,Los Angeles,30,3
+90078,1,CA,Los Angeles,Los Angeles,28,100
+90079,1,CA,Los Angeles,Los Angeles,34,94
+90079,2,CA,Los Angeles,Los Angeles,37,6
+90080,1,CA,Los Angeles,Los Angeles,43,100
+90081,1,CA,Los Angeles,Los Angeles,34,100
+90082,1,CA,Los Angeles,Los Angeles,37,100
+90083,1,CA,Los Angeles,Los Angeles,43,100
+90084,1,CA,Los Angeles,Los Angeles,34,100
+90086,1,CA,Los Angeles,Los Angeles,34,100
+90087,1,CA,Los Angeles,Los Angeles,34,100
+90088,1,CA,Los Angeles,Los Angeles,34,100
+90089,1,CA,Los Angeles,Los Angeles,37,80
+90089,2,CA,Los Angeles,Los Angeles,34,20
+90090,1,CA,Dodgertown,Los Angeles,34,100
+90091,1,CA,Los Angeles,Los Angeles,40,100
+90093,1,CA,Los Angeles,Los Angeles,28,100
+90094,1,CA,Playa Vista,Los Angeles,43,95
+90094,2,CA,Playa Vista,Los Angeles,33,5
+90095,1,CA,Los Angeles,Los Angeles,33,100
+90096,1,CA,Los Angeles,Los Angeles,34,100
+90099,1,CA,Los Angeles,Los Angeles,34,100
+90134,1,CA,Los Angeles,Los Angeles,43,100
+90189,1,CA,Los Angeles,Los Angeles,43,100
+90201,1,CA,Bell Gardens,Los Angeles,40,100
+90202,1,CA,Bell,Los Angeles,40,100
+90209,1,CA,Beverly Hills,Los Angeles,28,100
+90210,1,CA,Beverly Hills,Los Angeles,33,96
+90210,2,CA,Beverly Hills,Los Angeles,30,3
+90210,3,CA,Beverly Hills,Los Angeles,28,1
+90211,1,CA,Beverly Hills,Los Angeles,33,100
+90212,1,CA,Beverly Hills,Los Angeles,33,99
+90212,2,CA,Beverly Hills,Los Angeles,37,1
+90213,1,CA,Beverly Hills,Los Angeles,28,100
+90220,1,CA,Compton,Los Angeles,44,100
+90221,1,CA,Compton,Los Angeles,44,99
+90221,2,CA,Compton,Los Angeles,40,1
+90222,1,CA,Compton,Los Angeles,44,100
+90223,1,CA,Compton,Los Angeles,44,100
+90224,1,CA,Compton,Los Angeles,44,100
+90230,1,CA,Culver City,Los Angeles,37,99
+90230,2,CA,Culver City,Los Angeles,43,1
+90231,1,CA,Culver City,Los Angeles,37,100
+90232,1,CA,Culver City,Los Angeles,37,99
+90232,2,CA,Culver City,Los Angeles,33,1
+90233,1,CA,Culver City,Los Angeles,37,100
+90239,1,CA,Downey,Los Angeles,40,100
+90240,1,CA,Downey,Los Angeles,40,100
+90241,1,CA,Downey,Los Angeles,40,99
+90241,2,CA,Downey,Los Angeles,38,1
+90242,1,CA,Downey,Los Angeles,40,100
+90245,1,CA,El Segundo,Los Angeles,33,100
+90247,1,CA,Gardena,Los Angeles,43,100
+90248,1,CA,Gardena,Los Angeles,43,64
+90248,2,CA,Gardena,Los Angeles,44,36
+90249,1,CA,Gardena,Los Angeles,43,100
+90250,1,CA,Hawthorne,Los Angeles,43,99
+90250,2,CA,Hawthorne,Los Angeles,33,1
+90251,1,CA,Hawthorne,Los Angeles,43,100
+90254,1,CA,Hermosa Beach,Los Angeles,33,100
+90255,1,CA,Huntington Park,Los Angeles,40,94
+90255,2,CA,Huntington Park,Los Angeles,44,6
+90260,1,CA,Lawndale,Los Angeles,43,98
+90260,2,CA,Lawndale,Los Angeles,33,2
+90261,1,CA,Lawndale,Los Angeles,43,100
+90262,1,CA,Lynwood,Los Angeles,44,100
+90263,1,CA,Malibu,Los Angeles,33,100
+90264,1,CA,Malibu,Los Angeles,33,100
+90265,1,CA,Malibu,Los Angeles,33,95
+90265,2,CA,Malibu,Los Angeles,26,5
+90266,1,CA,Manhattan Beach,Los Angeles,33,100
+90267,1,CA,Manhattan Beach,Los Angeles,33,100
+90270,1,CA,Maywood,Los Angeles,40,100
+90272,1,CA,Pacific Palisades,Los Angeles,33,100
+90274,1,CA,Palos Verdes Peninsula,Los Angeles,33,100
+90275,1,CA,Rancho Palos Verdes,Los Angeles,33,100
+90277,1,CA,Redondo Beach,Los Angeles,33,100
+90278,1,CA,Redondo Beach,Los Angeles,33,100
+90280,1,CA,South Gate,Los Angeles,44,98
+90280,2,CA,South Gate,Los Angeles,40,2
+90290,1,CA,Topanga,Los Angeles,33,100
+90291,1,CA,Venice,Los Angeles,33,95
+90291,2,CA,Venice,Los Angeles,37,5
+90292,1,CA,Marina del Rey,Los Angeles,33,89
+90292,2,CA,Marina del Rey,Los Angeles,37,11
+90293,1,CA,Playa del Rey,Los Angeles,43,51
+90293,2,CA,Playa del Rey,Los Angeles,33,49
+90294,1,CA,Venice,Los Angeles,33,100
+90295,1,CA,Marina del Rey,Los Angeles,33,100
+90296,1,CA,Playa del Rey,Los Angeles,33,100
+90301,1,CA,Inglewood,Los Angeles,43,100
+90302,1,CA,Inglewood,Los Angeles,43,99
+90302,2,CA,Inglewood,Los Angeles,37,1
+90303,1,CA,Inglewood,Los Angeles,43,100
+90304,1,CA,Inglewood,Los Angeles,43,99
+90304,2,CA,Inglewood,Los Angeles,33,1
+90305,1,CA,Inglewood,Los Angeles,43,99
+90305,2,CA,Inglewood,Los Angeles,37,1
+90306,1,CA,Inglewood,Los Angeles,43,100
+90307,1,CA,Inglewood,Los Angeles,43,100
+90308,1,CA,Inglewood,Los Angeles,43,100
+90309,1,CA,Inglewood,Los Angeles,43,100
+90310,1,CA,Inglewood,Los Angeles,43,100
+90311,1,CA,Inglewood,Los Angeles,35,100
+90312,1,CA,Inglewood,Los Angeles,37,100

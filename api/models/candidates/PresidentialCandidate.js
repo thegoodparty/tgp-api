@@ -72,6 +72,10 @@ module.exports = {
       allowNull: true,
       defaultsTo: 99,
     },
+    blocName: {
+      type: 'string',
+      allowNull: true,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
