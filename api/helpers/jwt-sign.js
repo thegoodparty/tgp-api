@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-const ONE_DAY = 60 * 60 * 24;
 module.exports = {
   friendlyName: 'JWT Helper for creating JWT',
 
@@ -21,7 +20,7 @@ module.exports = {
         data: inputs.payload,
       },
       sails.config.custom.jwtSecret,
-      { expiresIn: ONE_DAY },
+      { expiresIn: '365 days' },
     );
 
     return exits.success(token);
