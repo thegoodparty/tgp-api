@@ -76,6 +76,22 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    facebook: {
+      type: 'string',
+      allowNull: true,
+    },
+    twitter: {
+      type: 'string',
+      allowNull: true,
+    },
+    website: {
+      type: 'string',
+      allowNull: true,
+    },
+    campaignWebsite: {
+      type: 'string',
+      allowNull: true,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

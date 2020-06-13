@@ -72,17 +72,6 @@ const mapResponse = items => {
           creatorPhoto,
           id: elementId,
         });
-      } else if (itemId === 'presidentialCandidate') {
-        if (!mappedResponse.presidentialCandidates) {
-          mappedResponse.presidentialCandidates = [];
-        }
-        mappedResponse.presidentialCandidates.push({
-          info: item.fields.info,
-          name: item.fields.name,
-          website: item.fields.website,
-          facebook: item.fields.facebook,
-          twitter: item.fields.twitter,
-        });
       }
     }
   });
