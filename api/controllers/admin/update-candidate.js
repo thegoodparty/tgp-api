@@ -32,7 +32,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id, updatedFields, chamber, isIncumbent } = inputs;
-      console.log(id, updatedFields, chamber, isIncumbent);
 
       let candidate;
       if (chamber === 'presidential') {

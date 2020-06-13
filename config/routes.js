@@ -70,6 +70,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-ballotpedia-manual-match':
     'seed/seed-ballotpedia-manual-match',
   'GET    /api/v1/seed/migrate-rankings': 'seed/temp-migrate-rankings',
+  'GET    /api/v1/seed/seed-bloc-name': 'seed/temp-seed-bloc-name',
 
   'GET    /api/v1/district/state': 'district/state',
   'GET    /api/v1/district/total-supporters': 'district/total-supporters',

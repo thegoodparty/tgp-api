@@ -86,6 +86,10 @@ module.exports = {
       type: 'boolean',
       allowNull: true,
     },
+    blocName: {
+      type: 'string',
+      allowNull: true,
+    },
   },
 
   customToJSON: function() {

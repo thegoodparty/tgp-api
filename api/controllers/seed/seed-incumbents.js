@@ -49,7 +49,7 @@ module.exports = {
 const mapCand = csvRow => {
   const { openSecretsId, reportDate, raised } = csvRow;
   const image = csvRow['image-src'];
-
+  console.log('csvRow', csvRow)
   return {
     openSecretsId,
     image,
@@ -60,7 +60,7 @@ const mapCand = csvRow => {
 
 const strNumToInt = strNum => {
   if (!strNum) {
-    return strNum;
+    return 0;
   }
   return parseInt(strNum.replace('$', '').replace(/,/g, ''), 10);
 };
