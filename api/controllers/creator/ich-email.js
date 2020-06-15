@@ -50,7 +50,6 @@ module.exports = {
             friendlyName: 'userId',
             description: 'id of user',
             type: 'string',
-            required: true,
         }
     },
 
