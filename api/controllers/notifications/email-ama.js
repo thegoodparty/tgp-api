@@ -42,7 +42,7 @@ module.exports = {
         name,
         subject,
         messageHeader,
-        msgWithLineBreaks,
+        msgWithLineBreaks
       );
       return exits.success({
         message: 'Email Sent Successfully',

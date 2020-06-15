@@ -12,7 +12,6 @@ module.exports.routes = {
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
-
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/update': 'content/update',
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
@@ -92,4 +91,6 @@ module.exports.routes = {
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
   'POST    /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
+
+  'POST    /api/v1/creator/ich-email': 'creator/ich-email',
 };
