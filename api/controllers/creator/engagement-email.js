@@ -16,18 +16,6 @@ module.exports = {
             type: 'string',
             required: true,
         },
-        senderName: {
-            friendlyName: 'SenderName',
-            description: 'name of sender',
-            type: 'string',
-            required: true,
-        },
-        senderEmail: {
-            friendlyName: 'SenderEmail',
-            description: 'email of sender',
-            type: 'string',
-            required: true,
-        },
         creatorName: {
             friendlyName: 'creatorName',
             description: 'name of project creator',
@@ -45,11 +33,6 @@ module.exports = {
             description: 'name of project',
             type: 'string',
             required: true,
-        },
-        userId: {
-            friendlyName: 'userId',
-            description: 'id of user',
-            type: 'string',
         }
     },
 
@@ -66,17 +49,15 @@ module.exports = {
 
     fn: async function (inputs, exits) {
         try {
-            const { message, senderEmail, creatorName, creatorEmail, senderName, projectName, userId } = inputs;
-            const subject = `❤️ ${senderName} can help with ${projectName}`;
+            const reqUser = this.req.user;
+            const { message, creatorName, projectName, creatorEmail } = inputs;
+            const subject = `❤️ ${reqUser.name} can help with ${projectName}`;
             const messageHeader = '';
-            const email = creatorEmail;
-
-            const name = creatorName;
             const messageBody = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
                 <tr>
                 <td>
                     <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
-                        ${senderName} sent you a message
+                        ${reqUser.name} sent you a message
                     </h2>
                 </td>
                 </tr>
@@ -87,23 +68,31 @@ module.exports = {
                     </p>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <br/><br/><br/>
+                        <a href="mailto:${reqUser.email}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                        Reply to ${reqUser.name}                      
+                        </a>
+                    </td>
+                </tr>
             </table>`;
             const ccEmail = 'creators@thegoodparty.org';
-            const toEmail = `${senderName} <${senderEmail}>`;
+            const fromEmail = 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>';
             await sails.helpers.mailgunSender(
-                email,
-                name,
+                creatorEmail,
+                creatorName,
                 subject,
                 messageHeader,
                 messageBody,
-                toEmail,
+                fromEmail,
                 ccEmail
             );
             return exits.success({
                 message: 'Email Sent Successfully',
             });
         } catch (err) {
-            console.log('email sent error');
+            console.log('creators email sent error');
             console.log(err);
             return exits.badRequest({
                 message: 'Content fetch failed. Please load again.',

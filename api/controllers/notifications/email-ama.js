@@ -29,7 +29,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { message } = inputs;
       const subject = 'Ama Form Sent';
@@ -42,7 +42,7 @@ module.exports = {
         name,
         subject,
         messageHeader,
-        msgWithLineBreaks
+        msgWithLineBreaks,
       );
       return exits.success({
         message: 'Email Sent Successfully',
