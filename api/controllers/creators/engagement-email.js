@@ -1,11 +1,11 @@
 /**
- * creator/ich-email.js
+ * creators/engagement-email.js
  *
  * @description :: Sends and email to stakeholders when user submits a form.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 module.exports = {
-    friendlyName: 'I CAN HELP Email',
+    friendlyName: 'Engagement Email',
 
     description: 'Send email when a user submits a form for project on I CAN HELP Modal',
 
