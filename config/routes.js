@@ -92,5 +92,5 @@ module.exports.routes = {
 
   'POST    /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
 
-  'POST    /api/v1/creator/engagement-email': 'creators/engagement-email',
+  'POST    /api/v1/creators/engagement-email': 'creators/engagement-email',
 };
