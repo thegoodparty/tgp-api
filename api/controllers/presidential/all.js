@@ -18,6 +18,16 @@ module.exports = {
       required: false,
       example: 'ca',
     },
+    state: {
+      type: 'string',
+      required: false,
+      example: 'ca',
+    },
+    zip: {
+      type: 'string',
+      required: false,
+      example: '90210',
+    },
   },
 
   exits: {
@@ -33,7 +43,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { userState } = inputs;
+      const { userState, state, zip } = inputs;
       const candidates = await PresidentialCandidate.find({
         isActive: true,
       }).sort([{ isIncumbent: 'DESC' }, { order: 'ASC' }]);
@@ -83,7 +93,14 @@ module.exports = {
         }
       }
       let threshold = 38658139;
-      if (userState) {
+      if (state) {
+        threshold = votesThreshold[state];
+      } else if (zip) {
+        const zipRecord = await ZipCode.findOne({ zip });
+        if (zipRecord) {
+          threshold = votesThreshold[zipRecord.stateShort];
+        }
+      } else if (userState) {
         threshold = votesThreshold[userState];
       }
 
