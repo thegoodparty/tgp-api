@@ -87,6 +87,7 @@ module.exports = {
         candidate: candidateId,
         rank,
         userState: reqUser.shortState,
+        isIncumbent,
       });
 
       const ranking = await Ranking.find({ user: reqUser.id });
