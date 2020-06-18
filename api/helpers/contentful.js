@@ -27,6 +27,8 @@ module.exports = {
   },
 };
 
+const faqsOrder = [];
+const faqsOrderHash = {};
 const mapResponse = items => {
   const mappedResponse = {};
   // console.log(JSON.stringify(items));
@@ -42,6 +44,12 @@ const mapResponse = items => {
           ...item.fields,
           id: elementId,
         });
+      } else if (itemId === 'faqOrder') {
+        const faqOrder = item.fields.faqArticle;
+        faqOrder.forEach(article => {
+          faqsOrder.push(article.sys.id);
+        });
+        // mappedResponse.faqOrder = order;
       } else if (itemId === 'event') {
         if (!mappedResponse.events) {
           mappedResponse.events = [];
@@ -78,6 +86,11 @@ const mapResponse = items => {
   // need to order the event chronologically and separate the past events.
   mappedResponse.events.sort(compareEvents);
   splitPastEvents(mappedResponse);
+  // need to sort faqArticles by the sortOrder.
+  faqsOrder.map((id, index) => {
+    faqsOrderHash[id] = index +1;
+  });
+  mappedResponse.faqArticles.sort(compareArticles);
   return mappedResponse;
 };
 
@@ -146,6 +159,18 @@ const compareEvents = (a, b) => {
     return 1;
   }
   if (dateA < dateB) {
+    return -1;
+  }
+  return 0;
+};
+
+const compareArticles = (a, b) => {
+  const orderA = faqsOrderHash[a.id] || 9999;
+  const orderB = faqsOrderHash[b.id] || 9999;
+  if (orderA > orderB) {
+    return 1;
+  }
+  if (orderA < orderB) {
     return -1;
   }
   return 0;
