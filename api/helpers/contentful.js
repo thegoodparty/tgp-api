@@ -88,7 +88,7 @@ const mapResponse = items => {
   splitPastEvents(mappedResponse);
   // need to sort faqArticles by the sortOrder.
   faqsOrder.map((id, index) => {
-    faqsOrderHash[id] = index +1;
+    faqsOrderHash[id] = index + 1;
   });
   mappedResponse.faqArticles.sort(compareArticles);
   return mappedResponse;
@@ -156,10 +156,10 @@ const compareEvents = (a, b) => {
   const dateA = new Date(a.dateAndTime);
   const dateB = new Date(b.dateAndTime);
   if (dateA > dateB) {
-    return 1;
+    return -1;
   }
   if (dateA < dateB) {
-    return -1;
+    return 1;
   }
   return 0;
 };
