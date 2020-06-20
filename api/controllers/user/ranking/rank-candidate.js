@@ -56,7 +56,6 @@ module.exports = {
       let reqUser = this.req.user;
       const { rank, candidateId, chamber, state, isIncumbent } = inputs;
       // first make sure the user doesn't have that ranking already.
-
       const existingRanking = await Ranking.find({
         user: reqUser.id,
         chamber,
@@ -70,7 +69,7 @@ module.exports = {
       }
       if (!reqUser.shortState || reqUser.shortState == '') {
         if (state) {
-          reqUser = await User.updateOne({ id: req.user.id }).set({
+          reqUser = await User.updateOne({ id: reqUser.id }).set({
             shortState: state,
           });
         } else {
@@ -80,17 +79,16 @@ module.exports = {
           });
         }
       }
-
       await Ranking.create({
         user: reqUser.id,
         chamber,
         candidate: candidateId,
         rank,
         userState: reqUser.shortState,
+        isIncumbent,
       });
 
       const ranking = await Ranking.find({ user: reqUser.id });
-
       return exits.success({
         ranking,
       });

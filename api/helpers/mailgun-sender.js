@@ -90,11 +90,8 @@ const html = (msg, messageHeader, subject) => {
               <table cellspacing="0" cellpadding="0" border="0" bgcolor="#EFEFEF" width="100%" style="max-width: 660px; background: #EFEFEF center center; background-size: cover;"
                 align="center">
                 <tr>
-                  <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
-                </tr>
-                <tr>
-                  <td  height="40"
-                    style="font-size: 76px; line-height: 76px; padding:12px 0;"><img
+                  <td  height="42"
+                    style="font-size: 42px; line-height: 42px;"><img
                     src="https://assets.thegoodparty.org/heart.png" height="42" width="53" alt="TGP" style="margin-left: 12px;" /></td>
                 </tr>
                 <tr>
