@@ -104,6 +104,13 @@ module.exports = {
         threshold = votesThreshold[userState];
       }
 
+      let electors = 270;
+      if (state) {
+        ({ electors } = await sails.helpers.electorsByStateHelper(state));
+      } else if (userState) {
+        ({ electors } = await sails.helpers.electorsByStateHelper(userState));
+      }
+
       return exits.success({
         presidential: {
           good,
@@ -111,6 +118,7 @@ module.exports = {
           unknown,
           topRank,
           threshold,
+          electors,
         },
       });
     } catch (e) {
