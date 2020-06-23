@@ -93,9 +93,12 @@ module.exports = {
         });
       }
     } catch (e) {
-      return exits.badRequest({
-        message: 'Error evaluating goodness',
-      });
+      console.log('error at goodness helper', e);
+      return false;
+      //
+      // return exits.badRequest({
+      //   message: 'Error evaluating goodness',
+      // });
     }
   },
 };
