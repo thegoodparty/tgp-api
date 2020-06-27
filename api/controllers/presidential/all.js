@@ -93,22 +93,26 @@ module.exports = {
         }
       }
       let threshold = 38658139;
+      let resolvedState;
       if (state) {
-        threshold = votesThreshold[state];
+        resolvedState = state;
       } else if (zip) {
         const zipRecord = await ZipCode.findOne({ zip });
         if (zipRecord) {
-          threshold = votesThreshold[zipRecord.stateShort];
+          resolvedState = zipRecord.stateShort;
         }
       } else if (userState) {
-        threshold = votesThreshold[userState];
+        resolvedState = userState;
+      }
+      if (resolvedState) {
+        threshold = votesThreshold[resolvedState];
       }
 
       let electors = 270;
-      if (state) {
-        ({ electors } = await sails.helpers.electorsByStateHelper(state));
-      } else if (userState) {
-        ({ electors } = await sails.helpers.electorsByStateHelper(userState));
+      if (resolvedState) {
+        ({ electors } = await sails.helpers.electorsByStateHelper(
+          resolvedState,
+        ));
       }
 
       return exits.success({
