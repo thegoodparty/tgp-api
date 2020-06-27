@@ -57,6 +57,13 @@ module.exports = {
             isMajor: false,
           });
         }
+        if (isAligned === 'no') {
+          return exits.success({
+            isGood: false,
+            isBigMoney: false,
+            isMajor: false,
+          });
+        }
         return exits.success({
           isGood: null,
           isBigMoney: false,
