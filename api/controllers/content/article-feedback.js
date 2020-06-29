@@ -14,17 +14,21 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    uuid: {
+      type: 'string',
+      required: true,
+    },
     title: {
       type: 'string',
       required: true,
     },
-    feedback: {
+    isHelpful: {
       type: 'boolean',
       required: true,
     },
-    uuid: {
+    feedback: {
       type: 'string',
-      required: true,
+      required: false,
     },
   },
 
@@ -41,7 +45,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, uuid, title, feedback } = inputs;
+      const { id, uuid, title, isHelpful, feedback } = inputs;
       const dbFeedback = await HelpfulArticle.findOrCreate(
         {
           cmsId: id,
@@ -50,13 +54,47 @@ module.exports = {
         {
           cmsId: id,
           uuid,
-          isHelpful: feedback,
+          isHelpful,
+          feedback,
         },
       );
 
       await HelpfulArticle.updateOne({ id: dbFeedback.id }).set({
-        isHelpful: feedback,
+        isHelpful,
+        feedback,
       });
+
+      const message = {
+        text: `Article Feedback`,
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `__________________________________ \n *Article Feedback* \n <https://thegoodparty.org/party?article=48a7xazZc0eN4PXM20Jtel|${title}>`,
+            },
+          },
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `Was it helpful? ${isHelpful ? '*YES*' : '*No*'}`,
+            },
+          },
+        ],
+      };
+
+      if (feedback) {
+        message.blocks.push({
+          type: 'section',
+          text: {
+            type: 'mrkdwn',
+            text: `Feedback: ${feedback}`,
+          },
+        });
+      }
+
+      await sails.helpers.slackHelper(message);
 
       return exits.success({
         message: 'Feedback Saved Successfully',

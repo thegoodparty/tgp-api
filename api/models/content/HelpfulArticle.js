@@ -27,5 +27,10 @@ module.exports = {
       required: true,
       description: 'was the article helpful',
     },
+    feedback: {
+      type: 'string',
+      required: false,
+      description: 'text feedback',
+    },
   },
 };
