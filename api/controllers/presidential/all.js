@@ -127,6 +127,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in finding presidential candidates', e);
+      await sails.helpers.errorLoggerHelper('Error at presidential/all', e);
       return exits.notFound();
     }
   },

@@ -103,6 +103,7 @@ module.exports = {
         message: 'Email Resent',
       });
     } catch (e) {
+      await sails.helpers.errorLoggerHelper('Error at entrance/resend-verify-email', e);
       console.log('email resent error', JSON.stringify(e));
       return exits.badRequest({ message: 'Error resending email' });
     }

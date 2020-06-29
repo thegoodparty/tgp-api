@@ -56,6 +56,7 @@ module.exports = {
     } catch (err) {
       console.log('zip to district error');
       console.log(err);
+      await sails.helpers.errorLoggerHelper('Error: zip to district', err);
       return exits.badRequest({ message: 'Zip code search failed' });
     }
   },

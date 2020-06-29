@@ -60,8 +60,9 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error seeding ballotpedia', e);
       return exits.badRequest({
-        message: 'Error getting candidates',
+        message: 'Error seeding ballotpedia',
       });
     }
   },

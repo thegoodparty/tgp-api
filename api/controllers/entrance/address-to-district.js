@@ -63,8 +63,9 @@ module.exports = {
         state: normalizedAddress ? normalizedAddress.state.toLowerCase() : '',
       });
     } catch (err) {
-      console.log('zip to district error');
+      console.log('address to district error');
       console.log(err);
+      await sails.helpers.errorLoggerHelper('Error: Address to District', err);
       return exits.badRequest({ message: 'Zip code search failed' });
     }
   },

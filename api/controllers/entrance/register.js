@@ -318,6 +318,7 @@ module.exports = {
         token,
       });
     } catch (e) {
+      await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
       console.log('register error', e);
       return exits.badRequest({ message: 'Error registering account.' });
     }

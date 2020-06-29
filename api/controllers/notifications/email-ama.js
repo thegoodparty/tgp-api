@@ -50,8 +50,9 @@ module.exports = {
     } catch (err) {
       console.log('email sent error');
       console.log(err);
+      await sails.helpers.errorLoggerHelper('Error at notifications/email-ama', e);
       return exits.badRequest({
-        message: 'Content fetch failed. Please load again.',
+        message: 'Error sending email',
       });
     }
   },

@@ -95,6 +95,7 @@ module.exports = {
     } catch (err) {
       console.log('login error');
       console.log(err);
+      await sails.helpers.errorLoggerHelper('Error at entrance/social-login', e);
       return exits.badRequest({
         message: 'Login Error',
       });

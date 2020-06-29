@@ -94,6 +94,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error at user/ranking/rank-candidate', e);
       return exits.badRequest({
         message: 'Error ranking candidate',
       });

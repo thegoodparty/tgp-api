@@ -41,6 +41,7 @@ module.exports = {
         incumbent,
       });
     } catch (e) {
+      await sails.helpers.errorLoggerHelper('Error at incumbent/find-by-district', e);
       console.log('Error in find by district', e);
       return exits.notFound();
     }

@@ -39,6 +39,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error seeding incumbents ', e);
       return exits.badRequest({
         message: 'Error getting candidates',
       });

@@ -59,6 +59,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error at user/ranking/detelet-rank-candidate', e);
       return exits.badRequest({
         message: 'Error deleting ranking',
       });

@@ -29,6 +29,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at user/ranking/user-ranking',
+        e,
+      );
       return exits.badRequest({
         message: 'Error getting ranking',
       });

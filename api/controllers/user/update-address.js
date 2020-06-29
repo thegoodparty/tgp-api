@@ -108,6 +108,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error saving address', e);
       return exits.badRequest({
         message: 'Error saving address',
       });

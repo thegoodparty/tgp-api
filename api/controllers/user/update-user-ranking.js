@@ -65,8 +65,9 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error updating user ranking', e);
       return exits.badRequest({
-        message: 'Error saving address',
+        message: 'Error updating user ranking',
       });
     }
   },

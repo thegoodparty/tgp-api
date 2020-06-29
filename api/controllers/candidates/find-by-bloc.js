@@ -89,6 +89,7 @@ module.exports = {
         name: candidate.name,
       });
     } catch (e) {
+      await sails.helpers.errorLoggerHelper('Error at candidates/find-by-bloc', e);
       console.log('Error in find by bloc', e);
       return exits.notFound();
     }

@@ -38,6 +38,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find presidnetial by id', e);
+      await sails.helpers.errorLoggerHelper('Error at presidential/find', e);
       return exits.notFound();
     }
   },

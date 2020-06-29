@@ -53,6 +53,7 @@ module.exports = {
     } catch (err) {
       console.log('content error');
       console.log(err);
+      await sails.helpers.errorLoggerHelper('Error at content/update', e);
       return exits.badRequest({
         message: 'Content fetch failed. Please load again.',
       });

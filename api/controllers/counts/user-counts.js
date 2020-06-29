@@ -88,6 +88,7 @@ module.exports = {
       });
     } catch (err) {
       console.log('error user counts');
+      await sails.helpers.errorLoggerHelper('Error at counts/user-counts', e);
       console.log(err);
       return exits.badRequest({ message: 'error user counts' });
     }

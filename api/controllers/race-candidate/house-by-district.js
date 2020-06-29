@@ -144,6 +144,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find house cand', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at race-candidates/house-by-district',
+        e,
+      );
       return exits.notFound();
     }
   },

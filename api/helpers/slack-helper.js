@@ -11,24 +11,58 @@ module.exports = {
       description: 'Message to send',
       type: 'json',
     },
+    channel: {
+      friendlyName: 'Channel to post to',
+      description: 'dev or content',
+      type: 'string',
+    },
+  },
+
+  exits: {
+    success: {
+      description: 'Feedback sent',
+      responseType: 'ok',
+    },
+    badRequest: {
+      description: 'Error sending feedback',
+      responseType: 'badRequest',
+    },
   },
 
   fn: async function(inputs, exits) {
     try {
-      const { message } = inputs;
-      const slackChannelId =
-        sails.config.custom.slackChannelId || sails.config.slackChannelId;
+      const { message, channel } = inputs;
+      let slackChannelId;
       const slackAppId =
         sails.config.custom.slackAppId || sails.config.slackAppId;
-      const slackAuthToken =
-        sails.config.custom.slackAuthToken || sails.config.slackAuthToken;
 
-      if (!slackChannelId || !slackAppId || !slackAuthToken) {
-        throw 'badRequest';
+      let token;
+      if (channel === 'dev') {
+        token =
+          sails.config.custom.slackDevChannelToken ||
+          sails.config.slackDevChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackDevChannelId ||
+          sails.config.slackDevChannelId;
+      } else {
+        token =
+          sails.config.custom.slackContentChannelToken ||
+          sails.config.slackContentChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackContentChannelId ||
+          sails.config.slackContentChannelId;
+      }
+
+      if (!slackChannelId || !slackAppId || !token) {
+        return exits.badRequest({
+          message: 'Missing Env Variables',
+        });
       }
 
       const options = {
-        uri: `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${slackAuthToken}`,
+        uri: `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${token}`,
         method: 'POST',
         json: true,
         body: message,
@@ -36,9 +70,12 @@ module.exports = {
 
       await request(options);
 
-      return exits.success({ message: 'slack message sent successfuly' });
+      return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
-      throw 'badRequest';
+      console.log(e);
+      return exits.badRequest({
+        message: 'Error sending Slack message',
+      });
     }
   },
 };

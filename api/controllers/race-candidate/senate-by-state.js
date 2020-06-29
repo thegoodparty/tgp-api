@@ -132,6 +132,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find senate by id', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at race-candidate/senate-by-district',
+        e,
+      );
       return exits.notFound();
     }
   },

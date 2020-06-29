@@ -37,8 +37,9 @@ module.exports = {
         crew,
       });
     } catch (e) {
-      console.log('error at user/recruited-by-user');
+      console.log('error at user/crew');
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error at user/crew', e);
       return exits.forbidden();
     }
   },

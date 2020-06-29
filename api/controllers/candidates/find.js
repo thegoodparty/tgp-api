@@ -107,6 +107,7 @@ module.exports = {
         rankingCount,
       });
     } catch (e) {
+      await sails.helpers.errorLoggerHelper('Error at candidates/find', e);
       console.log('Error in find candidate', e);
       return exits.notFound();
     }

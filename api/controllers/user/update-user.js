@@ -116,8 +116,9 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error updating user', e);
       return exits.badRequest({
-        message: 'Error saving address',
+        message: 'Error updating user',
       });
     }
   },

@@ -94,7 +94,7 @@ module.exports = {
         });
       }
 
-      await sails.helpers.slackHelper(message);
+      await sails.helpers.slackHelper(message, 'content');
 
       return exits.success({
         message: 'Feedback Saved Successfully',
@@ -102,6 +102,8 @@ module.exports = {
     } catch (err) {
       console.log('Error saving feedback');
       console.log(err);
+
+      await sails.helpers.errorLoggerHelper('Error saving feedback', err);
       return exits.badRequest({
         message: 'Error  saving feedback',
       });
