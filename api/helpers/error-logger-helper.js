@@ -21,7 +21,6 @@ module.exports = {
   exits: {
     success: {
       description: 'Error sent',
-      responseType: 'ok',
     },
   },
 

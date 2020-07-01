@@ -68,6 +68,7 @@ module.exports.routes = {
     'seed/seed-presidential-source',
   'GET    /api/v1/seed/seed-races-combined': 'seed/seed-races-combined',
   'GET    /api/v1/seed/seed-ballotpedia': 'seed/seed-ballotpedia',
+  'GET    /api/v1/seed/seed-howie-total': 'seed/seed-howie-total',
   'GET    /api/v1/seed/seed-ballotpedia-manual-match':
     'seed/seed-ballotpedia-manual-match',
   'GET    /api/v1/seed/migrate-rankings': 'seed/temp-migrate-rankings',

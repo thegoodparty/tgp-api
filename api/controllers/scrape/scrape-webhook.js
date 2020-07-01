@@ -13,7 +13,7 @@ module.exports = {
       type: 'number',
     },
     sitemap_name: {
-      description: 'Sitemap nape',
+      description: 'Sitemap name',
       example: 'presidential-race',
       required: true,
       type: 'string',
@@ -85,6 +85,10 @@ module.exports = {
           console.log('scrape: running ballotpedia 2nd run seed');
           request(`${prodBase}/seed/seed-ballotpedia?secondPass=true`);
           request(`${devBase}/seed/seed-ballotpedia?secondPass=true`);
+        } else if (sitemapName === 'Howie-FEC') {
+          console.log('scrape: running Howie-FEC seed');
+          request(`${prodBase}/seed/seed-howie-total`);
+          request(`${devBase}/seed/seed-howie-total`);
         }
         return exits.success({ message: 'ok' });
       }

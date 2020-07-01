@@ -21,11 +21,9 @@ module.exports = {
   exits: {
     success: {
       description: 'Feedback sent',
-      responseType: 'ok',
     },
     badRequest: {
       description: 'Error sending feedback',
-      responseType: 'badRequest',
     },
   },
 
