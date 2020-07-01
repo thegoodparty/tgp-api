@@ -42,6 +42,15 @@ module.exports = {
         });
       }
       const districtResponse = await civicApiDistrict(address);
+      if (!districtResponse) {
+        await sails.helpers.errorLoggerHelper(
+          'Error: error getting civicApiDistrict',
+          { address },
+        );
+        return exits.badRequest({
+          message: 'Error getting address',
+        });
+      }
       const { divisions, normalizedAddress } = districtResponse;
 
       if (!divisions || !divisions.country || divisions.country.code !== 'us') {
@@ -99,5 +108,6 @@ const civicApiDistrict = async address => {
     return district;
   } catch (err) {
     console.log(err);
+    await sails.helpers.errorLoggerHelper('Error: error civicApiDistrict', err);
   }
 };
