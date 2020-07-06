@@ -41,7 +41,7 @@ module.exports = {
         party: 'I',
         image: 'https://assets.thegoodparty.org/candidates/unity2020.svg',
         combinedRaised: 100,
-        smallContributions: 100,
+        smallContributions: 10,
         campaignReportDate: '',
         outsideReportDate: '',
         isActive: true,
