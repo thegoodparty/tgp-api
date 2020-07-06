@@ -18,20 +18,37 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      // await PresidentialCandidate.create({
+      //   openSecretsId: '123',
+      //   name: 'Jo Jorgensen',
+      //   party: 'LP',
+      //   image: 'http://assets.thegoodparty.org/candidates/jorgenson.jpg',
+      //   combinedRaised: 22365,
+      //   smallContributions: 0,
+      //   campaignReportDate: 'March 31, 2020',
+      //   outsideReportDate: 'March 31, 2020',
+      //   isActive: true,
+      //   isApproved: false,
+      //   isAligned: 'yes',
+      //   isCertified: false,
+      //   source: 'https://www.fec.gov/data/candidate/P00013524/',
+      //   isIncumbent: false,
+      // });
+
       await PresidentialCandidate.create({
-        openSecretsId: '123',
-        name: 'Jo Jorgensen',
-        party: 'LP',
-        image: 'http://assets.thegoodparty.org/candidates/jorgenson.jpg',
-        combinedRaised: 22365,
+        openSecretsId: '234',
+        name: 'Unity 2020',
+        party: '',
+        image: 'https://assets.thegoodparty.org/candidates/unity2020.svg',
+        combinedRaised: 0,
         smallContributions: 0,
-        campaignReportDate: 'March 31, 2020',
-        outsideReportDate: 'March 31, 2020',
+        campaignReportDate: 'June 31, 2020',
+        outsideReportDate: 'June 31, 2020',
         isActive: true,
         isApproved: false,
         isAligned: 'yes',
         isCertified: false,
-        source: 'https://www.fec.gov/data/candidate/P00013524/',
+        source: '',
         isIncumbent: false,
       });
       return exits.success({

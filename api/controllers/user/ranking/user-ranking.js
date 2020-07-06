@@ -19,7 +19,11 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-
+      if (!reqUser) {
+        return exits.badRequest({
+          message: 'Error getting ranking',
+        });
+      }
       const ranking = await Ranking.find({
         user: reqUser.id,
       });
