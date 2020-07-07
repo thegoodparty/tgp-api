@@ -40,9 +40,6 @@ module.exports = {
       let district;
       if (!stateDistrict) {
         chamber = 'presidential';
-        if (lastName === 'Bernie') {
-          lastName = 'Sanders';
-        }
       } else if (stateDistrict.length === 2) {
         chamber = 'senate';
         state = stateDistrict;
@@ -54,28 +51,45 @@ module.exports = {
           10,
         );
       }
-      if(state){
+      if (state) {
         state = state.toLowerCase();
       }
       let candidate;
-      let criteria = {
+      let blocCriteria = {
+        blocName: lastName,
+        isActive: true,
+      };
+      let nameCriteria = {
         name: { contains: lastName },
         isActive: true,
       };
       if (chamber === 'presidential') {
-        candidate = await PresidentialCandidate.findOne(criteria);
+        candidate = await PresidentialCandidate.findOne(blocCriteria);
+        if (!candidate) {
+          candidate = await PresidentialCandidate.findOne(nameCriteria);
+        }
       } else {
         const upperChamber = chamber.charAt(0).toUpperCase() + chamber.slice(1);
-        criteria.chamber = upperChamber;
-        criteria.state = state;
+        nameCriteria.chamber = upperChamber;
+        nameCriteria.state = state;
         if (district) {
-          criteria.district = district;
+          nameCriteria.district = district;
+          blocCriteria.district = district;
         }
-        candidate = await RaceCandidate.findOne(criteria);
+        blocCriteria.chamber = upperChamber;
+        blocCriteria.state = state;
+
+        candidate = await RaceCandidate.findOne(blocCriteria);
         if (!candidate) {
-          candidate = await Incumbent.findOne(criteria);
-          if (candidate) {
-            candidate.isIncumbent = true;
+          candidate = await Incumbent.findOne(blocCriteria);
+          if (!candidate) {
+            candidate = await RaceCandidate.findOne(nameCriteria);
+            if (!candidate) {
+              candidate = await Incumbent.findOne(nameCriteria);
+              if (candidate) {
+                candidate.isIncumbent = true;
+              }
+            }
           }
         }
       }
@@ -89,7 +103,10 @@ module.exports = {
         name: candidate.name,
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at candidates/find-by-bloc', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at candidates/find-by-bloc',
+        e,
+      );
       console.log('Error in find by bloc', e);
       return exits.notFound();
     }

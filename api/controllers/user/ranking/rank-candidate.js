@@ -56,6 +56,11 @@ module.exports = {
       let reqUser = this.req.user;
       const { rank, candidateId, chamber, state, isIncumbent } = inputs;
       // first make sure the user doesn't have that ranking already.
+      if (!reqUser) {
+        return exits.badRequest({
+          message: 'Missing User',
+        });
+      }
       const existingRanking = await Ranking.find({
         user: reqUser.id,
         chamber,
@@ -94,7 +99,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at user/ranking/rank-candidate', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at user/ranking/rank-candidate',
+        e,
+      );
       return exits.badRequest({
         message: 'Error ranking candidate',
       });
