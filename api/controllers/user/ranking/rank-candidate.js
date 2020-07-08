@@ -120,7 +120,7 @@ const sendRankingEmail = async (candidate, user) => {
   let shareBloc = candidate.blocName;
   let asChamber;
   if (!candidate.chamber) {
-    asChamber = 'U.S President';
+    asChamber = 'U.S. President';
   } else if (candidate.chamber === 'senate') {
     asChamber = `${candidate.state.toUpperCase()} Senator`;
     shareBloc += `-${candidate.state.toUpperCase()}`;
@@ -150,25 +150,31 @@ const sendRankingEmail = async (candidate, user) => {
                       <tr>
                         <td>
                             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                              Thank you for joining #${candidate.blocName} to see if we can get ${candidate.name} elected as ${asChamber}. 
+                              Thank you for joining <strong>#${
+                                candidate.blocName
+                              }</strong> to see if we can get <strong>${
+    candidate.name
+  }</strong> elected as <strong>${asChamber}</strong>. 
                               <br/>
                               <br/>
-                              We will let you know how this race progresses, and if we can get enough supporters to have a shot at winning!  
-                              In the meanwhile, please help spread the word and support this campaign.
+                              We will let you know how this race progresses.  
+                              In the meanwhile please help spread the word and grow support for this campaign.
                               <br/><br/>
                               Share this link with friends to grow support: 
                               <a href="${shareLink}">${shareLink}</a>
                             </p>
                          </td>
                       </tr>
-                      <tr>
+                      ${candidate.website &&
+                        `<tr>
                         <td>
                           <br/><br/><br/>
-                          <a href="${shareLink}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
-                            Visit Campaign Website                             
+                          <a href="${candidate.website}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                            Visit ${candidate.name} Campaign Website                             
                           </a>
                         </td>
-                      </tr>
+                      </tr>`}
+                      
                     </table>`;
   const messageHeader = '';
   await sails.helpers.mailgunSender(
