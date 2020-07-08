@@ -135,15 +135,15 @@ const sendRankingEmail = async (candidate, user) => {
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
                       <tr>
                         <td>
-                          <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
-                            Hi ${firstName}
+                          <h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
+                            You joined #${candidate.blocName} on the Good Party
                           </h2>
                         </td>
                       </tr>
                       <tr>
                         <td>
                           <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                            Hi ${firstName}!,<br/> <br>
+                            Hi ${firstName},<br/> <br>
                           </p>
                         </td>
                       </tr>
