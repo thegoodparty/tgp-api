@@ -115,7 +115,6 @@ module.exports = {
 
 const sendRankingEmail = async (candidate, user) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
-  console.log('candidate', candidate);
   const subject = `You joined #${candidate.blocName} on the Good Party`;
   const firstName = user.name.split(' ')[0];
   let shareBloc = candidate.blocName;
