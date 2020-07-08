@@ -33,6 +33,9 @@ module.exports = async function(req, res, next) {
     // if (!userRecord.isEmailVerified) {
     //   return res.status(401).json({ err: 'Phone is not verified' });
     // }
+    if(!userRecord){
+      return res.status(401).json({ err: 'Invalid token' });
+    }
     req.user = userRecord;
     return next();
   } catch (err) {

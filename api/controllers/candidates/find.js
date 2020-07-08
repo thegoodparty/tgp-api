@@ -4,6 +4,8 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
+const votesThreshold = require('../../../data/presidentialThreshold');
+
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',
 
@@ -22,6 +24,10 @@ module.exports = {
       type: 'boolean',
       required: true,
     },
+    userState: {
+      type: 'string',
+      required: false,
+    },
   },
 
   exits: {
@@ -37,7 +43,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, chamber, isIncumbent } = inputs;
+      const { id, chamber, isIncumbent, userState } = inputs;
       let candidate;
 
       if (chamber === 'presidential') {
@@ -102,9 +108,41 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
 
+      let votesNeeded;
+      if (chamber === 'presidential') {
+        if (userState) {
+          votesNeeded = votesThreshold[userState];
+        } else {
+          votesNeeded = 38658139;
+        }
+      } else if (chamber === 'senate') {
+        const stateRecord = await State.findOne({ shortName: candidate.state });
+        if (stateRecord) {
+          votesNeeded =
+            Math.max(
+              stateRecord.writeInThreshold,
+              stateRecord.writeInThresholdWithPresident,
+            ) + 1;
+        }
+      } else {
+        const stateRecord = await State.findOne({ shortName: candidate.state });
+        const congDistrict = await CongDistrict.findOne({
+          state: stateRecord.id,
+          code: candidate.district,
+        });
+        if (congDistrict) {
+          votesNeeded =
+            Math.max(
+              congDistrict.writeInThreshold,
+              congDistrict.writeInThresholdWithPresident,
+            ) + 1;
+        }
+      }
+
       return exits.success({
         ...candidate,
         rankingCount,
+        votesNeeded,
       });
     } catch (e) {
       await sails.helpers.errorLoggerHelper('Error at candidates/find', e);
