@@ -55,7 +55,9 @@ module.exports = {
             id,
             chamber: upperChamber,
           });
-          candidate.isIncumbent = true;
+          if (candidate) {
+            candidate.isIncumbent = true;
+          }
         } else {
           candidate = await RaceCandidate.findOne({
             id,

@@ -56,11 +56,6 @@ module.exports = {
       let reqUser = this.req.user;
       const { rank, candidateId, chamber, state, isIncumbent } = inputs;
       // first make sure the user doesn't have that ranking already.
-      if (!reqUser) {
-        return exits.badRequest({
-          message: 'Missing User',
-        });
-      }
       const existingRanking = await Ranking.find({
         user: reqUser.id,
         chamber,
@@ -72,7 +67,7 @@ module.exports = {
           message: 'User already ranked this candidate',
         });
       }
-      if (!reqUser.shortState || reqUser.shortState == '') {
+      if (!reqUser.shortState || reqUser.shortState === '') {
         if (state) {
           reqUser = await User.updateOne({ id: reqUser.id }).set({
             shortState: state,
@@ -92,6 +87,14 @@ module.exports = {
         userState: reqUser.shortState,
         isIncumbent,
       });
+      const { candidate } = await sails.helpers.candidateFinder(
+        candidateId,
+        chamber,
+        isIncumbent,
+      );
+      if (candidate && reqUser) {
+        await sendRankingEmail(candidate, reqUser);
+      }
 
       const ranking = await Ranking.find({ user: reqUser.id });
       return exits.success({
@@ -108,4 +111,72 @@ module.exports = {
       });
     }
   },
+};
+
+const sendRankingEmail = async (candidate, user) => {
+  const appBase = sails.config.custom.appBase || sails.config.appBase;
+  console.log('candidate', candidate);
+  const subject = `You joined #${candidate.blocName} on the Good Party`;
+  const firstName = user.name.split(' ')[0];
+  let shareBloc = candidate.blocName;
+  let asChamber;
+  if (!candidate.chamber) {
+    asChamber = 'U.S President';
+  } else if (candidate.chamber === 'senate') {
+    asChamber = `${candidate.state.toUpperCase()} Senator`;
+    shareBloc += `-${candidate.state.toUpperCase()}`;
+  } else {
+    asChamber = `${candidate.state.toUpperCase()}-${
+      candidate.district
+    } Representative`;
+    shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
+  }
+  const shareLink = `${appBase}?u=${user.uuid}&b=${shareBloc}`;
+  const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+                      <tr>
+                        <td>
+                          <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
+                            Hi ${firstName}
+                          </h2>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+                            Hi ${firstName}!,<br/> <br>
+                          </p>
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td>
+                            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+                              Thank you for joining #${candidate.blocName} to see if we can get ${candidate.name} elected as ${asChamber}. 
+                              <br/>
+                              <br/>
+                              We will let you know how this race progresses, and if we can get enough supporters to have a shot at winning!  
+                              In the meanwhile, please help spread the word and support this campaign.
+                              <br/><br/>
+                              Share this link with friends to grow support: 
+                              <a href="${shareLink}">${shareLink}</a>
+                            </p>
+                         </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <br/><br/><br/>
+                          <a href="${shareLink}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                            Visit Campaign Website                             
+                          </a>
+                        </td>
+                      </tr>
+                    </table>`;
+  const messageHeader = '';
+  await sails.helpers.mailgunSender(
+    user.email,
+    user.name,
+    subject,
+    messageHeader,
+    message,
+  );
 };
