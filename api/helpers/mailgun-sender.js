@@ -63,7 +63,7 @@ module.exports = {
   },
 };
 
-const html = (msg, messageHeader, subject) => {
+const html = (msg='', messageHeader='', subject='') => {
   return `
 <style type="text/css">
   html, body {

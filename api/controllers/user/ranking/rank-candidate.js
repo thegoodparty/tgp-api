@@ -87,13 +87,25 @@ module.exports = {
         userState: reqUser.shortState,
         isIncumbent,
       });
-      const { candidate } = await sails.helpers.candidateFinder(
+      let { candidate } = await sails.helpers.candidateFinder(
         candidateId,
         chamber,
         isIncumbent,
       );
-      if (candidate && reqUser) {
-        await sendRankingEmail(candidate, reqUser);
+      if (!candidate && candidateId < 0) {
+        candidate = {
+          name: 'A Good Candidate',
+          chamber,
+          blocName: `GoodBloc-${state.toUpperCase()}${
+            chamber === 'house' ? candidateId * -1 : ''
+          }`,
+          district: candidateId * -1,
+          state,
+          isGoodBloc: true,
+        };
+      }
+      if (candidate) {
+        await sendRankingEmail(candidate, reqUser, candidateId, state);
       }
 
       const ranking = await Ranking.find({ user: reqUser.id });
@@ -123,18 +135,21 @@ const sendRankingEmail = async (candidate, user) => {
     asChamber = 'U.S. President';
   } else if (candidate.chamber === 'senate') {
     asChamber = `${candidate.state.toUpperCase()} Senator`;
-    shareBloc += `-${candidate.state.toUpperCase()}`;
+    if (!candidate.isGoodBloc) {
+      shareBloc += `-${candidate.state.toUpperCase()}`;
+    }
   } else {
     asChamber = `${candidate.state.toUpperCase()}-${
       candidate.district
     } Representative`;
-    shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
+    if (!candidate.isGoodBloc) {
+      shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
+    }
   }
   const shareLink = `${appBase}?u=${user.uuid}&b=${shareBloc}`;
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-                      <tr>
-                        <td>
-                          <h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
+                     <tr>
+                        <td><h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
                             You joined #${candidate.blocName} on the Good Party
                           </h2>
                         </td>
@@ -165,15 +180,18 @@ const sendRankingEmail = async (candidate, user) => {
                             </p>
                          </td>
                       </tr>
-                      ${candidate.website &&
-                        `<tr>
+                      ${
+                        candidate.website
+                          ? `<tr>
                         <td>
                           <br/><br/><br/>
                           <a href="${candidate.website}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
                             Visit ${candidate.name} Campaign Website                             
                           </a>
                         </td>
-                      </tr>`}
+                      </tr>`
+                          : ''
+                      }
                       
                     </table>`;
   const messageHeader = '';
