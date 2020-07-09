@@ -71,7 +71,7 @@ const mapCand = csvRow => {
   let id;
   if (incumbentLinkHref) {
     const linkArr = incumbentLinkHref.split('?cid=');
-    if (linkArr && linkArr.length >0) {
+    if (linkArr && linkArr.length > 0) {
       id = linkArr[1];
     }
   }
@@ -170,6 +170,7 @@ const createEntries = async rows => {
       if (openSecretsId && openSecretsId.length < 10) {
         // incumbent - save for later scraping.
         await IncumbentToScrape.create({ openSecretsId });
+        const prevRecord = await Incumbent.findOne({ openSecretsId });
         await Incumbent.findOrCreate(
           { openSecretsId },
           {
@@ -189,12 +190,13 @@ const createEntries = async rows => {
           name,
           state,
           district,
-          party,
+          party: prevRecord && prevRecord.party ? prevRecord.party : party,
           chamber,
           smallContributions,
           isActive: true,
         });
       } else {
+        const prevRecord = await RaceCandidate.findOne({ openSecretsId });
         const candidate = await RaceCandidate.findOrCreate(
           { uuid },
           {
@@ -207,6 +209,7 @@ const createEntries = async rows => {
           uuid,
         }).set({
           ...row,
+          party: prevRecord && prevRecord.party ? prevRecord.party : party,
           isActive: true,
         });
 
