@@ -234,21 +234,24 @@ module.exports = {
           guestReferrer: '',
         });
       }
-
-      // convert the guest ranking (from cookies) to actual ranking in our system.
-      if (ranking) {
-        const rankingArr = JSON.parse(ranking);
-        for (let i = 0; i < rankingArr.length; i++) {
-          const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
-          await Ranking.create({
-            user: user.id,
-            chamber,
-            candidate,
-            rank,
-            isIncumbent,
-            userState: user.shortState,
-          });
+      try {
+        // convert the guest ranking (from cookies) to actual ranking in our system.
+        if (ranking) {
+          const rankingArr = JSON.parse(ranking);
+          for (let i = 0; i < rankingArr.length; i++) {
+            const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
+            await Ranking.create({
+              user: user.id,
+              chamber,
+              candidate,
+              rank,
+              isIncumbent,
+              userState: user.shortState,
+            });
+          }
         }
+      } catch (e) {
+        // do nothing. Usually the error is for missing state.
       }
 
       const userWithZip = await User.findOne({ id: user.id });
