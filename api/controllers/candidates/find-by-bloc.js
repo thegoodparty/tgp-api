@@ -56,7 +56,7 @@ module.exports = {
       }
       let candidate;
       let blocCriteria = {
-        blocName: lastName,
+        blocName: nameBloc,
         isActive: true,
       };
       let nameCriteria = {
