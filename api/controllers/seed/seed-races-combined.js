@@ -196,7 +196,8 @@ const createEntries = async rows => {
           isActive: true,
         });
       } else {
-        const prevRecord = await RaceCandidate.findOne({ openSecretsId });
+
+        const prevRecord = await RaceCandidate.findOne({ uuid });
         const candidate = await RaceCandidate.findOrCreate(
           { uuid },
           {
