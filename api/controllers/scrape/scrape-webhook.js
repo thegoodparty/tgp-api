@@ -89,6 +89,10 @@ module.exports = {
           console.log('scrape: running Howie-FEC seed');
           request(`${prodBase}/seed/seed-howie-total`);
           request(`${devBase}/seed/seed-howie-total`);
+        } else if (sitemapName === 'twitter-followers') {
+          console.log('scrape: running twitter followers seed');
+          request(`${prodBase}/seed/seed-twitter-followers`);
+          request(`${devBase}/seed/seed-twitter-followers`);
         }
         return exits.success({ message: 'ok' });
       }
