@@ -72,8 +72,8 @@ module.exports = {
           isIncumbent: candidate.isIncumbent,
         });
         candidate.ranking = ranking;
-        if (ranking > topRank) {
-          topRank = ranking;
+        if (ranking + candidate.twitterFollowers > topRank) {
+          topRank = ranking + candidate.twitterFollowers;
         }
       }
 
@@ -85,8 +85,8 @@ module.exports = {
           isIncumbent: candidate.isIncumbent,
         });
         candidate.ranking = ranking;
-        if (ranking > topRank) {
-          topRank = ranking;
+        if (ranking + candidate.twitterFollowers > topRank) {
+          topRank = ranking + candidate.twitterFollowers;
         }
       }
 
