@@ -13,6 +13,9 @@ module.exports = {
     onlyNoData: {
       type: 'boolean',
     },
+    withPresidential: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -32,10 +35,18 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { onlyNoData } = inputs;
+      const { onlyNoData, withPresidential } = inputs;
 
       const where = { isActive: true };
-      const select = ['id', 'name', 'chamber', 'state', 'district', 'source'];
+      const select = [
+        'id',
+        'name',
+        'chamber',
+        'state',
+        'district',
+        'source',
+        'twitter',
+      ];
       if (onlyNoData) {
         where.source = null;
       }
@@ -53,8 +64,17 @@ module.exports = {
         select,
       });
 
+      let presidnetials = [];
+      if (withPresidential) {
+        presidnetials = await PresidentialCandidate.find({
+          where,
+          select: ['id', 'name', 'twitter', 'isIncumbent'],
+        });
+        presidnetials.forEach(cand => (cand.chamber = 'presidential'));
+      }
+
       return exits.success({
-        allCandidates: [...incumbents, ...candidates],
+        allCandidates: [...presidnetials, ...incumbents, ...candidates],
       });
     } catch (e) {
       console.log('Error in find race-cand by id', e);

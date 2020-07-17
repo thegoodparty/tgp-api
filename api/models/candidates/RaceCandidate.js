@@ -66,6 +66,11 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    twitterFollowers: {
+      type: 'number',
+      allowNull: true,
+      defaultsTo: 0,
+    },
     website: {
       type: 'string',
       allowNull: true,
