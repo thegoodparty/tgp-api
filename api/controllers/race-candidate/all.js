@@ -16,6 +16,9 @@ module.exports = {
     withPresidential: {
       type: 'boolean',
     },
+    withoutTwitter: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -35,7 +38,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { onlyNoData, withPresidential } = inputs;
+      const { onlyNoData, withPresidential, withoutTwitter } = inputs;
 
       const where = { isActive: true };
       const select = [
@@ -49,6 +52,9 @@ module.exports = {
       ];
       if (onlyNoData) {
         where.source = null;
+      }
+      if (withoutTwitter) {
+        where.twitter = null;
       }
       const incumbents = await Incumbent.find({
         where,
