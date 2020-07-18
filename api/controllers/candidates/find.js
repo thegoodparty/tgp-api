@@ -96,7 +96,7 @@ module.exports = {
         }
       }
 
-      const rankingCount = await Ranking.count({
+      let rankingCount = await Ranking.count({
         candidate: candidate.id,
         chamber,
         isIncumbent,
@@ -141,9 +141,10 @@ module.exports = {
         }
       }
 
+      const candidateCombinedRanking = _.omit(candidate, 'twitterFollowers');
       return exits.success({
-        ...candidate,
-        rankingCount,
+        ...candidateCombinedRanking,
+        rankingCount: rankingCount + candidate.twitterFollowers,
         votesNeeded,
       });
     } catch (e) {

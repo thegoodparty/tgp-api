@@ -55,6 +55,7 @@ module.exports = {
       let topRank = 0;
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
+        const candidateWithoutTwitter = _.omit(candidate, 'twitterFollowers');
         const twitterFollowers = candidate.twitterFollowers || 0;
         candidate.chamber = 'Presidential';
         const { isGood } = await sails.helpers.goodnessHelper(
@@ -69,14 +70,15 @@ module.exports = {
           if (ranking + twitterFollowers > topRank) {
             topRank = ranking + twitterFollowers;
           }
+
           good.push({
-            ...candidate,
+            ...candidateWithoutTwitter,
             isGood,
-            ranking,
+            ranking: ranking + twitterFollowers,
           });
         } else if (isGood === false) {
           notGood.push({
-            ...candidate,
+            ...candidateWithoutTwitter,
             isGood,
           });
         } else {
@@ -86,10 +88,11 @@ module.exports = {
           if (ranking + twitterFollowers > topRank) {
             topRank = ranking + twitterFollowers;
           }
+
           unknown.push({
-            ...candidate,
+            ...candidateWithoutTwitter,
             isGood,
-            ranking,
+            ranking: ranking + twitterFollowers,
           });
         }
       }
