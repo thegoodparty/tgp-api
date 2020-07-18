@@ -14,8 +14,9 @@ module.exports = {
     bloc: {
       type: 'string',
       required: true,
-      description: 'query from shared link in the form of ?b=SmithBloc-KY12.',
-      example: 'SmithBloc-KY12 or SmithBloc-KY or SmithBloc',
+      description:
+        'query from shared link in the form of ?b=SmithBloc-KY12. Can be also a twitter handler',
+      example: 'SmithBloc-KY12 or SmithBloc-KY or SmithBloc or @whatever',
     },
   },
 
@@ -51,6 +52,7 @@ module.exports = {
           10,
         );
       }
+      console.log('chamber', chamber);
       if (state) {
         state = state.toLowerCase();
       }
@@ -63,8 +65,16 @@ module.exports = {
         name: { contains: lastName },
         isActive: true,
       };
+      let twitterCriteria = {
+        twitter: { contains: nameBloc.replace('@', '') },
+        isActive: true,
+      };
       if (chamber === 'presidential') {
-        candidate = await PresidentialCandidate.findOne(blocCriteria);
+        console.log('twitter criteria', twitterCriteria);
+        candidate = await PresidentialCandidate.findOne(twitterCriteria);
+        if (!candidate) {
+          candidate = await PresidentialCandidate.findOne(blocCriteria);
+        }
         if (!candidate) {
           candidate = await PresidentialCandidate.findOne(nameCriteria);
         }
@@ -79,15 +89,21 @@ module.exports = {
         blocCriteria.chamber = upperChamber;
         blocCriteria.state = state;
 
-        candidate = await RaceCandidate.findOne(blocCriteria);
+        candidate = await RaceCandidate.findOne(twitterCriteria);
         if (!candidate) {
-          candidate = await Incumbent.findOne(blocCriteria);
+          candidate = await Incumbent.findOne(twitterCriteria);
           if (!candidate) {
-            candidate = await RaceCandidate.findOne(nameCriteria);
+            candidate = await RaceCandidate.findOne(blocCriteria);
             if (!candidate) {
-              candidate = await Incumbent.findOne(nameCriteria);
-              if (candidate) {
-                candidate.isIncumbent = true;
+              candidate = await Incumbent.findOne(blocCriteria);
+              if (!candidate) {
+                candidate = await RaceCandidate.findOne(nameCriteria);
+                if (!candidate) {
+                  candidate = await Incumbent.findOne(nameCriteria);
+                  if (candidate) {
+                    candidate.isIncumbent = true;
+                  }
+                }
               }
             }
           }
