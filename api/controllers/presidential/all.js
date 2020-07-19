@@ -12,18 +12,7 @@ module.exports = {
 
   description: 'Find all Presidential Candidates ',
 
-  inputs: {
-    state: {
-      type: 'string',
-      required: false,
-      example: 'ca',
-    },
-    zip: {
-      type: 'string',
-      required: false,
-      example: '90210',
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -38,7 +27,6 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { state, zip } = inputs;
       const candidates = await PresidentialCandidate.find({
         isActive: true,
       }).sort([{ isIncumbent: 'DESC' }, { order: 'ASC' }]);
@@ -91,20 +79,7 @@ module.exports = {
           });
         }
       }
-      let threshold = 38658139;
-      let resolvedState;
-      if (state) {
-        resolvedState = state;
-      } else if (zip) {
-        const zipRecord = await ZipCode.findOne({ zip });
-        if (zipRecord) {
-          resolvedState = zipRecord.stateShort;
-        }
-      }
-      if (resolvedState) {
-        threshold = votesThreshold[resolvedState];
-      }
-
+      const threshold = 38658139;
 
       return exits.success({
         presidential: {

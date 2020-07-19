@@ -24,10 +24,6 @@ module.exports = {
       type: 'boolean',
       required: true,
     },
-    userState: {
-      type: 'string',
-      required: false,
-    },
   },
 
   exits: {
@@ -43,7 +39,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, chamber, isIncumbent, userState } = inputs;
+      const { id, chamber, isIncumbent} = inputs;
       let candidate;
 
       if (chamber === 'presidential') {
@@ -112,11 +108,7 @@ module.exports = {
 
       let votesNeeded;
       if (chamber === 'presidential') {
-        if (userState) {
-          votesNeeded = votesThreshold[userState];
-        } else {
-          votesNeeded = 38658139;
-        }
+        votesNeeded = 38658139;
       } else if (chamber === 'senate') {
         const stateRecord = await State.findOne({ shortName: candidate.state });
         if (stateRecord) {
