@@ -13,11 +13,6 @@ module.exports = {
   description: 'Find all Presidential Candidates ',
 
   inputs: {
-    userState: {
-      type: 'string',
-      required: false,
-      example: 'ca',
-    },
     state: {
       type: 'string',
       required: false,
@@ -43,7 +38,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { userState, state, zip } = inputs;
+      const { state, zip } = inputs;
       const candidates = await PresidentialCandidate.find({
         isActive: true,
       }).sort([{ isIncumbent: 'DESC' }, { order: 'ASC' }]);
@@ -105,19 +100,11 @@ module.exports = {
         if (zipRecord) {
           resolvedState = zipRecord.stateShort;
         }
-      } else if (userState) {
-        resolvedState = userState;
       }
       if (resolvedState) {
         threshold = votesThreshold[resolvedState];
       }
 
-      let electors = 270;
-      if (resolvedState) {
-        ({ electors } = await sails.helpers.electorsByStateHelper(
-          resolvedState,
-        ));
-      }
 
       return exits.success({
         presidential: {
@@ -126,7 +113,6 @@ module.exports = {
           unknown,
           topRank,
           threshold,
-          electors,
         },
       });
     } catch (e) {
