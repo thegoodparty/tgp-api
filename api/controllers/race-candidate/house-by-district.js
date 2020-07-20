@@ -70,29 +70,31 @@ module.exports = {
       );
       let topRank = 0;
       for (let i = 0; i < sortedCandidates.candidates.good.length; i++) {
-        const candidate = sortedCandidates.candidates.good[i];
+        let candidate = sortedCandidates.candidates.good[i];
         const ranking = await Ranking.count({
           candidate: candidate.id,
           chamber: 'house',
           isIncumbent: candidate.isIncumbent,
         });
-        candidate.ranking = ranking;
+        candidate.ranking = ranking + candidate.twitterFollowers;
         if (ranking + candidate.twitterFollowers > topRank) {
           topRank = ranking + candidate.twitterFollowers;
         }
+        candidate = _.omit(candidate, 'twitterFollowers');
       }
 
       for (let i = 0; i < sortedCandidates.candidates.unknown.length; i++) {
-        const candidate = sortedCandidates.candidates.unknown[i];
+        let candidate = sortedCandidates.candidates.unknown[i];
         const ranking = await Ranking.count({
           candidate: candidate.id,
           chamber: 'house',
           isIncumbent: candidate.isIncumbent,
         });
-        candidate.ranking = ranking;
+        candidate.ranking = ranking + candidate.twitterFollowers;;
         if (ranking + candidate.twitterFollowers > topRank) {
           topRank = ranking + candidate.twitterFollowers;
         }
+        candidate = _.omit(candidate, 'twitterFollowers');
       }
 
       // if good is empty, check for empty bloc ranking
