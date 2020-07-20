@@ -150,6 +150,8 @@ const sendRankingEmail = async (candidate, user) => {
     }
   }
   const shareLink = `${appBase}?u=${user.uuid}&b=${shareBloc}`;
+  const twitterHandler = blocName.replace('@', '');
+  const twitterFollowLink = `http://twitter.com/intent/user?screen_name=${twitterHandler}`;
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
                      <tr>
                         <td><h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
@@ -186,7 +188,7 @@ const sendRankingEmail = async (candidate, user) => {
                           ? `<tr>
                         <td>
                           <br/><br/><br/>
-                          <a href="${candidate.twitter}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
+                          <a href="${twitterFollowLink}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
                             Follow ${blocName} on Twitter                             
                           </a>
                         </td>
