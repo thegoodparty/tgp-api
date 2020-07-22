@@ -37,7 +37,11 @@ module.exports = {
 
       const user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
-        return exits.success(); //we don't disclose whether we have a user in the db or not
+        // return exits.success(); //we don't disclose whether we have a user in the db or not
+        return exits.badRequest({
+          message: `${email} is not in our system.`,
+          notexists: true,
+        });
       }
 
       let randomCode = parseInt(Math.random() * 1000000);
