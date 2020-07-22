@@ -32,11 +32,13 @@ module.exports = {
         candidate = await PresidentialCandidate.findOne({
           id: candidateId,
           isActive: true,
+          isHidden: false,
         });
       } else if (isIncumbent) {
         candidate = await Incumbent.findOne({
           id: candidateId,
           isActive: true,
+          isHidden: false,
         });
         if (candidate) {
           candidate.isIncumbent = true;
@@ -45,6 +47,7 @@ module.exports = {
         candidate = await RaceCandidate.findOne({
           id: candidateId,
           isActive: true,
+          isHidden: false,
         });
       }
 

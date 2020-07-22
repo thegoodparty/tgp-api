@@ -49,6 +49,11 @@ module.exports = {
       type: 'boolean',
       allowNull: true,
     },
+    isHidden: {
+      type: 'boolean',
+      allowNull: false,
+      defaultsTo: false
+    },
     isApproved: {
       type: 'boolean',
       allowNull: true,
@@ -87,7 +92,7 @@ module.exports = {
     twitterFollowers: {
       type: 'number',
       allowNull: true,
-      defaultsTo: 0
+      defaultsTo: 0,
     },
     website: {
       type: 'string',

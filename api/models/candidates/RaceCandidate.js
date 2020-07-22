@@ -44,6 +44,11 @@ module.exports = {
       type: 'boolean',
       allowNull: true,
     },
+    isHidden: {
+      type: 'boolean',
+      allowNull: false,
+      defaultsTo: false
+    },
     isApproved: {
       type: 'boolean',
       allowNull: true,

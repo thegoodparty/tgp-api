@@ -45,6 +45,7 @@ module.exports = {
         district,
         chamber: 'House',
         isActive: true,
+        isHidden: false,
       }).sort('raised DESC');
 
       const houseCandidates = await RaceCandidate.find({
@@ -52,6 +53,7 @@ module.exports = {
         district,
         chamber: 'House',
         isActive: true,
+        isHidden: false,
       }).sort('raised DESC');
 
       houseCandidates.forEach(candidate => {

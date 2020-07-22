@@ -167,6 +167,7 @@ const createEntries = async rows => {
         {
           ...row,
           isActive: true,
+
         },
       );
 

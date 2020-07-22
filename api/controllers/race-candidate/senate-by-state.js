@@ -40,12 +40,14 @@ module.exports = {
         state: lowerState,
         chamber: 'Senate',
         isActive: true,
+        isHidden: false,
       }).sort('raised DESC');
 
       const senateIncumbents = await Incumbent.find({
         state: lowerState,
         chamber: 'Senate',
         isActive: true,
+        isHidden: false,
       }).sort('raised DESC');
 
       senateCandidates.forEach(candidate => {

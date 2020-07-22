@@ -21,6 +21,7 @@ module.exports = {
           district,
           chamber: 'House',
           isActive: true,
+          isHidden: false,
         });
         if (!incumbent) {
           const raceCand = await RaceCandidate.find({
@@ -28,6 +29,7 @@ module.exports = {
             district,
             chamber: 'House',
             isActive: true,
+            isHidden: false,
           }).sort([{ raised: 'DESC' }]);
           incumbent = raceCand.length > 0 ? raceCand[0] : null;
           if (incumbent) {
@@ -40,12 +42,14 @@ module.exports = {
           state: lowerState,
           chamber: 'Senate',
           isActive: true,
+          isHidden: false,
         });
         if (!incumbent) {
           const raceCand = await RaceCandidate.find({
             state: lowerState,
             chamber: 'Senate',
             isActive: true,
+            isHidden: false,
           }).sort([{ raised: 'DESC' }]);
           incumbent = raceCand.length > 0 ? raceCand[0] : null;
           if (incumbent) {
@@ -56,6 +60,7 @@ module.exports = {
         incumbent = await PresidentialCandidate.findOne({
           isIncumbent: true,
           isActive: true,
+          isHidden: false,
         });
         delete incumbent.info;
       }
@@ -65,7 +70,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find incumbent by district helper', e);
-      return exits.notFound();
+      return exits.badRequest({});
     }
   },
 };

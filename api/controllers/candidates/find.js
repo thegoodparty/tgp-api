@@ -43,7 +43,7 @@ module.exports = {
       let candidate;
 
       if (chamber === 'presidential') {
-        candidate = await PresidentialCandidate.findOne({ id, isActive: true });
+        candidate = await PresidentialCandidate.findOne({ id, isActive: true, isHidden: false, });
       } else {
         const upperChamber = chamber.charAt(0).toUpperCase() + chamber.slice(1);
         if (isIncumbent) {
@@ -59,6 +59,7 @@ module.exports = {
             id,
             chamber: upperChamber,
             isActive: true,
+            isHidden: false,
           });
         }
       }

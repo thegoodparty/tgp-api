@@ -60,14 +60,17 @@ module.exports = {
       let blocCriteria = {
         blocName: nameBloc,
         isActive: true,
+        isHidden: false,
       };
       let nameCriteria = {
         name: { contains: lastName },
         isActive: true,
+        isHidden: false,
       };
       let twitterCriteria = {
         twitter: { contains: nameBloc.replace('@', '') },
         isActive: true,
+        isHidden: false,
       };
       if (chamber === 'presidential') {
         console.log('twitter criteria', twitterCriteria);

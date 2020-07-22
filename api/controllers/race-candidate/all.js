@@ -40,7 +40,7 @@ module.exports = {
     try {
       const { onlyNoData, withPresidential, withoutTwitter } = inputs;
 
-      const where = { isActive: true };
+      const where = { isActive: true, isHidden: false, };
       const select = [
         'id',
         'name',
