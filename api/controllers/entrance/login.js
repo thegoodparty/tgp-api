@@ -85,9 +85,9 @@ module.exports = {
         message,
       );
 
-      return exits.success();
+      return exits.success({ message: 'login error' });
     } catch (err) {
-      await sails.helpers.errorLoggerHelper('Error at entrance/login', e);
+      await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
       console.log('login error');
       console.log(err);
       return exits.success();
