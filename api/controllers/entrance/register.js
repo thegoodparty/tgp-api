@@ -185,7 +185,7 @@ module.exports = {
         userAttr.socialId = socialId;
       }
       if (socialProvider) {
-        userAttr.socialIProvider = socialProvider;
+        userAttr.socialProvider = socialProvider;
       }
       if (socialPic) {
         userAttr.avatar = socialPic;
