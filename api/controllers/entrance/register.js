@@ -94,7 +94,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  async fn(inputs, exits) {
     // Look up the user whose ID was specified in the request.
     // Note that we don't have to validate that `userId` is a number;
     // the machine runner does this for us and returns `badRequest`
@@ -125,22 +125,21 @@ module.exports = {
       let isOldTokenVerified = true;
       let user;
       if (userExists) {
-        if(userExists.emailConfToken) {
+        if (userExists.emailConfToken) {
           isOldTokenVerified = false;
           const token = await sails.helpers.strings.random('url-friendly');
           user = await User.updateOne({ email: lowerCaseEmail }).set({
             emailConfToken: token,
             emailConfTokenDateCreated: Date.now(),
           });
-        }
-        else {
+        } else {
           return exits.badRequest({
             message: `${lowerCaseEmail} already exists in our system.`,
             exists: true,
           });
         }
       }
-      if(isOldTokenVerified) {
+      if (isOldTokenVerified) {
         let displayAddress, normalizedAddress, addressZip;
         if (addresses) {
           const address = JSON.parse(addresses);
