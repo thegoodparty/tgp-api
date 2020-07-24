@@ -30,6 +30,7 @@ module.exports.routes = {
     'entrance/send-password-recovery-email',
 
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
+  'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
   'POST   /api/v1/role/create': 'role/create',
 
