@@ -12,7 +12,7 @@ module.exports.routes = {
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
-
+  
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/update': 'content/update',
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',

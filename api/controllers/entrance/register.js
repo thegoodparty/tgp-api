@@ -122,146 +122,158 @@ module.exports = {
       const userExists = await User.findOne({
         email: lowerCaseEmail,
       });
+      let isOldTokenVerified = true;
+      let user;
       if (userExists) {
-        return exits.badRequest({
-          message: `${lowerCaseEmail} already exists in our system.`,
-          exists: true,
-        });
-      }
-
-      let displayAddress, normalizedAddress, addressZip;
-      if (addresses) {
-        const address = JSON.parse(addresses);
-        displayAddress = address.displayAddress;
-        normalizedAddress = address.normalizedAddress
-          ? JSON.stringify(address.normalizedAddress)
-          : address.normalizedAddress;
-        addressZip = address.zip;
-      }
-      let zipCode;
-
-      if (addressZip) {
-        zipCode = await ZipCode.findOne({ addressZip });
-      } else if (zip) {
-        zipCode = await ZipCode.findOne({ zip });
-      }
-
-      const userAttr = {
-        email: lowerCaseEmail,
-        name,
-      };
-      if (zipCode) {
-        userAttr.zipCode = zipCode.id;
-        userAttr.shortState = zipCode.stateShort;
-      }
-      if (zipCode && !districtId) {
-        // districtId wasn't specified - take the first one in the array
-        let { approxPctArr } = zipCode;
-        if (approxPctArr) {
-          approxPctArr = JSON.parse(approxPctArr);
-          if (approxPctArr.length > 0) {
-            districtId = approxPctArr[0].districtId;
-          }
+        if(userExists.emailConfToken) {
+          isOldTokenVerified = false;
+          const token = await sails.helpers.strings.random('url-friendly');
+          user = await User.updateOne({ email: lowerCaseEmail }).set({
+            emailConfToken: token,
+            emailConfTokenDateCreated: Date.now(),
+          });
         }
-      }
-
-      if (districtId) {
-        const congDistrict = await CongDistrict.findOne({ id: districtId });
-        userAttr.congDistrict = districtId;
-        userAttr.districtNumber = congDistrict.code;
-      }
-
-      if (displayAddress) {
-        userAttr.displayAddress = displayAddress;
-      }
-      if (normalizedAddress) {
-        userAttr.normalizedAddress = normalizedAddress;
-      }
-
-      if (verify) {
-        userAttr.isEmailVerified = false;
-      }
-      if (socialId) {
-        userAttr.socialId = socialId;
-      }
-      if (socialProvider) {
-        userAttr.socialProvider = socialProvider;
-      }
-      if (socialPic) {
-        userAttr.avatar = socialPic;
-      }
-      if (referrer) {
-        const referrerUser = await User.findOne({ uuid: referrer });
-        if (referrerUser) {
-          userAttr.referrer = referrerUser.id;
-        } else {
-          // invited by a guest with a referrer (uuid) that was generated on the front end.
-          userAttr.guestReferrer = referrer;
-        }
-      }
-      if (socialPic || socialProvider || socialId) {
-        try {
-          await sails.helpers.verifySocialToken(
-            lowerCaseEmail,
-            socialToken,
-            socialProvider,
-          );
-          sendToken = true;
-        } catch (e) {
+        else {
           return exits.badRequest({
-            message: 'Invalid Token',
+            message: `${lowerCaseEmail} already exists in our system.`,
+            exists: true,
           });
         }
       }
+      if(isOldTokenVerified) {
+        let displayAddress, normalizedAddress, addressZip;
+        if (addresses) {
+          const address = JSON.parse(addresses);
+          displayAddress = address.displayAddress;
+          normalizedAddress = address.normalizedAddress
+            ? JSON.stringify(address.normalizedAddress)
+            : address.normalizedAddress;
+          addressZip = address.zip;
+        }
+        let zipCode;
 
-      const uuid =
-        guestUuid ||
-        Math.random()
-          .toString(36)
-          .substring(2, 12);
+        if (addressZip) {
+          zipCode = await ZipCode.findOne({ addressZip });
+        } else if (zip) {
+          zipCode = await ZipCode.findOne({ zip });
+        }
 
-      const user = await User.create({
-        uuid,
-        ...userAttr,
-      }).fetch();
+        const userAttr = {
+          email: lowerCaseEmail,
+          name,
+        };
+        if (zipCode) {
+          userAttr.zipCode = zipCode.id;
+          userAttr.shortState = zipCode.stateShort;
+        }
+        if (zipCode && !districtId) {
+          // districtId wasn't specified - take the first one in the array
+          let { approxPctArr } = zipCode;
+          if (approxPctArr) {
+            approxPctArr = JSON.parse(approxPctArr);
+            if (approxPctArr.length > 0) {
+              districtId = approxPctArr[0].districtId;
+            }
+          }
+        }
 
-      // find all the users that were invited by this user
-      const referredUsers = await User.find({ guestReferrer: uuid });
-      for (let i = 0; i < referredUsers.length; i++) {
-        const referredUser = referredUsers[i];
-        await User.updateOne({ id: referredUser.id }).set({
-          referrer: user.id,
-          guestReferrer: '',
-        });
-      }
-      try {
-        // convert the guest ranking (from cookies) to actual ranking in our system.
-        if (ranking) {
-          const rankingArr = JSON.parse(ranking);
-          for (let i = 0; i < rankingArr.length; i++) {
-            const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
-            await Ranking.create({
-              user: user.id,
-              chamber,
-              candidate,
-              rank,
-              isIncumbent,
-              userState: user.shortState,
+        if (districtId) {
+          const congDistrict = await CongDistrict.findOne({ id: districtId });
+          userAttr.congDistrict = districtId;
+          userAttr.districtNumber = congDistrict.code;
+        }
+
+        if (displayAddress) {
+          userAttr.displayAddress = displayAddress;
+        }
+        if (normalizedAddress) {
+          userAttr.normalizedAddress = normalizedAddress;
+        }
+
+        if (verify) {
+          userAttr.isEmailVerified = false;
+        }
+        if (socialId) {
+          userAttr.socialId = socialId;
+        }
+        if (socialProvider) {
+          userAttr.socialIProvider = socialProvider;
+        }
+        if (socialPic) {
+          userAttr.avatar = socialPic;
+        }
+        if (referrer) {
+          const referrerUser = await User.findOne({ uuid: referrer });
+          if (referrerUser) {
+            userAttr.referrer = referrerUser.id;
+          } else {
+            // invited by a guest with a referrer (uuid) that was generated on the front end.
+            userAttr.guestReferrer = referrer;
+          }
+        }
+        if (socialPic || socialProvider || socialId) {
+          try {
+            await sails.helpers.verifySocialToken(
+              lowerCaseEmail,
+              socialToken,
+              socialProvider,
+            );
+            sendToken = true;
+          } catch (e) {
+            return exits.badRequest({
+              message: 'Invalid Token',
             });
           }
         }
-      } catch (e) {
-        // do nothing. Usually the error is for missing state.
+
+        const uuid =
+          guestUuid ||
+          Math.random()
+            .toString(36)
+            .substring(2, 12);
+
+        user = await User.create({
+          uuid,
+          ...userAttr,
+        }).fetch();
+
+        // find all the users that were invited by this user
+        const referredUsers = await User.find({ guestReferrer: uuid });
+        for (let i = 0; i < referredUsers.length; i++) {
+          const referredUser = referredUsers[i];
+          await User.updateOne({ id: referredUser.id }).set({
+            referrer: user.id,
+            guestReferrer: '',
+          });
+        }
+        try {
+          // convert the guest ranking (from cookies) to actual ranking in our system.
+          if (ranking) {
+            const rankingArr = JSON.parse(ranking);
+            for (let i = 0; i < rankingArr.length; i++) {
+              const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
+              await Ranking.create({
+                user: user.id,
+                chamber,
+                candidate,
+                rank,
+                isIncumbent,
+                userState: user.shortState,
+              });
+            }
+          }
+        } catch (e) {
+          // do nothing. Usually the error is for missing state.
+        }
+
+        const userWithZip = await User.findOne({ id: user.id });
+
+        const userZipCode = await ZipCode.findOne({
+          id: userWithZip.zipCode,
+        }).populate('cds');
+        userWithZip.zipCode = userZipCode;
       }
-
-      const userWithZip = await User.findOne({ id: user.id });
-
-      const userZipCode = await ZipCode.findOne({
-        id: userWithZip.zipCode,
-      }).populate('cds');
-      userWithZip.zipCode = userZipCode;
-
-      if (!socialPic && !socialProvider && !socialId) {
+      if ((!socialPic && !socialProvider && !socialId) || !isOldTokenVerified) {
         // send sms to the newly created user.
         const appBase = sails.config.custom.appBase || sails.config.appBase;
         const subject = 'Please Confirm your email address - The Good Party';
@@ -317,7 +329,7 @@ module.exports = {
       }
 
       return exits.success({
-        user: userWithZip,
+        user: isOldTokenVerified ? userWithZip : user,
         token,
       });
     } catch (e) {
