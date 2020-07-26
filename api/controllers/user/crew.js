@@ -31,6 +31,9 @@ module.exports = {
           avatar: userCrew.avatar,
           name: fullFirstLastInitials(userCrew.name),
           uuid: userCrew.uuid,
+          shortState: userCrew.shortState,
+          districtNumber: userCrew.districtNumber,
+          feedback: userCrew.feedback,
         });
       });
       return exits.success({
