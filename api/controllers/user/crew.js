@@ -11,12 +11,12 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Check passed.',
+      description: 'Crew found',
       responseType: 'ok',
     },
-    forbidden: {
-      description: 'Bad token',
-      responseType: 'forbidden',
+    badRequest: {
+      description: 'error getting crew',
+      responseType: 'badRequest',
     },
   },
 
@@ -25,13 +25,22 @@ module.exports = {
       const user = await User.findOne({ id: this.req.user.id }).populate(
         'crew',
       );
+      // very expensive queries here. TODO: optimize, cache or denormalize.
       const crew = [];
-      user.crew.forEach(userCrew => {
+      for (let i = 0; i < user.crew.length; i++) {
+        const userCrew = user.crew[i];
+        const crewCrew = await User.findOne({ id: userCrew.id }).populate(
+          'crew',
+        );
         crew.push({
           avatar: userCrew.avatar,
           name: fullFirstLastInitials(userCrew.name),
           uuid: userCrew.uuid,
+          crewCount: crewCrew.crew.length,
         });
+      }
+      crew.sort((a, b) => {
+        return a.crewCount - b.crewCount;
       });
       return exits.success({
         crew,
@@ -40,7 +49,7 @@ module.exports = {
       console.log('error at user/crew');
       console.log(e);
       await sails.helpers.errorLoggerHelper('Error at user/crew', e);
-      return exits.forbidden();
+      return exits.badRequest();
     }
   },
 };
