@@ -148,6 +148,14 @@ module.exports = {
       description: 'guest uuid that was used to invited the user.',
       allowNull: true,
     },
+    //adding (denormalized) crewCount for quick lookups and sorting
+
+    crewCount: {
+      type: 'number',
+      required: false,
+      description: 'count of the many to many crew relationship',
+      defaultsTo: 0,
+    },
     isAdmin: {
       type: 'boolean',
       defaultsTo: false,

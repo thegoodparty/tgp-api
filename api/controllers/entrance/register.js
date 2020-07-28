@@ -194,6 +194,9 @@ module.exports = {
         const referrerUser = await User.findOne({ uuid: referrer });
         if (referrerUser) {
           userAttr.referrer = referrerUser.id;
+          await updateOne({ id: referrerUser.id }).set({
+            crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 1,
+          });
         } else {
           // invited by a guest with a referrer (uuid) that was generated on the front end.
           userAttr.guestReferrer = referrer;
@@ -233,6 +236,10 @@ module.exports = {
           referrer: user.id,
           guestReferrer: '',
         });
+      }
+      //add crewCount from refferedUsers
+      if (referredUsers.length > 0) {
+        user.crewCount = referredUsers.length;
       }
       try {
         // convert the guest ranking (from cookies) to actual ranking in our system.

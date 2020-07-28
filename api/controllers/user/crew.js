@@ -9,6 +9,14 @@ module.exports = {
 
   description: 'User with recruited users',
 
+  inputs: {
+    preview: {
+      type: 'boolean',
+      description: 'preview will return max of 3 people',
+      required: false,
+    },
+  },
+
   exits: {
     success: {
       description: 'Check passed.',
@@ -22,11 +30,21 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const { preview } = inputs;
       const user = await User.findOne({ id: this.req.user.id }).populate(
         'crew',
       );
+      const sortedCrew = user.crew.sort((a, b) => {
+        return b.crewCount - a.crewCount;
+      });
       const crew = [];
-      user.crew.forEach(userCrew => {
+      const previewLimit = 3;
+      const limit = preview
+        ? Math.min(previewLimit, user.crew.length)
+        : user.crew.length;
+
+      for (let i = 0; i < limit; i++) {
+        const userCrew = sortedCrew[i];
         crew.push({
           avatar: userCrew.avatar,
           name: fullFirstLastInitials(userCrew.name),
@@ -35,9 +53,16 @@ module.exports = {
           districtNumber: userCrew.districtNumber,
           feedback: userCrew.feedback,
         });
+      }
+      // updating the crewCount for the user - to make sure they are in sync.
+      const crewCount = user.crew ? user.crew.length : 0;
+      await User.updateOne({ id: user.id }).set({
+        crewCount,
       });
+
       return exits.success({
         crew,
+        crewCount,
       });
     } catch (e) {
       console.log('error at user/crew');
