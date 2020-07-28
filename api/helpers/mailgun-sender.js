@@ -29,18 +29,22 @@ module.exports = {
       description: 'Message from user',
       type: 'string',
     },
+    fromEmail: {
+      friendlyName: 'From Email',
+      type: 'string',
+    }
   },
 
   fn: async function(inputs, exits) {
     try {
-      const { message, messageHeader, email, name, subject } = inputs;
+      const { message, messageHeader, email, name, subject, fromEmail } = inputs;
       const MAILGUN_API =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
       mg.messages
         .create('mg.thegoodparty.org', {
-          from: 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>',
+          from: fromEmail || 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>',
           to: email,
           subject,
           text: message,

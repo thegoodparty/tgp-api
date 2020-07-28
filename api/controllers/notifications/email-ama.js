@@ -16,6 +16,11 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    replyEmail: {
+      friendlyName: 'Reply To',
+      description: 'Reply Email',
+      type: 'string'
+    },
   },
 
   exits: {
@@ -31,7 +36,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { message } = inputs;
+      const { message, replyEmail } = inputs;
       const subject = 'Ama Form Sent';
       const messageHeader = 'Ama Form Sent';
       const email = 'ask@thegoodparty.org';
@@ -43,6 +48,7 @@ module.exports = {
         subject,
         messageHeader,
         msgWithLineBreaks,
+        replyEmail
       );
       return exits.success({
         message: 'Email Sent Successfully',
