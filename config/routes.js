@@ -41,6 +41,7 @@ module.exports.routes = {
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'PUT    /api/v1/user/upload-avatar': 'user/upload-avatar',
   'GET    /api/v1/user/crew': 'user/crew',
+  'GET    /api/v1/user/leaderboard': 'user/leaderboard',
   'POST   /api/v1/user/rank-candidate': 'user/ranking/rank-candidate',
   'DELETE /api/v1/user/rank-candidate': 'user/ranking/delete-rank-candidate',
   'GET   /api/v1/user/ranking': 'user/ranking/user-ranking',
