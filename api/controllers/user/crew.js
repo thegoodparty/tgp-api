@@ -55,7 +55,7 @@ module.exports = {
         });
       }
       // updating the crewCount for the user - to make sure they are in sync.
-      const crewCount = user.crew ? user.crew.length : 0;
+      const crewCount = user.crew ? user.crew.length + 1 : 1;
       await User.updateOne({ id: user.id }).set({
         crewCount,
       });

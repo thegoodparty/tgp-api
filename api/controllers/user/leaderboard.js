@@ -27,17 +27,15 @@ module.exports = {
 
       const leaderboard = [];
       users.forEach(user => {
-        if (user.crewCount > 0) {
-          leaderboard.push({
-            avatar: user.avatar,
-            name: fullFirstLastInitials(user.name),
-            uuid: user.uuid,
-            shortState: user.shortState,
-            districtNumber: user.districtNumber,
-            feedback: user.feedback,
-            crewCount: user.crewCount,
-          });
-        }
+        leaderboard.push({
+          avatar: user.avatar,
+          name: fullFirstLastInitials(user.name),
+          uuid: user.uuid,
+          shortState: user.shortState,
+          districtNumber: user.districtNumber,
+          feedback: user.feedback,
+          crewCount: user.crewCount,
+        });
       });
 
       return exits.success({

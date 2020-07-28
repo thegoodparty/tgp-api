@@ -195,7 +195,7 @@ module.exports = {
         if (referrerUser) {
           userAttr.referrer = referrerUser.id;
           await updateOne({ id: referrerUser.id }).set({
-            crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 1,
+            crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 2,
           });
         } else {
           // invited by a guest with a referrer (uuid) that was generated on the front end.

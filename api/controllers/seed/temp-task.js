@@ -22,7 +22,7 @@ module.exports = {
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
         await User.updateOne({ id: user.id }).set({
-          crewCount: user.crew.length,
+          crewCount: user.crew.length + 1,
         });
       }
       return exits.success({
