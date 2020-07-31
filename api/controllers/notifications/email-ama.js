@@ -19,7 +19,8 @@ module.exports = {
     replyEmail: {
       friendlyName: 'Reply To',
       description: 'Reply Email',
-      type: 'string'
+      type: 'string',
+      email: true
     },
   },
 
