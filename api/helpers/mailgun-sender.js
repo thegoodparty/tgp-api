@@ -29,24 +29,31 @@ module.exports = {
       description: 'Message from user',
       type: 'string',
     },
+    fromEmail: {
+      friendlyName: 'From Email',
+      type: 'string',
+      isEmail: true
+    }
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      const { message, messageHeader, email, name, subject } = inputs;
+      const { message, messageHeader, email, name, subject, fromEmail } = inputs;
       const MAILGUN_API =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
+      const validFromEmail = fromEmail || 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>';
+      
       mg.messages
         .create('mg.thegoodparty.org', {
-          from: 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>',
+          from: validFromEmail,
           to: email,
           subject,
           text: message,
           html: html(message, messageHeader, subject),
         })
-        .then(msg => {}) // logs response data
+        .then(msg => { }) // logs response data
         .catch(err => {
           console.log(err);
           return exits.badRequest({
@@ -63,7 +70,7 @@ module.exports = {
   },
 };
 
-const html = (msg='', messageHeader='', subject='') => {
+const html = (msg = '', messageHeader = '', subject = '') => {
   return `
 <style type="text/css">
   html, body {
