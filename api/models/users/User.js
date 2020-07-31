@@ -101,6 +101,27 @@ module.exports = {
       description: 'Uploaded avatar image',
     },
 
+    password: {
+      type: 'string',
+      description:
+        "Securely hashed representation of the user's login password.",
+      protect: true,
+      example: '2$28a8eabna301089103-13948134nad',
+    },
+
+    passwordResetToken: {
+      type: 'string',
+      description:
+        "A unique token used to verify the user's identity when recovering a password.  Expires after 1 use, or after a set amount of time has elapsed.",
+    },
+
+    passwordResetTokenExpiresAt: {
+      type: 'number',
+      description:
+        "A JS timestamp (epoch ms) representing the moment when this user's `passwordResetToken` will expire (or 0 if the user currently has no such token).",
+      example: 1502844074211,
+    },
+
     emailConfToken: {
       type: 'string',
       required: false,
@@ -202,7 +223,7 @@ module.exports = {
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, [
-      'encryptedPassword',
+      'password',
       'passwordResetToken',
       'passwordResetTokenExpiresAt',
       'createdAt',
@@ -214,8 +235,17 @@ module.exports = {
 
   beforeCreate: async function(values, next) {
     try {
+      // hash password and save it in password.
+      // using hashPassword helper from sails-hook-organics
+      if (values.password) {
+        const hashedPassword = await sails.helpers.passwords.hashPassword(
+          values.password,
+        );
+        values.password = hashedPassword;
+      }
+
       if (values.email) {
-        // set role. Voter by default (if non is provided).
+        // set isAdmin
         const adminEmails =
           sails.config.custom.adminEmails || sails.config.adminEmails;
         if (adminEmails && adminEmails.includes(values.email)) {

@@ -12,10 +12,15 @@ module.exports = {
 
   inputs: {
     email: {
-      description: 'User Phone',
+      description: 'User Email',
       type: 'string',
       required: true,
       isEmail: true,
+    },
+    password: {
+      description: 'User Password',
+      type: 'string',
+      required: true,
     },
   },
 
@@ -25,72 +30,44 @@ module.exports = {
       responseType: 'ok',
     },
     badRequest: {
-      description: 'Phone Format Error',
+      description: 'Login Error',
       responseType: 'badRequest',
     },
   },
 
   fn: async function(inputs, exits) {
     try {
-      const { email } = inputs;
+      const { email, password } = inputs;
       const lowerCaseEmail = email.toLowerCase();
 
       const user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
-        // return exits.success(); //we don't disclose whether we have a user in the db or not
         return exits.badRequest({
           message: `${email} is not in our system.`,
           notexists: true,
         });
       }
-
-      let randomCode = parseInt(Math.random() * 1000000);
-      if (randomCode < 100000) {
-        randomCode += 124000;
+      try {
+        await sails.helpers.passwords.checkPassword(password, user.password);
+      } catch (e) {
+        return exits.badRequest({
+          message: 'incorrect password',
+          incorrect: true,
+        });
       }
 
-      await User.updateOne({ email: lowerCaseEmail }).set({
-        emailConfToken: randomCode,
-        emailConfTokenDateCreated: Date.now(),
+      const token = await sails.helpers.jwtSign({
+        id: user.id,
+        email: lowerCaseEmail,
       });
-
-      const subject = `Your Good Party code is: ${randomCode}`;
-      const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-                          <tr>
-                            <td>
-                              <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                Hi ${user.name},<br/> <br/>Your Login Code is:
-                              </p>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">${randomCode}</h2>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                Please use this code to complete you login at The Good Party.  This code will expire in 24 hours.
-                              </p>
-                             </td>
-                          </tr>
-                        </table>`;
-      const messageHeader = '';
-      await sails.helpers.mailgunSender(
-        lowerCaseEmail,
-        user.name,
-        subject,
-        messageHeader,
-        message,
-      );
-
-      return exits.success({ message: 'login error' });
+      return exits.success({ user, token });
     } catch (err) {
-      await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
+      // await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
       console.log('login error');
       console.log(err);
-      return exits.success();
+      return exits.badRequest({
+        message: 'unknown error',
+      });
     }
   },
 };

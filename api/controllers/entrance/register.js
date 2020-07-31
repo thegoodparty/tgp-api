@@ -17,7 +17,11 @@ module.exports = {
       required: true,
       isEmail: true,
     },
-
+    password: {
+      description: 'User Password',
+      type: 'string',
+      required: false,
+    },
     name: {
       description: 'User Name',
       type: 'string',
@@ -102,6 +106,7 @@ module.exports = {
     try {
       const {
         email,
+        password,
         name,
         verify,
         addresses,
@@ -116,8 +121,13 @@ module.exports = {
       } = inputs;
 
       let { districtId } = inputs;
-      let sendToken = false;
       const lowerCaseEmail = email.toLowerCase();
+
+      if (!socialPic && !socialProvider && !socialId && !password) {
+        return exits.badRequest({
+          message: 'missing password',
+        });
+      }
 
       const userExists = await User.findOne({
         email: lowerCaseEmail,
@@ -150,6 +160,9 @@ module.exports = {
         email: lowerCaseEmail,
         name,
       };
+      if (password) {
+        userAttr.password = password;
+      }
       if (zipCode) {
         userAttr.zipCode = zipCode.id;
         userAttr.shortState = zipCode.stateShort;
@@ -194,7 +207,7 @@ module.exports = {
         const referrerUser = await User.findOne({ uuid: referrer });
         if (referrerUser) {
           userAttr.referrer = referrerUser.id;
-          await updateOne({ id: referrerUser.id }).set({
+          await User.updateOne({ id: referrerUser.id }).set({
             crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 2,
           });
         } else {
@@ -209,7 +222,6 @@ module.exports = {
             socialToken,
             socialProvider,
           );
-          sendToken = true;
         } catch (e) {
           return exits.badRequest({
             message: 'Invalid Token',
@@ -273,7 +285,7 @@ module.exports = {
         const appBase = sails.config.custom.appBase || sails.config.appBase;
         const subject = 'Please Confirm your email address - The Good Party';
         const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-<tr>
+                           <tr>
                             <td>
                               <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
                                 Please confirm your email
@@ -315,13 +327,10 @@ module.exports = {
           message,
         );
       }
-      let token;
-      if (sendToken) {
-        token = await sails.helpers.jwtSign({
-          id: user.id,
-          email: lowerCaseEmail,
-        });
-      }
+      const token = await sails.helpers.jwtSign({
+        id: user.id,
+        email: lowerCaseEmail,
+      });
 
       return exits.success({
         user: userWithZip,
