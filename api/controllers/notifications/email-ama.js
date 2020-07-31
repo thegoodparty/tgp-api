@@ -20,7 +20,7 @@ module.exports = {
       friendlyName: 'Reply To',
       description: 'Reply Email',
       type: 'string',
-      email: true
+      isEmail: true
     },
   },
 
