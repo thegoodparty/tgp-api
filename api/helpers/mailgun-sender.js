@@ -32,7 +32,7 @@ module.exports = {
     fromEmail: {
       friendlyName: 'From Email',
       type: 'string',
-      email: true
+      isEmail: true
     }
   },
 
