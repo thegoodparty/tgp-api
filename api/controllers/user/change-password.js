@@ -10,6 +10,7 @@ module.exports = {
       required: true,
       minLength: 8,
       type: 'string',
+      protect: true,
     },
     newPassword: {
       description: 'The new, unencrypted password.',
@@ -17,6 +18,7 @@ module.exports = {
       required: true,
       minLength: 8,
       type: 'string',
+      protect: true,
     },
   },
 
@@ -37,22 +39,27 @@ module.exports = {
     const { oldPassword, newPassword } = inputs;
     try {
       // Hash the new password.
-      await sails.helpers.passwords.checkPassword(
-        oldPassword,
-        user.password,
-      );
+      try {
+        await sails.helpers.passwords.checkPassword(oldPassword, user.password);
+      } catch {
+        return exits.badRequest({
+          message: 'incorrect password',
+          incorrect: true,
+        });
+      }
       const hashed = await sails.helpers.passwords.hashPassword(newPassword);
 
       // Store the user's new password and clear their reset token so it can't be used again.
-      const userRecord = await User.updateOne({ id: user.id }).set({
+      await User.updateOne({ id: user.id }).set({
         password: hashed,
       });
       // const token = await sails.helpers.jwtSign(userRecord);
 
       // Log the user in.
-      return exits.success({ message: 'password successfully updated' });
+      return exits.success({ message: 'password successfully changed.' });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error at user/change-password', e);
       return exits.badRequest();
     }
   },
