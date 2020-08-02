@@ -109,6 +109,11 @@ module.exports = {
       example: '2$28a8eabna301089103-13948134nad',
     },
 
+    hasPassword: {
+      type: 'boolean',
+      description: 'is the password field used.',
+    },
+
     passwordResetToken: {
       type: 'string',
       description:
@@ -242,6 +247,7 @@ module.exports = {
           values.password,
         );
         values.password = hashedPassword;
+        values.hasPassword = true;
       }
 
       if (values.email) {

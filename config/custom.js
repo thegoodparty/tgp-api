@@ -16,7 +16,7 @@ module.exports.custom = {
    * The TTL (time-to-live) for various sorts of tokens before they expire.  *
    *                                                                         *
    **************************************************************************/
-  passwordResetTokenTTL: 24 * ONE_HOUR, // 24 hours
+  passwordResetTokenTTL: 24 * ONE_HOUR * 30, // 1 month
 
   /**************************************************************************
    *                                                                         *
@@ -38,5 +38,5 @@ module.exports.custom = {
    ***************************************************************************/
 
   mailgunDomain: 'sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org',
-  appBase: 'https://dev.thegoodparty.org'
+  appBase: 'https://dev.thegoodparty.org',
 };

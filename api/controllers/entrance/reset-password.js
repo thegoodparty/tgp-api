@@ -72,6 +72,7 @@ module.exports = {
       // Store the user's new password and clear their reset token so it can't be used again.
       await User.updateOne({ id: userRecord.id }).set({
         password: hashed,
+        hasPassword: true,
         passwordResetToken: '',
         passwordResetTokenExpiresAt: 0,
       });
