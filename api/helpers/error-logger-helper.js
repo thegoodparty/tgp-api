@@ -18,11 +18,6 @@ module.exports = {
     },
   },
 
-  exits: {
-    success: {
-      description: 'Error sent',
-    },
-  },
 
   fn: async function(inputs, exits) {
     try {
@@ -52,7 +47,7 @@ module.exports = {
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
       return null;
     }
   },
