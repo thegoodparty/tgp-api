@@ -26,7 +26,13 @@ module.exports = {
         .limit(100);
 
       const leaderboard = [];
-      users.forEach(user => {
+      users.forEach(async user => {
+        let zipCode;
+        if (user.zipCode) {
+          zipCode = await ZipCode.findOne({
+            id: user.zipCode,
+          });
+        }
         leaderboard.push({
           avatar: user.avatar,
           name: fullFirstLastInitials(user.name),
@@ -35,6 +41,7 @@ module.exports = {
           districtNumber: user.districtNumber,
           feedback: user.feedback,
           crewCount: user.crewCount,
+          city: zipCode ? zipCode.primaryCity : null,
         });
       });
 

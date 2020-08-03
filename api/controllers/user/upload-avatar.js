@@ -38,7 +38,7 @@ module.exports = async function uploadAvatar(req, res) {
   const zipCode = await ZipCode.findOne({
     id: user.zipCode,
   }).populate('cds');
-  user.zipCode = zipCode;
+  userWithZip.zipCode = zipCode;
 
   return res.ok({
     user: userWithZip,
