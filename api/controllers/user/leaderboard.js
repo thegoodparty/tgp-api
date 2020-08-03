@@ -22,7 +22,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const users = await User.find()
-        .sort('crewCount DESC')
+        .sort([{ crewCount: 'DESC' }, { createdAt: 'ASC' }])
         .limit(100);
 
       const leaderboard = [];
