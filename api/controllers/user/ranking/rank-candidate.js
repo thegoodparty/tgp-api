@@ -69,22 +69,25 @@ module.exports = {
       }
       if (!reqUser.shortState || reqUser.shortState === '') {
         if (state) {
-          reqUser = await User.updateOne({ id: reqUser.id }).set({
+          reqUser = await User.updateOne({
+            id: reqUser.id,
+          }).set({
             shortState: state,
           });
-        } else {
-          return exits.badRequest({
-            message: 'User is missing a state',
-            missingState: true,
-          });
         }
+        // else {
+        //   return exits.badRequest({
+        //     message: 'User is missing a state',
+        //     missingState: true,
+        //   });
+        // }
       }
       await Ranking.create({
         user: reqUser.id,
         chamber,
         candidate: candidateId,
         rank,
-        userState: reqUser.shortState,
+        userState: reqUser.shortState || '',
         isIncumbent,
       });
       let { candidate } = await sails.helpers.candidateFinder(
