@@ -35,6 +35,9 @@ module.exports = {
         'crew',
       );
       const sortedCrew = user.crew.sort((a, b) => {
+        if (b.crewCount === a.crewCount) {
+          return a.createdAt - b.createdAt;
+        }
         return b.crewCount - a.crewCount;
       });
       const crew = [];
