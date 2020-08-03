@@ -48,6 +48,12 @@ module.exports = {
 
       for (let i = 0; i < limit; i++) {
         const userCrew = sortedCrew[i];
+        let zipCode;
+        if (userCrew.zipCode) {
+          zipCode = await ZipCode.findOne({
+            id: userCrew.zipCode,
+          });
+        }
         crew.push({
           avatar: userCrew.avatar,
           name: fullFirstLastInitials(userCrew.name),
@@ -55,6 +61,7 @@ module.exports = {
           shortState: userCrew.shortState,
           districtNumber: userCrew.districtNumber,
           feedback: userCrew.feedback,
+          city: zipCode ? zipCode.primaryCity : null,
         });
       }
       // updating the crewCount for the user - to make sure they are in sync.
