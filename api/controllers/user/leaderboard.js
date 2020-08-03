@@ -26,7 +26,8 @@ module.exports = {
         .limit(100);
 
       const leaderboard = [];
-      users.forEach(async user => {
+      for (let i = 0; i < users.length; i++) {
+        const user = users[i];
         let zipCode;
         if (user.zipCode) {
           zipCode = await ZipCode.findOne({
@@ -43,7 +44,7 @@ module.exports = {
           crewCount: user.crewCount,
           city: zipCode ? zipCode.primaryCity : null,
         });
-      });
+      }
 
       return exits.success({
         leaderboard,
