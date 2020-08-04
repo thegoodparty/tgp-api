@@ -97,6 +97,7 @@ module.exports.routes = {
 
   'GET    /api/v1/candidates/find': 'candidates/find',
   'GET    /api/v1/candidates/find-by-bloc': 'candidates/find-by-bloc',
+  'GET    /api/v1/candidates/all': 'candidates/all',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 

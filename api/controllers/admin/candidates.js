@@ -73,13 +73,6 @@ module.exports = {
           }
         }
 
-        // if (candidate.id === 57 && chamber === 'house') {
-        //   console.log('---------', candidate.name, '-----------');
-        //   console.log('cand', candidate);
-        //   console.log('incumbent', incumbent);
-        //   console.log('incumbentRaised', incumbentRaised);
-        // }
-
         const {
           isGood,
           isBigMoney,

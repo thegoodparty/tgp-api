@@ -42,18 +42,12 @@ module.exports = {
 
       const user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
-        return exits.badRequest({
-          message: `${email} is not in our system.`,
-          notexists: true,
-        });
+        return exits.badRequest({});
       }
       try {
         await sails.helpers.passwords.checkPassword(password, user.password);
       } catch (e) {
-        return exits.badRequest({
-          message: 'incorrect password',
-          incorrect: true,
-        });
+        return exits.badRequest({});
       }
 
       const token = await sails.helpers.jwtSign({
