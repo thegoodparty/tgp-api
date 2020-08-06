@@ -145,7 +145,7 @@ const sendEmail = async (reqEmail, email) => {
                       <tr>
                         <td>
                           <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                            Hi ${user.name}!,<br/> <br>
+                            Hi ${user.name}!<br/> <br>
                           </p>
                         </td>
                       </tr>
