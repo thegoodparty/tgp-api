@@ -26,10 +26,9 @@ module.exports = {
         content,
       });
     } catch (e) {
+      await sails.helpers.errorLoggerHelper('error getting file from s3', e);
       console.log('error getting file from s3', e);
-      return exits.badRequest({
-        message: 'error getting file from s3',
-      });
+      throw new Error(`error getting file from s3`, e);
     }
   },
 };

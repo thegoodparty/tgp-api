@@ -56,7 +56,7 @@ module.exports = {
       });
       return exits.success({ user, token });
     } catch (err) {
-      // await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
+      await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
       console.log('login error');
       console.log(err);
       return exits.badRequest({

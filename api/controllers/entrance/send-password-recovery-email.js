@@ -110,10 +110,10 @@ module.exports = {
         message: 'email sent.',
       });
     } catch (e) {
-      // await sails.helpers.errorLoggerHelper(
-      //   'Error at entrance/send-password-recovery-email',
-      //   e,
-      // );
+      await sails.helpers.errorLoggerHelper(
+        'Error at entrance/send-password-recovery-email',
+        e,
+      );
       console.log('password recvovery error', e);
       return exits.badRequest({ message: 'Password Recovery error' });
     }
