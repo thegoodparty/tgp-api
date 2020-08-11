@@ -19,6 +19,7 @@ module.exports.routes = {
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
+  'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',
   'POST   /api/v1/entrance/register': 'entrance/register',
   'GET   /api/v1/entrance/resend-verify-email': 'entrance/resend-verify-email',
   'PUT    /api/v1/entrance/verify-phone': 'entrance/verify-phone',

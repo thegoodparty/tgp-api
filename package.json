@@ -15,6 +15,7 @@
     "google-auth-library": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "4.17.19",
+    "login-with-twitter": "^1.2.3",
     "mailgun.js": "^2.0.1",
     "nodemon": "^1.19.1",
     "request": "^2.88.0",
