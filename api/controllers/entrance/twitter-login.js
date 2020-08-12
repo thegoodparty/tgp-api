@@ -13,7 +13,12 @@ module.exports = {
   description:
     'Login user with email and password. Return the user and jwt access token.',
 
-  inputs: {},
+  inputs: {
+    uuid: {
+      type: 'string',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -28,22 +33,22 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const returnUrl = 'https://dev.thegoodparty.org/twitter-callback';
+      const { uuid } = inputs;
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      const returnUrl = `${appBase}/twitter-callback`;
       const tw = new LoginWithTwitter({
         consumerKey:
           sails.config.custom.twitterApiKey || sails.config.twitterApiKey,
         consumerSecret:
           sails.config.custom.twitterSecretKey || sails.config.twitterSecretKey,
         callbackUrl: returnUrl,
+        withEmail: true
       });
 
       tw.login(async (err, tokenSecret, url) => {
-        console.log(err);
-        console.log(tokenSecret);
-        console.log(url);
         if (err) {
           // Handle the error your way
-          console.log('error');
+          console.log('error', err);
           await sails.helpers.errorLoggerHelper(
             'Error at entrance/twitter-login',
             err,
@@ -52,6 +57,16 @@ module.exports = {
             message: 'Twitter Login Error',
           });
         }
+        const key = `twitter-token-${uuid}`;
+        // save token to the keyValue table
+        await KeyValue.findOrCreate(
+          { key },
+          {
+            key,
+            value: tokenSecret,
+          },
+        );
+        await KeyValue.updateOne({ key }).set({ value: tokenSecret });
 
         return exits.success({
           url,
