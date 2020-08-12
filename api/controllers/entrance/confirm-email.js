@@ -34,13 +34,13 @@ module.exports = {
     const userRecord = await User.findOne({ email: lowerCaseEmail });
     if (!userRecord) {
       return exits.badRequest({
-        message: 'Failed to confirm email',
+        message: 'Failed to confirm email. Missing email.',
       });
     }
 
     if (userRecord.emailConfToken !== token) {
       return exits.badRequest({
-        message: 'Failed to confirm email',
+        message: 'Failed to confirm email. Invalid token.',
       });
     }
     const isExpired =
