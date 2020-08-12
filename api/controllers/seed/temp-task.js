@@ -1,3 +1,5 @@
+const cdThreshold = require('../../../data/cdThreshold');
+
 module.exports = {
   friendlyName: 'Seed',
 
@@ -18,12 +20,29 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const users = await User.find().populate('crew');
-      for (let i = 0; i < users.length; i++) {
-        const user = users[i];
-        await User.updateOne({ id: user.id }).set({
-          crewCount: user.crew.length + 1,
+      const cds = await CongDistrict.find();
+      for (let i = 0; i < cds.length; i++) {
+        const cd = cds[i];
+
+        const stateId = cd.state;
+        const state = await State.findOne({
+          id: stateId,
         });
+
+        const cdKey = `${state.shortName}-${cd.code}`;
+        const threshold = cdThreshold[cdKey];
+        let writeInThreshold;
+        let writeInThresholdWithPresident;
+        if (threshold) {
+          writeInThreshold = threshold.writeInThreshold;
+          writeInThresholdWithPresident =
+            threshold.writeInThresholdWithPresident;
+
+          await CongDistrict.updateOne({ id: cd.id }).set({
+            writeInThreshold,
+            writeInThresholdWithPresident,
+          });
+        }
       }
       return exits.success({
         message: 'ok',

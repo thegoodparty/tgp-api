@@ -87,7 +87,7 @@ module.exports = {
         chamber,
         candidate: candidateId,
         rank,
-        userState: reqUser.shortState || '',
+        userState: reqUser.shortState || 'NA',
         isIncumbent,
       });
       let { candidate } = await sails.helpers.candidateFinder(
@@ -169,19 +169,19 @@ const sendRankingEmail = async (candidate, user) => {
                           </p>
                         </td>
                       </tr>
-                      
+
                       <tr>
                         <td>
                             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
                               Thank you for joining <strong>${blocName}</strong> to see if we can get <strong>${
     candidate.name
-  }</strong> elected as <strong>${asChamber}</strong>. 
+  }</strong> elected as <strong>${asChamber}</strong>.
                               <br/>
                               <br/>
-                              We will let you know how this race progresses.  
+                              We will let you know how this race progresses.
                               In the meanwhile please help spread the word and grow support for this campaign.
                               <br/><br/>
-                              Share this link with friends to grow support:<br/> 
+                              Share this link with friends to grow support:<br/>
                               <a href="${shareLink}">${shareLink}</a>
                             </p>
                          </td>
@@ -192,28 +192,28 @@ const sendRankingEmail = async (candidate, user) => {
                         <td>
                           <br/><br/><br/>
                           <a href="${twitterFollowLink}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
-                            Follow ${blocName} on Twitter                             
+                            Follow ${blocName} on Twitter
                           </a>
                         </td>
                       </tr>`
                           : ''
                       }
-                      
+
                       ${
                         candidate.website
                           ? `<tr>
                         <td>
                           <br/><br/><br/>
                           <a href="${candidate.website}">
-                            Visit ${candidate.name} Campaign Website                             
+                            Visit ${candidate.name} Campaign Website
                           </a>
                         </td>
                       </tr>`
                           : ''
                       }
-                      
-                      
-                      
+
+
+
                     </table>`;
   const messageHeader = '';
   await sails.helpers.mailgunSender(
