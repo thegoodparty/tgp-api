@@ -81,35 +81,35 @@ module.exports = {
   },
   'ca-1': {
     writeInThresholdWithPresident: 197813,
-    writeInThreshold: 320093,
+    writeInThreshold: 160046,
   },
   'ca-10': {
     writeInThresholdWithPresident: 192227,
-    writeInThreshold: 231891,
+    writeInThreshold: 115945,
   },
   'ca-11': {
     writeInThresholdWithPresident: 214869,
-    writeInThreshold: 408739,
+    writeInThreshold: 204369,
   },
   'ca-12': {
     writeInThresholdWithPresident: 274036,
-    writeInThreshold: 550585,
+    writeInThreshold: 275292,
   },
   'ca-13': {
     writeInThresholdWithPresident: 293118,
-    writeInThreshold: 521161,
+    writeInThreshold: 260580,
   },
   'ca-14': {
     writeInThresholdWithPresident: 231631,
-    writeInThreshold: 422769,
+    writeInThreshold: 211384,
   },
   'ca-15': {
     writeInThresholdWithPresident: 198579,
-    writeInThreshold: 355979,
+    writeInThreshold: 177989,
   },
   'ca-16': {
     writeInThresholdWithPresident: 146482,
-    writeInThreshold: 164533,
+    writeInThreshold: 82266,
   },
   'ca-17': {
     writeInThresholdWithPresident: 168908,
@@ -117,179 +117,179 @@ module.exports = {
   },
   'ca-18': {
     writeInThresholdWithPresident: 230461,
-    writeInThreshold: 450285,
+    writeInThreshold: 159105,
   },
   'ca-19': {
     writeInThresholdWithPresident: 181803,
-    writeInThreshold: 324993,
+    writeInThreshold: 162496,
   },
   'ca-2': {
     writeInThresholdWithPresident: 254195,
-    writeInThreshold: 486163,
+    writeInThreshold: 243081,
   },
   'ca-20': {
     writeInThresholdWithPresident: 180981,
-    writeInThreshold: 367355,
+    writeInThreshold: 183677,
   },
   'ca-21': {
     writeInThresholdWithPresident: 143499,
-    writeInThreshold: 209816,
+    writeInThreshold: 57239,
   },
   'ca-22': {
     writeInThresholdWithPresident: 188505,
-    writeInThreshold: 234487,
+    writeInThreshold: 117243,
   },
   'ca-23': {
     writeInThresholdWithPresident: 171404,
-    writeInThreshold: 262227,
+    writeInThreshold: 131113,
   },
   'ca-24': {
     writeInThresholdWithPresident: 174493,
-    writeInThreshold: 333101,
+    writeInThreshold: 166550,
   },
   'ca-25': {
     writeInThresholdWithPresident: 144661,
-    writeInThreshold: 266419,
+    writeInThreshold: 133209,
   },
   'ca-26': {
     writeInThresholdWithPresident: 169249,
-    writeInThreshold: 316433,
+    writeInThreshold: 158216,
   },
   'ca-27': {
     writeInThresholdWithPresident: 168978,
-    writeInThreshold: 321009,
+    writeInThreshold: 160504,
   },
   'ca-28': {
     writeInThresholdWithPresident: 210884,
-    writeInThreshold: 393325,
+    writeInThreshold: 196662,
   },
   'ca-29': {
     writeInThresholdWithPresident: 146199,
-    writeInThreshold: 249395,
+    writeInThreshold: 124697,
   },
   'ca-3': {
     writeInThresholdWithPresident: 155425,
-    writeInThreshold: 269751,
+    writeInThreshold: 134875,
   },
   'ca-30': {
     writeInThresholdWithPresident: 211735,
-    writeInThreshold: 383147,
+    writeInThreshold: 191573,
   },
   'ca-31': {
     writeInThresholdWithPresident: 121071,
-    writeInThreshold: 220287,
+    writeInThreshold: 110143,
   },
   'ca-32': {
     writeInThresholdWithPresident: 130143,
-    writeInThreshold: 243519,
+    writeInThreshold: 121759,
   },
   'ca-33': {
     writeInThresholdWithPresident: 219398,
-    writeInThreshold: 438183,
+    writeInThreshold: 219091,
   },
   'ca-34': {
     writeInThresholdWithPresident: 122843,
-    writeInThreshold: 220391,
+    writeInThreshold: 110195,
   },
   'ca-35': {
     writeInThresholdWithPresident: 150779,
-    writeInThreshold: 206841,
+    writeInThreshold: 103420,
   },
   'ca-36': {
     writeInThresholdWithPresident: 171949,
-    writeInThreshold: 244339,
+    writeInThreshold: 122169,
   },
   'ca-37': {
     writeInThresholdWithPresident: 207040,
-    writeInThreshold: 421111,
+    writeInThreshold: 210555,
   },
   'ca-38': {
     writeInThresholdWithPresident: 163591,
-    writeInThreshold: 278377,
+    writeInThreshold: 139188,
   },
   'ca-39': {
     writeInThresholdWithPresident: 150778,
-    writeInThreshold: 252005,
+    writeInThreshold: 126002,
   },
   'ca-4': {
     writeInThresholdWithPresident: 220134,
-    writeInThreshold: 368803,
+    writeInThreshold: 184401,
   },
   'ca-40': {
     writeInThresholdWithPresident: 144924,
-    writeInThreshold: 187877,
+    writeInThreshold: 93938,
   },
   'ca-41': {
     writeInThresholdWithPresident: 159487,
-    writeInThreshold: 216455,
+    writeInThreshold: 108227,
   },
   'ca-42': {
     writeInThresholdWithPresident: 158405,
-    writeInThreshold: 262081,
+    writeInThreshold: 131040,
   },
   'ca-43': {
     writeInThresholdWithPresident: 167018,
-    writeInThreshold: 304545,
+    writeInThreshold: 152272,
   },
   'ca-44': {
     writeInThresholdWithPresident: 129938,
-    writeInThreshold: 195889,
+    writeInThreshold: 97944,
   },
   'ca-45': {
     writeInThresholdWithPresident: 182619,
-    writeInThreshold: 317813,
+    writeInThreshold: 158906,
   },
   'ca-46': {
     writeInThresholdWithPresident: 149819,
-    writeInThreshold: 204557,
+    writeInThreshold: 102278,
   },
   'ca-47': {
     writeInThresholdWithPresident: 154760,
-    writeInThreshold: 286709,
+    writeInThreshold: 143354,
   },
   'ca-48': {
     writeInThresholdWithPresident: 178702,
-    writeInThreshold: 315675,
+    writeInThreshold: 157837,
   },
   'ca-49': {
     writeInThresholdWithPresident: 159726,
-    writeInThreshold: 332907,
+    writeInThreshold: 166453,
   },
   'ca-5': {
     writeInThresholdWithPresident: 224527,
-    writeInThreshold: 411721,
+    writeInThreshold: 205860,
   },
   'ca-50': {
     writeInThresholdWithPresident: 179938,
-    writeInThreshold: 268725,
+    writeInThreshold: 134362,
   },
   'ca-51': {
     writeInThresholdWithPresident: 148282,
-    writeInThreshold: 219055,
+    writeInThreshold: 109527,
   },
   'ca-52': {
     writeInThresholdWithPresident: 181254,
-    writeInThreshold: 377985,
+    writeInThreshold: 188992,
   },
   'ca-53': {
     writeInThresholdWithPresident: 198989,
-    writeInThreshold: 371335,
+    writeInThreshold: 185667,
   },
   'ca-6': {
     writeInThresholdWithPresident: 229673,
-    writeInThreshold: 324823,
+    writeInThreshold: 162411,
   },
   'ca-7': {
     writeInThresholdWithPresident: 170963,
-    writeInThreshold: 310033,
+    writeInThreshold: 155016,
   },
   'ca-8': {
     writeInThresholdWithPresident: 204997,
-    writeInThreshold: 204831,
+    writeInThreshold: 102415,
   },
   'ca-9': {
     writeInThresholdWithPresident: 238916,
-    writeInThreshold: 226829,
+    writeInThreshold: 113414,
   },
   'co-1': {
     writeInThresholdWithPresident: 257255,
