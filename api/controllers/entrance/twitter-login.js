@@ -37,17 +37,25 @@ module.exports = {
         callbackUrl: returnUrl,
       });
 
-      tw.login((err, tokenSecret, url) => {
+      tw.login(async (err, tokenSecret, url) => {
         console.log(err);
         console.log(tokenSecret);
         console.log(url);
         if (err) {
           // Handle the error your way
           console.log('error');
+          await sails.helpers.errorLoggerHelper(
+            'Error at entrance/twitter-login',
+            err,
+          );
+          return exits.badRequest({
+            message: 'Twitter Login Error',
+          });
         }
-      });
-      return exits.success({
-        m: 'm',
+
+        return exits.success({
+          url,
+        });
       });
     } catch (err) {
       console.log('twitter login error');
