@@ -4,9 +4,8 @@
  * @description :: Server-side controller action for handling incoming requests.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
-const request = require('request-promise');
 const LoginWithTwitter = require('login-with-twitter');
-const get = require('simple-get');
+const Twitter = require('twitter-lite');
 
 module.exports = {
   friendlyName: 'Login user',
@@ -43,19 +42,47 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { uuid, oauthToken, oauthVerifier } = inputs;
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const returnUrl = `${appBase}/twitter-callback`;
-      const tw = new LoginWithTwitter({
-        consumerKey:
-          sails.config.custom.twitterApiKey || sails.config.twitterApiKey,
-        consumerSecret:
-          sails.config.custom.twitterSecretKey || sails.config.twitterSecretKey,
-        callbackUrl: returnUrl,
+      const consumerKey =
+        sails.config.custom.twitterApiKey || sails.config.twitterApiKey;
+      const consumerSecret =
+        sails.config.custom.twitterSecretKey || sails.config.twitterSecretKey;
+
+      const client = new Twitter({
+        consumer_key: consumerKey,
+        consumer_secret: consumerSecret,
+        include_email: true,
       });
 
-      const key = `twitter-token-${uuid}`;
-      const tokenSecret = await KeyValue.findOne({ key });
+      const res = await client.getAccessToken({
+        oauth_verifier: oauthVerifier,
+        oauth_token: oauthToken,
+      });
 
+      const client2 = new Twitter({
+        consumer_key: consumerKey,
+        consumer_secret: consumerSecret,
+        access_token_key: res.oauth_token,
+        access_token_secret: res.oauth_token_secret,
+      });
+
+      const credentials = await client2.get('account/verify_credentials', {
+        include_email: true,
+        skip_status: true,
+        include_entities: true,
+      });
+      console.log('results2', credentials);
+      const user = {
+        email: credentials.email,
+        name: credentials.name,
+        image: credentials.profile_image_url_https
+          ? credentials.profile_image_url_https.replace('_normal', '')
+          : '',
+        accessTokenKey: res.oauth_token,
+        accessTokenSecret: res.oauth_token_secret,
+      };
+      console.log(user);
+
+      /*
       tw.callback(
         {
           oauth_token: oauthToken,
@@ -68,56 +95,25 @@ module.exports = {
             console.log(err);
           }
 
-          // Delete the tokenSecret securely
-
-          // The user object contains 4 key/value pairs, which
-          // you should store and use as you need, e.g. with your
-          // own calls to Twitter's API, or a Twitter API module
-          // like `twitter` or `twit`.
-          // user = {
-          //   userId,
-          //   userName,
-          //   userToken,
-          //   userTokenSecret
-          // }
           console.log('user', user);
 
-          // call get credentials to get email and image
-          // https://developer.twitter.com/en/docs/accounts-and-users/manage-account-settings/api-reference/get-account-verify_credentials
-          const requestData = {
-            url: 'https://api.twitter.com/1.1/account/verify_credentials.json',
-            method: 'GET',
-            data: {
-              oauth_token: oauthToken,
-              oauth_token_secret: tokenSecret,
-              include_entities: true,
-              include_email: true,
-            },
-          };
+          const client = new Twitter({
+            consumer_key: consumerKey, // from Twitter.
+            consumer_secret: consumerSecret, // from Twitter.
+            access_token_key: oauthToken, // from your User (oauth_token)
+            access_token_secret: tokenSecret, // from your User (oauth_token_secret)
+            include_email: true,
+          });
 
-          get.concat(
-            {
-              url: requestData.url,
-              method: requestData.method,
-              form: requestData.data,
-              headers: tw._oauth.toHeader(tw._oauth.authorize(requestData)),
-            },
-            (err, res, data) => {
-              // console.log('err', err);
-              // console.log('res', res);
-              res.pipe(process.stdout)
-              return exits.success({
-                user: user,
-              });
-            },
-          );
-          // const userWithCredentials = await request({
-          //   ...requestData,
-          //   headers: tw._oauth.toHeader(tw._oauth.authorize(requestData)),
-          //   form: requestData.data,
-          // });
+          client
+            .get('account/verify_credentials')
+            .then(results => {
+              console.log('results', results);
+            })
+            .catch(console.error);
         },
       );
+      */
     } catch (err) {
       console.log('twitter login error');
       console.log(err);

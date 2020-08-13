@@ -26,7 +26,8 @@
     "sails-hook-sockets": "^1.5.5",
     "sails-postgresql": "^1.0.2",
     "skipper-s3": "^0.6.0",
-    "twilio": "^3.33.1"
+    "twilio": "^3.33.1",
+    "twitter-lite": "^0.14.0"
   },
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
