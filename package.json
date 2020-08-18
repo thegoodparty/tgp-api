@@ -9,6 +9,7 @@
     "@tyriar/binary-heap": "^1.0.5",
     "aws-sdk": "^2.595.0",
     "contentful": "^7.10.0",
+    "cross-env": "^7.0.2",
     "csv-parser": "^2.3.2",
     "eslint": "^6.0.1",
     "global": "^4.4.0",
@@ -34,8 +35,8 @@
     "prettier": "^1.18.2"
   },
   "scripts": {
-    "start": "NODE_ENV=production node app.js",
-    "dev": "NODE_ENV=development nodemon app.js",
+    "start": "cross-env NODE_ENV=production node app.js",
+    "dev": "cross-env NODE_ENV=development nodemon app.js",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
     "lint-fix": "eslint --fix",
