@@ -4,11 +4,6 @@ module.exports = {
   description: 'get refresh token and updated user',
 
   inputs: {
-    token: {
-      type: 'string',
-      description: 'old token',
-      required: true,
-    },
   },
 
   exits: {
@@ -23,9 +18,7 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const oldToken = inputs.token;
-    const decoded = await sails.helpers.jwtVerify(oldToken);
-    const user = decoded.data;
+    const user = this.req.user;
     const userWithZip = await User.findOne({ id: user.id });
     const userZipCode = await ZipCode.findOne({
       id: userWithZip.zipCode,

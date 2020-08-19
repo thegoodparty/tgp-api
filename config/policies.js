@@ -32,5 +32,4 @@ module.exports.policies = {
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
-  'user/token-refresh': true,
 };
