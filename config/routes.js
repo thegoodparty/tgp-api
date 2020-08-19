@@ -27,12 +27,12 @@ module.exports.routes = {
   'GET    /api/v1/entrance/zip-to-district': 'entrance/zip-to-district',
   'GET    /api/v1/entrance/address-to-district': 'entrance/address-to-district',
   'PUT    /api/v1/entrance/confirm-email': 'entrance/confirm-email',
-
   'POST   /api/v1/entrance/send-password-recovery-email':
     'entrance/send-password-recovery-email',
 
   'PUT   /api/v1/entrance/reset-password': 'entrance/reset-password',
 
+  
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
   'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
@@ -51,7 +51,8 @@ module.exports.routes = {
   'GET   /api/v1/user/ranking': 'user/ranking/user-ranking',
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
-
+  'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
+  
   'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
 
   'GET    /api/v1/admin/candidates': 'admin/candidates',
