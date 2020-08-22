@@ -51,7 +51,7 @@ module.exports = {
       console.log(err);
       await sails.helpers.errorLoggerHelper(
         'Error at entrance/twitter-login',
-        e,
+        err,
       );
       return exits.badRequest({
         message: 'Twitter Login Error',
