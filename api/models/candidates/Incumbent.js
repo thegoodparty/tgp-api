@@ -51,7 +51,7 @@ module.exports = {
     isHidden: {
       type: 'boolean',
       allowNull: false,
-      defaultsTo: false
+      defaultsTo: false,
     },
     isApproved: {
       type: 'boolean',
@@ -101,6 +101,14 @@ module.exports = {
       allowNull: true,
     },
     blocName: {
+      type: 'string',
+      allowNull: true,
+    },
+    candidateInfo: {
+      type: 'string',
+      allowNull: true,
+    },
+    keyMessages: {
       type: 'string',
       allowNull: true,
     },

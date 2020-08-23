@@ -93,6 +93,10 @@ module.exports = {
           console.log('scrape: running twitter followers seed');
           request(`${prodBase}/seed/seed-twitter-followers`);
           request(`${devBase}/seed/seed-twitter-followers`);
+        } else if (sitemapName === 'ballotpedia-cand-profile') {
+          console.log('scrape: running ballotpedia-cand-profile seed');
+          request(`${prodBase}/seed/seed-ballotpedia-cand-profile`);
+          request(`${devBase}/seed/seed-ballotpedia-cand-profile`);
         }
         return exits.success({ message: 'ok' });
       }

@@ -100,6 +100,14 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    candidateInfo: {
+      type: 'string',
+      allowNull: true,
+    },
+    keyMessages: {
+      type: 'string',
+      allowNull: true,
+    },
   },
 
   customToJSON: function() {
