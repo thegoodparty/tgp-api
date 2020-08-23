@@ -32,7 +32,8 @@
   "devDependencies": {
     "@sailshq/eslint": "^4.19.3",
     "eslint-config-universe": "^1.0.7",
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "dot-prop": ">=4.2.1"
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production node app.js",
