@@ -29,6 +29,7 @@ module.exports.custom = {
     ADMIN: 30,
   },
   adminPhones: ['3109759102'],
+  // adminEmails: ['webdeveloper671213@gmail.com'],
   jwtSecret: 'Xd3*+Hzu9(LF^DN,',
 
   /***************************************************************************
