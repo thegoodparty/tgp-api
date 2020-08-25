@@ -29,7 +29,8 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      if (!sails.config.custom.appBase.includes('dev.thegoodparty.org')) {
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      if (!appBase.includes('dev.thegoodparty.org')) {
         return exits.forbidden({
           message: 'This action is allowed only on dev.',
         });
