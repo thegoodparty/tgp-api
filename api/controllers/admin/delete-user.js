@@ -21,13 +21,20 @@ module.exports = {
       description: 'Error Deleting User',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'This action is allowed only on dev.',
+      responseType: 'forbidden',
+    },
   },
 
   fn: async function(inputs, exits) {
     try {
+      if (!sails.config.custom.appBase.includes('dev.thegoodparty.org')) {
+        return exits.forbidden({
+          message: 'This action is allowed only on dev.',
+        });
+      }
       const { id } = inputs;
-      // first make sure the user doesn't have that ranking already.
-
       const user = await User.findOne({
         id,
       });

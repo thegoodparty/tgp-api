@@ -19,7 +19,6 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const users = await User.find();
-
       return exits.success({
         users,
       });
