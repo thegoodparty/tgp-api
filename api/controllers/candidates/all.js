@@ -23,20 +23,24 @@ module.exports = {
       }).sort([{ isIncumbent: 'DESC' }, { combinedRaised: 'DESC' }]);
 
       const senateIncumbents = await Incumbent.find({
+        isHidden: false,
         isActive: true,
         chamber: 'Senate',
       }).sort([{ raised: 'DESC' }]);
       const senateCands = await RaceCandidate.find({
+        isHidden: false,
         isActive: true,
         chamber: 'Senate',
       }).sort([{ raised: 'DESC' }]);
 
       const houseIncumbents = await Incumbent.find({
+        isHidden: false,
         isActive: true,
         chamber: 'House',
       }).sort([{ raised: 'DESC' }]);
 
       const houseCands = await RaceCandidate.find({
+        isHidden: false,
         isActive: true,
         chamber: 'House',
       }).sort([{ raised: 'DESC' }]);
