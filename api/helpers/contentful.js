@@ -105,10 +105,11 @@ const mapEvent = (fields, id) => {
     eventDuration,
     presenter,
     location,
+    video,
   } = fields;
   if (presenter) {
   }
-
+  console.log('video', video);
   flatResponse.id = id;
   flatResponse.title = title;
   flatResponse.dateAndTime = dateAndTime;
@@ -122,6 +123,9 @@ const mapEvent = (fields, id) => {
     flatResponse.presenter = name;
     flatResponse.presenterTitle = title;
     flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
+  }
+  if (video) {
+    flatResponse.video = extractMediaFile(video);
   }
   return flatResponse;
 };
