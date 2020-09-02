@@ -73,11 +73,10 @@ module.exports = {
           chamber: 'senate',
           isIncumbent: candidate.isIncumbent,
         });
-        candidate.ranking = ranking + candidate.twitterFollowers;
-        if (ranking + candidate.twitterFollowers > topRank) {
-          topRank = ranking + candidate.twitterFollowers;
+        candidate.ranking = ranking;
+        if (ranking > topRank) {
+          topRank = ranking;
         }
-        candidate = _.omit(candidate, 'twitterFollowers');
       }
 
       for (let i = 0; i < sortedCandidates.candidates.unknown.length; i++) {
@@ -87,11 +86,10 @@ module.exports = {
           chamber: 'senate',
           isIncumbent: candidate.isIncumbent,
         });
-        candidate.ranking = ranking + candidate.twitterFollowers;
-        if (ranking + candidate.twitterFollowers > topRank) {
-          topRank = ranking + candidate.twitterFollowers;
+        candidate.ranking = ranking;
+        if (ranking > topRank) {
+          topRank = ranking;
         }
-        candidate = _.omit(candidate, 'twitterFollowers');
       }
 
       // if good is empty, check for empty bloc ranking
