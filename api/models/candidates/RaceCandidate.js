@@ -108,6 +108,10 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    likelyVoters: {
+      type: 'number',
+      defaultsTo: 0,
+    },
   },
 
   customToJSON: function() {

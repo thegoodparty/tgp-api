@@ -112,6 +112,10 @@ module.exports = {
       type: 'string',
       allowNull: true,
     },
+    likelyVoters: {
+      type: 'number',
+      defaultsTo: 0,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

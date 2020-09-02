@@ -39,11 +39,15 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, chamber, isIncumbent} = inputs;
+      const { id, chamber, isIncumbent } = inputs;
       let candidate;
 
       if (chamber === 'presidential') {
-        candidate = await PresidentialCandidate.findOne({ id, isActive: true, isHidden: false, });
+        candidate = await PresidentialCandidate.findOne({
+          id,
+          isActive: true,
+          isHidden: false,
+        });
       } else {
         const upperChamber = chamber.charAt(0).toUpperCase() + chamber.slice(1);
         if (isIncumbent) {
@@ -134,10 +138,9 @@ module.exports = {
         }
       }
 
-      const candidateCombinedRanking = _.omit(candidate, 'twitterFollowers');
       return exits.success({
-        ...candidateCombinedRanking,
-        rankingCount: rankingCount + candidate.twitterFollowers,
+        ...candidate,
+        rankingCount: rankingCount,
         votesNeeded,
       });
     } catch (e) {
