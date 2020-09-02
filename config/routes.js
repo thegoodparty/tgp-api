@@ -83,7 +83,8 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-twitter-followers': 'seed/seed-twitter-followers',
   'GET    /api/v1/seed/seed-ballotpedia-cand-profile':
     'seed/seed-ballotpedia-cand-profile',
-  'GET    /api/v1/seed/seed-likely-voters': 'seed/seed-likely-voters',
+  'GET    /api/v1/seed/seed-likely-voters-house': 'seed/seed-likely-voters-house',
+  'GET    /api/v1/seed/seed-likely-voters-senate': 'seed/seed-likely-voters-senate',
   'GET    /api/v1/seed/temp-task': 'seed/temp-task',
 
   'GET    /api/v1/district/state': 'district/state',

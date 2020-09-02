@@ -23,7 +23,7 @@ module.exports = {
       const results = [];
       // load district csv and convert it to an array.
       fs.createReadStream(
-        path.join(__dirname, '../../../data/likely-voters-house.csv'),
+        path.join(__dirname, '../../../data/likely-voters-senate.csv'),
       )
         .pipe(csv())
         .on('data', async data => {
@@ -46,15 +46,12 @@ module.exports = {
 };
 
 const mapState = csvRow => {
-  const stateDistrict = csvRow['state-district'];
-  const likelyVoters = parseInt(csvRow['min-2nd'], 10);
-  let [state, district] = stateDistrict.split('-');
+  const { state, min2nd } = csvRow;
+  const likelyVoters = parseInt(min2nd, 10);
   const lowercaseState = state.toLowerCase();
-  district = parseInt(district, 10);
 
   return {
     lowercaseState,
-    district,
     likelyVoters,
   };
 };
@@ -64,12 +61,20 @@ const createEntries = async rows => {
   for (let i = 0; i < rows.length; i++) {
     try {
       row = rows[i];
-      const { lowercaseState, district, likelyVoters } = row;
-      if (district) {
-        await RaceCandidate.update({ state: lowercaseState, district }).set({
-          likelyVoters,
-        });
-      }
+      const { lowercaseState, likelyVoters } = row;
+      await RaceCandidate.update({
+        state: lowercaseState,
+        chamber: 'Senate',
+      }).set({
+        likelyVoters,
+      });
+
+      await Incumbent.update({
+        state: lowercaseState,
+        chamber: 'Senate',
+      }).set({
+        likelyVoters,
+      });
 
       console.log('completed row ' + i + ' state: ' + lowercaseState);
     } catch (e) {
