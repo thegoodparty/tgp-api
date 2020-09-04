@@ -129,10 +129,5 @@ lib-cov
 *.log
 *.out
 *.pid
-.elasticbeanstalk
 
 
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
