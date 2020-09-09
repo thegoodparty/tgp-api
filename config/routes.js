@@ -67,6 +67,8 @@ module.exports.routes = {
   'POST   /api/v1/admin/candidate': 'admin/create-candidate',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
   'PUT   /api/v1/admin/candidate-image': 'admin/update-candidate-image',
+  'PUT   /api/v1/admin/division': 'admin/edit-division',
+  'GET   /api/v1/admin/divisions': 'admin/all-divisions',
 
   'GET    /api/v1/seed/seed': 'seed/seed',
   'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',
