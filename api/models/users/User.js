@@ -101,6 +101,11 @@ module.exports = {
       description: 'Uploaded avatar image',
     },
 
+    voteStatus: {
+      type: 'string',
+      description: 'Voter Status - null, verified, registered',
+    },
+
     password: {
       type: 'string',
       description:

@@ -41,6 +41,12 @@ module.exports = {
       type: 'string',
       maxLength: 5,
     },
+
+    voteStatus: {
+      description: 'Vote Status',
+      required: false,
+      type: 'string',
+    },
   },
 
   exits: {
@@ -57,10 +63,10 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { name, email, feedback, phone, zip } = inputs;
-      if (!name && !email && !feedback && !zip && !phone) {
+      const { name, email, feedback, phone, zip, voteStatus } = inputs;
+      if (!name && !email && !feedback && !zip && !phone && !voteStatus) {
         return exits.badRequest({
-          message: 'Name, Feedback, Zip or Email are required',
+          message: 'Name, Feedback, Zip ,voteStatus or Email are required',
         });
       }
 
@@ -77,6 +83,11 @@ module.exports = {
       }
       if (phone) {
         updateFields.phone = phone;
+      }
+      if (voteStatus) {
+        if (reqUser.voteStatus !== 'registered') {
+          updateFields.voteStatus = voteStatus;
+        }
       }
       if (zip) {
         let zipCode = await ZipCode.findOne({ zip });
@@ -149,12 +160,12 @@ const sendEmail = async (reqEmail, email) => {
                           </p>
                         </td>
                       </tr>
-                      
+
                       <tr>
                         <td>
                             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                              Welcome to The Good Party!  Please tap to 
-                              <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">confirm your email</a>, 
+                              Welcome to The Good Party!  Please tap to
+                              <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}">confirm your email</a>,
                               so we can get you counted.
                             </p>
                          </td>
@@ -163,7 +174,7 @@ const sendEmail = async (reqEmail, email) => {
                         <td>
                           <br/><br/><br/>
                           <a href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
-                            Confirm Email                              
+                            Confirm Email
                           </a>
                         </td>
                       </tr>
