@@ -51,6 +51,8 @@ module.exports.routes = {
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
+  'GET   /api/v1/user/voterize/register-to-vote':
+    'user/voterize/register-to-vote',
 
   'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
 
@@ -85,8 +87,10 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-twitter-followers': 'seed/seed-twitter-followers',
   'GET    /api/v1/seed/seed-ballotpedia-cand-profile':
     'seed/seed-ballotpedia-cand-profile',
-  'GET    /api/v1/seed/seed-likely-voters-house': 'seed/seed-likely-voters-house',
-  'GET    /api/v1/seed/seed-likely-voters-senate': 'seed/seed-likely-voters-senate',
+  'GET    /api/v1/seed/seed-likely-voters-house':
+    'seed/seed-likely-voters-house',
+  'GET    /api/v1/seed/seed-likely-voters-senate':
+    'seed/seed-likely-voters-senate',
   'GET    /api/v1/seed/temp-task': 'seed/temp-task',
 
   'GET    /api/v1/district/state': 'district/state',
