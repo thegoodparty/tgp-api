@@ -79,8 +79,9 @@ module.exports = {
           isIncumbent: candidate.isIncumbent,
         });
         candidate.ranking = ranking;
-        if (ranking > topRank) {
-          topRank = ranking;
+        const { likelyVoters } = candidate;
+        if (ranking + likelyVoters > topRank) {
+          topRank = ranking + likelyVoters;
         }
       }
 
@@ -92,8 +93,9 @@ module.exports = {
           isIncumbent: candidate.isIncumbent,
         });
         candidate.ranking = ranking;
-        if (ranking> topRank) {
-          topRank = ranking;
+        const { likelyVoters } = candidate;
+        if (ranking + likelyVoters > topRank) {
+          topRank = ranking + likelyVoters;
         }
       }
 
@@ -104,6 +106,7 @@ module.exports = {
           chamber: 'house',
           isIncumbent: false,
         });
+
         if (ranking > topRank) {
           topRank = ranking;
         }
