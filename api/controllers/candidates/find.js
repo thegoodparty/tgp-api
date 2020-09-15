@@ -111,36 +111,10 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
 
-      let votesNeeded;
-      if (chamber === 'presidential') {
-        votesNeeded = 38658139;
-      } else if (chamber === 'senate') {
-        const stateRecord = await State.findOne({ shortName: candidate.state });
-        if (stateRecord) {
-          votesNeeded =
-            Math.max(
-              stateRecord.writeInThreshold,
-              stateRecord.writeInThresholdWithPresident,
-            ) + 1;
-        }
-      } else {
-        const stateRecord = await State.findOne({ shortName: candidate.state });
-        const congDistrict = await CongDistrict.findOne({
-          state: stateRecord.id,
-          code: candidate.district,
-        });
-        if (congDistrict) {
-          votesNeeded =
-            Math.max(
-              congDistrict.writeInThreshold,
-              congDistrict.writeInThresholdWithPresident,
-            ) + 1;
-        }
-      }
-
+      let votesNeeded = await sails.helpers.votesNeeded(chamber, candidate.state, candidate.district);
       return exits.success({
         ...candidate,
-        rankingCount: rankingCount,
+        rankingCount,
         votesNeeded,
       });
     } catch (e) {
