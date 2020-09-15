@@ -208,7 +208,6 @@ module.exports = {
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   },
-
   /**************************************************************************
    *                                                                          *
    * Set up Socket.io for your production environment.                        *
