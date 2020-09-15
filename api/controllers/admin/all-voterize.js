@@ -19,7 +19,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      let { candidates } = await sails.helpers.voterizeCandidates();
+      const { candidates } = await sails.helpers.voterizeCandidates();
       return exits.success({
         candidates,
       });

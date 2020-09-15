@@ -42,22 +42,16 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { candidate, likelyVoters, votesNeeded } = inputs;
-      const { chamber, state, district } = candidate;
+      const { chamber, state, district, id } = candidate;
       const lowerChamber = chamber.toLowerCase();
       let newVotesNeeded;
       if(likelyVoters) {
         if (lowerChamber === 'presidential') {
-          await PresidentialCandidate.updateOne({
-            id: candidate.id,
-          }).set({likelyVoters});
+          await PresidentialCandidate.updateOne({ id }).set({likelyVoters});
         } else if (isIncumbent) {
-          await Incumbent.updateOne({
-            id: candidate.id,
-          }).set({likelyVoters});
+          await Incumbent.updateOne({ id }).set({likelyVoters});
         } else {
-          await RaceCandidate.updateOne({
-            id: candidate.id,
-          }).set({likelyVoters});
+          await RaceCandidate.updateOne({ id }).set({likelyVoters});
         }
       }
       else {
@@ -69,18 +63,17 @@ module.exports = {
                 shortName: state,
               }).set({writeInThreshold: votesNeeded - 1});
               newVotesNeeded = Math.max(
-                votesNeeded,
-                stateRecord.writeInThresholdWithPresident,
-              ) + 1;
-            }
-            else {
+                  votesNeeded,
+                  stateRecord.writeInThresholdWithPresident,
+                ) + 1;
+            } else {
               await State.updateOne({
                 shortName: state,
               }).set({writeInThresholdWithPresident: votesNeeded - 1});
               newVotesNeeded = Math.max(
-                votesNeeded,
-                stateRecord.writeInThreshold,
-              ) + 1;
+                  votesNeeded,
+                  stateRecord.writeInThreshold,
+                ) + 1;
             }
             
           }
@@ -97,19 +90,18 @@ module.exports = {
                 code: district
               }).set({writeInThreshold: votesNeeded - 1});
               newVotesNeeded = Math.max(
-                votesNeeded,
-                congDistrict.writeInThresholdWithPresident,
-              ) + 1;
-            }
-            else {
+                  votesNeeded,
+                  congDistrict.writeInThresholdWithPresident,
+                ) + 1;
+            } else {
               await CongDistrict.updateOne({
                 state: stateRecord.id,
                 code: district
               }).set({writeInThresholdWithPresident: votesNeeded - 1});
               newVotesNeeded = Math.max(
-                votesNeeded,
-                congDistrict.writeInThreshold,
-              ) + 1;
+                  votesNeeded,
+                  congDistrict.writeInThreshold,
+                ) + 1;
             }
           }
       }
