@@ -34,7 +34,11 @@ module.exports = {
         id: challengersIdList
       }).sort([{ raised: 'DESC' }]);
       for(let i = 0; i < goodChallengers.length; i++) {
-        const { chamber, state, district } = goodChallengers[i];
+        let { chamber, state, district } = goodChallengers[i];
+        if(chamber === 'Senate') {
+          district = null;
+          goodChallengers[i]['district'] = null;
+        }
         goodChallengers[i]['votesNeeded'] = await sails.helpers.votesNeeded(chamber, state, district);
         const { incumbent } = await sails.helpers.incumbentByDistrictHelper(
           state,
