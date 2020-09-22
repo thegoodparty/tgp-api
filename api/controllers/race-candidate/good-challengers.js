@@ -27,19 +27,22 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const challengersIdList = [161, 421, 859, 86, 656, 1132, 503]
+      const challengersIdList = [161, 421, 859, 86, 656, 1132, 503];
       const goodChallengers = await RaceCandidate.find({
         isActive: true,
         isHidden: false,
-        id: challengersIdList
+        id: challengersIdList,
       }).sort([{ raised: 'DESC' }]);
-      for(let i = 0; i < goodChallengers.length; i++) {
+      for (let i = 0; i < goodChallengers.length; i++) {
         let { chamber, state, district } = goodChallengers[i];
-        if(chamber === 'Senate') {
-          district = null;
+        if (chamber === 'Senate') {
           goodChallengers[i]['district'] = null;
         }
-        goodChallengers[i]['votesNeeded'] = await sails.helpers.votesNeeded(chamber, state, district);
+        goodChallengers[i]['votesNeeded'] = await sails.helpers.votesNeeded(
+          chamber,
+          state,
+          district,
+        );
         const { incumbent } = await sails.helpers.incumbentByDistrictHelper(
           state,
           district,
@@ -47,11 +50,12 @@ module.exports = {
         goodChallengers[i]['incumbentRaised'] = incumbent['raised'];
       }
       return exits.success({
-        goodChallengers
+        goodChallengers,
       });
     } catch (err) {
+      console.log(err);
       return exits.badRequest({
-        message: 'Error getting divisions.',
+        message: 'race-candidates/good-challengers error',
       });
     }
   },

@@ -31,10 +31,13 @@ module.exports = {
         }
       } else {
         const stateRecord = await State.findOne({ shortName: state });
-        const congDistrict = await CongDistrict.findOne({
-          state: stateRecord.id,
-          code: district,
-        });
+        let congDistrict;
+        if (stateRecord) {
+          congDistrict = await CongDistrict.findOne({
+            state: stateRecord.id,
+            code: district,
+          });
+        }
         if (congDistrict) {
           votesNeeded =
             Math.max(
@@ -45,9 +48,8 @@ module.exports = {
       }
       return exits.success(votesNeeded);
     } catch (e) {
-      return exits.badRequest({
-        message: 'Error calculating candidate numbers',
-      });
+      console.log(e);
+      throw e;
     }
   },
 };
