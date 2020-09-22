@@ -117,5 +117,6 @@ module.exports.routes = {
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
-  'POST    /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
+  'POST   /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
+  'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 };

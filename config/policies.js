@@ -32,4 +32,5 @@ module.exports.policies = {
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
+  'subscribe/*': true
 };
