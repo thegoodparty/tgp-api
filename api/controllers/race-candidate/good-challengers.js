@@ -36,7 +36,7 @@ module.exports = {
       for (let i = 0; i < goodChallengers.length; i++) {
         let { chamber, state, district } = goodChallengers[i];
         if (chamber === 'Senate') {
-          goodChallengers[i]['district'] = null;
+          goodChallengers[i]['district'] = undefined;
         }
         goodChallengers[i]['votesNeeded'] = await sails.helpers.votesNeeded(
           chamber,
@@ -45,7 +45,7 @@ module.exports = {
         );
         const { incumbent } = await sails.helpers.incumbentByDistrictHelper(
           state,
-          district,
+          goodChallengers[i]['district'],
         );
         goodChallengers[i]['incumbentRaised'] = incumbent['raised'];
       }
