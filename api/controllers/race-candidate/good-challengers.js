@@ -54,8 +54,35 @@ module.exports = {
         );
         goodChallengers[i]['incumbentRaised'] = incumbent['raised'];
       }
+      const cleanChallengers = [];
+      goodChallengers.forEach(challenger => {
+        const {
+          id,
+          district,
+          image,
+          incumbentRaised,
+          likelyVoters,
+          name,
+          party,
+          raised,
+          state,
+          votesNeeded,
+        } = challenger;
+        cleanChallengers.push({
+          id,
+          district,
+          image,
+          incumbentRaised,
+          likelyVoters,
+          name,
+          party,
+          raised,
+          state,
+          votesNeeded,
+        });
+      });
       return exits.success({
-        goodChallengers,
+        goodChallengers: cleanChallengers,
       });
     } catch (err) {
       console.log(err);
