@@ -7,12 +7,12 @@
 
 const mailchimp = require("@mailchimp/mailchimp_marketing");
 
-const api_key = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
+const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
 const server = sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
 
 mailchimp.setConfig({
-  apiKey: api_key,
-  server: server
+  apiKey,
+  server
 });
 
 module.exports = {
@@ -54,7 +54,7 @@ module.exports = {
 
 const subscribeEmail = async email => {
   const subscribingUser = {
-    email: email
+    email
   };
   const { lists } = await mailchimp.lists.getAllLists()
   const tgpList = lists.find(list => list.name === 'The Good Party');
