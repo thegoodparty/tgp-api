@@ -50,7 +50,8 @@ module.exports.routes = {
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
-
+  'GET   /api/v1/user/voterize/register-to-vote': 'user/voterize/register-to-vote',
+  
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
   'GET    /api/v1/admin/users': 'admin/all-users',
