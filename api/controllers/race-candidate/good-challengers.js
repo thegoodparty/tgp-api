@@ -32,7 +32,7 @@ module.exports = {
         isActive: true,
         isHidden: false,
         id: challengersIdList,
-      }).sort([{ raised: 'DESC' }]);
+      });
       for (let i = 0; i < goodChallengers.length; i++) {
         let { chamber, state, district } = goodChallengers[i];
         if (chamber === 'Senate') {
