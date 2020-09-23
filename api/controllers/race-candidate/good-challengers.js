@@ -35,7 +35,7 @@ module.exports = {
       });
       goodChallengers.sort((a, b) => {
         return (
-          challengersIdList.indexIf(a.id) - challengersIdList.indexIf(b.id)
+          challengersIdList.indexOf(a.id) - challengersIdList.indexOf(b.id)
         );
       });
       for (let i = 0; i < goodChallengers.length; i++) {
