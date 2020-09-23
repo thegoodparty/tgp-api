@@ -33,6 +33,11 @@ module.exports = {
         isHidden: false,
         id: challengersIdList,
       });
+      goodChallengers.sort((a, b) => {
+        return (
+          challengersIdList.indexIf(a.id) - challengersIdList.indexIf(b.id)
+        );
+      });
       for (let i = 0; i < goodChallengers.length; i++) {
         let { chamber, state, district } = goodChallengers[i];
         if (chamber === 'Senate') {
