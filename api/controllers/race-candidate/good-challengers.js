@@ -68,6 +68,7 @@ module.exports = {
           state,
           votesNeeded,
           chamber,
+          smallContributions,
         } = challenger;
         cleanChallengers.push({
           id,
@@ -81,6 +82,7 @@ module.exports = {
           state,
           votesNeeded,
           chamber,
+          smallContributions
         });
       });
       return exits.success({
