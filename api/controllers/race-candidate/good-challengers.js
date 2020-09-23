@@ -27,7 +27,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const challengersIdList = [161, 421, 859, 86, 656, 1132, 503];
+      const challengersIdList = [161, 421, 859, 86, 656, 1132, 503, 1239];
       const goodChallengers = await RaceCandidate.find({
         isActive: true,
         isHidden: false,
