@@ -22,7 +22,7 @@ module.exports = {
       //   openSecretsId: '123',
       //   name: 'Jo Jorgensen',
       //   party: 'LP',
-      //   image: 'http://assets.thegoodparty.org/candidates/jorgenson.jpg',
+      //   image: 'https://assets.thegoodparty.org/candidates/jorgenson.jpg',
       //   combinedRaised: 22365,
       //   smallContributions: 0,
       //   campaignReportDate: 'March 31, 2020',
