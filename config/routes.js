@@ -23,7 +23,6 @@ module.exports.routes = {
   'PUT    /api/v1/entrance/twitter-confirm': 'entrance/twitter-confirm',
   'POST   /api/v1/entrance/register': 'entrance/register',
   'GET   /api/v1/entrance/resend-verify-email': 'entrance/resend-verify-email',
-  'PUT    /api/v1/entrance/verify-phone': 'entrance/verify-phone',
   'GET    /api/v1/entrance/zip-to-district': 'entrance/zip-to-district',
   'GET    /api/v1/entrance/address-to-district': 'entrance/address-to-district',
   'PUT    /api/v1/entrance/confirm-email': 'entrance/confirm-email',
@@ -51,26 +50,15 @@ module.exports.routes = {
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
-  'GET   /api/v1/user/voterize/register-to-vote':
-    'user/voterize/register-to-vote',
-
-  'GET    /api/v1/pledges/user-pledges': 'pledges/user-pledges',
-
+  'GET   /api/v1/user/voterize/register-to-vote': 'user/voterize/register-to-vote',
+  
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
-  'PUT    /api/v1/admin/make-admin': 'admin/make-admin',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/users': 'admin/delete-user',
-  'GET    /api/v1/admin/thresholds': 'admin/thresholds',
-  'GET    /api/v1/admin/cd-with-count': 'admin/cd-with-count',
-  'GET    /api/v1/admin/senate-with-count': 'admin/senate-with-count',
-  'GET    /api/v1/admin/cd-weekly-trend': 'admin/cd-weekly-trend',
-  'GET    /api/v1/admin/senate-weekly-trend': 'admin/senate-weekly-trend',
   'POST   /api/v1/admin/candidate': 'admin/create-candidate',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
   'PUT   /api/v1/admin/candidate-image': 'admin/update-candidate-image',
-  'PUT   /api/v1/admin/division': 'admin/edit-division',
-  'GET   /api/v1/admin/divisions': 'admin/all-divisions',
   'GET   /api/v1/admin/voterize': 'admin/all-voterize',
   'PUT   /api/v1/admin/voterize': 'admin/update-voterize',
 
@@ -94,10 +82,6 @@ module.exports.routes = {
   'GET    /api/v1/seed/seed-likely-voters-senate':
     'seed/seed-likely-voters-senate',
   'GET    /api/v1/seed/temp-task': 'seed/temp-task',
-
-  'GET    /api/v1/district/state': 'district/state',
-  'GET    /api/v1/district/total-supporters': 'district/total-supporters',
-  'GET    /api/v1/district/cong-district': 'district/cong-district',
 
   'GET    /api/v1/incumbent/find-by-district': 'incumbent/find-by-district',
   'GET    /api/v1/incumbent/to-scrape': 'incumbent/to-scrape',
