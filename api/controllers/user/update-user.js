@@ -41,12 +41,6 @@ module.exports = {
       type: 'string',
       maxLength: 5,
     },
-
-    voteStatus: {
-      description: 'Vote Status',
-      required: false,
-      type: 'string',
-    },
   },
 
   exits: {
@@ -63,10 +57,10 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { name, email, feedback, phone, zip, voteStatus } = inputs;
-      if (!name && !email && !feedback && !zip && !phone && !voteStatus) {
+      const { name, email, feedback, phone, zip } = inputs;
+      if (!name && !email && !feedback && !zip && !phone) {
         return exits.badRequest({
-          message: 'Name, Feedback, Zip ,voteStatus or Email are required',
+          message: 'Name, Feedback, Zip or Email are required',
         });
       }
 
@@ -84,11 +78,7 @@ module.exports = {
       if (phone) {
         updateFields.phone = phone;
       }
-      if (voteStatus) {
-        if (reqUser.voteStatus !== 'registered') {
-          updateFields.voteStatus = voteStatus;
-        }
-      }
+
       if (zip) {
         let zipCode = await ZipCode.findOne({ zip });
         if (zipCode) {
