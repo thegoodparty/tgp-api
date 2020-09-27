@@ -51,7 +51,7 @@ module.exports.routes = {
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
   'GET   /api/v1/user/voterize/register-to-vote': 'user/voterize/register-to-vote',
-  
+
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
   'GET    /api/v1/admin/users': 'admin/all-users',
@@ -103,4 +103,7 @@ module.exports.routes = {
 
   'POST   /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
+
+  'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
+
 };
