@@ -156,6 +156,12 @@ module.exports = {
       description: 'array of house candidates IDs',
     },
 
+    voteStatus: {
+      type: 'string',
+      required: false,
+      description: 'voting status - null, verified, na',
+    },
+
     // adding (denormalized) state and district for quick lookups.
     shortState: {
       type: 'string',

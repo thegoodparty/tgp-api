@@ -122,6 +122,15 @@ module.exports = {
           message: response.error,
         });
       }
+      if (response.data && response.data.registration_status) {
+        const status = response.data.registration_status;
+        const user = this.req.user;
+        if (status === 'Active') {
+          await User.updateOne({ id: user.id }).set({ voteStatus: 'verified' });
+        } else if (status === 'ZIP Not Yet Supported') {
+          await User.updateOne({ id: user.id }).set({ voteStatus: 'na' });
+        }
+      }
 
       return exits.success({
         message: response.data,
