@@ -161,6 +161,31 @@ module.exports = {
       required: false,
       description: 'voting status - null, verified, na',
     },
+    // more fields from voterize
+    firstName: {
+      type: 'string',
+    },
+    middleName: {
+      type: 'string',
+    },
+    lastName: {
+      type: 'string',
+    },
+    suffix: {
+      type: 'string',
+    },
+    dob: {
+      type: 'string',
+      description: 'ISO 8601, e.g. "2020-07-22"',
+    },
+    address: {
+      type: 'string',
+    },
+
+    city: {
+      type: 'string',
+    },
+    // end voterize fields
 
     // adding (denormalized) state and district for quick lookups.
     shortState: {
