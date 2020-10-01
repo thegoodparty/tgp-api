@@ -4,12 +4,71 @@ module.exports = {
   description: 'update name and email for a logged in user.',
 
   inputs: {
+    firstName: {
+      description: 'First Name',
+      example: 'John',
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+
+    lastName: {
+      description: 'Last Name',
+      example: 'Smith',
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+
+    middleName: {
+      description: 'Middle Name',
+      example: 'J.',
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+
+    suffix: {
+      description: 'Suffix',
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+
     name: {
       description: 'Full Name',
       example: 'John Smith',
       required: false,
       type: 'string',
       maxLength: 120,
+    },
+
+    address: {
+      description: 'Address',
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+
+    city: {
+      description: 'City',
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+
+    shortState: {
+      description: 'State Abbreviation',
+      required: false,
+      type: 'string',
+      maxLength: 4,
+    },
+
+    dob: {
+      description: 'Date of Birth',
+      required: false,
+      type: 'string',
+      maxLength: 20,
     },
 
     email: {
@@ -41,6 +100,13 @@ module.exports = {
       type: 'string',
       maxLength: 5,
     },
+
+    voteStatus: {
+      description: 'Vote Status',
+      required: false,
+      type: 'string',
+      maxLength: 15,
+    }
   },
 
   exits: {
@@ -57,7 +123,21 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { name, email, feedback, phone, zip } = inputs;
+      const {
+        firstName,
+        lastName,
+        middleName,
+        suffix,
+        city,
+        shortState,
+        address,
+        dob,
+        name,
+        email,
+        feedback,
+        phone,
+        zip,
+      } = inputs;
       if (!name && !email && !feedback && !zip && !phone) {
         return exits.badRequest({
           message: 'Name, Feedback, Zip or Email are required',
@@ -65,6 +145,33 @@ module.exports = {
       }
 
       const updateFields = {};
+      if (firstName) {
+        updateFields.firstName = firstName;
+      }
+      if (lastName) {
+        updateFields.lastName = lastName;
+      }
+      if (firstName && lastName) {
+        updateFields.name = `${firstName} ${lastName}`;
+      }
+      if (middleName) {
+        updateFields.middleName = middleName;
+      }
+      if (suffix) {
+        updateFields.suffix = suffix;
+      }
+      if (address) {
+        updateFields.address = address;
+      }
+      if (city) {
+        updateFields.city = city;
+      }
+      if (shortState) {
+        updateFields.shortState = shortState;
+      }
+      if (dob) {
+        updateFields.dob = dob;
+      }
       if (name) {
         updateFields.name = name;
       }
@@ -78,7 +185,9 @@ module.exports = {
       if (phone) {
         updateFields.phone = phone;
       }
-
+      if(voteStatus) {
+        updateFields.voteStatus = voteStatus;
+      }
       if (zip) {
         let zipCode = await ZipCode.findOne({ zip });
         if (zipCode) {
