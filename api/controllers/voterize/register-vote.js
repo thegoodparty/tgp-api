@@ -13,50 +13,47 @@ module.exports = {
   description: 'Register user to vote using voteAmerica using',
 
   inputs: {
-    // firstName: {
-    //   type: 'string',
-    //   required: true,
-    // },
-    // middleName: {
-    //   type: 'string',
-    //   required: false,
-    // },
-    // lastName: {
-    //   type: 'string',
-    //   required: true,
-    // },
-    // dob: {
-    //   type: 'string',
-    //   required: true,
-    //   description: 'ISO 8601, e.g. "2020-07-22"',
-    // },
-    // email: {
-    //   type: 'string',
-    //   required: true,
-    //   isEmail: true,
-    // },
-    // address1: {
-    //   type: 'string',
-    //   required: true,
-    // },
-    // address2: {
-    //   type: 'string',
-    //   required: false,
-    // },
-    // city: {
-    //   type: 'string',
-    //   required: true,
-    // },
-    // state: {
-    //   type: 'string',
-    //   required: true,
-    //   description:
-    //     'Two-character state code, e.g. "MA". 50 states + "DC" are supported.',
-    // },
-    // zip: {
-    //   type: 'string',
-    //   required: true,
-    // },
+    firstName: {
+      type: 'string',
+      required: true,
+    },
+    middleName: {
+      type: 'string',
+      required: false,
+    },
+    lastName: {
+      type: 'string',
+      required: true,
+    },
+    dob: {
+      type: 'string',
+      required: true,
+      description: 'ISO 8601, e.g. "2020-07-22"',
+    },
+    email: {
+      type: 'string',
+      required: true,
+      isEmail: true,
+    },
+    address: {
+      type: 'string',
+      required: true,
+    },
+
+    city: {
+      type: 'string',
+      required: true,
+    },
+    state: {
+      type: 'string',
+      required: true,
+      description:
+        'Two-character state code, e.g. "MA". 50 states + "DC" are supported.',
+    },
+    zip: {
+      type: 'string',
+      required: true,
+    },
   },
 
   exits: {
@@ -78,22 +75,21 @@ module.exports = {
         lastName,
         dob,
         email,
-        address1,
-        address2,
+        address,
         city,
         state,
         zip,
       } = inputs;
 
       const form = {
-        first_name: 'Tomer',
-        last_name: 'Almog',
-        date_of_birth: '2020-04-24',
-        email: 'tomeralmog@gmail.com',
-        address1: '6656 Langdon Ave',
-        city: 'Van Nuys',
-        state: 'CA',
-        zipcode: '90048',
+        first_name: firstName,
+        last_name: lastName,
+        date_of_birth: dob,
+        email,
+        address1: address,
+        city,
+        state,
+        zipcode: zip,
         sms_opt_in: true,
       };
 

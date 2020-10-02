@@ -105,5 +105,6 @@ module.exports.routes = {
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
+  'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
 
 };

@@ -29,6 +29,7 @@ module.exports = {
     },
     dob: {
       type: 'string',
+      required: true,
       description: 'ISO 8601, e.g. "2020-07-22"',
     },
     address: {
@@ -122,13 +123,13 @@ module.exports = {
           message: response.error,
         });
       }
-      let voterStatus = '';
+      let voteStatus = '';
       if (response.data && response.data.registration_status) {
         const status = response.data.registration_status;
         if (status === 'Active') {
-          voterStatus = 'verified';
+          voteStatus = 'verified';
         } else if (status === 'ZIP Not Yet Supported') {
-          voterStatus = 'na';
+          voteStatus = 'na';
         }
       }
       const user = this.req.user;
@@ -140,12 +141,12 @@ module.exports = {
         dob,
         address,
         city,
-        voterStatus,
+        voteStatus,
       };
       await User.updateOne({ id: user.id }).set(updateFields);
 
       return exits.success({
-        message: response.data,
+        voteStatus,
       });
     } catch (e) {
       console.log('error at voterize/verify-vote');
