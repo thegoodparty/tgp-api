@@ -17,7 +17,7 @@ module.exports = {
     try {
       const { chamber, state, district } = inputs;
       const lowerChamber = chamber.toLowerCase();
-      let votesNeeded;
+      let votesNeeded=0;
       if (lowerChamber === 'presidential') {
         votesNeeded = 38658139;
       } else if (lowerChamber === 'senate') {

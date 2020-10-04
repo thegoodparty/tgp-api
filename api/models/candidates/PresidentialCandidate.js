@@ -106,6 +106,15 @@ module.exports = {
       type: 'number',
       defaultsTo: 0,
     },
+
+    initialShares: {
+      type: 'number',
+      defaultsTo: 0,
+    },
+    shares: {
+      type: 'number',
+      defaultsTo: 0,
+    },
   },
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

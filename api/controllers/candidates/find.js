@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 const votesThreshold = require('../../../data/presidentialThreshold');
+const timeago = require('time-ago');
 
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',
@@ -103,6 +104,28 @@ module.exports = {
         isIncumbent,
       });
 
+      const recentlyJoinedRecords = await Ranking.find({
+        candidate: candidate.id,
+        chamber,
+        isIncumbent,
+      }).populate('user');
+
+      const recentlyJoined = [];
+      for (let i = 0; i < recentlyJoinedRecords.length; i++) {
+        const rankWithUser = recentlyJoinedRecords[i];
+        const { user } = rankWithUser;
+        const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
+        const name = await sails.helpers.fullFirstLastInitials(user.name);
+        const district = `${user.city} ${
+          user.shortState ? user.shortState.toUpperCase() : ''
+        }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
+        recentlyJoined.push({
+          timeAgo,
+          name,
+          district,
+        });
+      }
+
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
         chamber,
@@ -111,11 +134,16 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
 
-      let votesNeeded = await sails.helpers.votesNeeded(chamber, candidate.state, candidate.district);
+      let votesNeeded = await sails.helpers.votesNeeded(
+        chamber,
+        candidate.state,
+        candidate.district,
+      );
       return exits.success({
         ...candidate,
         rankingCount,
         votesNeeded,
+        recentlyJoined,
       });
     } catch (e) {
       await sails.helpers.errorLoggerHelper('Error at candidates/find', e);

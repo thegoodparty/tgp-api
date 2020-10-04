@@ -34,9 +34,10 @@ module.exports = {
             id: user.zipCode,
           });
         }
+        const fullFirstLastInitials = await sails.helpers.fullFirstLastInitials(user.name)
         leaderboard.push({
           avatar: user.avatar,
-          name: fullFirstLastInitials(user.name),
+          name: fullFirstLastInitials,
           uuid: user.uuid,
           shortState: user.shortState,
           districtNumber: user.districtNumber,
@@ -57,7 +58,7 @@ module.exports = {
     }
   },
 };
-
+/*
 function fullFirstLastInitials(name) {
   if (!name || typeof name !== 'string') {
     return '';
@@ -71,3 +72,4 @@ function fullFirstLastInitials(name) {
   }
   return '';
 }
+*/

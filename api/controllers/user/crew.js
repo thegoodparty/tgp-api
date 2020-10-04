@@ -54,9 +54,12 @@ module.exports = {
             id: userCrew.zipCode,
           });
         }
+        const fullFirstLastInitials = await sails.helpers.fullFirstLastInitials(
+          userCrew.name,
+        );
         crew.push({
           avatar: userCrew.avatar,
-          name: fullFirstLastInitials(userCrew.name),
+          name: fullFirstLastInitials,
           uuid: userCrew.uuid,
           shortState: userCrew.shortState,
           districtNumber: userCrew.districtNumber,
@@ -82,7 +85,7 @@ module.exports = {
     }
   },
 };
-
+/*
 function fullFirstLastInitials(name) {
   if (!name || typeof name !== 'string') {
     return '';
@@ -96,3 +99,4 @@ function fullFirstLastInitials(name) {
   }
   return '';
 }
+*/
