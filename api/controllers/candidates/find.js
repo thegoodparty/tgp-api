@@ -48,24 +48,31 @@ module.exports = {
           id,
           isActive: true,
           isHidden: false,
-        });
+        }).populate('presCandUpdates');
+        candidate.campaignUpdates = candidate.presCandUpdates;
+        delete candidate.presCandUpdates;
       } else {
         const upperChamber = chamber.charAt(0).toUpperCase() + chamber.slice(1);
         if (isIncumbent) {
           candidate = await Incumbent.findOne({
             id,
             chamber: upperChamber,
-          });
+          }).populate('incumbentUpdates');
           if (candidate) {
             candidate.isIncumbent = true;
+            candidate.campaignUpdates = candidate.incumbentUpdates;
+            delete candidate.incumbentUpdates;
           }
         } else {
+          console.log('id', id);
           candidate = await RaceCandidate.findOne({
             id,
             chamber: upperChamber,
             isActive: true,
             isHidden: false,
-          });
+          }).populate('raceCandUpdates');
+          candidate.campaignUpdates = candidate.raceCandUpdates;
+          delete candidate.raceCandUpdates;
         }
       }
 
@@ -108,7 +115,9 @@ module.exports = {
         candidate: candidate.id,
         chamber,
         isIncumbent,
-      }).populate('user');
+      })
+        .sort([{ createdAt: 'DESC' }])
+        .populate('user');
 
       const recentlyJoined = [];
       for (let i = 0; i < recentlyJoinedRecords.length; i++) {
@@ -133,6 +142,8 @@ module.exports = {
       );
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
+      candidate.shares = candidate.shares + candidate.initialShares;
+      delete candidate.initialShares;
 
       let votesNeeded = await sails.helpers.votesNeeded(
         chamber,

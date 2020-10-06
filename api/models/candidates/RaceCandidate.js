@@ -47,7 +47,7 @@ module.exports = {
     isHidden: {
       type: 'boolean',
       allowNull: false,
-      defaultsTo: false
+      defaultsTo: false,
     },
     isApproved: {
       type: 'boolean',
@@ -120,7 +120,18 @@ module.exports = {
       type: 'number',
       defaultsTo: 0,
     },
+    campaignSummary: {
+      type: 'string',
+    },
+
+    // many to many relationship to campaignUpdates
+    raceCandUpdates: {
+      collection: 'campaignUpdate',
+      via: 'raceCands',
+    },
   },
+
+
 
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

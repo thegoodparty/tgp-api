@@ -10,6 +10,9 @@ module.exports = {
     updatedFields: {
       type: 'json',
     },
+    updates: {
+      type: 'json',
+    },
     chamber: {
       type: 'string',
     },
@@ -31,7 +34,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, updatedFields, chamber, isIncumbent } = inputs;
+      const { id, updatedFields, updates, chamber, isIncumbent } = inputs;
 
       let candidate;
       if (chamber === 'presidential') {
@@ -47,6 +50,50 @@ module.exports = {
         candidate = await RaceCandidate.updateOne({
           id,
         }).set(updatedFields);
+      }
+
+      // updates
+      if (updates) {
+        if (updates.existing) {
+          const existingUpdates = updates.existing;
+          if (existingUpdates.length > 0) {
+            for (let i = 0; i < existingUpdates.length; i++) {
+              const { id, text } = existingUpdates[i];
+              await CampaignUpdate.updateOne({ id }).set({
+                text,
+              });
+            }
+          }
+        }
+        if (updates.newUpdates) {
+          const newUpdates = updates.newUpdates;
+          if (newUpdates.length > 0) {
+            for (let i = 0; i < newUpdates.length; i++) {
+              const update = await CampaignUpdate.create({
+                text: newUpdates[i],
+              }).fetch();
+              if (chamber === 'presidential') {
+                await PresidentialCandidate.addToCollection(
+                  id,
+                  'presCandUpdates',
+                  update.id,
+                );
+              } else if (isIncumbent) {
+                await Incumbent.addToCollection(
+                  id,
+                  'incumbentUpdates',
+                  update.id,
+                );
+              } else {
+                await RaceCandidate.addToCollection(
+                  id,
+                  'raceCandUpdates',
+                  update.id,
+                );
+              }
+            }
+          }
+        }
       }
 
       const { state, district } = candidate || {};
@@ -79,12 +126,44 @@ module.exports = {
       candidate.isBigMoney = isBigMoney;
       candidate.isMajor = isMajor;
 
+      // getting campaign updates
+      let candidateUpdates;
+
+      if (chamber === 'presidential') {
+        candidateUpdates = await PresidentialCandidate.findOne({
+          id,
+          isActive: true,
+          isHidden: false,
+        }).populate('presCandUpdates');
+        candidate.campaignUpdates = candidateUpdates.presCandUpdates;
+      } else {
+        const upperChamber = chamber.charAt(0).toUpperCase() + chamber.slice(1);
+        if (isIncumbent) {
+          candidateUpdates = await Incumbent.findOne({
+            id,
+            chamber: upperChamber,
+          }).populate('incumbentUpdates');
+          candidate.campaignUpdates = candidateUpdates.incumbentUpdates;
+        } else {
+          candidateUpdates = await RaceCandidate.findOne({
+            id,
+            chamber: upperChamber,
+            isActive: true,
+            isHidden: false,
+          }).populate('raceCandUpdates');
+          candidate.campaignUpdates = candidateUpdates.raceCandUpdates;
+        }
+      }
+
       return exits.success({
         candidate,
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at admin/update-candidate', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at admin/update-candidate',
+        e,
+      );
       return exits.badRequest({
         message: 'Error updating candidates',
       });

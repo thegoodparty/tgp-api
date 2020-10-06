@@ -52,7 +52,7 @@ module.exports = {
     isHidden: {
       type: 'boolean',
       allowNull: false,
-      defaultsTo: false
+      defaultsTo: false,
     },
     isApproved: {
       type: 'boolean',
@@ -115,7 +115,17 @@ module.exports = {
       type: 'number',
       defaultsTo: 0,
     },
+    campaignSummary: {
+      type: 'string',
+    },
+
+    // many to many relationship to campaignUpdates
+    presCandUpdates: {
+      collection: 'campaignUpdate',
+      via: 'presCands',
+    },
   },
+
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, ['createdAt', 'updatedAt']);

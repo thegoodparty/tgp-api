@@ -124,7 +124,17 @@ module.exports = {
       type: 'number',
       defaultsTo: 0,
     },
+    campaignSummary: {
+      type: 'string',
+    },
+
+    // many to many relationship to campaignUpdates
+    incumbentUpdates: {
+      collection: 'campaignUpdate',
+      via: 'incumbents',
+    },
   },
+
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, ['createdAt', 'updatedAt', 'needsSecondPass']);
