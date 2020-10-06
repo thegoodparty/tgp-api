@@ -132,14 +132,14 @@ const sendRankingEmail = async (candidate, user) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
   const blocName = await sails.helpers.candidateBlocName(candidate);
 
-  const subject = `You joined ${blocName} on the Good Party`;
+  const subject = `Congrats! You’ve joined the ${candidate.name} crowd-voting campaign on The Good Party`;
   const firstName = user.name.split(' ')[0];
 
   let shareBloc = blocName;
   let asChamber;
   if (!candidate.chamber) {
     asChamber = 'U.S. President';
-  } else if (candidate.chamber === 'senate') {
+  } else if (candidate.chamber === 'Senate') {
     asChamber = `${candidate.state.toUpperCase()} Senator`;
     if (!candidate.isGoodBloc) {
       shareBloc += `-${candidate.state.toUpperCase()}`;
@@ -158,7 +158,7 @@ const sendRankingEmail = async (candidate, user) => {
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
                      <tr>
                         <td><h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
-                            You joined ${blocName} Bloc on the Good Party
+                            You’ve joined the ${candidate.name} crowd-voting campaign on The Good Party
                           </h2>
                         </td>
                       </tr>
@@ -173,9 +173,9 @@ const sendRankingEmail = async (candidate, user) => {
                       <tr>
                         <td>
                             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                              Thank you for joining <strong>${blocName}</strong> to see if we can get <strong>${
+                              Thank you for joining <strong>${candidate.name}</strong> to see if we can get <strong>${
     candidate.name
-  }</strong> elected as <strong>${asChamber}</strong>.
+  }</strong>  elected as <strong>${asChamber}</strong>.
                               <br/>
                               <br/>
                               We will let you know how this race progresses.
