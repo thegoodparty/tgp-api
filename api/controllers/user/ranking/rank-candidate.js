@@ -178,7 +178,8 @@ const sendRankingEmail = async (candidate, user) => {
                                 candidate.name
                               }</strong> tcrowd-voting campaign. Let’s see if we can get enough votes to get them elected!
                               In the meantime, please share this campaign with your friends to grow support:<br/><br/>
-                              <a href="${shareLink}">${shareLink}</a>
+                              <a href="${shareLink}">${shareLink}</a> <br /><br />
+                              We will keep you updated on how this race progresses.
                             </p>
                          </td>
                       </tr>
