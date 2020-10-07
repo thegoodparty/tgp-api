@@ -125,9 +125,21 @@ module.exports = {
         const { user } = rankWithUser;
         const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
         const name = await sails.helpers.fullFirstLastInitials(user.name);
-        const district = `${user.city} ${
+        let city;
+        if (user.city) {
+          city = user.city;
+        } else {
+          if (user.zipCode) {
+            const zipcode = await ZipCode.find({ id: user.zipCode });
+            if (zipcode) {
+              city = zipcode.primaryCity;
+            }
+          }
+        }
+        const district = `${city} ${
           user.shortState ? user.shortState.toUpperCase() : ''
-        }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
+        }${user.districtNumber ? `-${user.districtNumber}` : ''}\`;`;
+
         recentlyJoined.push({
           timeAgo,
           name,
