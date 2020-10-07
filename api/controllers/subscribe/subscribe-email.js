@@ -5,27 +5,27 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const mailchimp = require("@mailchimp/mailchimp_marketing");
+const mailchimp = require('@mailchimp/mailchimp_marketing');
 
 const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
-const server = sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
+const server =
+  sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
 
 mailchimp.setConfig({
   apiKey,
-  server
+  server,
 });
 
 module.exports = {
   friendlyName: 'Subscribe email',
 
-  description:
-    'Subscribe email to mailing list on mailChimp.',
+  description: 'Subscribe email to mailing list on mailChimp.',
 
   inputs: {
     email: {
       required: true,
       type: 'string',
-      isEmail: true
+      isEmail: true,
     },
   },
 
@@ -46,22 +46,27 @@ module.exports = {
       const res = await subscribeEmail(email);
       return exits.success(res);
     } catch (err) {
-      console.log('address to district error');
-      console.log(err);
-      return exits.badRequest({ message: 'Error subscribing email' });
+      if (err && err.response && err.response.text) {
+        const parsedText = JSON.parse(err.response.text);
+        return exits.badRequest({
+          message: `Error: ${parsedText.title}`,
+        });
+      } else {
+        return exits.badRequest({ message: 'Error subscribing email' });
+      }
     }
   },
 };
 
 const subscribeEmail = async email => {
   const subscribingUser = {
-    email
+    email,
   };
-  const { lists } = await mailchimp.lists.getAllLists()
+  const { lists } = await mailchimp.lists.getAllLists();
   const tgpList = lists.find(list => list.name === 'The Good Party');
   const response = await mailchimp.lists.addListMember(tgpList.id, {
     email_address: subscribingUser.email,
-    status: "subscribed",
+    status: 'subscribed',
   });
   return response;
 };
