@@ -58,10 +58,12 @@ module.exports = {
           const existingUpdates = updates.existing;
           if (existingUpdates.length > 0) {
             for (let i = 0; i < existingUpdates.length; i++) {
-              const { id, text } = existingUpdates[i];
-              await CampaignUpdate.updateOne({ id }).set({
-                text,
-              });
+              if (existingUpdates[i] && existingUpdates[i].id) {
+                const { id, text } = existingUpdates[i];
+                await CampaignUpdate.updateOne({ id }).set({
+                  text,
+                });
+              }
             }
           }
         }
