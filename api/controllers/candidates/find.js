@@ -128,7 +128,7 @@ module.exports = {
         const name = await sails.helpers.fullFirstLastInitials(user.name);
         let city = '';
         if (user.city) {
-          city = user.city;
+          city = properCase(user.city);
         } else {
           if (user.zipCode) {
             const zipcode = await ZipCode.findOne({ id: user.zipCode });
@@ -175,4 +175,11 @@ module.exports = {
       return exits.notFound();
     }
   },
+};
+
+const properCase = city => {
+  return city
+    .split(' ')
+    .map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+    .join(' ');
 };
