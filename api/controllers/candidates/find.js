@@ -132,6 +132,7 @@ module.exports = {
           timeAgo,
           name,
           district,
+          avatar: user.avatar,
         });
       }
 
