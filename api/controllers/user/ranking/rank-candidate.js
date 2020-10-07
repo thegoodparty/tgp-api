@@ -132,14 +132,14 @@ const sendRankingEmail = async (candidate, user) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
   const blocName = await sails.helpers.candidateBlocName(candidate);
 
-  const subject = `You joined ${blocName} on the Good Party`;
+  const subject = `Congrats! You’ve joined the ${candidate.name} crowd-voting campaign on The Good Party`;
   const firstName = user.name.split(' ')[0];
 
   let shareBloc = blocName;
   let asChamber;
   if (!candidate.chamber) {
     asChamber = 'U.S. President';
-  } else if (candidate.chamber === 'senate') {
+  } else if (candidate.chamber === 'Senate') {
     asChamber = `${candidate.state.toUpperCase()} Senator`;
     if (!candidate.isGoodBloc) {
       shareBloc += `-${candidate.state.toUpperCase()}`;
@@ -154,11 +154,12 @@ const sendRankingEmail = async (candidate, user) => {
   }
   const shareLink = `${appBase}?u=${user.uuid}&b=${shareBloc}`;
   const twitterHandler = blocName.replace('@', '');
-  const twitterFollowLink = `http://twitter.com/intent/user?screen_name=${twitterHandler}`;
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
                      <tr>
                         <td><h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
-                            You joined ${blocName} Bloc on the Good Party
+                            You’ve joined the ${
+                              candidate.name
+                            } crowd-voting campaign on The Good Party
                           </h2>
                         </td>
                       </tr>
@@ -173,46 +174,15 @@ const sendRankingEmail = async (candidate, user) => {
                       <tr>
                         <td>
                             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                              Thank you for joining <strong>${blocName}</strong> to see if we can get <strong>${
-    candidate.name
-  }</strong> elected as <strong>${asChamber}</strong>.
-                              <br/>
-                              <br/>
-                              We will let you know how this race progresses.
-                              In the meanwhile please help spread the word and grow support for this campaign.
-                              <br/><br/>
-                              Share this link with friends to grow support:<br/>
-                              <a href="${shareLink}">${shareLink}</a>
+                              Thank you for joining <strong>${
+                                candidate.name
+                              }</strong> tcrowd-voting campaign. Let’s see if we can get enough votes to get them elected!
+                              In the meantime, please share this campaign with your friends to grow support:<br/><br/>
+                              <a href="${shareLink}">${shareLink}</a> <br /><br />
+                              We will keep you updated on how this race progresses.
                             </p>
                          </td>
                       </tr>
-                      ${
-                        candidate.twitter
-                          ? `<tr>
-                        <td>
-                          <br/><br/><br/>
-                          <a href="${twitterFollowLink}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
-                            Follow ${blocName} on Twitter
-                          </a>
-                        </td>
-                      </tr>`
-                          : ''
-                      }
-
-                      ${
-                        candidate.website
-                          ? `<tr>
-                        <td>
-                          <br/><br/><br/>
-                          <a href="${candidate.website}">
-                            Visit ${candidate.name} Campaign Website
-                          </a>
-                        </td>
-                      </tr>`
-                          : ''
-                      }
-
-
 
                     </table>`;
   const messageHeader = '';

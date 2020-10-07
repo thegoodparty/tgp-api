@@ -20,32 +20,26 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const cds = await CongDistrict.find();
-      for (let i = 0; i < cds.length; i++) {
-        const cd = cds[i];
-
-        const stateId = cd.state;
-        const state = await State.findOne({
-          id: stateId,
-        });
-
-        const cdKey = `${state.shortName}-${cd.code}`;
-        const threshold = cdThreshold[cdKey];
-        let writeInThreshold;
-        let writeInThresholdWithPresident;
-        if (threshold) {
-          writeInThreshold = threshold.writeInThreshold;
-          writeInThresholdWithPresident =
-            threshold.writeInThresholdWithPresident;
-
-          await CongDistrict.updateOne({ id: cd.id }).set({
-            writeInThreshold,
-            writeInThresholdWithPresident,
+      const cands = await RaceCandidate.find();
+      let counter = 0;
+      for (let i = 0; i < cands.length; i++) {
+        const candidate = cands[i];
+        const { id, campaignWebsite, source } = candidate;
+        if (
+          campaignWebsite &&
+          campaignWebsite.startsWith('https://ballotpedia.org/')
+        ) {
+          const newSource = campaignWebsite;
+          const newWebsite = source;
+          await RaceCandidate.updateOne({ id }).set({
+            source: newSource,
+            campaignWebsite: newWebsite,
           });
+          counter++;
         }
       }
       return exits.success({
-        message: 'ok',
+        message: `updated ${counter} out of ${cands.length}`,
       });
     } catch (e) {
       console.log(e);
