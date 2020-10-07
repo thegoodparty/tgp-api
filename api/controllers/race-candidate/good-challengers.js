@@ -28,10 +28,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       let challengersIdList = [161, 421, 859, 86, 656, 1132, 503, 1239];
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      if (appBase.includes('dev.thegoodparty.org')) {
-        challengersIdList = [265, 245, 117, 422, 2, 333, 211, 369];
-      }
+
       const goodChallengers = await RaceCandidate.find({
         isActive: true,
         isHidden: false,
@@ -86,7 +83,7 @@ module.exports = {
           state,
           votesNeeded,
           chamber,
-          smallContributions
+          smallContributions,
         });
       });
       return exits.success({
