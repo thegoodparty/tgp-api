@@ -138,7 +138,7 @@ module.exports = {
         }
         const district = `${city} ${
           user.shortState ? user.shortState.toUpperCase() : ''
-        }${user.districtNumber ? `-${user.districtNumber}` : ''}\`;`;
+        }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
 
         recentlyJoined.push({
           timeAgo,
