@@ -31,7 +31,7 @@ module.exports = {
         ) {
           const newSource = campaignWebsite;
           const newWebsite = source;
-          await RaceCandidates.updateOne({ id }).set({
+          await RaceCandidate.updateOne({ id }).set({
             source: newSource,
             campaignWebsite: newWebsite,
           });
