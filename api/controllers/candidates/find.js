@@ -156,7 +156,6 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
       candidate.shares = candidate.shares + candidate.initialShares;
-      delete candidate.initialShares;
 
       let votesNeeded = await sails.helpers.votesNeeded(
         chamber,
