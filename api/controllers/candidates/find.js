@@ -64,15 +64,16 @@ module.exports = {
             delete candidate.incumbentUpdates;
           }
         } else {
-          console.log('id', id);
           candidate = await RaceCandidate.findOne({
             id,
             chamber: upperChamber,
             isActive: true,
             isHidden: false,
           }).populate('raceCandUpdates');
-          candidate.campaignUpdates = candidate.raceCandUpdates;
-          delete candidate.raceCandUpdates;
+          if (candidate) {
+            candidate.campaignUpdates = candidate.raceCandUpdates;
+            delete candidate.raceCandUpdates;
+          }
         }
       }
       candidate.campaignUpdates.sort((a, b) => b.createdAt - a.createdAt);
