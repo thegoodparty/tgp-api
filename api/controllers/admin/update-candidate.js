@@ -60,9 +60,11 @@ module.exports = {
             for (let i = 0; i < existingUpdates.length; i++) {
               if (existingUpdates[i] && existingUpdates[i].id) {
                 const { id, text } = existingUpdates[i];
-                await CampaignUpdate.updateOne({ id }).set({
-                  text,
-                });
+                if (text && text !== '') {
+                  await CampaignUpdate.updateOne({ id }).set({
+                    text,
+                  });
+                }
               }
             }
           }
@@ -71,27 +73,29 @@ module.exports = {
           const newUpdates = updates.newUpdates;
           if (newUpdates.length > 0) {
             for (let i = 0; i < newUpdates.length; i++) {
-              const update = await CampaignUpdate.create({
-                text: newUpdates[i],
-              }).fetch();
-              if (chamber === 'presidential') {
-                await PresidentialCandidate.addToCollection(
-                  id,
-                  'presCandUpdates',
-                  update.id,
-                );
-              } else if (isIncumbent) {
-                await Incumbent.addToCollection(
-                  id,
-                  'incumbentUpdates',
-                  update.id,
-                );
-              } else {
-                await RaceCandidate.addToCollection(
-                  id,
-                  'raceCandUpdates',
-                  update.id,
-                );
+              if (newUpdates[i] && newUpdates[i] !== '') {
+                const update = await CampaignUpdate.create({
+                  text: newUpdates[i],
+                }).fetch();
+                if (chamber === 'presidential') {
+                  await PresidentialCandidate.addToCollection(
+                    id,
+                    'presCandUpdates',
+                    update.id,
+                  );
+                } else if (isIncumbent) {
+                  await Incumbent.addToCollection(
+                    id,
+                    'incumbentUpdates',
+                    update.id,
+                  );
+                } else {
+                  await RaceCandidate.addToCollection(
+                    id,
+                    'raceCandUpdates',
+                    update.id,
+                  );
+                }
               }
             }
           }
