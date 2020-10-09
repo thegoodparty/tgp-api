@@ -76,11 +76,11 @@ module.exports = {
           }
         }
       }
-      candidate.campaignUpdates.sort((a, b) => b.createdAt - a.createdAt);
 
       if (!candidate) {
         return exits.notFound();
       }
+      candidate.campaignUpdates.sort((a, b) => b.createdAt - a.createdAt);
 
       let incumbent;
       const { state, district } = candidate || {};
