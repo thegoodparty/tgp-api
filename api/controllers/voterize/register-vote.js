@@ -110,6 +110,13 @@ module.exports = {
       };
 
       const vaResponse = await request(options);
+
+      const res = await request({
+        uri: `https://api.voteamerica.com/v1/event/track/`,
+        method: 'POST',
+        json: true,
+        body: vaResponse.buttons[0].event_tracking,
+      });
       console.log('==================');
       console.log(vaResponse);
       console.log('==================');
