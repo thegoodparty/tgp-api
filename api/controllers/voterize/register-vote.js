@@ -119,10 +119,6 @@ module.exports = {
     } catch (e) {
       console.log('error at user/register-to-vote');
       console.log(e);
-      await sails.helpers.errorLoggerHelper(
-        'Error at user/register-to-vote',
-        e,
-      );
       return exits.badRequest({
         message: 'Error registering user to vote',
       });
