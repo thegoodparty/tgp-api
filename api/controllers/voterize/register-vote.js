@@ -110,16 +110,22 @@ module.exports = {
       };
 
       const vaResponse = await request(options);
-
-      const res = await request({
-        uri: `https://api.voteamerica.com/v1/event/track/`,
-        method: 'POST',
-        json: true,
-        body: vaResponse.buttons[0].event_tracking,
-      });
-      console.log('==================');
-      console.log(vaResponse);
-      console.log('==================');
+      try {
+        await request({
+          uri: `https://api.voteamerica.com/v1/event/track/`,
+          method: 'POST',
+          json: true,
+          body: vaResponse.buttons[0].event_tracking,
+        });
+      } catch (e) {
+        console.log(
+          'error sending track event to VA at /voterize/register-vote',
+        );
+        await sails.helpers.errorLoggerHelper(
+          'error sending track event to VA at /voterize/register-vote',
+          e,
+        );
+      }
       return exits.success({
         vaResponse,
       });
