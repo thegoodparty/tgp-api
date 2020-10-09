@@ -126,21 +126,27 @@ module.exports = {
         const rankWithUser = recentlyJoinedRecords[i];
         const { user } = rankWithUser;
         const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
-        const name = await sails.helpers.fullFirstLastInitials(user.name);
+        let name = '';
+        if (user && user.name) {
+          name = await sails.helpers.fullFirstLastInitials(user.name);
+        }
         let city = '';
-        if (user.city) {
+        if (user && user.city) {
           city = properCase(user.city);
         } else {
-          if (user.zipCode) {
+          if (user && user.zipCode) {
             const zipcode = await ZipCode.findOne({ id: user.zipCode });
             if (zipcode) {
               city = zipcode.primaryCity;
             }
           }
         }
-        const district = `${city} ${
-          user.shortState ? user.shortState.toUpperCase() : ''
-        }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
+        let district = city;
+        if (user) {
+          district = `${city} ${
+            user.shortState ? user.shortState.toUpperCase() : ''
+          }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
+        }
         recentlyJoined.push({
           timeAgo,
           name,
