@@ -164,14 +164,6 @@ const sendRankingEmail = async (candidate, user) => {
       >
         <tr>
           <td>
-            <h2 style="color: #484848; text-align: left; font-size: 33px; line-height: 42px;  margin-top: 24px; margin-bottom: 24px;">
-              You’ve joined the ${candidate.name}'s crowd-voting campaign on The
-              Good Party
-            </h2>
-          </td>
-        </tr>
-        <tr>
-          <td>
             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
               Hi ${firstName},<br /> <br />
             </p>
