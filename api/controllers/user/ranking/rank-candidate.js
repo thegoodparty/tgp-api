@@ -152,8 +152,10 @@ const sendRankingEmail = async (candidate, user) => {
       shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
     }
   }
-  const shareLink = `${appBase}?u=${user.uuid}&b=${shareBloc}`;
-  const twitterHandler = blocName.replace('@', '');
+
+  const route = candidateRoute(candidate);
+  const shareLink = `${appBase}${route}?u=${user.uuid}&share=true`;
+  // const twitterHandler = blocName.replace('@', '');
   const message = `
         <table
         border="0"
@@ -202,4 +204,26 @@ const sendRankingEmail = async (candidate, user) => {
     messageHeader,
     message,
   );
+};
+
+const candidateRoute = candidate => {
+  if (!candidate) {
+    return '/';
+  }
+  const { isIncumbent, chamber } = candidate;
+  const chamberLower = chamber ? chamber.toLowerCase() : 'presidential';
+  const name = slugify(candidate.name);
+  return `/elections/candidate/${chamberLower}${
+    isIncumbent ? '-i' : ''
+  }/${name}/${candidate.id}`;
+};
+
+const slugify = text => {
+  if (!text) {
+    return '';
+  }
+  return text
+    .toLowerCase()
+    .replace(/[^\w ]+/g, '')
+    .replace(/ +/g, '-');
 };
