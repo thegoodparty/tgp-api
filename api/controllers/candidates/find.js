@@ -49,8 +49,10 @@ module.exports = {
           isActive: true,
           isHidden: false,
         }).populate('presCandUpdates');
-        candidate.campaignUpdates = candidate.presCandUpdates;
-        delete candidate.presCandUpdates;
+        if (candidate) {
+          candidate.campaignUpdates = candidate.presCandUpdates;
+          delete candidate.presCandUpdates;
+        }
       } else {
         const upperChamber = chamber.charAt(0).toUpperCase() + chamber.slice(1);
         if (isIncumbent) {
