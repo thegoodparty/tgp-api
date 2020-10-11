@@ -34,14 +34,17 @@ module.exports = {
       const { state, district } = inputs;
       const { incumbent } = await sails.helpers.incumbentByDistrictHelper(
         state,
-        district,
+        parseInt(district, 10),
       );
 
       return exits.success({
         incumbent,
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at incumbent/find-by-district', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at incumbent/find-by-district',
+        e,
+      );
       console.log('Error in find by district', e);
       return exits.notFound();
     }

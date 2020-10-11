@@ -93,7 +93,7 @@ module.exports = {
       } else if (chamber === 'house') {
         ({ incumbent } = await sails.helpers.incumbentByDistrictHelper(
           state,
-          district,
+          parseInt(district, 10),
         ));
       }
 
