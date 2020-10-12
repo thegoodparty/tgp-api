@@ -153,7 +153,7 @@ module.exports = {
           timeAgo,
           name,
           district,
-          avatar: user.avatar,
+          avatar: user ? user.avatar : false,
         });
       }
 
