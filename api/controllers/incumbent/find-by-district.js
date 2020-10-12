@@ -34,7 +34,7 @@ module.exports = {
       const { state, district } = inputs;
       const { incumbent } = await sails.helpers.incumbentByDistrictHelper(
         state,
-        parseInt(district, 10),
+        district ? parseInt(district, 10) : district,
       );
 
       return exits.success({

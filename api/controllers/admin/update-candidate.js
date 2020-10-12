@@ -105,7 +105,7 @@ module.exports = {
       const { state, district } = candidate || {};
       const incumbent = await sails.helpers.incumbentByDistrictHelper(
         state,
-        parseInt(district, 10),
+        district ? parseInt(district, 10) : district,
       );
       let incumbentRaised = 50000000;
       if (chamber !== 'presidential') {
