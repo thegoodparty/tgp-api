@@ -67,21 +67,6 @@ module.exports = {
           message: 'User already ranked this candidate',
         });
       }
-      if (!reqUser.shortState || reqUser.shortState === '') {
-        if (state) {
-          reqUser = await User.updateOne({
-            id: reqUser.id,
-          }).set({
-            shortState: state,
-          });
-        }
-        // else {
-        //   return exits.badRequest({
-        //     message: 'User is missing a state',
-        //     missingState: true,
-        //   });
-        // }
-      }
       await Ranking.create({
         user: reqUser.id,
         chamber,
