@@ -102,34 +102,13 @@ module.exports = {
       if (phone) {
         form.phone_num = phone;
       }
-
-      const alloyKey = sails.config.custom.alloyKey || sails.config.alloyKey;
-      const alloySecret =
-        sails.config.custom.alloySecret || sails.config.alloySecret;
-
-      const options = {
-        uri: `https://api.alloy.us/v1/verify?${serialize(form)}`,
-        method: 'GET',
-        json: true,
-        auth: {
-          user: alloyKey,
-          pass: alloySecret,
-        },
-      };
-
-      const response = await request(options);
-      if (response.error) {
-        return exits.badRequest({
-          message: response.error,
-        });
-      }
       let voteStatus = '';
-      if (response.data && response.data.registration_status) {
-        const status = response.data.registration_status;
-        if (status === 'Active') {
-          voteStatus = 'verified';
-        } else if (status === 'ZIP Not Yet Supported') {
-          voteStatus = 'na';
+      if (state === 'CA') {
+        voteStatus = await targetSmartVerify(form);
+      } else {
+        voteStatus = await alloyVerify(form);
+        if (voteStatus !== 'verified') {
+          voteStatus = await targetSmartVerify(form);
         }
       }
       const user = this.req.user;
@@ -166,4 +145,82 @@ const serialize = obj => {
       str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
     }
   return str.join('&');
+};
+
+const alloyVerify = async form => {
+  const alloyKey = sails.config.custom.alloyKey || sails.config.alloyKey;
+  const alloySecret =
+    sails.config.custom.alloySecret || sails.config.alloySecret;
+
+  const options = {
+    uri: `https://api.alloy.us/v1/verify?${serialize(form)}`,
+    method: 'GET',
+    json: true,
+    auth: {
+      user: alloyKey,
+      pass: alloySecret,
+    },
+  };
+
+  const response = await request(options);
+  if (response.error) {
+    throw 'badRequest';
+  }
+  if (response.data && response.data.registration_status) {
+    const status = response.data.registration_status;
+    if (status === 'Active') {
+      return 'verified';
+    } else if (status === 'ZIP Not Yet Supported') {
+      return 'na';
+    }
+  }
+  return '';
+};
+
+const targetSmartVerify = async form => {
+  const targetSmartKey =
+    sails.config.custom.targetSmartKey || sails.config.targetSmartKey;
+
+  const street_number = form.address ? form.address.match(/\d+/)[0] : null;
+  const street_name = form.address
+    ? form.address.match(/\s[A-z]+\s[A-z]+/)[0].trim()
+    : null;
+  const smartForm = {
+    first_name: form.first_name,
+    last_name: form.last_name,
+    street_number,
+    street_name,
+    city: form.city,
+    state: form.state,
+    zip_code: form.zip,
+    dob: form.birth_date
+      ? `${form.birth_date.substring(0, 4)}****`
+      : form.birth_date,
+    // phone: form.phone_num,
+    unparsed_full_address: `${form.address}, ${form.city}, ${form.state} ${form.zip}`,
+  };
+
+  console.log(smartForm);
+
+  const options = {
+    uri: `https://api.targetsmart.com/voter/voter-registration-check?${serialize(
+      smartForm,
+    )}`,
+    method: 'GET',
+    json: true,
+    headers: {
+      'x-api-key': targetSmartKey,
+    },
+  };
+  const response = await request(options);
+  if (response.error) {
+    throw 'badRequest';
+  }
+  if (response.result) {
+    const status = response.result_set[0]['vb.voterbase_registration_status'];
+    if (status === 'Registered') {
+      return 'verified';
+    }
+  }
+  return '';
 };
