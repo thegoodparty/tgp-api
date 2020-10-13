@@ -224,6 +224,7 @@ const targetSmartVerify = async form => {
     },
   };
   const response = await request(options);
+  console.log(response)
   if (response.error) {
     throw 'badRequest';
   }
