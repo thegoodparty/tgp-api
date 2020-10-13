@@ -212,7 +212,6 @@ const targetSmartVerify = async form => {
     unparsed_full_address: `${form.address}, ${form.city}, ${form.state} ${form.zip}`,
   };
 
-  console.log(smartForm);
 
   const options = {
     uri: `https://api.targetsmart.com/voter/voter-registration-check?${serialize(
