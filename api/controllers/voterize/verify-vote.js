@@ -181,16 +181,28 @@ const targetSmartVerify = async form => {
   const targetSmartKey =
     sails.config.custom.targetSmartKey || sails.config.targetSmartKey;
 
-  const street_number = form.address ? form.address.match(/\d+/)[0] : null;
-  const street_name = form.address
-    ? form.address.match(/\s[A-z]+\s[A-z]+/)[0].trim()
-    : null;
+  // let street_number = null;
+  // if (form.address) {
+  //   const justNumbers = form.address.match(/\d+/);
+  //   if (justNumbers && justNumbers.length > 0) {
+  //     street_number = justNumbers[0].trim();
+  //   }
+  // }
+  //
+  // let street_name = null;
+  // if (form.address) {
+  //   const justLetters = form.address.match(/\s[A-z]+\s[A-z]+/);
+  //   if (justLetters && justLetters.length > 0) {
+  //     street_name = justLetters[0].trim();
+  //   }
+  // }
+
   const smartForm = {
     first_name: form.first_name,
     last_name: form.last_name,
-    street_number,
-    street_name,
-    city: form.city,
+    // street_number,
+    // street_name,
+    // city: form.city,
     state: form.state,
     zip_code: form.zip,
     dob: form.birth_date
