@@ -47,7 +47,6 @@ module.exports.routes = {
   'POST   /api/v1/user/rank-candidate': 'user/ranking/rank-candidate',
   'DELETE /api/v1/user/rank-candidate': 'user/ranking/delete-rank-candidate',
   'GET   /api/v1/user/ranking': 'user/ranking/user-ranking',
-  'GET   /api/v1/user/ranking/candidate-ranking': 'user/ranking/candidate-ranking',
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
