@@ -4,13 +4,6 @@ module.exports = {
   description: 'update chamber ranking for a logged in user.',
 
   inputs: {
-    rank: {
-      description: 'rank position for the candidate',
-      example: 1,
-      required: true,
-      type: 'number',
-    },
-
     candidateId: {
       description: 'candidate id to be ranked',
       example: 1,
@@ -54,7 +47,8 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       let reqUser = this.req.user;
-      const { rank, candidateId, chamber, state, isIncumbent } = inputs;
+      const { candidateId, chamber, state, isIncumbent } = inputs;
+      const rank = (await Ranking.count({ user: reqUser.id })) + 1;
       // first make sure the user doesn't have that ranking already.
       const existingRanking = await Ranking.find({
         user: reqUser.id,
