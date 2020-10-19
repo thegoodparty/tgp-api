@@ -35,7 +35,6 @@ module.exports = {
       return exits.success(response);
     } catch (e) {
       console.log(e)
-      throw e;
     }
   },
 };
