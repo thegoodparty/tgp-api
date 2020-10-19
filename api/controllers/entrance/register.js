@@ -327,6 +327,7 @@ module.exports = {
           message,
         );
       }
+      await sails.helpers.addEmail(lowerCaseEmail);
       const token = await sails.helpers.jwtSign({
         id: user.id,
         email: lowerCaseEmail,
