@@ -110,19 +110,28 @@ module.exports = {
       };
 
       const vaResponse = await request(options);
-      console.log('==================');
-      console.log(vaResponse);
-      console.log('==================');
+      try {
+        await request({
+          uri: `https://api.voteamerica.com/v1/event/track/`,
+          method: 'POST',
+          json: true,
+          body: vaResponse.buttons[0].event_tracking,
+        });
+      } catch (e) {
+        console.log(
+          'error sending track event to VA at /voterize/register-vote',
+        );
+        await sails.helpers.errorLoggerHelper(
+          'error sending track event to VA at /voterize/register-vote',
+          e,
+        );
+      }
       return exits.success({
         vaResponse,
       });
     } catch (e) {
       console.log('error at user/register-to-vote');
       console.log(e);
-      await sails.helpers.errorLoggerHelper(
-        'Error at user/register-to-vote',
-        e,
-      );
       return exits.badRequest({
         message: 'Error registering user to vote',
       });

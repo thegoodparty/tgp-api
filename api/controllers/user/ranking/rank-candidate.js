@@ -4,13 +4,6 @@ module.exports = {
   description: 'update chamber ranking for a logged in user.',
 
   inputs: {
-    rank: {
-      description: 'rank position for the candidate',
-      example: 1,
-      required: true,
-      type: 'number',
-    },
-
     candidateId: {
       description: 'candidate id to be ranked',
       example: 1,
@@ -54,7 +47,8 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       let reqUser = this.req.user;
-      const { rank, candidateId, chamber, state, isIncumbent } = inputs;
+      const { candidateId, chamber, state, isIncumbent } = inputs;
+      const rank = (await Ranking.count({ user: reqUser.id })) + 1;
       // first make sure the user doesn't have that ranking already.
       const existingRanking = await Ranking.find({
         user: reqUser.id,
@@ -66,21 +60,6 @@ module.exports = {
         return exits.badRequest({
           message: 'User already ranked this candidate',
         });
-      }
-      if (!reqUser.shortState || reqUser.shortState === '') {
-        if (state) {
-          reqUser = await User.updateOne({
-            id: reqUser.id,
-          }).set({
-            shortState: state,
-          });
-        }
-        // else {
-        //   return exits.badRequest({
-        //     message: 'User is missing a state',
-        //     missingState: true,
-        //   });
-        // }
       }
       await Ranking.create({
         user: reqUser.id,
@@ -112,8 +91,14 @@ module.exports = {
       }
 
       const ranking = await Ranking.find({ user: reqUser.id });
+      const candidateWithFields = await sails.helpers.findCandidate(
+        candidateId,
+        chamber,
+        !!isIncumbent,
+      );
       return exits.success({
         ranking,
+        candidateWithFields
       });
     } catch (e) {
       console.log(e);
@@ -152,39 +137,50 @@ const sendRankingEmail = async (candidate, user) => {
       shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
     }
   }
-  const shareLink = `${appBase}?u=${user.uuid}&b=${shareBloc}`;
-  const twitterHandler = blocName.replace('@', '');
-  const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-                     <tr>
-                        <td><h2 style="color: #484848; text-align: left; font-size: 33px;  margin-top: 24px; margin-bottom: 24px;">
-                            You’ve joined the ${
-                              candidate.name
-                            } crowd-voting campaign on The Good Party
-                          </h2>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                            Hi ${firstName},<br/> <br>
-                          </p>
-                        </td>
-                      </tr>
 
-                      <tr>
-                        <td>
-                            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                              Thank you for joining <strong>${
-                                candidate.name
-                              }</strong> tcrowd-voting campaign. Let’s see if we can get enough votes to get them elected!
-                              In the meantime, please share this campaign with your friends to grow support:<br/><br/>
-                              <a href="${shareLink}">${shareLink}</a> <br /><br />
-                              We will keep you updated on how this race progresses.
-                            </p>
-                         </td>
-                      </tr>
+  const route = candidateRoute(candidate);
+  const shareLink = `${appBase}${route}?u=${user.uuid}&share=true`;
+  // const twitterHandler = blocName.replace('@', '');
+  const message = `
+        <table
+        border="0"
+        cellPadding="0"
+        cellSpacing="0"
+        height="100%"
+        width="100%"
+      >
+        <tr>
+          <td>
+            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+              Hi ${firstName},<br /> <br />
+            </p>
+          </td>
+        </tr>
 
-                    </table>`;
+        <tr>
+          <td>
+            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+              Thank you for adding your vote to
+              <strong>${candidate.name}</strong> as ${asChamber}.
+              <br />
+              <br />
+              We will let you know how this race progresses. In the meantime,
+              please help spread the word and grow support for this campaign.
+              <br />
+              <br />
+              <br />
+              <div style="text-align: center">
+                <a
+                  href="${shareLink}"
+                  style="padding: 16px 48px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none; font-size: 18px; font-weight: 700"
+                >
+                  &nbsp;&nbsp; SHARE &nbsp;&nbsp;
+                </a>
+              </div>
+            </p>
+          </td>
+        </tr>
+      </table>`;
   const messageHeader = '';
   await sails.helpers.mailgunSender(
     user.email,
@@ -193,4 +189,26 @@ const sendRankingEmail = async (candidate, user) => {
     messageHeader,
     message,
   );
+};
+
+const candidateRoute = candidate => {
+  if (!candidate) {
+    return '/';
+  }
+  const { isIncumbent, chamber } = candidate;
+  const chamberLower = chamber ? chamber.toLowerCase() : 'presidential';
+  const name = slugify(candidate.name);
+  return `/elections/candidate/${chamberLower}${
+    isIncumbent ? '-i' : ''
+  }/${name}/${candidate.id}`;
+};
+
+const slugify = text => {
+  if (!text) {
+    return '';
+  }
+  return text
+    .toLowerCase()
+    .replace(/[^\w ]+/g, '')
+    .replace(/ +/g, '-');
 };

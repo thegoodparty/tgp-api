@@ -54,8 +54,15 @@ module.exports = {
         chamber: ranking.chamber,
         user: reqUser.id,
       });
+
+      const candidate = await sails.helpers.findCandidate(
+        ranking.candidate,
+        ranking.chamber,
+        !!ranking.isIncumbent,
+      );
+
       return exits.success({
-        message: 'deleted successfully',
+        candidate
       });
     } catch (e) {
       console.log(e);

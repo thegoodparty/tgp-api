@@ -5,16 +5,29 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+<<<<<<< HEAD
+=======
+const mailchimp = require('@mailchimp/mailchimp_marketing');
+
+const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
+const server =
+  sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
+
+mailchimp.setConfig({
+  apiKey,
+  server,
+});
+
+>>>>>>> a29ca0de3349421b336449d4a24ab6f87abf32c8
 module.exports = {
   friendlyName: 'Subscribe email',
 
-  description:
-    'Subscribe email to mailing list on mailChimp.',
+  description: 'Subscribe email to mailing list on mailChimp.',
 
   inputs: {
     email: {
       type: 'string',
-      isEmail: true
+      isEmail: true,
     },
   },
 
@@ -47,9 +60,14 @@ module.exports = {
       }
       return exits.success(res);
     } catch (err) {
-      console.log(err);
-      return exits.badRequest({ message: 'Error' });
+      if (err && err.response && err.response.text) {
+        const parsedText = JSON.parse(err.response.text);
+        return exits.badRequest({
+          message: `Error: ${parsedText.title}`,
+        });
+      } else {
+        return exits.badRequest({ message: 'Error subscribing email' });
+      }
     }
   },
 };
-

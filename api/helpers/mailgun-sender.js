@@ -43,8 +43,8 @@ module.exports = {
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
-      const validFromEmail = fromEmail || 'NoReply@TheGoodParty.org <noreply@thegoodparty.org>';
-      
+      const validFromEmail = fromEmail || 'The Good Party <noreply@thegoodparty.org>';
+
       mg.messages
         .create('mg.thegoodparty.org', {
           from: validFromEmail,
@@ -79,7 +79,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
   margin: 0;
   }
 </style>
-<table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFEFEF">
+<table width="100%" height="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF">
   <tr>
     <td width="100%" valign="top" align="center">
       <div
@@ -94,7 +94,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
           </tr>
           <tr>
             <td>
-              <table cellspacing="0" cellpadding="0" border="0" bgcolor="#EFEFEF" width="100%" style="max-width: 660px; background: #EFEFEF center center; background-size: cover;"
+              <table cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFF" width="100%" style="max-width: 660px; background: #FFFF center center; background-size: cover;"
                 align="center">
                 <tr>
                   <td  height="42"
