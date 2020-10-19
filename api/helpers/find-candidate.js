@@ -179,8 +179,15 @@ module.exports = {
 };
 
 const properCase = city => {
+  if (!city) {
+    return '';
+  }
   return city
     .split(' ')
-    .map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+    .map(
+      w =>
+        (w[0] ? w[0].toUpperCase() : '') +
+        (w.substr(1) ? w.substr(1).toLowerCase() : ''),
+    )
     .join(' ');
 };
