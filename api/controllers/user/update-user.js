@@ -74,7 +74,9 @@ module.exports = {
       if (email) {
         updateFields.email = email;
         await sendEmail(reqUser.email, email);
-        await sails.helpers.addEmail(email);
+        try {
+          await sails.helpers.addEmail(email, 'The Good Party');
+        } catch (e) {}
       }
       if (phone) {
         updateFields.phone = phone;
