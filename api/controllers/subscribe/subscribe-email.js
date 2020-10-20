@@ -5,20 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-<<<<<<< HEAD
-=======
-const mailchimp = require('@mailchimp/mailchimp_marketing');
-
-const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
-const server =
-  sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
-
-mailchimp.setConfig({
-  apiKey,
-  server,
-});
-
->>>>>>> a29ca0de3349421b336449d4a24ab6f87abf32c8
 module.exports = {
   friendlyName: 'Subscribe email',
 
@@ -26,6 +12,7 @@ module.exports = {
 
   inputs: {
     email: {
+      required: true,
       type: 'string',
       isEmail: true,
     },
@@ -45,21 +32,11 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { email } = inputs;
-      let res;
-      if(email) {
-        res = await sails.helpers.addEmail(email);
-      }
-      else {
-        const users = await User.find();
-        for(let i = 0; i < users.length; i++) {
-          if(users[i].email) {
-            console.log(users[i].email)
-            await sails.helpers.addEmail(users[i].email);
-          }
-        }
-      }
+      const res = await sails.helpers.addEmail(email, 'The Good Party');
+      
       return exits.success(res);
     } catch (err) {
+      // console.log('2', err.response.code)
       if (err && err.response && err.response.text) {
         const parsedText = JSON.parse(err.response.text);
         return exits.badRequest({

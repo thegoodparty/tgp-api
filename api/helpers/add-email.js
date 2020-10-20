@@ -18,23 +18,43 @@ module.exports = {
       isEmail: true,
       required: true
     },
+    listName: {
+      type: 'string',
+      required: true
+    }
   },
+  exits: {
+    success: {
+      description: 'Email has been subscribed successfuly',
+    },
 
+    badRequest: {
+      description: 'Error subscribing email',
+      responseType: 'badRequest',
+    },
+  },
   fn: async function(inputs, exits) {
     try {
-      const { email } = inputs;
+      const { email, listName } = inputs;
       const subscribingUser = {
         email
       };
       const { lists } = await mailchimp.lists.getAllLists()
-      const tgpList = lists.find(list => list.name === 'The Good Party');
+      const tgpList = lists.find(list => list.name === listName);
       const response = await mailchimp.lists.addListMember(tgpList.id, {
         email_address: subscribingUser.email,
         status: "subscribed",
       });
       return exits.success(response);
-    } catch (e) {
-      console.log(e)
+    } catch (err) {
+      if (err && err.response && err.response.text) {
+        const parsedText = JSON.parse(err.response.text);
+        return exits.badRequest({
+          message: `Error: ${parsedText.title}`,
+        });
+      } else {
+        return exits.badRequest({ message: 'Error subscribing email' });
+      }
     }
   },
 };
