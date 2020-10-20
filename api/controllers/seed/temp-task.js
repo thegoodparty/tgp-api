@@ -20,13 +20,16 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const users = await User.find();
-      for (let i = 0; i < users.length; i++) {
-        try {
-          if (users[i].email) {
-            await sails.helpers.addEmail(users[i].email, 'The Good Party');
-          }
-        } catch (e) {}
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      if (!appBase.includes('dev.thegoodparty.org')) {
+        const users = await User.find();
+        for (let i = 0; i < users.length; i++) {
+          try {
+            if (users[i].email) {
+              await sails.helpers.addEmail(users[i].email, 'The Good Party');
+            }
+          } catch (e) {}
+        }
       }
       return exits.success({});
     } catch (e) {
