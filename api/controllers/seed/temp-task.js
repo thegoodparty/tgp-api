@@ -20,27 +20,15 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const cands = await RaceCandidate.find();
-      let counter = 0;
-      for (let i = 0; i < cands.length; i++) {
-        const candidate = cands[i];
-        const { id, campaignWebsite, source } = candidate;
-        if (
-          campaignWebsite &&
-          campaignWebsite.startsWith('https://ballotpedia.org/')
-        ) {
-          const newSource = campaignWebsite;
-          const newWebsite = source;
-          await RaceCandidate.updateOne({ id }).set({
-            source: newSource,
-            campaignWebsite: newWebsite,
-          });
-          counter++;
-        }
+      const users = await User.find();
+      for (let i = 0; i < users.length; i++) {
+        try {
+          if (users[i].email) {
+            await sails.helpers.addEmail(users[i].email, 'The Good Party');
+          }
+        } catch (e) {}
       }
-      return exits.success({
-        message: `updated ${counter} out of ${cands.length}`,
-      });
+      return exits.success({});
     } catch (e) {
       console.log(e);
       return exits.badRequest({
