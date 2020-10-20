@@ -1,12 +1,12 @@
-
-const mailchimp = require("@mailchimp/mailchimp_marketing");
+const mailchimp = require('@mailchimp/mailchimp_marketing');
 
 const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
-const server = sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
+const server =
+  sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
 
 mailchimp.setConfig({
   apiKey,
-  server
+  server,
 });
 
 module.exports = {
@@ -16,12 +16,12 @@ module.exports = {
     email: {
       type: 'string',
       isEmail: true,
-      required: true
+      required: true,
     },
     listName: {
       type: 'string',
-      required: true
-    }
+      required: true,
+    },
   },
   exits: {
     success: {
@@ -37,16 +37,16 @@ module.exports = {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let response;
-      if (appBase === 'https://thegoodparty.org')) {
+      if (appBase === 'https://thegoodparty.org') {
         const { email, listName } = inputs;
         const subscribingUser = {
-          email
+          email,
         };
-        const { lists } = await mailchimp.lists.getAllLists()
+        const { lists } = await mailchimp.lists.getAllLists();
         const tgpList = lists.find(list => list.name === listName);
         response = await mailchimp.lists.addListMember(tgpList.id, {
           email_address: subscribingUser.email,
-          status: "subscribed",
+          status: 'subscribed',
         });
       }
       return exits.success(response);
