@@ -76,8 +76,8 @@ module.exports = {
         await sails.helpers.errorLoggerHelper(
           'find-candidate helper - candidate not found',
           `*id*: ${id}
-          \n*chamber*: ${chamber}
-          \n*isIncumbent*: ${isIncumbent}`,
+          \n *chamber*: ${chamber}
+          \n *isIncumbent*: ${isIncumbent}`,
         );
         return exits.notFound();
       }
