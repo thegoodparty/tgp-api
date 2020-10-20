@@ -35,16 +35,20 @@ module.exports = {
   },
   fn: async function(inputs, exits) {
     try {
-      const { email, listName } = inputs;
-      const subscribingUser = {
-        email
-      };
-      const { lists } = await mailchimp.lists.getAllLists()
-      const tgpList = lists.find(list => list.name === listName);
-      const response = await mailchimp.lists.addListMember(tgpList.id, {
-        email_address: subscribingUser.email,
-        status: "subscribed",
-      });
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      let response;
+      if (!appBase.includes('dev.thegoodparty.org')) {
+        const { email, listName } = inputs;
+        const subscribingUser = {
+          email
+        };
+        const { lists } = await mailchimp.lists.getAllLists()
+        const tgpList = lists.find(list => list.name === listName);
+        response = await mailchimp.lists.addListMember(tgpList.id, {
+          email_address: subscribingUser.email,
+          status: "subscribed",
+        });
+      }
       return exits.success(response);
     } catch (err) {
       if (err && err.response && err.response.text) {
