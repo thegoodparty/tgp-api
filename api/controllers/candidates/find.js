@@ -29,11 +29,11 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Presidential Candidate Found',
+      description: 'Candidate Found',
       responseType: 'ok',
     },
     notFound: {
-      description: 'Presidential Candidate Not Found.',
+      description: 'Candidate Not Found.',
       responseType: 'notFound',
     },
   },
@@ -56,11 +56,4 @@ module.exports = {
       return exits.notFound();
     }
   },
-};
-
-const properCase = city => {
-  return city
-    .split(' ')
-    .map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
-    .join(' ');
 };

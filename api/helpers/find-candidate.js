@@ -22,11 +22,11 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Presidential Candidate Found',
+      description: 'Candidate Found',
       responseType: 'ok',
     },
     notFound: {
-      description: 'Presidential Candidate Not Found.',
+      description: 'Candidate Not Found',
       responseType: 'notFound',
     },
   },
@@ -73,6 +73,12 @@ module.exports = {
       }
 
       if (!candidate) {
+        await sails.helpers.errorLoggerHelper(
+          'find-candidate helper - candidate not found',
+          `*id*: ${id}`,
+          `\n*chamber*: ${chamber}`,
+          `\n*isIncumbent*: ${isIncumbent}`,
+        );
         return exits.notFound();
       }
       candidate.campaignUpdates.sort((a, b) => b.createdAt - a.createdAt);
