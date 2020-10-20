@@ -50,7 +50,8 @@ module.exports.routes = {
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
-  'GET   /api/v1/user/voterize/register-to-vote': 'user/voterize/register-to-vote',
+  'GET   /api/v1/user/voterize/register-to-vote':
+    'user/voterize/register-to-vote',
 
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
@@ -91,7 +92,10 @@ module.exports.routes = {
   'GET    /api/v1/race-candidate/senate-by-state':
     'race-candidate/senate-by-state',
   'GET    /api/v1/race-candidate/all': 'race-candidate/all',
-  'GET    /api/v1/race-candidate/good-challengers': 'race-candidate/good-challengers',
+  'GET    /api/v1/race-candidate/good-challengers':
+    'race-candidate/good-challengers',
+  'POST   /api/v1/race-candidate/track-share-candidate':
+    'race-candidate/track-share-candidate',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
 
@@ -106,5 +110,4 @@ module.exports.routes = {
 
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
   'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
-
 };

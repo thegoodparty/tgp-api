@@ -25,7 +25,7 @@ module.exports = {
   },
   exits: {
     success: {
-      description: 'Email has been subscribed successfuly',
+      description: 'Email has been subscribed successfully',
     },
 
     badRequest: {

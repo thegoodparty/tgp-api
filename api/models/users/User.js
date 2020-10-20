@@ -156,6 +156,13 @@ module.exports = {
       description: 'array of house candidates IDs',
     },
 
+    shares: {
+      type: 'number',
+      defaultsTo: 0,
+      required: false,
+      description: 'Numbers of shares',
+    },
+
     voteStatus: {
       type: 'string',
       required: false,
