@@ -37,7 +37,7 @@ module.exports = {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let response;
-      if (!appBase.includes('dev.thegoodparty.org')) {
+      if (appBase.includes('thegoodparty.org')) {
         const { email, listName } = inputs;
         const subscribingUser = {
           email
