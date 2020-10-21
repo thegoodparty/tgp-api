@@ -177,8 +177,8 @@ module.exports = {
         recentlyJoined,
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at candidates/find', e);
-      console.log('Error in find candidate', e);
+      await sails.helpers.errorLoggerHelper('Error at helper/find-candidate', e);
+      console.log('Error at helper/find-candidate', e);
       return exits.notFound();
     }
   },
