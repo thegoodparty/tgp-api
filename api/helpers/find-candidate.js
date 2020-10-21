@@ -163,7 +163,13 @@ module.exports = {
       );
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
-      candidate.shares = candidate.shares + candidate.initialShares;
+
+      const shares = await Share.count({
+        candidateId: id,
+        chamber,
+        isIncumbent,
+      });
+      candidate.shares = shares + candidate.initialShares;
 
       let votesNeeded = await sails.helpers.votesNeeded(
         chamber,

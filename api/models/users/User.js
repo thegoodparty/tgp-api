@@ -156,13 +156,6 @@ module.exports = {
       description: 'array of house candidates IDs',
     },
 
-    shares: {
-      type: 'number',
-      defaultsTo: 0,
-      required: false,
-      description: 'Numbers of shares',
-    },
-
     voteStatus: {
       type: 'string',
       required: false,
@@ -251,6 +244,7 @@ module.exports = {
       collection: 'ranking',
       via: 'user',
     },
+
 
     // has many to itself - a user can invite many users.
     crew: {

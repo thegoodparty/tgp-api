@@ -24,6 +24,11 @@ module.exports = {
       required: false,
       type: 'boolean',
     },
+    uuid: {
+      required: true,
+      type: 'string',
+      description: 'user or guest uuid',
+    },
   },
 
   exits: {
@@ -39,36 +44,23 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      let user = this.req.user;
-      const { candidateId, chamber, isIncumbent } = inputs;
-      let { candidate } = await sails.helpers.candidateFinder(
+      const { candidateId, chamber, isIncumbent, uuid } = inputs;
+
+      await Share.create({
         candidateId,
         chamber,
         isIncumbent,
-      );
-      const { id, shares } = candidate;
-      if (chamber === 'presidential') {
-        await PresidentialCandidate.updateOne({
-          id,
-        }).set({ shares: shares + 1 });
-      } else if (isIncumbent) {
-        candidate = await Incumbent.updateOne({
-          id,
-        }).set({ shares: shares + 1 });
-        candidate.isIncumbent = true;
-      } else {
-        candidate = await RaceCandidate.updateOne({
-          id,
-        }).set({ shares: shares + 1 });
-      }
-      if (user) {
-        await User.updateOne({
-          id: user.id,
-        }).set({ shares: user.shares + 1 });
-      }
+        uuid,
+      });
+
+      const shares = await Share.count({
+        candidateId,
+        chamber,
+        isIncumbent,
+      });
 
       return exits.success({
-        shares: candidate.shares,
+        shares,
       });
     } catch (e) {
       console.log(e);
