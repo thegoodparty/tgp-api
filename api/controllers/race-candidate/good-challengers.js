@@ -17,7 +17,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'All Good Challegers',
+      description: 'All Good Challengers',
       responseType: 'ok',
     },
     badRequest: {
