@@ -120,10 +120,6 @@ module.exports = {
       type: 'number',
       defaultsTo: 0,
     },
-    shares: {
-      type: 'number',
-      defaultsTo: 0,
-    },
     campaignSummary: {
       type: 'string',
     },

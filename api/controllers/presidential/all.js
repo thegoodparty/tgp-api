@@ -5,8 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-const votesThreshold = require('../../../data/presidentialThreshold');
-
 module.exports = {
   friendlyName: 'Find all Presidential Candidates',
 
@@ -27,6 +25,10 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const cached = await sails.helpers.cacheHelper('get', 'presidential');
+      if (cached) {
+        return exits.success(cached);
+      }
       const candidates = await PresidentialCandidate.find({
         isActive: true,
         isHidden: false,
@@ -82,6 +84,15 @@ module.exports = {
       }
       const threshold = 38658139;
 
+      await sails.helpers.cacheHelper('set', 'presidential', {
+        presidential: {
+          good,
+          notGood,
+          unknown,
+          topRank,
+          threshold,
+        },
+      });
       return exits.success({
         presidential: {
           good,

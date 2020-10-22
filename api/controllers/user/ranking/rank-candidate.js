@@ -91,14 +91,14 @@ module.exports = {
       }
 
       const ranking = await Ranking.find({ user: reqUser.id });
-      const candidateWithFields = await sails.helpers.findCandidate(
+      const candidateWithFields = await sails.helpers.findCandidateWithFields(
         candidateId,
         chamber,
         !!isIncumbent,
       );
       return exits.success({
         ranking,
-        candidateWithFields
+        candidateWithFields,
       });
     } catch (e) {
       console.log(e);
@@ -160,12 +160,12 @@ const sendRankingEmail = async (candidate, user) => {
         <tr>
           <td>
             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-              Thank you for adding your vote to
+              Thank you for joining the
               <strong>${candidate.name}</strong> as ${asChamber}.
               <br />
               <br />
-              We will let you know how this race progresses. In the meantime,
-              please help spread the word and grow support for this campaign.
+              crowd-voting campaign. Let’s see if we can get enough votes to get them elected!
+              In the meantime, please share this campaign with your friends to grow support:
               <br />
               <br />
               <br />
@@ -178,6 +178,11 @@ const sendRankingEmail = async (candidate, user) => {
                 </a>
               </div>
             </p>
+            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+              <br />
+              <br />
+              We will keep you updated on how this race progresses.
+              </p>
           </td>
         </tr>
       </table>`;

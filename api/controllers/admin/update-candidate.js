@@ -1,3 +1,4 @@
+
 module.exports = {
   friendlyName: 'All Candidates',
 
@@ -161,6 +162,10 @@ module.exports = {
         }
       }
 
+      await sails.helpers.cacheHelper(
+        'delete',
+        `cand-${id}-${chamber}-${!!isIncumbent}`,
+      );
       return exits.success({
         candidate,
       });

@@ -1,5 +1,3 @@
-const timeago = require('time-ago');
-
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',
 
@@ -23,11 +21,9 @@ module.exports = {
   exits: {
     success: {
       description: 'Candidate Found',
-      responseType: 'ok',
     },
     notFound: {
       description: 'Candidate Not Found',
-      responseType: 'notFound',
     },
   },
 
@@ -35,6 +31,26 @@ module.exports = {
     try {
       const { id, chamber, isIncumbent } = inputs;
       let candidate;
+      const cached = await sails.helpers.cacheHelper(
+        'get',
+        `cand-${id}-${chamber}-${isIncumbent}`,
+      );
+      if (cached) {
+        console.log('from cache');
+        const {
+          sharedCount,
+          rankingCount,
+          recentActivity,
+          activityCount,
+        } = await sails.helpers.recentActivity(id, chamber, isIncumbent);
+        return exits.success({
+          ...cached,
+          shares: sharedCount + cached.initialShares,
+          rankingCount,
+          recentActivity,
+          activityCount,
+        });
+      }
 
       if (chamber === 'presidential') {
         candidate = await PresidentialCandidate.findOne({
@@ -108,54 +124,6 @@ module.exports = {
         }
       }
 
-      let rankingCount = await Ranking.count({
-        candidate: candidate.id,
-        chamber,
-        isIncumbent,
-      });
-
-      const recentlyJoinedRecords = await Ranking.find({
-        candidate: candidate.id,
-        chamber,
-        isIncumbent,
-      })
-        .sort([{ createdAt: 'DESC' }])
-        .populate('user');
-
-      const recentlyJoined = [];
-      for (let i = 0; i < recentlyJoinedRecords.length; i++) {
-        const rankWithUser = recentlyJoinedRecords[i];
-        const { user } = rankWithUser;
-        const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
-        let name = '';
-        if (user && user.name) {
-          name = await sails.helpers.fullFirstLastInitials(user.name);
-        }
-        let city = '';
-        if (user && user.city) {
-          city = properCase(user.city);
-        } else {
-          if (user && user.zipCode) {
-            const zipcode = await ZipCode.findOne({ id: user.zipCode });
-            if (zipcode) {
-              city = zipcode.primaryCity;
-            }
-          }
-        }
-        let district = city;
-        if (user) {
-          district = `${city} ${
-            user.shortState ? user.shortState.toUpperCase() : ''
-          }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
-        }
-        recentlyJoined.push({
-          timeAgo,
-          name,
-          district,
-          avatar: user ? user.avatar : false,
-        });
-      }
-
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
         chamber,
@@ -163,37 +131,44 @@ module.exports = {
       );
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
-      candidate.shares = candidate.shares + candidate.initialShares;
 
       let votesNeeded = await sails.helpers.votesNeeded(
         chamber,
         candidate.state,
         candidate.district,
       );
+
+      await sails.helpers.cacheHelper(
+        'set',
+        `cand-${id}-${chamber}-${isIncumbent}`,
+        {
+          ...candidate,
+          votesNeeded,
+        },
+      );
+
+      const {
+        sharedCount,
+        rankingCount,
+        recentActivity,
+        activityCount,
+      } = await sails.helpers.recentActivity(id, chamber, isIncumbent);
+
       return exits.success({
         ...candidate,
-        rankingCount,
         votesNeeded,
-        recentlyJoined,
+        shares: sharedCount + candidate.initialShares,
+        rankingCount,
+        recentActivity,
+        activityCount,
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at candidates/find', e);
-      console.log('Error in find candidate', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at helper/find-candidate',
+        e,
+      );
+      console.log('Error at helper/find-candidate', e);
       return exits.notFound();
     }
   },
-};
-
-const properCase = city => {
-  if (!city) {
-    return '';
-  }
-  return city
-    .split(' ')
-    .map(
-      w =>
-        (w[0] ? w[0].toUpperCase() : '') +
-        (w.substr(1) ? w.substr(1).toLowerCase() : ''),
-    )
-    .join(' ');
 };

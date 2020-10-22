@@ -5,8 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const presidentialYear = true;
-
 module.exports = {
   friendlyName: 'All Good Challengers',
 
@@ -16,7 +14,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'All Good Challegers',
+      description: 'All Good Challengers',
       responseType: 'ok',
     },
     badRequest: {
@@ -27,6 +25,13 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const cached = await sails.helpers.cacheHelper('get', 'goodChallengers');
+      if (cached) {
+        return exits.success({
+          goodChallengers: cached,
+        });
+      }
+
       let challengersIdList = [161, 421, 859, 86, 1343, 1132, 503, 1239];
 
       const goodChallengers = await RaceCandidate.find({
@@ -86,6 +91,11 @@ module.exports = {
           smallContributions,
         });
       });
+      await sails.helpers.cacheHelper(
+        'set',
+        'goodChallengers',
+        cleanChallengers,
+      );
       return exits.success({
         goodChallengers: cleanChallengers,
       });

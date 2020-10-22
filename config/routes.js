@@ -36,7 +36,6 @@ module.exports.routes = {
 
   'POST   /api/v1/role/create': 'role/create',
 
-  'GET    /api/v1/user/check': 'user/check',
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
   'PUT    /api/v1/user/delete-user-ranking': 'user/ranking/delete-user-ranking',
@@ -50,7 +49,6 @@ module.exports.routes = {
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
-  'GET   /api/v1/user/voterize/register-to-vote': 'user/voterize/register-to-vote',
 
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
@@ -91,13 +89,15 @@ module.exports.routes = {
   'GET    /api/v1/race-candidate/senate-by-state':
     'race-candidate/senate-by-state',
   'GET    /api/v1/race-candidate/all': 'race-candidate/all',
-  'GET    /api/v1/race-candidate/good-challengers': 'race-candidate/good-challengers',
+  'GET    /api/v1/race-candidate/good-challengers':
+    'race-candidate/good-challengers',
 
   'GET    /api/v1/presidential/all': 'presidential/all',
 
   'GET    /api/v1/candidates/find': 'candidates/find',
   'GET    /api/v1/candidates/find-by-bloc': 'candidates/find-by-bloc',
   'GET    /api/v1/candidates/all': 'candidates/all',
+  'POST   /api/v1/candidates/track-share': 'candidates/track-share',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
@@ -106,5 +106,4 @@ module.exports.routes = {
 
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
   'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
-
 };

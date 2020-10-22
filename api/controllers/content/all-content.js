@@ -4,6 +4,8 @@
  * @description :: Returns all content from our CMS.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
+
+
 module.exports = {
   friendlyName: 'All Content',
 
@@ -24,8 +26,16 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const cached = await sails.helpers.cacheHelper('get', 'content');
+      if (cached) {
+        return exits.success(cached);
+      }
       const contents = await CmsContent.find();
       if (contents.length === 1) {
+        await sails.helpers.cacheHelper('set', 'content', {
+          ...JSON.parse(contents[0].content),
+        });
+
         return exits.success({
           ...JSON.parse(contents[0].content),
         });
