@@ -1,6 +1,3 @@
-var Cacheman = require('cacheman');
-var cache = new Cacheman('candidate', { ttl: 3600 });
-
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',
 
@@ -34,8 +31,12 @@ module.exports = {
     try {
       const { id, chamber, isIncumbent } = inputs;
       let candidate;
-      const cached = await cache.get(`cand-${id}-${chamber}-${isIncumbent}`);
+      const cached = await sails.helpers.cacheHelper(
+        'get',
+        `cand-${id}-${chamber}-${isIncumbent}`,
+      );
       if (cached) {
+        console.log('from cache');
         const {
           sharedCount,
           rankingCount,
@@ -137,10 +138,14 @@ module.exports = {
         candidate.district,
       );
 
-      await cache.set(`cand-${id}-${chamber}-${isIncumbent}`, {
-        ...candidate,
-        votesNeeded,
-      });
+      await sails.helpers.cacheHelper(
+        'set',
+        `cand-${id}-${chamber}-${isIncumbent}`,
+        {
+          ...candidate,
+          votesNeeded,
+        },
+      );
 
       const {
         sharedCount,

@@ -5,9 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-var Cacheman = require('cacheman');
-var cache = new Cacheman('good-challengers', { ttl: 3600 });
-
 module.exports = {
   friendlyName: 'All Good Challengers',
 
@@ -28,7 +25,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const cached = await cache.get('goodChallengers');
+      const cached = await sails.helpers.cacheHelper('get', 'goodChallengers');
       if (cached) {
         return exits.success({
           goodChallengers: cached,
@@ -94,7 +91,11 @@ module.exports = {
           smallContributions,
         });
       });
-      await cache.set('goodChallengers', cleanChallengers);
+      await sails.helpers.cacheHelper(
+        'set',
+        'goodChallengers',
+        cleanChallengers,
+      );
       return exits.success({
         goodChallengers: cleanChallengers,
       });

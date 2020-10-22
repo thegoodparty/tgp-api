@@ -5,8 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-var Cacheman = require('cacheman');
-var cache = new Cacheman('content', { ttl: 3600 });
 
 module.exports = {
   friendlyName: 'All Content',
@@ -28,13 +26,13 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const cached = await cache.get('content');
+      const cached = await sails.helpers.cacheHelper('get', 'content');
       if (cached) {
         return exits.success(cached);
       }
       const contents = await CmsContent.find();
       if (contents.length === 1) {
-        await cache.set('content', {
+        await sails.helpers.cacheHelper('set', 'content', {
           ...JSON.parse(contents[0].content),
         });
 

@@ -4,8 +4,7 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-// const votesThreshold = require('../../../data/presidentialThreshold');
-const timeago = require('time-ago');
+
 
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',

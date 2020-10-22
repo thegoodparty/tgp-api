@@ -5,9 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-var Cacheman = require('cacheman');
-var cache = new Cacheman('presidential', { ttl: 36000 });
-
 module.exports = {
   friendlyName: 'Find all Presidential Candidates',
 
@@ -28,7 +25,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const cached = await cache.get('presidential');
+      const cached = await sails.helpers.cacheHelper('get', 'presidential');
       if (cached) {
         return exits.success(cached);
       }
@@ -86,7 +83,8 @@ module.exports = {
         }
       }
       const threshold = 38658139;
-      await cache.set('presidential', {
+
+      await sails.helpers.cacheHelper('set', 'presidential', {
         presidential: {
           good,
           notGood,

@@ -48,6 +48,10 @@ module.exports = {
           content: stringifiedContent,
         });
       }
+      await sails.helpers.cacheHelper(
+        'delete',
+        'content',
+      );
 
       return exits.success();
     } catch (err) {
