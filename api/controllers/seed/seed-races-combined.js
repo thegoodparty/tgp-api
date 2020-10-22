@@ -141,14 +141,14 @@ const createEntries = async rows => {
   let row;
   // first set all candidates to inactive, we will selective turn them active after
 
-  await RaceCandidate.update({}).set({
-    isActive: false,
-  });
-
-  await Incumbent.update({}).set({
-    isActive: false,
-  });
-
+  // await RaceCandidate.update({}).set({
+  //   isActive: false,
+  // });
+  //
+  // await Incumbent.update({}).set({
+  //   isActive: false,
+  // });
+  //
   // delete all incumbent to scrape first
   await IncumbentToScrape.destroy({});
 
@@ -166,6 +166,10 @@ const createEntries = async rows => {
         raised,
         smallContributions,
       } = row;
+
+      if (!name) {
+        continue;
+      }
 
       if (openSecretsId && openSecretsId.length < 10) {
         // incumbent - save for later scraping.
@@ -218,8 +222,6 @@ const createEntries = async rows => {
         );
       }
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at seed -races combined. row: ', rows[i]);
-      await sails.helpers.errorLoggerHelper('Error at seed -races combined', e);
       console.log('error in races combined seed. ' + i);
       console.log(e);
     }
@@ -237,33 +239,4 @@ const findValue = (names, values, name) => {
     }
   }
   return '';
-};
-
-const t = {
-  'web-scraper-order': '1594286697-4',
-  'web-scraper-start-url': 'https://thegoodparty.org/scrape/races',
-  state: 'OK',
-  'state-href': 'https://www.opensecrets.org/races/election?id=OK',
-  district: 'Oklahoma District 05',
-  'district-href':
-    'https://www.opensecrets.org/races/summary?cycle=2020&id=OK05',
-  allCandidates: 'See all candidates in this race',
-  'allCandidates-href':
-    'https://www.opensecrets.org/races/candidates?cycle=2020&id=OK05&spec=N',
-  name: 'Janet Barresi (R)',
-  raised: '596,091',
-  contributionName1: 'Small Individual Contributions (\u2264 $200)',
-  contributionName2: 'Large Individual Contributions',
-  contributionName3: 'PAC Contributions*',
-  contributionName4: 'Candidate self-financing',
-  contributionName5: 'Other',
-  contributionValue1: '$5,651',
-  contributionValue2: '$89,440',
-  contributionValue3: '$1,000',
-  contributionValue4: '$500,000',
-  contributionValue5: '$0',
-  incumbentLink: '',
-  'incumbentLink-href': '',
-  'image-src': '',
-  reportDate: '',
 };
