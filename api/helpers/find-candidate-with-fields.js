@@ -23,11 +23,9 @@ module.exports = {
   exits: {
     success: {
       description: 'Candidate Found',
-      responseType: 'ok',
     },
     notFound: {
       description: 'Candidate Not Found',
-      responseType: 'notFound',
     },
   },
 

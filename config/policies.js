@@ -24,7 +24,6 @@ module.exports.policies = {
   'entrance/*': true,
   'content/*': true,
   'notifications/*': true,
-  'district/*': true,
   'incumbent/*': true,
   'presidential/*': true,
   'race-candidate/*': true,

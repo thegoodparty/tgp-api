@@ -30,7 +30,6 @@ module.exports = {
 
     badRequest: {
       description: 'Error subscribing email',
-      responseType: 'badRequest',
     },
   },
   fn: async function(inputs, exits) {
