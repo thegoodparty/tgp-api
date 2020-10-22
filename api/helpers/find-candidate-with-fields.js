@@ -120,6 +120,7 @@ module.exports = {
         isIncumbent,
       })
         .sort([{ createdAt: 'DESC' }])
+        .limit(15)
         .populate('user');
 
       const recentlyJoined = [];
@@ -163,7 +164,9 @@ module.exports = {
         candidateId: candidate.id,
         chamber,
         isIncumbent,
-      }).sort([{ createdAt: 'DESC' }]);
+      })
+        .sort([{ createdAt: 'DESC' }])
+        .limit(15);
 
       const recentlyShared = [];
       for (let i = 0; i < recentlySharedRecords.length; i++) {
