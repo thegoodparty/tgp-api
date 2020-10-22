@@ -5,7 +5,8 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const presidentialYear = true;
+var Cacheman = require('cacheman');
+var cache = new Cacheman('good-challengers', { ttl: 3600 });
 
 module.exports = {
   friendlyName: 'All Good Challengers',
@@ -27,6 +28,13 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const cached = await cache.get('goodChallengers');
+      if (cached) {
+        return exits.success({
+          goodChallengers: cached,
+        });
+      }
+
       let challengersIdList = [161, 421, 859, 86, 1343, 1132, 503, 1239];
 
       const goodChallengers = await RaceCandidate.find({
@@ -86,6 +94,7 @@ module.exports = {
           smallContributions,
         });
       });
+      await cache.set('goodChallengers', cleanChallengers);
       return exits.success({
         goodChallengers: cleanChallengers,
       });

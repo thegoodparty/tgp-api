@@ -1,4 +1,5 @@
-const timeago = require('time-ago');
+var Cacheman = require('cacheman');
+var cache = new Cacheman('candidate', { ttl: 3600 });
 
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',
@@ -33,6 +34,22 @@ module.exports = {
     try {
       const { id, chamber, isIncumbent } = inputs;
       let candidate;
+      const cached = await cache.get(`cand-${id}-${chamber}-${isIncumbent}`);
+      if (cached) {
+        const {
+          sharedCount,
+          rankingCount,
+          recentActivity,
+          activityCount,
+        } = await sails.helpers.recentActivity(id, chamber, isIncumbent);
+        return exits.success({
+          ...cached,
+          shares: sharedCount + cached.initialShares,
+          rankingCount,
+          recentActivity,
+          activityCount,
+        });
+      }
 
       if (chamber === 'presidential') {
         candidate = await PresidentialCandidate.findOne({
@@ -105,12 +122,6 @@ module.exports = {
           incumbentRaised = incumbentRaised ? incumbentRaised / 2 : false;
         }
       }
-      const {
-        sharedCount,
-        rankingCount,
-        recentActivity,
-        activityCount,
-      } = await sails.helpers.recentActivity(id, chamber, isIncumbent);
 
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
@@ -125,13 +136,26 @@ module.exports = {
         candidate.state,
         candidate.district,
       );
-      return exits.success({
+
+      await cache.set(`cand-${id}-${chamber}-${isIncumbent}`, {
         ...candidate,
-        rankingCount,
         votesNeeded,
+      });
+
+      const {
+        sharedCount,
+        rankingCount,
         recentActivity,
         activityCount,
+      } = await sails.helpers.recentActivity(id, chamber, isIncumbent);
+
+      return exits.success({
+        ...candidate,
+        votesNeeded,
         shares: sharedCount + candidate.initialShares,
+        rankingCount,
+        recentActivity,
+        activityCount,
       });
     } catch (e) {
       await sails.helpers.errorLoggerHelper(
