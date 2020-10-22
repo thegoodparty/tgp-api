@@ -107,43 +107,12 @@ module.exports = {
           incumbentRaised = incumbentRaised ? incumbentRaised / 2 : false;
         }
       }
-
-      let rankingCount = await Ranking.count({
-        candidate: candidate.id,
-        chamber,
-        isIncumbent,
-      });
-
-      const recentlyJoinedRecords = await Ranking.find({
-        candidate: candidate.id,
-        chamber,
-        isIncumbent,
-      })
-        .sort([{ createdAt: 'DESC' }])
-        .limit(15)
-        .populate('user');
-
-      const recentlyJoined = [];
-      for (let i = 0; i < recentlyJoinedRecords.length; i++) {
-        const rankWithUser = recentlyJoinedRecords[i];
-        const { user } = rankWithUser;
-        const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
-        let name = '';
-        let district = '';
-        if (user && user.name) {
-          name = await sails.helpers.fullFirstLastInitials(user.name);
-        }
-        district = await districtFromUser(user);
-
-        recentlyJoined.push({
-          timeAgo,
-          name,
-          district,
-          avatar: user ? user.avatar : false,
-          type: 'joined',
-          createdAt: rankWithUser.createdAt,
-        });
-      }
+      const {
+        sharedCount,
+        rankingCount,
+        recentActivity,
+        activityCount,
+      } = await sails.helpers.recentActivity(id, chamber, isIncumbent);
 
       const { isGood, isBigMoney } = await sails.helpers.goodnessHelper(
         candidate,
@@ -152,50 +121,6 @@ module.exports = {
       );
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
-
-      const sharedCount = await Share.count({
-        candidateId: id,
-        chamber,
-        isIncumbent,
-      });
-      candidate.shares = sharedCount + candidate.initialShares;
-
-      const recentlySharedRecords = await Share.find({
-        candidateId: candidate.id,
-        chamber,
-        isIncumbent,
-      })
-        .sort([{ createdAt: 'DESC' }])
-        .limit(15);
-
-      const recentlyShared = [];
-      for (let i = 0; i < recentlySharedRecords.length; i++) {
-        const share = recentlySharedRecords[i];
-        const timeAgo = timeago.ago(new Date(share.createdAt));
-
-        const user = await User.findOne({ uuid: share.uuid });
-        let name = '';
-        let district = '';
-        if (user && user.name) {
-          name = await sails.helpers.fullFirstLastInitials(user.name);
-          district = await districtFromUser(user);
-        } else {
-          name = 'Supporter';
-          district = '';
-        }
-        recentlyShared.push({
-          timeAgo,
-          name,
-          district,
-          avatar: user ? user.avatar : false,
-          type: 'shared',
-          createdAt: share.createdAt,
-        });
-      }
-
-      const recentActivity = [...recentlyShared, ...recentlyJoined].sort(
-        (a, b) => b.createdAt - a.createdAt,
-      );
 
       let votesNeeded = await sails.helpers.votesNeeded(
         chamber,
@@ -207,7 +132,8 @@ module.exports = {
         rankingCount,
         votesNeeded,
         recentActivity,
-        activityCount: rankingCount + sharedCount,
+        activityCount,
+        shares: sharedCount + candidate.initialShares,
       });
     } catch (e) {
       await sails.helpers.errorLoggerHelper(

@@ -53,14 +53,18 @@ module.exports = {
         uuid,
       });
 
-      const shares = await Share.count({
-        candidateId,
-        chamber,
-        isIncumbent,
-      });
+      const {
+        sharedCount,
+        rankingCount,
+        recentActivity,
+        activityCount,
+      } = await sails.helpers.recentActivity(candidateId, chamber, isIncumbent);
 
       return exits.success({
-        shares,
+        sharedCount,
+        rankingCount,
+        recentActivity,
+        activityCount,
       });
     } catch (e) {
       console.log(e);
