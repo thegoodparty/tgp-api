@@ -128,31 +128,19 @@ module.exports = {
         const { user } = rankWithUser;
         const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
         let name = '';
+        let district = '';
         if (user && user.name) {
           name = await sails.helpers.fullFirstLastInitials(user.name);
         }
-        let city = '';
-        if (user && user.city) {
-          city = properCase(user.city);
-        } else {
-          if (user && user.zipCode) {
-            const zipcode = await ZipCode.findOne({ id: user.zipCode });
-            if (zipcode) {
-              city = zipcode.primaryCity;
-            }
-          }
-        }
-        let district = city;
-        if (user) {
-          district = `${city} ${
-            user.shortState ? user.shortState.toUpperCase() : ''
-          }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
-        }
+        district = await districtFromUser(user);
+
         recentlyJoined.push({
           timeAgo,
           name,
           district,
           avatar: user ? user.avatar : false,
+          type: 'joined',
+          createdAt: rankWithUser.createdAt,
         });
       }
 
@@ -164,12 +152,47 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
 
-      const shares = await Share.count({
+      const sharedCount = await Share.count({
         candidateId: id,
         chamber,
         isIncumbent,
       });
-      candidate.shares = shares + candidate.initialShares;
+      candidate.shares = sharedCount + candidate.initialShares;
+
+      const recentlySharedRecords = await Share.find({
+        candidateId: candidate.id,
+        chamber,
+        isIncumbent,
+      }).sort([{ createdAt: 'DESC' }]);
+
+      const recentlyShared = [];
+      for (let i = 0; i < recentlySharedRecords.length; i++) {
+        const share = recentlySharedRecords[i];
+        const timeAgo = timeago.ago(new Date(share.createdAt));
+
+        const user = await User.findOne({ uuid: share.uuid });
+        let name = '';
+        let district = '';
+        if (user && user.name) {
+          name = await sails.helpers.fullFirstLastInitials(user.name);
+          district = await districtFromUser(user);
+        } else {
+          name = 'Supporter';
+          district = '';
+        }
+        recentlyShared.push({
+          timeAgo,
+          name,
+          district,
+          avatar: user ? user.avatar : false,
+          type: 'shared',
+          createdAt: share.createdAt,
+        });
+      }
+
+      const recentActivity = [...recentlyShared, ...recentlyJoined].sort(
+        (a, b) => b.createdAt - a.createdAt,
+      );
 
       let votesNeeded = await sails.helpers.votesNeeded(
         chamber,
@@ -180,10 +203,14 @@ module.exports = {
         ...candidate,
         rankingCount,
         votesNeeded,
-        recentlyJoined,
+        recentActivity,
+        activityCount: rankingCount + sharedCount,
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at helper/find-candidate', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at helper/find-candidate',
+        e,
+      );
       console.log('Error at helper/find-candidate', e);
       return exits.notFound();
     }
@@ -202,4 +229,28 @@ const properCase = city => {
         (w.substr(1) ? w.substr(1).toLowerCase() : ''),
     )
     .join(' ');
+};
+
+const districtFromUser = async user => {
+  if (!user) {
+    return '';
+  }
+  let city = '';
+  if (user.city) {
+    city = properCase(user.city);
+  } else {
+    if (user && user.zipCode) {
+      const zipcode = await ZipCode.findOne({ id: user.zipCode });
+      if (zipcode) {
+        city = zipcode.primaryCity;
+      }
+    }
+  }
+  let district = city;
+  if (user) {
+    district = `${city} ${
+      user.shortState ? user.shortState.toUpperCase() : ''
+    }${user.districtNumber ? `-${user.districtNumber}` : ''}`;
+  }
+  return district;
 };

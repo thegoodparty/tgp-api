@@ -41,7 +41,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id, chamber, isIncumbent } = inputs;
-      const candidate = await sails.helpers.findCandidate(
+      const candidate = await sails.helpers.findCandidateWithFields(
         id,
         chamber,
         !!isIncumbent,

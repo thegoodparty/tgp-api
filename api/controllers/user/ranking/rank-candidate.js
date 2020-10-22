@@ -91,7 +91,7 @@ module.exports = {
       }
 
       const ranking = await Ranking.find({ user: reqUser.id });
-      const candidateWithFields = await sails.helpers.findCandidate(
+      const candidateWithFields = await sails.helpers.findCandidateWithFields(
         candidateId,
         chamber,
         !!isIncumbent,
