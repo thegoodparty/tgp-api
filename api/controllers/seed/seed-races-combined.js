@@ -141,14 +141,14 @@ const createEntries = async rows => {
   let row;
   // first set all candidates to inactive, we will selective turn them active after
 
-  await RaceCandidate.update({}).set({
-    isActive: false,
-  });
-
-  await Incumbent.update({}).set({
-    isActive: false,
-  });
-
+  // await RaceCandidate.update({}).set({
+  //   isActive: false,
+  // });
+  //
+  // await Incumbent.update({}).set({
+  //   isActive: false,
+  // });
+  //
   // delete all incumbent to scrape first
   await IncumbentToScrape.destroy({});
 
@@ -166,6 +166,10 @@ const createEntries = async rows => {
         raised,
         smallContributions,
       } = row;
+
+      if (!name) {
+        continue;
+      }
 
       if (openSecretsId && openSecretsId.length < 10) {
         // incumbent - save for later scraping.
@@ -196,7 +200,6 @@ const createEntries = async rows => {
           isActive: true,
         });
       } else {
-
         const prevRecord = await RaceCandidate.findOne({ uuid });
         const candidate = await RaceCandidate.findOrCreate(
           { uuid },
