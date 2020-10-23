@@ -89,12 +89,6 @@ module.exports = {
       }
 
       if (!candidate) {
-        await sails.helpers.errorLoggerHelper(
-          'find-candidate helper - candidate not found',
-          `*id*: ${id}
-          \n *chamber*: ${chamber}
-          \n *isIncumbent*: ${isIncumbent}`,
-        );
         return exits.notFound();
       }
       candidate.campaignUpdates.sort((a, b) => b.createdAt - a.createdAt);
