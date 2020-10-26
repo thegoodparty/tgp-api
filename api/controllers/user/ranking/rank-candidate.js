@@ -161,8 +161,9 @@ const sendRankingEmail = async (candidate, user) => {
           <td>
             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
               Thank you for joining the
-              <strong>${candidate.name}</strong> as ${asChamber} crowd-voting campaign. Let’s see if we can get enough votes to get them elected!
-              In the meantime, please share this campaign with your friends to grow support:
+              <strong>${candidate.name}</strong> crowd-voting campaign for ${asChamber}. We will keep you updated on
+              how this race progresses. In the meantime, please share this campaign with your friends to grow
+              support and get the votes needed to win!
               <br />
               <br />
               <br />
@@ -178,7 +179,7 @@ const sendRankingEmail = async (candidate, user) => {
             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
               <br />
               <br />
-              We will keep you updated on how this race progresses.
+              The Good Party is always free for both voters and candidates.
               </p>
           </td>
         </tr>
