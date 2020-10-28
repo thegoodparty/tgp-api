@@ -21,6 +21,7 @@
     "lodash": "4.17.19",
     "lodash.merge": ">=4.6.2",
     "mailgun.js": "^2.0.1",
+    "md5": "^2.3.0",
     "node-fetch": ">=2.6.1",
     "node-forge": ">=0.10.0",
     "nodemon": "^1.19.1",

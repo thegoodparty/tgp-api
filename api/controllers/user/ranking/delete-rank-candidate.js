@@ -28,7 +28,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const reqUser = this.req.user;
       const { id } = inputs;
@@ -49,11 +49,22 @@ module.exports = {
       }
       // product logic - delete all the chamber ranking with higher ranking.
       // await Ranking.destroyOne({ id });
-      await Ranking.destroy({
+      const condition = {
         rank: { '>=': ranking.rank },
         chamber: ranking.chamber,
         user: reqUser.id,
-      });
+      };
+      const deleteRankings = await Ranking.find(condition);
+      for (let i = 0; i < deleteRankings.length; i++) {
+        const { chamber, candidate } = deleteRankings[i];
+        await sails.helpers.updateTag(
+          reqUser.email,
+          'The Good Party',
+          `${chamber} ${candidate}`,
+          'inactive'
+        );
+      }
+      await Ranking.destroy(condition);
 
       const candidate = await sails.helpers.findCandidateWithFields(
         ranking.candidate,

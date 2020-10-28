@@ -1,4 +1,5 @@
 const mailchimp = require('@mailchimp/mailchimp_marketing');
+const md5 = require("md5");
 
 const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
 const server =
@@ -22,34 +23,42 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    tag: {
+      type: 'string',
+      required: true,
+    },
+    status: {
+      type: 'string',
+      required: true,
+    }
   },
   exits: {
     success: {
-      description: 'Email has been subscribed successfully',
+      description: 'Tag has been added to Email',
     },
 
     badRequest: {
-      description: 'Error subscribing email',
+      description: 'Error adding tag',
     },
   },
   fn: async function (inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      let response;
-      let { email, listName } = inputs;
+      let { email, listName, tag, status } = inputs;
       listName = appBase === 'https://thegoodparty.org'
         ? listName
         : 'thegoodparty';
-      const subscribingUser = {
-        email,
-      };
       const { lists } = await mailchimp.lists.getAllLists();
-      console.log(lists);
       const tgpList = lists.find(list => list.name === listName);
-      response = await mailchimp.lists.addListMember(tgpList.id, {
-        email_address: subscribingUser.email,
-        status: 'subscribed',
-      });
+      const subscriberHash = md5(email);
+      const obj = {
+        body: {
+          tags: [{ name: tag, status }],
+          is_syncing: true
+        }
+      }
+      let response;
+      response = await mailchimp.lists.updateListMemberTags(tgpList.id, subscriberHash, obj);
       return exits.success(response);
     } catch (err) {
       console.log(err);

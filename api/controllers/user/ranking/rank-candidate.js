@@ -44,7 +44,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       let reqUser = this.req.user;
       const { candidateId, chamber, state, isIncumbent } = inputs;
@@ -69,6 +69,12 @@ module.exports = {
         userState: reqUser.shortState || 'NA',
         isIncumbent,
       });
+      await sails.helpers.updateTag(
+        reqUser.email,
+        'The Good Party',
+        `${chamber} ${candidateId}`,
+        'active'
+      );
       let { candidate } = await sails.helpers.candidateFinder(
         candidateId,
         chamber,
@@ -78,9 +84,8 @@ module.exports = {
         candidate = {
           name: 'A Good Candidate',
           chamber,
-          blocName: `GoodBloc-${state.toUpperCase()}${
-            chamber === 'house' ? candidateId * -1 : ''
-          }`,
+          blocName: `GoodBloc-${state.toUpperCase()}${chamber === 'house' ? candidateId * -1 : ''
+            }`,
           district: candidateId * -1,
           state,
           isGoodBloc: true,
@@ -130,9 +135,8 @@ const sendRankingEmail = async (candidate, user) => {
       shareBloc += `-${candidate.state.toUpperCase()}`;
     }
   } else {
-    asChamber = `${candidate.state.toUpperCase()}-${
-      candidate.district
-    } Representative`;
+    asChamber = `${candidate.state.toUpperCase()}-${candidate.district
+      } Representative`;
     if (!candidate.isGoodBloc) {
       shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
     }
@@ -201,9 +205,8 @@ const candidateRoute = candidate => {
   const { isIncumbent, chamber } = candidate;
   const chamberLower = chamber ? chamber.toLowerCase() : 'presidential';
   const name = slugify(candidate.name);
-  return `/elections/candidate/${chamberLower}${
-    isIncumbent ? '-i' : ''
-  }/${name}/${candidate.id}`;
+  return `/elections/candidate/${chamberLower}${isIncumbent ? '-i' : ''
+    }/${name}/${candidate.id}`;
 };
 
 const slugify = text => {
