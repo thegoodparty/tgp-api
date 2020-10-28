@@ -16,13 +16,30 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const reqUser = this.req.user;
-      await Ranking.destroy({
+      const condition = {
         chamber: { '!=': 'presidential' },
         user: reqUser.id,
-      });
+      };
+      const deleteRankings = await Ranking.find(condition);
+      for (let i = 0; i < deleteRankings.length; i++) {
+        const { chamber, candidate, isIncumbent } = deleteRankings[i];
+        const candidateData = await sails.helpers.candidateFinder(
+          candidate,
+          chamber,
+          isIncumbent,
+        );
+        const { name } = candidateData.candidate;
+        await sails.helpers.updateTag(
+          reqUser.email,
+          'The Good Party',
+          `${chamber} ${name}`,
+          'inactive'
+        );
+      }
+      await Ranking.destroy(condition);
 
       return exits.success({
         message: 'Ranking deleted',

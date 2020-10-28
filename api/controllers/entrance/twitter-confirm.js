@@ -56,7 +56,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { oauthToken, oauthVerifier } = inputs;
       const consumerKey =
@@ -207,6 +207,18 @@ module.exports = {
               isIncumbent,
               userState: newUser.shortState,
             });
+            const candidateData = await sails.helpers.candidateFinder(
+              candidate,
+              chamber,
+              isIncumbent,
+            );
+            const { name } = candidateData.candidate;
+            await sails.helpers.updateTag(
+              newUser.email,
+              'The Good Party',
+              `${chamber} ${name}`,
+              'active'
+            );
           }
         }
       } catch (e) {
