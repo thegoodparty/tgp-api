@@ -57,8 +57,7 @@ module.exports = {
           is_syncing: true
         }
       }
-      let response;
-      response = await mailchimp.lists.updateListMemberTags(tgpList.id, subscriberHash, obj);
+      const response = await mailchimp.lists.updateListMemberTags(tgpList.id, subscriberHash, obj);
       return exits.success(response);
     } catch (err) {
       console.log(err);
