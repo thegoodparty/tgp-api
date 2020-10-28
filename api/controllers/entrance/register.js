@@ -283,41 +283,53 @@ module.exports = {
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
         const appBase = sails.config.custom.appBase || sails.config.appBase;
-        const subject = 'Please Confirm your email address - The Good Party';
-        const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-                           <tr>
-                            <td>
-                              <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
-                                Please confirm your email
-                              </h2>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                Hi ${user.name}!<br/> <br>
-                              </p>
-                            </td>
-                          </tr>
+        const subject = 'Welcome to the Good Party!';
+        const message = `
+<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+  <tr>
+    <td>
+      <h2
+        style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
+        Make sure you're ready to vote
+      </h2>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p
+        style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+        Hi ${user.name}!<br/> <br>
+      </p>
+    </td>
+  </tr>
 
-                          <tr>
-                            <td>
-                                <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                  Welcome to The Good Party!  Please tap to
-                                  <a href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}">confirm your email</a>,
-                                  so we can get you counted.
-                                </p>
-                             </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <br/><br/><br/>
-                              <a href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
-                                Confirm Email
-                              </a>
-                            </td>
-                          </tr>
-                        </table>`;
+  <tr>
+    <td>
+      <p
+        style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+        Welcome to The Good Party! We help you make your vote matter more than money. He’s how to get started:
+      <ol>
+        <li>Check your voter registration</li>
+        <li>Join and share crowd-voting campaigns</li>
+        <li>When it's time, we'll help you get out the vote</li>
+      </ol>
+      <br/>
+
+      The Good Party is free for both people and candidates.
+      <a href="${appBase}/verify-vote?email=${lowerCaseEmail}&token=${user.emailConfToken}">GET STARTED</a>,
+      so we can get you counted.
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <br/><br/>
+      The Good Party is not affiliated with any campaign or campaign committee.
+      There is no cost to checking your voter registration.
+      The Good Party is always free for both voters and candidates.
+    </td>
+  </tr>
+</table>`;
         const messageHeader = '';
         await sails.helpers.mailgunSender(
           lowerCaseEmail,
