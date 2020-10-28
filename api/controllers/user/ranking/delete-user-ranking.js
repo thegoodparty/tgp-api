@@ -16,7 +16,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const reqUser = this.req.user;
       const condition = {
@@ -24,12 +24,18 @@ module.exports = {
         user: reqUser.id,
       };
       const deleteRankings = await Ranking.find(condition);
-      for(let i = 0; i < deleteRankings.length; i++) {
-        const { chamber, candidate } = deleteRankings[i];
+      for (let i = 0; i < deleteRankings.length; i++) {
+        const { chamber, candidate, isIncumbent } = deleteRankings[i];
+        const candidateData = await sails.helpers.candidateFinder(
+          candidate,
+          chamber,
+          isIncumbent,
+        );
+        const { name } = candidateData.candidate;
         await sails.helpers.updateTag(
           reqUser.email,
           'The Good Party',
-          `${chamber} ${candidate}`,
+          `${chamber} ${name}`,
           'inactive'
         );
       }

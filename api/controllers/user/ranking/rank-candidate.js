@@ -69,16 +69,16 @@ module.exports = {
         userState: reqUser.shortState || 'NA',
         isIncumbent,
       });
-      await sails.helpers.updateTag(
-        reqUser.email,
-        'The Good Party',
-        `${chamber} ${candidateId}`,
-        'active'
-      );
       let { candidate } = await sails.helpers.candidateFinder(
         candidateId,
         chamber,
         isIncumbent,
+      );
+      await sails.helpers.updateTag(
+        reqUser.email,
+        'The Good Party',
+        `${chamber} ${candidate.name}`,
+        'active'
       );
       if (!candidate && candidateId < 0) {
         candidate = {
