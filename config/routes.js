@@ -83,6 +83,7 @@ module.exports.routes = {
 
   'GET    /api/v1/incumbent/find-by-district': 'incumbent/find-by-district',
   'GET    /api/v1/incumbent/to-scrape': 'incumbent/to-scrape',
+  'GET    /api/v1/incumbents': 'incumbent/all',
 
   'GET    /api/v1/race-candidate/house-by-district':
     'race-candidate/house-by-district',

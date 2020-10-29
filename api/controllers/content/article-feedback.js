@@ -65,20 +65,13 @@ module.exports = {
       });
 
       const message = {
-        text: `Article Feedback`,
+        text: `Article Helpful? ${isHelpful ? 'YES' : 'No'}`,
         blocks: [
           {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `__________________________________ \n *Article Feedback* \n <https://thegoodparty.org/party?article=48a7xazZc0eN4PXM20Jtel|${title}>`,
-            },
-          },
-          {
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `Was it helpful? ${isHelpful ? '*YES*' : '*No*'}`,
+              text: `__________________________________ \n *Article Feedback* \n <https://thegoodparty.org/party?article=${id}|${title}>`,
             },
           },
         ],
