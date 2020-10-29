@@ -207,16 +207,12 @@ module.exports = {
               isIncumbent,
               userState: newUser.shortState,
             });
-            const candidateData = await sails.helpers.candidateFinder(
-              candidate,
-              chamber,
-              isIncumbent,
-            );
-            const { name } = candidateData.candidate;
             await sails.helpers.updateTag(
               newUser.email,
               'The Good Party',
-              `${chamber} ${name}`,
+              candidate,
+              chamber,
+              isIncumbent,
               'active'
             );
           }

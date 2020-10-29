@@ -44,7 +44,6 @@ module.exports = {
         email,
       };
       const { lists } = await mailchimp.lists.getAllLists();
-      console.log(lists);
       const tgpList = lists.find(list => list.name === listName);
       response = await mailchimp.lists.addListMember(tgpList.id, {
         email_address: subscribingUser.email,

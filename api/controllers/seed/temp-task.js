@@ -18,15 +18,32 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      const users = await User.find();
-      for (let i = 0; i < users.length; i++) {
-        try {
-          if (users[i].email) {
-            await sails.helpers.addEmail(users[i].email, 'The Good Party');
-          }
-        } catch (e) {}
+      const rankings = await Ranking.find()
+      for (let i = 0; i < rankings.length; i++) {
+        const { user, chamber, candidate, isIncumbent } = rankings[i];
+        if (user) {
+          const { email } = await User.findOne({
+            id: user,
+          });
+          try {
+            if (email) {
+              console.log(email, chamber, candidate, isIncumbent);
+              
+              await sails.helpers.updateTag(
+                email,
+                'The Good Party',
+                chamber,
+                candidate,
+                isIncumbent,
+                'active'
+              );
+            }
+
+          } catch (e) { }
+        }
+
       }
       return exits.success({});
     } catch (e) {

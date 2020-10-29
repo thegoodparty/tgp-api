@@ -23,9 +23,23 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    tag: {
-      type: 'string',
+    chamber: {
+      description: 'Candidate chamber',
+      example: 'presidential',
       required: true,
+      type: 'string',
+    },
+    candidateId: {
+      description: 'candidate id to be added',
+      example: 1,
+      required: true,
+      type: 'number',
+    },
+    isIncumbent: {
+      description: 'is the candidate an incumbent',
+      example: false,
+      required: false,
+      type: 'boolean',
     },
     status: {
       type: 'string',
@@ -44,21 +58,50 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      let { email, listName, tag, status } = inputs;
+      let { email, listName, chamber, candidateId, isIncumbent, status } = inputs;
+
       listName = appBase === 'https://thegoodparty.org'
         ? listName
         : 'thegoodparty';
       const { lists } = await mailchimp.lists.getAllLists();
       const tgpList = lists.find(list => list.name === listName);
+
+      // generate subscriberHash with email by using md5 that will be used as filter key
       const subscriberHash = md5(email);
-      const obj = {
-        body: {
-          tags: [{ name: tag, status }],
-          is_syncing: true
+      // check if the email is existed or not
+      // (in most cases, this will not be necessary since we register user email when the user sign up.)
+      try {
+        await mailchimp.lists.getListMember(tgpList.id, subscriberHash)
+      }
+      catch (err) {
+        // if email is not existed, subscribe that email
+        try {
+          await sails.helpers.addEmail(email, 'The Good Party');
+        }
+        catch (err) {
+
         }
       }
-      const response = await mailchimp.lists.updateListMemberTags(tgpList.id, subscriberHash, obj);
-      return exits.success(response);
+
+      let { candidate } = await sails.helpers.candidateFinder(
+        candidateId,
+        chamber,
+        isIncumbent,
+      );
+      if (candidate) {
+        let { name } = candidate;
+        name = `${chamber} ${name}`;
+        console.log(name)
+        const obj = {
+          body: {
+            tags: [{ name, status }],
+            is_syncing: true
+          }
+        }
+        const response = await mailchimp.lists.updateListMemberTags(tgpList.id, subscriberHash, obj);
+        return exits.success(response);
+      }
+      return exits.success({});
     } catch (err) {
       console.log(err);
       if (err && err.response && err.response.text) {

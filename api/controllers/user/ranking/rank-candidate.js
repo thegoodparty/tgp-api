@@ -77,7 +77,9 @@ module.exports = {
       await sails.helpers.updateTag(
         reqUser.email,
         'The Good Party',
-        `${chamber} ${candidate.name}`,
+        chamber,
+        candidateId,
+        isIncumbent,
         'active'
       );
       if (!candidate && candidateId < 0) {
