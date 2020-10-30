@@ -71,7 +71,9 @@ module.exports = {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `__________________________________ \n *Article Feedback* \n <https://thegoodparty.org/party?article=${id}|${title}>`,
+              text: `__________________________________ \n *Article Helpful? ${
+                isHelpful ? 'YES' : 'No'
+              }* \n <https://thegoodparty.org/party?article=${id}|${title}>`,
             },
           },
         ],
