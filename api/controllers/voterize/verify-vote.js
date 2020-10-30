@@ -122,6 +122,30 @@ module.exports = {
         city,
         voteStatus,
       };
+      if (zip) {
+        let zipCode = await ZipCode.findOne({ zip });
+        if (zipCode) {
+          const { stateShort } = zipCode;
+          updateFields.zipCode = zipCode.id;
+          updateFields.shortState = stateShort;
+          updateFields.districtNumber = null;
+
+          let { approxPctArr } = zipCode;
+          if (approxPctArr) {
+            approxPctArr = JSON.parse(approxPctArr);
+            if (approxPctArr.length > 0) {
+              const congDistrict = await CongDistrict.findOne({
+                id: approxPctArr[0].districtId,
+              }).populate('state');
+              updateFields.congDistrict = congDistrict.id;
+              updateFields.districtNumber = congDistrict.code;
+              updateFields.shortState = congDistrict.state
+                ? congDistrict.state.shortName
+                : '';
+            }
+          }
+        }
+      }
       await User.updateOne({ id: user.id }).set(updateFields);
 
       return exits.success({
@@ -212,7 +236,6 @@ const targetSmartVerify = async form => {
     unparsed_full_address: `${form.address}, ${form.city}, ${form.state} ${form.zip}`,
   };
 
-
   const options = {
     uri: `https://api.targetsmart.com/voter/voter-registration-check?${serialize(
       smartForm,
@@ -224,7 +247,7 @@ const targetSmartVerify = async form => {
     },
   };
   const response = await request(options);
-  console.log(response)
+  console.log(response);
   if (response.error) {
     throw 'badRequest';
   }

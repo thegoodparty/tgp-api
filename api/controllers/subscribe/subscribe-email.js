@@ -29,14 +29,17 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { email } = inputs;
-      const res = await sails.helpers.addEmail(email, 'The Good Party');
-      
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      const res = await sails.helpers.addEmail(
+        email,
+        'The Good Party'
+      );
+
       return exits.success(res);
     } catch (err) {
-      // console.log('2', err.response.code)
       if (err && err.response && err.response.text) {
         const parsedText = JSON.parse(err.response.text);
         return exits.badRequest({

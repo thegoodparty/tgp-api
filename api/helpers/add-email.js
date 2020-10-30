@@ -32,24 +32,26 @@ module.exports = {
       description: 'Error subscribing email',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let response;
-      if (appBase === 'https://thegoodparty.org') {
-        const { email, listName } = inputs;
-        const subscribingUser = {
-          email,
-        };
-        const { lists } = await mailchimp.lists.getAllLists();
-        const tgpList = lists.find(list => list.name === listName);
-        response = await mailchimp.lists.addListMember(tgpList.id, {
-          email_address: subscribingUser.email,
-          status: 'subscribed',
-        });
-      }
+      let { email, listName } = inputs;
+      listName = appBase === 'https://thegoodparty.org'
+        ? listName
+        : 'thegoodparty';
+      const subscribingUser = {
+        email,
+      };
+      const { lists } = await mailchimp.lists.getAllLists();
+      const tgpList = lists.find(list => list.name === listName);
+      response = await mailchimp.lists.addListMember(tgpList.id, {
+        email_address: subscribingUser.email,
+        status: 'subscribed',
+      });
       return exits.success(response);
     } catch (err) {
+      console.log(err);
       if (err && err.response && err.response.text) {
         const parsedText = JSON.parse(err.response.text);
         return exits.badRequest({
