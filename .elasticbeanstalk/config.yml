@@ -1,6 +1,6 @@
 branch-defaults:
   develop:
-    environment: TgpApi-env
+    environment: TgpApi-dev
   master:
     environment: TgpApi-prod
 environment-defaults:
