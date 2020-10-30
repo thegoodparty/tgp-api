@@ -2,7 +2,7 @@ pipeline {
   agent any
   environment {
     DEV_BRANCH            = "develop"
-    EB_DEV                = "TgpApi-env"
+    EB_DEV                = "TgpApi-dev"
     PROD_BRANCH           = "master"
     EB_PROD               = "TgpApi-prod"
   }
