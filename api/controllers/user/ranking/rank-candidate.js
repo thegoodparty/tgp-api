@@ -184,6 +184,9 @@ const sendRankingEmail = async (candidate, user) => {
                 </a>
               </div>
               <br />
+              &nbsp;
+              <br />
+              <br />
               <br />
               <div style="text-align: center">
                 <a
