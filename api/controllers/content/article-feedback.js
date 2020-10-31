@@ -65,7 +65,7 @@ module.exports = {
       });
 
       const message = {
-        text: `Article Helpful? ${isHelpful ? 'YES' : 'No'}`,
+        text: `Article Helpful? ${isHelpful ? 'YES' : 'No'}. Title: ${title}`,
         blocks: [
           {
             type: 'section',
