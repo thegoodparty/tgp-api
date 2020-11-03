@@ -126,11 +126,7 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
 
-      let votesNeeded = await sails.helpers.votesNeeded(
-        chamber,
-        candidate.state,
-        candidate.district,
-      );
+      let votesNeeded = await sails.helpers.votesNeeded(candidate);
 
       await sails.helpers.cacheHelper(
         'set',
