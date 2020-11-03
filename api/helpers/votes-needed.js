@@ -12,7 +12,7 @@ module.exports = {
     try {
       const { candidate } = inputs;
       const { chamber, state, district, votesReceived } = candidate;
-      const lowerChamber = chamber.toLowerCase();
+      const lowerChamber = chamber ? chamber.toLowerCase() : 'presidential';
       if (votesReceived && votesReceived !== 0) {
         let candidates = [];
         if (lowerChamber === 'presidential') {
