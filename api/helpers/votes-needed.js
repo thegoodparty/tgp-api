@@ -29,7 +29,7 @@ module.exports = {
             isHidden: false,
           }).sort([{ votesReceived: 'DESC' }]);
 
-          const incumbents = await RaceCandidate.find({
+          const incumbents = await Incumbent.find({
             chamber,
             state,
             district,
@@ -41,17 +41,17 @@ module.exports = {
           );
         }
         if (candidates.length === 1) {
-          return exits.success(candidates[0].votesNeeded);
+          return exits.success(candidates[0].votesReceived);
         } else if (candidates.length > 1) {
           // if our candidate is first place, votes needed are the second place plus 1
           if (
             candidates[0].id === candidate.id &&
-            candidates[0].votesNeeded === candidate.votesNeeded
+            candidates[0].votesReceived === candidate.votesReceived
           ) {
-            return exits.success(candidates[1].votesNeeded);
+            return exits.success(candidates[1].votesReceived);
           }
           // if our candidate is not at first place, votes needed are the first place plus 1
-          return exits.success(candidates[0].votesNeeded);
+          return exits.success(candidates[0].votesReceived);
         }
         return exits.success(0);
       } else {

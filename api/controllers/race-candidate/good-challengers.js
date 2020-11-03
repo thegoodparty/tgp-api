@@ -77,6 +77,7 @@ module.exports = {
           raised,
           state,
           votesNeeded,
+          votesReceived,
           chamber,
           smallContributions,
         } = challenger;
@@ -91,6 +92,7 @@ module.exports = {
           raised,
           state,
           votesNeeded,
+          votesReceived,
           chamber,
           smallContributions,
         });
