@@ -36,7 +36,6 @@ module.exports = {
         `cand-${id}-${chamber}-${isIncumbent}`,
       );
       if (cached) {
-        console.log('from cache');
         const {
           sharedCount,
           rankingCount,
