@@ -36,7 +36,6 @@ module.exports = {
         `cand-${id}-${chamber}-${isIncumbent}`,
       );
       if (cached) {
-        console.log('from cache');
         const {
           sharedCount,
           rankingCount,
@@ -126,11 +125,7 @@ module.exports = {
       candidate.isGood = isGood;
       candidate.isBigMoney = isBigMoney;
 
-      let votesNeeded = await sails.helpers.votesNeeded(
-        chamber,
-        candidate.state,
-        candidate.district,
-      );
+      let votesNeeded = await sails.helpers.votesNeeded(candidate);
 
       await sails.helpers.cacheHelper(
         'set',
