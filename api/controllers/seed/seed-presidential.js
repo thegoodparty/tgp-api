@@ -38,6 +38,11 @@ module.exports = {
           }
         });
 
+        await sails.helpers.cacheHelper(
+          'delete',
+          'presidential',
+        );
+
         await createEntries(results);
         return exits.success({
           seed: `seeded ${results.length} candidates`,

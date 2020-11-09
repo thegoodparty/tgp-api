@@ -54,6 +54,7 @@ module.exports.routes = {
 
   'GET    /api/v1/admin/candidates': 'admin/candidates',
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
+  'DELETE    /api/v1/admin/candidate-update': 'admin/delete-candidate-update',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/users': 'admin/delete-user',
   'POST   /api/v1/admin/candidate': 'admin/create-candidate',

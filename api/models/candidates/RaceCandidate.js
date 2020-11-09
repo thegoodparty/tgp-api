@@ -120,6 +120,11 @@ module.exports = {
       type: 'string',
     },
 
+    votesReceived: {
+      type: 'number',
+      defaultsTo: 0,
+    },
+
     // many to many relationship to campaignUpdates
     raceCandUpdates: {
       collection: 'campaignUpdate',

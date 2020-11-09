@@ -44,7 +44,7 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       let reqUser = this.req.user;
       const { candidateId, chamber, state, isIncumbent } = inputs;
@@ -80,14 +80,15 @@ module.exports = {
         chamber,
         candidateId,
         isIncumbent,
-        'active'
+        'active',
       );
       if (!candidate && candidateId < 0) {
         candidate = {
           name: 'A Good Candidate',
           chamber,
-          blocName: `GoodBloc-${state.toUpperCase()}${chamber === 'house' ? candidateId * -1 : ''
-            }`,
+          blocName: `GoodBloc-${state.toUpperCase()}${
+            chamber === 'house' ? candidateId * -1 : ''
+          }`,
           district: candidateId * -1,
           state,
           isGoodBloc: true,
@@ -137,8 +138,9 @@ const sendRankingEmail = async (candidate, user) => {
       shareBloc += `-${candidate.state.toUpperCase()}`;
     }
   } else {
-    asChamber = `${candidate.state.toUpperCase()}-${candidate.district
-      } Representative`;
+    asChamber = `${candidate.state.toUpperCase()}-${
+      candidate.district
+    } Representative`;
     if (!candidate.isGoodBloc) {
       shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
     }
@@ -181,6 +183,19 @@ const sendRankingEmail = async (candidate, user) => {
                   &nbsp;&nbsp; SHARE &nbsp;&nbsp;
                 </a>
               </div>
+              <br />
+              &nbsp;
+              <br />
+              <br />
+              <br />
+              <div style="text-align: center">
+                <a
+                  href="${appBase}/verify-vote"
+                  style="padding: 16px 48px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none; font-size: 18px; font-weight: 700"
+                >
+                  &nbsp;&nbsp; Check you voter registration &nbsp;&nbsp;
+                </a>
+              </div>
             </p>
             <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
               <br />
@@ -207,8 +222,9 @@ const candidateRoute = candidate => {
   const { isIncumbent, chamber } = candidate;
   const chamberLower = chamber ? chamber.toLowerCase() : 'presidential';
   const name = slugify(candidate.name);
-  return `/elections/candidate/${chamberLower}${isIncumbent ? '-i' : ''
-    }/${name}/${candidate.id}`;
+  return `/elections/candidate/${chamberLower}${
+    isIncumbent ? '-i' : ''
+  }/${name}/${candidate.id}`;
 };
 
 const slugify = text => {

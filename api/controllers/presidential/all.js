@@ -56,11 +56,13 @@ module.exports = {
           if (ranking + twitterFollowers > topRank) {
             topRank = ranking + twitterFollowers;
           }
+          const votesNeeded = await sails.helpers.votesNeeded(candidate);
 
           good.push({
             ...candidateWithoutTwitter,
             isGood,
             ranking: ranking + twitterFollowers,
+            votesNeeded,
           });
         } else if (isGood === false) {
           notGood.push({
@@ -74,11 +76,13 @@ module.exports = {
           if (ranking + twitterFollowers > topRank) {
             topRank = ranking + twitterFollowers;
           }
+          const votesNeeded = await sails.helpers.votesNeeded(candidate);
 
           unknown.push({
             ...candidateWithoutTwitter,
             isGood,
             ranking: ranking + twitterFollowers,
+            votesNeeded,
           });
         }
       }

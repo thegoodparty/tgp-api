@@ -73,6 +73,8 @@ module.exports = {
       let topRank = 0;
       for (let i = 0; i < sortedCandidates.candidates.good.length; i++) {
         let candidate = sortedCandidates.candidates.good[i];
+        const votesNeeded = await sails.helpers.votesNeeded(candidate);
+        candidate.votesNeeded = votesNeeded;
         const ranking = await Ranking.count({
           candidate: candidate.id,
           chamber: 'house',
@@ -87,6 +89,8 @@ module.exports = {
 
       for (let i = 0; i < sortedCandidates.candidates.unknown.length; i++) {
         let candidate = sortedCandidates.candidates.unknown[i];
+        const votesNeeded = await sails.helpers.votesNeeded(candidate);
+        candidate.votesNeeded = votesNeeded;
         const ranking = await Ranking.count({
           candidate: candidate.id,
           chamber: 'house',
@@ -112,22 +116,6 @@ module.exports = {
         }
       }
 
-      let threshold = 38658139; // presidential
-      const stateRecord = await State.findOne({ shortName: lowerState });
-      let congDistrict;
-      if (stateRecord) {
-        congDistrict = await CongDistrict.findOne({
-          state: stateRecord.id,
-          code: district,
-        });
-      }
-      if (congDistrict) {
-        threshold =
-          Math.max(
-            congDistrict.writeInThreshold,
-            congDistrict.writeInThresholdWithPresident,
-          ) + 1;
-      }
       let goodEmptyBloc;
       if (sortedCandidates.candidates.good.length === 0) {
         const emptyBlockId = parseInt(district, 10) * -1;
@@ -143,7 +131,6 @@ module.exports = {
         houseCandidates: {
           ...sortedCandidates.candidates,
           topRank,
-          threshold,
           goodEmptyBloc,
         },
       });
