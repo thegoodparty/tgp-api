@@ -10,6 +10,15 @@ module.exports = {
     },
   },
 
+  exits: {
+    success: {
+      description: 'Incumbent found',
+    },
+    badRequest: {
+      description: 'Incumbent Not Found',
+    },
+  },
+
   fn: async function(inputs, exits) {
     try {
       const { state, district } = inputs;
