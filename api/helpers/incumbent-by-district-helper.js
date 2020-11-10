@@ -79,6 +79,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find incumbent by district helper', e);
+      await sails.helpers.errorLoggerHelper(
+        `Error at incumbent by district helper. State: ${inputs.state}. District: ${inputs.district}`,
+        e,
+      );
       return exits.badRequest({});
     }
   },
