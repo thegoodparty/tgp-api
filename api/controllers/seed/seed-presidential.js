@@ -185,7 +185,7 @@ const createEntries = async rows => {
         smallContributions,
         campaignReportDate,
         outsideReportDate,
-        isIncumbent,
+        // isIncumbent,
         isActive: true,
       });
 
