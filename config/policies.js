@@ -32,4 +32,6 @@ module.exports.policies = {
   'seed/*': true,
   'scrape/*': true,
   'subscribe/*': true,
+  'admin/uploaded-images': true,
+  'admin/upload-image': true,
 };

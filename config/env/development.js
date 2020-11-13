@@ -140,7 +140,6 @@ module.exports = {
       allRoutes: true,
       allowOrigins: '*',
       allowCredentials: false,
-      allowRequestHeaders: 'content-type, X-Requested-With, authorization',
     },
   },
 
