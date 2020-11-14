@@ -44,7 +44,7 @@
     "dot-prop": ">=4.2.1"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production nodemon app.js",
+    "start": "cross-env NODE_ENV=production node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",

@@ -15,11 +15,15 @@ module.exports = {
       friendlyName: 's3 bucket name',
       type: 'string',
     },
+    base64: {
+      friendlyName: 'receive base64 data because helper function avoid buffer',
+      type: 'string',
+    }
   },
 
   fn: async function(inputs, exits) {
     try {
-      const { data, bucketName } = inputs;
+      let { data, bucketName, base64 } = inputs;
       const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
       const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
 
@@ -28,6 +32,9 @@ module.exports = {
         secretAccessKey: s3Secret,
         params: { Bucket: bucketName, ACL: 'public-read' },
       });
+      if(!data.Body) {
+        data.Body = new Buffer(base64, 'base64');
+      }
       return new Promise((resolve, reject) => {
         s3Bucket.putObject(data, function(err, data2) {
           if (err) {
