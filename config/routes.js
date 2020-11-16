@@ -17,6 +17,7 @@ module.exports.routes = {
   'GET    /api/v1/content/update': 'content/update',
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
 
+
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
   'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',
@@ -60,6 +61,8 @@ module.exports.routes = {
   'PUT   /api/v1/admin/candidate-image': 'admin/update-candidate-image',
   'GET   /api/v1/admin/voterize': 'admin/all-voterize',
   'PUT   /api/v1/admin/voterize': 'admin/update-voterize',
+  'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
+  'POST   /api/v1/admin/upload-image': 'admin/upload-image',
 
   'GET    /api/v1/seed/seed': 'seed/seed',
   'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',

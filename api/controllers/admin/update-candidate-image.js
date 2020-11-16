@@ -1,11 +1,10 @@
-const AWS = require('aws-sdk');
-
 module.exports = async function uploadAvatar(req, res) {
   const id = req.param('id');
   const chamber = req.param('chamber');
   const isIncumbent = req.param('isIncumbent');
   const base64Avatar = req.param('base64');
   const fileExt = 'jpeg';
+  const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
 
   if (!base64Avatar || !id) {
     return res.badRequest({
@@ -14,7 +13,7 @@ module.exports = async function uploadAvatar(req, res) {
   }
 
   const cleanBase64 = base64Avatar.replace(/^data:image\/.*;base64,/, '');
-  const buf = new Buffer(cleanBase64, 'base64');
+  
 
   let candidate;
   if (chamber === 'presidential') {
@@ -40,13 +39,11 @@ module.exports = async function uploadAvatar(req, res) {
 
   const data = {
     Key: fileName,
-    Body: buf,
     ContentEncoding: 'base64',
     ContentType: `image/${fileExt}`,
   };
-  // await sails.helpers.s3Uploader(data, 'assets.thegoodparty.org/candidates');
-  await uploadToS3(data);
-  const image = `https://assets.thegoodparty.org/candidates/${fileName}`;
+  await sails.helpers.s3Uploader(data, `${assetsBase}/candidates`, cleanBase64);
+  const image = `https://${assetsBase}/candidates/${fileName}`;
   if (chamber === 'presidential') {
     candidate = await PresidentialCandidate.updateOne({
       id,
@@ -90,33 +87,5 @@ module.exports = async function uploadAvatar(req, res) {
 
   return res.ok({
     candidate,
-  });
-};
-
-const uploadToS3 = data => {
-  const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
-  const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
-
-  var s3Bucket = new AWS.S3({
-    accessKeyId: s3Key,
-    secretAccessKey: s3Secret,
-    params: {
-      Bucket: 'assets.thegoodparty.org/candidates',
-      ACL: 'public-read',
-    },
-  });
-  return new Promise((resolve, reject) => {
-    s3Bucket.putObject(data, function(err, data) {
-      if (err) {
-        console.log(err);
-        console.log('Error uploading data: ', data);
-        // return res.badRequest({
-        //   message: 'Error uploading data.',
-        // });
-        reject();
-      } else {
-        resolve();
-      }
-    });
   });
 };

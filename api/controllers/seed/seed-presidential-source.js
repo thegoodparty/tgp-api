@@ -18,6 +18,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      
       const sources = [
         {
           name: 'Donald Trump',
