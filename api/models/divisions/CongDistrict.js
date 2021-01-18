@@ -72,11 +72,6 @@ module.exports = {
       collection: 'user',
       via: 'congDistrict',
     },
-    // a candidate has one district (a district has many users)
-    candidates: {
-      collection: 'candidate',
-      via: 'congDistrict',
-    },
 
   },
 

@@ -30,5 +30,10 @@ module.exports = {
       collection: 'incumbent',
       via: 'incumbentUpdates',
     },
+
+    candidateUpdates: {
+      collection: 'candidate',
+      via: 'candidateUpdates',
+    },
   },
 };

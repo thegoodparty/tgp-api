@@ -104,6 +104,9 @@ module.exports.routes = {
   'GET    /api/v1/candidates/all': 'candidates/all',
   'POST   /api/v1/candidates/track-share': 'candidates/track-share',
 
+  // New Candidates
+  'GET    /api/v1/new-candidate': 'newCandidates/find',
+
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
   'POST   /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',

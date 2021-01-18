@@ -11,75 +11,9 @@ module.exports = {
   description: 'Admin endpoint to create a candidate.',
 
   inputs: {
-    name: {
-      type: 'string',
+    candidate: {
+      type: 'json',
       required: true,
-      description: "Candidate's name.",
-      maxLength: 120,
-      example: 'John Smith',
-    },
-
-    phone: {
-      type: 'string',
-      required: true,
-      maxLength: 11,
-      example: '3101234567',
-    },
-
-    email: {
-      type: 'string',
-      isEmail: true,
-      required: true,
-      maxLength: 200,
-      example: 'mary.sue@example.com',
-    },
-
-    about: {
-      type: 'string',
-      required: true,
-      maxLength: 11,
-      description: 'Summary about the Candidate',
-    },
-
-    shortState: {
-      type: 'string',
-      required: true,
-      maxLength: 2,
-      description: 'State Related to candidate',
-      example: 'CA',
-    },
-
-    longState: {
-      type: 'string',
-      required: true,
-      description: 'State Related to candidate',
-      example: 'California',
-    },
-
-    image: {
-      type: 'string',
-      required: true,
-      description: 'url of a profile image',
-    },
-
-    facebookUrl: {
-      type: 'string',
-      required: false,
-    },
-
-    twitterUrl: {
-      type: 'string',
-      required: false,
-    },
-
-    instagramUrl: {
-      type: 'string',
-      required: false,
-    },
-
-    website: {
-      type: 'string',
-      required: false,
     },
   },
 
@@ -94,59 +28,58 @@ module.exports = {
     },
   },
   fn: async function(inputs, exits) {
-    // Look up the user whose ID was specified in the request.
-    // Note that we don't have to validate that `userId` is a number;
-    // the machine runner does this for us and returns `badRequest`
-    // if validation fails.
     try {
-      const {
-        firstName,
-        lastName,
-        phone,
-        email,
-        shortState,
-        longState,
-        about,
-        image,
-        facebookUrl,
-        twitterUrl,
-        instagramUrl,
-        website,
-      } = inputs;
-      const phoneError = !/^\d{10}$/.test(phone);
-      if (phoneError) {
-        return exits.badRequest({
-          message: 'Accepting 10 digits phone numbers only. EX: 3104445566',
-        });
+      const fileExt = 'jpeg';
+      const { candidate } = inputs;
+      const { imageBase64 } = candidate;
+
+      const name = `${candidate.firstName
+        .toLowerCase()
+        .replace(/ /g, '-')}-${candidate.lastName
+        .toLowerCase()
+        .replace(/ /g, '-')}`;
+      // upload the image
+      let image;
+      if (imageBase64) {
+        const assetsBase =
+          sails.config.custom.assetsBase || sails.config.assetsBase;
+        const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
+        const uuid = Math.random()
+          .toString(36)
+          .substring(2, 8);
+
+        const fileName = `${name}-${uuid}.${fileExt}`;
+
+        const data = {
+          Key: fileName,
+          ContentEncoding: 'base64',
+          ContentType: `image/${fileExt}`,
+        };
+        await sails.helpers.s3Uploader(
+          data,
+          `${assetsBase}/candidates`,
+          cleanBase64,
+        );
+        image = `https://${assetsBase}/candidates/${fileName}`;
       }
 
-      // find or create state
-      const state = await State.findOrCreate(
-        { shortName: shortState.toLowerCase() },
-        {
-          name: longState,
-          shortName: shortState.toLowerCase(),
-        },
-      );
-
-      // upload image to S3
-
-      const candidate = await Candidate.create({
-        firstName,
-        lastName,
-        phone,
-        email,
-        state: state.id,
-        about,
+      const cleanCandidate = {
+        ...candidate,
         image,
-        facebookUrl,
-        twitterUrl,
-        instagramUrl,
-        website,
-      }).fetch();
+      };
+
+      delete cleanCandidate.imageBase64;
+
+      await Candidate.create({
+        firstName: cleanCandidate.firstName,
+        lastName: cleanCandidate.lastName,
+        isActive: true,
+        chamber: cleanCandidate.chamber,
+        data: JSON.stringify(cleanCandidate),
+      });
 
       return exits.success({
-        candidate,
+        message: 'created',
       });
     } catch (e) {
       console.log(e);

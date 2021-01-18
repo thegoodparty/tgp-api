@@ -28,6 +28,7 @@ module.exports.policies = {
   'presidential/*': true,
   'race-candidate/*': true,
   'candidates/*': true,
+  'newCandidates/*': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,

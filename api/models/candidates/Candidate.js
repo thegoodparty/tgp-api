@@ -5,54 +5,43 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+// this is the new Candidate Model. We will move all the other candidates here.
+
 module.exports = {
   attributes: {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    name: {
+    firstName: {
       type: 'string',
       required: true,
-      description: "Candidate's name.",
+      description: "Candidate's first name.",
       maxLength: 60,
     },
-
-    role: {
+    lastName: {
       type: 'string',
-      required: false,
-      description: "Candidate's role",
+      required: true,
+      description: "Candidate's last name.",
+      maxLength: 60,
     },
-
-    bio: {
+    isActive: {
+      type: 'boolean',
+    },
+    chamber: {
       type: 'string',
-      required: false,
-      description: "Candidate's role",
     },
-
-    site: {
+    data: {
       type: 'string',
-      required: false,
-      description: "Candidate's role",
+      description: 'JSON.stringified string of all the other properties',
     },
-
-    avatarPhoto: {
-      type: 'string',
-      required: false,
-      description: 'url of a profile image',
-    },
-
-    //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
-    //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
-    //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
-
-    state: {
-      model: 'state',
-    },
-    congDistrict: {
-      model: 'congDistrict',
+    // many to many relationship to campaignUpdates
+    candidateUpdates: {
+      collection: 'campaignUpdate',
+      via: 'candidateUpdates',
     },
   },
+
 
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.
