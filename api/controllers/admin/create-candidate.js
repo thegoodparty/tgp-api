@@ -70,12 +70,15 @@ module.exports = {
 
       delete cleanCandidate.imageBase64;
 
-      await Candidate.create({
+      const newCandidate = await Candidate.create({
         firstName: cleanCandidate.firstName,
         lastName: cleanCandidate.lastName,
         isActive: true,
         chamber: cleanCandidate.chamber,
-        data: JSON.stringify(cleanCandidate),
+      }).fetch();
+      // add the id to the JSON.stringified record
+      await Candidate.updateOne({ id: newCandidate.id }).set({
+        data: JSON.stringify({ ...cleanCandidate, id: newCandidate.id }),
       });
 
       return exits.success({

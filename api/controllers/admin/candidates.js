@@ -28,6 +28,14 @@ module.exports = {
         candidates = await PresidentialCandidate.find({
           isActive: true,
         }).sort([{ isIncumbent: 'DESC' }, { combinedRaised: 'DESC' }]);
+      } else if (chamber === 'local') {
+        candidates = await Candidate.find({
+          isActive: true,
+        });
+        candidates = candidates.map(candidate => {
+          console.log('data', candidate.data, typeof candidate.data);
+          return JSON.parse(candidate.data);
+        });
       } else {
         let upperChamber = 'House';
         if (chamber === 'senate') {
