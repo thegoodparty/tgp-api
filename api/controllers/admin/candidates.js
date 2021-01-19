@@ -32,9 +32,9 @@ module.exports = {
         candidates = await Candidate.find({
           isActive: true,
         });
-        candidates = candidates.map(candidate => {
-          console.log('data', candidate.data, typeof candidate.data);
-          return JSON.parse(candidate.data);
+        candidates = candidates.map(candidate => JSON.parse(candidate.data));
+        return exits.success({
+          candidates,
         });
       } else {
         let upperChamber = 'House';
