@@ -56,7 +56,6 @@ module.exports.routes = {
   'DELETE    /api/v1/admin/candidate-update': 'admin/delete-candidate-update',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/users': 'admin/delete-user',
-  'POST   /api/v1/admin/candidate': 'admin/create-candidate',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
   'PUT   /api/v1/admin/candidate-image': 'admin/update-candidate-image',
   'GET   /api/v1/admin/voterize': 'admin/all-voterize',
@@ -105,7 +104,9 @@ module.exports.routes = {
   'POST   /api/v1/candidates/track-share': 'candidates/track-share',
 
   // New Candidates
+  'POST   /api/v1/new-candidate': 'newCandidates/create',
   'GET    /api/v1/new-candidate': 'newCandidates/find',
+  'PUT    /api/v1/new-candidate': 'newCandidates/update',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 

@@ -17,6 +17,8 @@ module.exports.policies = {
    ***************************************************************************/
 
   'admin/*': ['isAuthenticated', 'isAdmin'],
+  'candidate/create': ['isAuthenticated', 'isAdmin'],
+  'candidate/update': ['isAuthenticated', 'isAdmin'],
   // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
