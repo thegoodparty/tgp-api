@@ -32,6 +32,9 @@ module.exports = {
     try {
       const { id } = inputs;
       const candidate = await Candidate.findOne({ id, isActive: true });
+      if (!candidate) {
+        return exits.notFound();
+      }
 
       return exits.success({
         candidate: JSON.parse(candidate.data),
