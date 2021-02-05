@@ -123,12 +123,6 @@ module.exports = {
       let { districtId } = inputs;
       const lowerCaseEmail = email.toLowerCase();
 
-      if (!socialPic && !socialProvider && !socialId && !password) {
-        return exits.badRequest({
-          message: 'missing password',
-        });
-      }
-
       const userExists = await User.findOne({
         email: lowerCaseEmail,
       });
