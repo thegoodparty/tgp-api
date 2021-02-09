@@ -40,7 +40,7 @@ module.exports = {
         .toLowerCase()
         .replace(/ /g, '-')}`;
       // upload the image
-      let image;
+      let { image } = candidate;
       const assetsBase =
         sails.config.custom.assetsBase || sails.config.assetsBase;
       const uuid = Math.random()

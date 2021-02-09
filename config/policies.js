@@ -19,6 +19,8 @@ module.exports.policies = {
   'admin/*': ['isAuthenticated', 'isAdmin'],
   'candidate/create': ['isAuthenticated', 'isAdmin'],
   'candidate/update': ['isAuthenticated', 'isAdmin'],
+  'newCandidate/update': ['isAuthenticated', 'isAdmin'],
+  'newCandidate/create': ['isAuthenticated', 'isAdmin'],
   // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
@@ -30,7 +32,7 @@ module.exports.policies = {
   'presidential/*': true,
   'race-candidate/*': true,
   'candidates/*': true,
-  'newCandidates/*': true,
+  'newCandidates/find': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
