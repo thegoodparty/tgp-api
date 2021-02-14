@@ -37,4 +37,5 @@ module.exports.policies = {
   'seed/*': true,
   'scrape/*': true,
   'subscribe/*': true,
+  'user/support/list-by-candidate': true,
 };

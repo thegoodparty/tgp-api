@@ -245,6 +245,11 @@ module.exports = {
       via: 'user',
     },
 
+    supports: {
+      collection: 'support',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',

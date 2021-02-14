@@ -17,7 +17,6 @@ module.exports.routes = {
   'GET    /api/v1/content/update': 'content/update',
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
 
-
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
   'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',
@@ -115,4 +114,10 @@ module.exports.routes = {
 
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
   'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
+
+  'POST   /api/v1/support': 'user/support/create',
+  'DELETE   /api/v1/support': 'user/support/delete',
+  'PUT   /api/v1/support': 'user/support/update',
+  'GET   /api/v1/supports': 'user/support/list-by-user',
+  'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
 };
