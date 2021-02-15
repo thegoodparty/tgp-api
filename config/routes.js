@@ -101,6 +101,7 @@ module.exports.routes = {
   'GET    /api/v1/candidates/find-by-bloc': 'candidates/find-by-bloc',
   'GET    /api/v1/candidates/all': 'candidates/all',
   'POST   /api/v1/candidates/track-share': 'candidates/track-share',
+  'POST    /api/v1/candidates/share-image': 'candidates/share-image',
 
   // New Candidates
   'POST   /api/v1/new-candidate': 'newCandidates/create',
