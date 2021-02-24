@@ -31,6 +31,10 @@ module.exports = {
     chamber: {
       type: 'string',
     },
+    isOnHomepage: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
     data: {
       type: 'string',
       description: 'JSON.stringified string of all the other properties',
@@ -41,7 +45,6 @@ module.exports = {
       via: 'candidateUpdates',
     },
   },
-
 
   customToJSON: function() {
     // Return a shallow copy of this record with the password removed.

@@ -33,6 +33,7 @@ module.exports.policies = {
   'race-candidate/*': true,
   'candidates/*': true,
   'newCandidates/find': true,
+  'newCandidates/homepage-candidates': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
