@@ -103,6 +103,7 @@ module.exports = {
                 text-align: left;
               "
             >
+              <br/>
               Please click below to verify your email address.
             </p>
           </td>
@@ -132,66 +133,6 @@ module.exports = {
             >
               CLICK TO VERIFY
             </a>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: center">
-            <br /><br /><br /><br />
-            <a
-              style="
-                font-style: italic;
-                font-weight: normal;
-                font-size: 16px;
-                line-height: 22px;
-                text-align: center;
-                color: #555555;
-                text-decoration: none;
-              "
-              href="https://thegoodparty.org/you"
-            >
-              Free software for free elections by
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: center">
-            <a href="https://thegoodparty.org/you">
-              <img
-                style="margin: 0 auto"
-                src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/new-heart.png"
-              />
-            </a>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: center">
-            <br /><br />
-            <p
-              style="
-                font-weight: normal;
-                font-size: 11px;
-                line-height: 15px;
-                /* identical to box height, or 136% */
-    
-                text-align: center;
-                letter-spacing: 0.5px;
-    
-                /* Neutral/N40 - Faded Ink */
-    
-                color: #666666;
-              "
-            >
-              To stop receiving updates, you can remove this campaign from your
-              endorsements
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: center">
-            <img
-              style="margin: 0 auto"
-              src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/compliance.png"
-            />
           </td>
         </tr>
       </tbody>
