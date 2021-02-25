@@ -116,7 +116,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
           <tr>
             <td style="text-align: center">
               <br /><br /><br /><br />
-              <a
+              <p
                 style="
                   font-style: italic;
                   font-weight: normal;
@@ -126,21 +126,18 @@ const html = (msg = '', messageHeader = '', subject = '') => {
                   color: #555555;
                   text-decoration: none;
                 "
-                href="https://thegoodparty.org/you"
               >
                 Free software for free elections by
-              </a>
+              </p>
             </td>
           </tr>
           <tr>
             <td style="text-align: center">
             <br />
-              <a href="https://thegoodparty.org/you">
                 <img
                   style="margin: 0 auto"
                   src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/new-heart.png"
                 />
-              </a>
             </td>
           </tr>
           <tr>
@@ -161,8 +158,9 @@ const html = (msg = '', messageHeader = '', subject = '') => {
                   color: #666666;
                 "
               >
-                To stop receiving updates, you can remove this campaign from your
-                endorsements
+                To stop receiving updates, you can remove this campaign from  <a href="https://thegoodparty.org/you">
+                your endorsements
+                </a>
               </p>
             </td>
           </tr>
