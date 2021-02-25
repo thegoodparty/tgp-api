@@ -96,20 +96,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
             <td>
               <table cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFF" width="100%" style="max-width: 660px; background: #FFFF center center; background-size: cover;"
                 align="center">
-                <tr>
-                  <td  height="42"
-                    style="font-size: 42px; line-height: 42px;"><img
-                    src="https://assets.thegoodparty.org/heart.png" height="42" width="53" alt="TGP" style="margin-left: 12px;" /></td>
-                </tr>
-                <tr>
-                  <td align="center" valign="top"
-                    style="font-family: Arial, sans-serif; font-size:34px; line-height:40px; color:#555555; font-weight:bold; "
-                    class="body-text">
-                    <h2
-                      style="font-family: Arial, sans-serif; font-size:34px; line-height:40px; color:#555555; font-weight:bold; padding:0 20px; margin:0; text-align:center"
-                      class="body-text">${messageHeader}</h2>
-                  </td>
-                </tr>
+                
                 <tr>
                   <td align="center" valign="top"
                     style="font-family: Arial, sans-serif; font-size:14px; line-height:20px; color:#484848; "
@@ -122,15 +109,69 @@ const html = (msg = '', messageHeader = '', subject = '') => {
                     </p>
                   </td>
                 </tr>
-                <tr>
-                  <td height="80" style="font-size: 80px; line-height: 40px;">&nbsp;</td>
-                </tr>
               </table>
             </td>
           </tr>
           <!-- END INTRO -->
           <tr>
-            <td height="40" style="font-size: 40px; line-height: 40px;">&nbsp;</td>
+            <td style="text-align: center">
+              <br /><br /><br /><br />
+              <p
+                style="
+                  font-style: italic;
+                  font-weight: normal;
+                  font-size: 16px;
+                  line-height: 22px;
+                  text-align: center;
+                  color: #555555;
+                  text-decoration: none;
+                "
+              >
+                Free software for free elections by
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+            <br />
+                <img
+                  style="margin: 0 auto"
+                  src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/new-heart.png"
+                />
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+              <br /><br />
+              <p
+                style="
+                  font-weight: normal;
+                  font-size: 11px;
+                  line-height: 15px;
+                  /* identical to box height, or 136% */
+      
+                  text-align: center;
+                  letter-spacing: 0.5px;
+      
+                  /* Neutral/N40 - Faded Ink */
+      
+                  color: #666666;
+                "
+              >
+                To stop receiving updates, you can remove this campaign from  <a href="https://thegoodparty.org/you">
+                your endorsements
+                </a>
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="text-align: center">
+            <br />
+              <img
+                style="margin: 0 auto"
+                src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/compliance.png"
+              />
+            </td>
           </tr>
         </table>
       </center>
