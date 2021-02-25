@@ -137,7 +137,7 @@ module.exports = {
         <tr>
           <td style="text-align: center">
             <br /><br /><br /><br />
-            <p
+            <a
               style="
                 font-style: italic;
                 font-weight: normal;
@@ -145,18 +145,22 @@ module.exports = {
                 line-height: 22px;
                 text-align: center;
                 color: #555555;
+                text-decoration: none;
               "
+              href="https://thegoodparty.org/you"
             >
               Free software for free elections by
-            </p>
+            </a>
           </td>
         </tr>
         <tr>
           <td style="text-align: center">
-            <img
-              style="margin: 0 auto"
-              src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/new-heart.png"
-            />
+            <a href="https://thegoodparty.org/you">
+              <img
+                style="margin: 0 auto"
+                src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/new-heart.png"
+              />
+            </a>
           </td>
         </tr>
         <tr>
