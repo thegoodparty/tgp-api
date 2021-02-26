@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const { isBuffer } = require('lodash');
 
 module.exports = {
   friendlyName: 'S3 Uploader',
@@ -18,12 +19,15 @@ module.exports = {
     base64: {
       friendlyName: 'receive base64 data because helper function avoid buffer',
       type: 'string',
+    },
+    isBuffer: {
+      type: 'boolean',
     }
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      let { data, bucketName, base64 } = inputs;
+      let { data, bucketName, base64, isBuffer } = inputs;
       const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
       const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
 
@@ -32,11 +36,14 @@ module.exports = {
         secretAccessKey: s3Secret,
         params: { Bucket: bucketName, ACL: 'public-read' },
       });
-      if(!data.Body) {
+      if (!data.Body) {
         data.Body = new Buffer(base64, 'base64');
       }
+      if (isBuffer) {
+        data.Body = new Buffer(JSON.parse(data.Body));
+      }
       return new Promise((resolve, reject) => {
-        s3Bucket.putObject(data, function(err, data2) {
+        s3Bucket.putObject(data, function (err, data2) {
           if (err) {
             console.log('error uploading to s3', err);
             return exits.badRequest({

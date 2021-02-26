@@ -4,6 +4,7 @@
  * @description :: Stand Alone action2 for signing up a user.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
+const fs = require('fs');
 
 module.exports = {
   friendlyName: 'Update Share Image',
@@ -27,33 +28,42 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function (inputs, exits) {
+  async fn(inputs, exits) {
     try {
       const fileExt = 'jpeg';
       const { candidate } = inputs;
       const { id, lastName, firstName, imageBase64 } = candidate;
       const name = `${firstName
         .toLowerCase()
-        .replace(/ /g, '-')}-${lastName
-          .toLowerCase()
-          .replace(/ /g, '-')}`;
+        .replace(/ /g, '-')}-${lastName.toLowerCase().replace(/ /g, '-')}`;
       // upload the image
-      let image;
       if (imageBase64) {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
         const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
-        const fileName = `${name}-${id}.${fileExt}`;
-        const data = {
-          Key: fileName,
-          ContentEncoding: 'base64',
-          ContentType: `image/${fileExt}`,
-        };
-        await sails.helpers.s3Uploader(
-          data,
-          `${assetsBase}/share-image`,
-          cleanBase64,
-        );
+        const path = `share-images/${name}-${id}.${fileExt}`;
+        fs.writeFile(path, cleanBase64, 'base64', async function (err) {
+          console.log(err);
+          fs.readFile(path, async (err, fileData) => {
+            if (err) throw err;
+            fs.unlink(path, (err) => {
+              console.log("File is deleted.");
+            });
+            const fileName = `${name}-${id}.${fileExt}`;
+            const data = {
+              Key: fileName,
+              Body: JSON.stringify(fileData),
+              // ContentEncoding: 'base64',
+              ContentType: `image/${fileExt}`,
+            };
+            await sails.helpers.s3Uploader(
+              data,
+              `${assetsBase}/share-image`,
+              '',
+              true,
+            );
+          });
+        });
       }
       return exits.success({
         message: 'created',
