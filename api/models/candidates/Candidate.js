@@ -35,6 +35,9 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
     },
+    state: {
+      type: 'state',
+    },
     data: {
       type: 'string',
       description: 'JSON.stringified string of all the other properties',
