@@ -36,7 +36,7 @@ module.exports = {
       defaultsTo: false,
     },
     state: {
-      type: 'state',
+      type: 'string',
     },
     data: {
       type: 'string',
