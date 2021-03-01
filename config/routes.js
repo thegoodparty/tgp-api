@@ -108,6 +108,7 @@ module.exports.routes = {
   'GET    /api/v1/new-candidate': 'newCandidates/find',
   'PUT    /api/v1/new-candidate': 'newCandidates/update',
   'GET    /api/v1/homepage-candidates': 'newCandidates/homepage-candidates',
+  'GET    /api/v1/new-candidates': 'newCandidates/list',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
