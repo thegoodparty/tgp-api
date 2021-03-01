@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 const fs = require('fs');
+
 module.exports = {
   friendlyName: 'Update Share Image',
 

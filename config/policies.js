@@ -34,6 +34,7 @@ module.exports.policies = {
   'candidates/*': true,
   'newCandidates/find': true,
   'newCandidates/homepage-candidates': true,
+  'newCandidates/list': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
