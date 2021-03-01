@@ -84,7 +84,7 @@ module.exports = async function uploadAvatar(req, res) {
   candidate.isGood = isGood;
   candidate.isBigMoney = isBigMoney;
   candidate.isMajor = isMajor;
-
+  await sails.helpers.triggerCandidateUpdate(candidate.id);
   return res.ok({
     candidate,
   });

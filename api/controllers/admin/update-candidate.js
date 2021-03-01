@@ -32,7 +32,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  async fn(inputs, exits) {
     try {
       const { id, updatedFields, updates, chamber, isIncumbent } = inputs;
 
@@ -167,6 +167,7 @@ module.exports = {
       );
       await sails.helpers.cacheHelper('delete', 'goodChallengers');
       await sails.helpers.cacheHelper('delete', 'presidential');
+      await sails.helpers.triggerCandidateUpdate(candidate.id);
       return exits.success({
         candidate,
       });
