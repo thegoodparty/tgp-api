@@ -1,3 +1,4 @@
+
 module.exports = {
   friendlyName: 'User supports a candidate',
 
@@ -25,7 +26,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       let reqUser = this.req.user;
       const { candidateId, message } = inputs;
@@ -44,7 +45,7 @@ module.exports = {
         candidate: candidateId,
         message,
       });
-
+      await sails.helpers.triggerCandidateUpdate(candidateId);
       return exits.success({
         message: 'support created',
       });

@@ -80,7 +80,7 @@ module.exports = {
       await Candidate.updateOne({ id: newCandidate.id }).set({
         data: JSON.stringify({ ...cleanCandidate, id: newCandidate.id }),
       });
-
+      await sails.helpers.triggerCandidateUpdate(newCandidate.id);
       return exits.success({
         message: 'created',
       });

@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 const fs = require('fs');
-
 module.exports = {
   friendlyName: 'Update Share Image',
 
@@ -37,6 +36,7 @@ module.exports = {
         .toLowerCase()
         .replace(/ /g, '-')}-${lastName.toLowerCase().replace(/ /g, '-')}`;
       // upload the image
+
       if (imageBase64) {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
@@ -56,6 +56,7 @@ module.exports = {
               // ContentEncoding: 'base64',
               ContentType: `image/${fileExt}`,
             };
+
             await sails.helpers.s3Uploader(
               data,
               `${assetsBase}/share-image`,
