@@ -31,7 +31,7 @@ module.exports = {
     try {
       const fileExt = 'jpeg';
       const { candidate } = inputs;
-      const { id, lastName, firstName, imageBase64 } = candidate;
+      const { id, lastName, firstName, imageBase64, suffix } = candidate;
       const name = `${firstName
         .toLowerCase()
         .replace(/ /g, '-')}-${lastName.toLowerCase().replace(/ /g, '-')}`;
@@ -41,7 +41,7 @@ module.exports = {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
         const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
-        const path = `share-images/${name}-${id}.${fileExt}`;
+        const path = `share-images/${name}-${id}-${suffix}.${fileExt}`;
         fs.writeFile(path, cleanBase64, 'base64', async function (err) {
           console.log(err);
           fs.readFile(path, async (err, fileData) => {
@@ -49,7 +49,7 @@ module.exports = {
             fs.unlink(path, (err) => {
               console.log("File is deleted.");
             });
-            const fileName = `${name}-${id}.${fileExt}`;
+            const fileName = `${name}-${id}-${suffix}.${fileExt}`;
             const data = {
               Key: fileName,
               Body: JSON.stringify(fileData),
