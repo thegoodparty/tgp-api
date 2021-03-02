@@ -21,6 +21,7 @@ module.exports.policies = {
   'candidate/update': ['isAuthenticated', 'isAdmin'],
   'newCandidate/update': ['isAuthenticated', 'isAdmin'],
   'newCandidate/create': ['isAuthenticated', 'isAdmin'],
+  'newCandidate/delete': ['isAuthenticated', 'isAdmin'],
   // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
