@@ -21,6 +21,8 @@ module.exports.policies = {
   'candidate/update': ['isAuthenticated', 'isAdmin'],
   'newCandidate/update': ['isAuthenticated', 'isAdmin'],
   'newCandidate/create': ['isAuthenticated', 'isAdmin'],
+  'newCandidate/delete': ['isAuthenticated', 'isAdmin'],
+  'user/support/admin-delete': ['isAuthenticated', 'isAdmin'],
   // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
@@ -34,6 +36,7 @@ module.exports.policies = {
   'candidates/*': true,
   'newCandidates/find': true,
   'newCandidates/homepage-candidates': true,
+  'newCandidates/list': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,

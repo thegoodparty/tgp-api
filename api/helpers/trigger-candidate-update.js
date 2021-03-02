@@ -13,7 +13,7 @@ module.exports = {
     try {
       const { candidateId } = inputs;
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      axios.get(`${appBase}/share-image/${candidateId}`);
+      await axios.get(`${appBase}/share-image/${candidateId}`);
       return exits.success(`success`);
     } catch (e) {
       return exits.badRequest({
