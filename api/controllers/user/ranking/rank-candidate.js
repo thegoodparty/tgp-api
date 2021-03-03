@@ -44,7 +44,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       let reqUser = this.req.user;
       const { candidateId, chamber, state, isIncumbent } = inputs;
@@ -86,9 +86,8 @@ module.exports = {
         candidate = {
           name: 'A Good Candidate',
           chamber,
-          blocName: `GoodBloc-${state.toUpperCase()}${
-            chamber === 'house' ? candidateId * -1 : ''
-          }`,
+          blocName: `GoodBloc-${state.toUpperCase()}${chamber === 'house' ? candidateId * -1 : ''
+            }`,
           district: candidateId * -1,
           state,
           isGoodBloc: true,
@@ -125,7 +124,7 @@ const sendRankingEmail = async (candidate, user) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
   const blocName = await sails.helpers.candidateBlocName(candidate);
 
-  const subject = `Congrats! You’ve joined the ${candidate.name} crowd-voting campaign on The Good Party`;
+
   const firstName = user.name.split(' ')[0];
 
   let shareBloc = blocName;
@@ -138,73 +137,69 @@ const sendRankingEmail = async (candidate, user) => {
       shareBloc += `-${candidate.state.toUpperCase()}`;
     }
   } else {
-    asChamber = `${candidate.state.toUpperCase()}-${
-      candidate.district
-    } Representative`;
+    asChamber = `${candidate.state.toUpperCase()}-${candidate.district
+      } Representative`;
     if (!candidate.isGoodBloc) {
       shareBloc += `-${candidate.state.toUpperCase()}${candidate.district}`;
     }
   }
-
+  const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${asChamber}Congrats!`;
   const route = candidateRoute(candidate);
   const shareLink = `${appBase}${route}?u=${user.uuid}&share=true`;
   // const twitterHandler = blocName.replace('@', '');
   const message = `
-        <table
-        border="0"
-        cellPadding="0"
-        cellSpacing="0"
-        height="100%"
-        width="100%"
-      >
-        <tr>
-          <td>
-            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-              Hi ${firstName},<br /> <br />
-            </p>
-          </td>
-        </tr>
+      <table
+      border="0"
+      cellPadding="0"
+      cellSpacing="0"
+      height="100%"
+      width="100%"
+    >
+      <tr>
+        <td>
+          <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+            Hi ${firstName},<br /> <br />
+          </p>
+        </td>
+      </tr>
 
-        <tr>
-          <td>
-            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-              Thank you for joining the
-              <strong>${candidate.name}</strong> crowd-voting campaign for ${asChamber}. We will keep you updated on
-              how this race progresses. In the meantime, please share this campaign with your friends to grow
-              support and get the votes needed to win!
-              <br />
-              <br />
-              <br />
-              <div style="text-align: center">
-                <a
-                  href="${shareLink}"
-                  style="padding: 16px 48px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none; font-size: 18px; font-weight: 700"
-                >
-                  &nbsp;&nbsp; SHARE &nbsp;&nbsp;
-                </a>
-              </div>
-              <br />
-              &nbsp;
-              <br />
-              <br />
-              <br />
-              <div style="text-align: center">
-                <a
-                  href="${appBase}/verify-vote"
-                  style="padding: 16px 48px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none; font-size: 18px; font-weight: 700"
-                >
-                  &nbsp;&nbsp; Check you voter registration &nbsp;&nbsp;
-                </a>
-              </div>
-            </p>
-            <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-              <br />
-              <br />
-              The Good Party is always free for both voters and candidates.
-              </p>
-          </td>
-        </tr>
-      </table>`;
+      <tr>
+        <td>
+          <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
+            Thank you for taking the first step toward making a difference by endorsing <strong>${candidate.name}</strong> for ${asChamber}. We will keep you updated as this crowd-voting campaign progresses!
+            <br />
+            <br />
+            In the meantime, please invite some friends to help spread the word.
+            <br />
+            <br />
+            <br />
+            <a
+            href="${appBase}/candidate/${candidate.firstName}-${candidate.lastName}/${candidate.id}"
+        style="
+          padding: 16px 32px;
+          background: linear-gradient(
+              103.63deg,
+              rgba(255, 15, 19, 0.15) -3.51%,
+              rgba(158, 128, 133, 0) 94.72%
+            ),
+            linear-gradient(
+              257.82deg,
+              rgba(67, 0, 211, 0.25) -11.17%,
+              rgba(67, 0, 211, 0) 96.34%
+            ),
+            #5c00c7;
+          color: #fff;
+          font-size: 16px;
+          border-radius: 8px;
+          text-decoration: none;
+        "
+        >
+          INVITE FRIENDS
+        </a>
+      </p>
+    </td>
+  </tr>
+</table>`;
   const messageHeader = '';
   await sails.helpers.mailgunSender(
     user.email,
@@ -222,9 +217,8 @@ const candidateRoute = candidate => {
   const { isIncumbent, chamber } = candidate;
   const chamberLower = chamber ? chamber.toLowerCase() : 'presidential';
   const name = slugify(candidate.name);
-  return `/elections/candidate/${chamberLower}${
-    isIncumbent ? '-i' : ''
-  }/${name}/${candidate.id}`;
+  return `/elections/candidate/${chamberLower}${isIncumbent ? '-i' : ''
+    }/${name}/${candidate.id}`;
 };
 
 const slugify = text => {

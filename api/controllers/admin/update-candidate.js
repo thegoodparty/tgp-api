@@ -51,7 +51,7 @@ module.exports = {
           id,
         }).set(updatedFields);
       }
-
+      let isCampaignUpdates = false;
       // updates
       if (updates) {
         if (updates.existing) {
@@ -64,6 +64,7 @@ module.exports = {
                   await CampaignUpdate.updateOne({ id }).set({
                     text,
                   });
+                  isCampaignUpdates = true;
                 }
               }
             }
@@ -77,6 +78,7 @@ module.exports = {
                 const update = await CampaignUpdate.create({
                   text: newUpdates[i],
                 }).fetch();
+                isCampaignUpdates = true;
                 if (chamber === 'presidential') {
                   await PresidentialCandidate.addToCollection(
                     id,
@@ -101,7 +103,6 @@ module.exports = {
           }
         }
       }
-
       const { state, district } = candidate || {};
       const incumbent = await sails.helpers.incumbentByDistrictHelper(
         state,

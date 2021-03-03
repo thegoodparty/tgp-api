@@ -30,6 +30,7 @@ module.exports = {
         user: reqUser.id,
         candidate: candidateId,
       });
+      await sails.helpers.triggerCandidateUpdate(candidateId);
 
       return exits.success({
         message: 'support deleted',
