@@ -47,7 +47,7 @@ module.exports = {
       });
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const firstName = reqUser.name.split(' ')[0];
-      const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${asChamber}Congrats!`;
+      const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName}!`;
       // const twitterHandler = blocName.replace('@', '');
       const messageContent = `
             <table
