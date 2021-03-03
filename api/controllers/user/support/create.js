@@ -47,7 +47,9 @@ module.exports = {
       });
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const firstName = reqUser.name.split(' ')[0];
-      const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${candidate.race}!`;
+      const { race } = JSON.parse(candidate.data);
+      const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${race}!`;
+
       // const twitterHandler = blocName.replace('@', '');
       const messageContent = `
             <table
@@ -68,7 +70,7 @@ module.exports = {
             <tr>
               <td>
                 <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                  Thank you for taking the first step toward making a difference by endorsing <strong>${candidate.name}</strong> for ${candidate.race}. We will keep you updated as this crowd-voting campaign progresses!
+                  Thank you for taking the first step toward making a difference by endorsing <strong>${candidate.firstName} ${candidate.lastName} </strong> for ${race}. We will keep you updated as this crowd-voting campaign progresses!
                   <br />
                   <br />
                   In the meantime, please invite some friends to help spread the word.
