@@ -102,8 +102,8 @@ const notifySupporterForUpdates = async candidate => {
   const candidateSupports = await Support.find({
     candidate: candidate.id,
   }).populate('user');
-  const { race, firstName, lastName } = candidate || {};
-
+  const { data, firstName, lastName } = candidate || {};
+  const { race } =  JSON.parse(data);
   for (let i = 0; i < candidateSupports.length; i++) {
     const support = candidateSupports[i];
     // support.user.name, support.user.email
