@@ -68,7 +68,7 @@ module.exports = {
             <tr>
               <td>
                 <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                  Thank you for taking the first step toward making a difference by endorsing <strong>${candidate.name}</strong> for ${asChamber}. We will keep you updated as this crowd-voting campaign progresses!
+                  Thank you for taking the first step toward making a difference by endorsing <strong>${candidate.name}</strong> for ${candidate.race}. We will keep you updated as this crowd-voting campaign progresses!
                   <br />
                   <br />
                   In the meantime, please invite some friends to help spread the word.
