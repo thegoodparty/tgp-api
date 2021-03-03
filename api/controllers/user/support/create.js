@@ -49,6 +49,7 @@ module.exports = {
       const firstName = reqUser.name.split(' ')[0];
       const { race } = JSON.parse(candidate.data);
       const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${race}!`;
+
       // const twitterHandler = blocName.replace('@', '');
       const messageContent = `
             <table
