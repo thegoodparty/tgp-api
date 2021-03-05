@@ -4,7 +4,7 @@ pipeline {
     DEV_BRANCH            = "develop"
     EB_DEV                = "TgpApi-dev1"
     PROD_BRANCH           = "master"
-    EB_PROD               = "TgpApi-prod"
+    EB_PROD               = "tgp-api-prod"
   }
   stages {
     // stage('deploy to develop') {
