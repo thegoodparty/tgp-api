@@ -41,13 +41,13 @@ module.exports = {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
         const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
-        const path = `share-images/${name}-${id}-${suffix}.${fileExt}`;
-        fs.writeFile(path, cleanBase64, 'base64', async function (err) {
-          console.log(err);
+        const path = `${__dirname}/share-images/${name}-${id}-${suffix}.${fileExt}`;
+        fs.writeFile(path, cleanBase64, 'base64', async function(err) {
+          console.log('Error writing base64 file', err);
           fs.readFile(path, async (err, fileData) => {
             if (err) throw err;
-            fs.unlink(path, (err) => {
-              console.log("File is deleted.");
+            fs.unlink(path, err => {
+              console.log('File is deleted.');
             });
             const fileName = `${name}-${id}-${suffix}.${fileExt}`;
             const data = {
@@ -75,4 +75,3 @@ module.exports = {
     }
   },
 };
-
