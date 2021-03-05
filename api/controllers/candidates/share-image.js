@@ -41,7 +41,7 @@ module.exports = {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
         const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
-        const path = `${__dirname}/share-images/${name}-${id}-${suffix}.${fileExt}`;
+        const path = `${__dirname}/${name}-${id}-${suffix}.${fileExt}`;
         fs.writeFile(path, cleanBase64, 'base64', async function(err) {
           console.log('Error writing base64 file', err);
           fs.readFile(path, async (err, fileData) => {
