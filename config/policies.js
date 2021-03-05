@@ -27,6 +27,7 @@ module.exports.policies = {
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
+  'general/*': true,
   'entrance/*': true,
   'content/*': true,
   'notifications/*': true,
