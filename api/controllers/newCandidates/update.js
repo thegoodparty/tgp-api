@@ -29,7 +29,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { candidate } = inputs;
       const { imageBase64, id } = candidate;
@@ -68,6 +68,7 @@ module.exports = {
       const cleanCandidate = {
         ...candidate,
         image,
+        isActive: !!candidate.isActive,
       };
 
       delete cleanCandidate.imageBase64;
@@ -103,7 +104,7 @@ const notifySupporterForUpdates = async candidate => {
     candidate: candidate.id,
   }).populate('user');
   const { data, firstName, lastName } = candidate || {};
-  const { race } =  JSON.parse(data);
+  const { race } = JSON.parse(data);
   for (let i = 0; i < candidateSupports.length; i++) {
     const support = candidateSupports[i];
     // support.user.name, support.user.email
