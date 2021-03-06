@@ -31,9 +31,13 @@ module.exports = {
       for (let i = 0; i < candidateSupports.length; i++) {
         const support = candidateSupports[i];
         support.timeAgo = timeago.ago(new Date(support.updatedAt));
-        support.user = await sails.helpers.fullFirstLastInitials(
-          support.user.name,
-        );
+        if (support.user && support.user.name) {
+          support.user = await sails.helpers.fullFirstLastInitials(
+            support.user.name,
+          );
+        } else {
+          support.user = '';
+        }
       }
 
       return exits.success({
