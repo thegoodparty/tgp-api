@@ -81,18 +81,22 @@ module.exports = {
       await Candidate.updateOne({ id: updatedCandidate.id }).set({
         data: JSON.stringify({ ...cleanCandidate, id: updatedCandidate.id }),
       });
-      if (
-        oldCandidate.data &&
-        updatedCandidate.data &&
-        oldCandidate.data.candidateUpdates !=
-          updatedCandidate.data.candidateUpdates
-      ) {
-        await notifySupporterForUpdates(updatedCandidate);
+      try {
+        if (
+          oldCandidate.data &&
+          updatedCandidate.data &&
+          oldCandidate.data.candidateUpdates !=
+            updatedCandidate.data.candidateUpdates
+        ) {
+          await notifySupporterForUpdates(updatedCandidate);
+        }
+        await sails.helpers.triggerCandidateUpdate(candidate.id);
+        return exits.success({
+          message: 'created',
+        });
+      } catch (e) {
+        console.log('error sending notifications', e);
       }
-      await sails.helpers.triggerCandidateUpdate(candidate.id);
-      return exits.success({
-        message: 'created',
-      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({ message: 'Error registering candidate.' });
