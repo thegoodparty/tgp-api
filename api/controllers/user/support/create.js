@@ -29,7 +29,7 @@ module.exports = {
     try {
       let reqUser = this.req.user;
       const { candidateId, message } = inputs;
-      const candidate = await Candidate.findOne({ id: candidateId });
+      const candidate = await Candidate.findOne({ id: candidateId, isActive: true });
       // first make sure the user doesn't have that ranking already.
       const existingSupport = await Support.find({
         user: reqUser.id,
@@ -49,6 +49,7 @@ module.exports = {
       const firstName = reqUser.name.split(' ')[0];
       const { race } = JSON.parse(candidate.data);
       const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${race}!`;
+
       // const twitterHandler = blocName.replace('@', '');
       const messageContent = `
             <table

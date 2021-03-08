@@ -72,7 +72,7 @@ module.exports = {
 
       const newCandidate = await Candidate.create({
         ...cleanCandidate,
-        isActive: true,
+        isActive: !!candidate.isActive,
       }).fetch();
       // add the id to the JSON.stringified record
       await Candidate.updateOne({ id: newCandidate.id }).set({

@@ -2,7 +2,7 @@ branch-defaults:
   develop:
     environment: TgpApi-dev1
   master:
-    environment: TgpApi-prod
+    environment: tgp-api-prod
 environment-defaults:
   tgp-api-dev:
     branch: null

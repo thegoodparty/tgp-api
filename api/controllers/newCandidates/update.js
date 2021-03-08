@@ -29,7 +29,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { candidate } = inputs;
       const { imageBase64, id } = candidate;
@@ -68,6 +68,7 @@ module.exports = {
       const cleanCandidate = {
         ...candidate,
         image,
+        isActive: !!candidate.isActive,
       };
 
       delete cleanCandidate.imageBase64;
@@ -80,18 +81,22 @@ module.exports = {
       await Candidate.updateOne({ id: updatedCandidate.id }).set({
         data: JSON.stringify({ ...cleanCandidate, id: updatedCandidate.id }),
       });
-      if (
-        oldCandidate.data &&
-        updatedCandidate.data &&
-        oldCandidate.data.candidateUpdates !=
-          updatedCandidate.data.candidateUpdates
-      ) {
-        await notifySupporterForUpdates(updatedCandidate);
+      try {
+        if (
+          oldCandidate.data &&
+          updatedCandidate.data &&
+          oldCandidate.data.candidateUpdates !=
+            updatedCandidate.data.candidateUpdates
+        ) {
+          await notifySupporterForUpdates(updatedCandidate);
+        }
+        await sails.helpers.triggerCandidateUpdate(candidate.id);
+        return exits.success({
+          message: 'created',
+        });
+      } catch (e) {
+        console.log('error sending notifications', e);
       }
-      await sails.helpers.triggerCandidateUpdate(candidate.id);
-      return exits.success({
-        message: 'created',
-      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({ message: 'Error registering candidate.' });
@@ -103,7 +108,7 @@ const notifySupporterForUpdates = async candidate => {
     candidate: candidate.id,
   }).populate('user');
   const { data, firstName, lastName } = candidate || {};
-  const { race } =  JSON.parse(data);
+  const { race } = JSON.parse(data);
   for (let i = 0; i < candidateSupports.length; i++) {
     const support = candidateSupports[i];
     // support.user.name, support.user.email
