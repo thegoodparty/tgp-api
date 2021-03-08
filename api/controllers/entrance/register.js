@@ -98,7 +98,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     // Look up the user whose ID was specified in the request.
     // Note that we don't have to validate that `userId` is a number;
     // the machine runner does this for us and returns `badRequest`
@@ -277,53 +277,89 @@ module.exports = {
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
         const appBase = sails.config.custom.appBase || sails.config.appBase;
-        const subject = 'Welcome to the Good Party!';
-        const message = `
-<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-  <tr>
-    <td>
-      <h2
-        style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
-        Make sure you're ready to vote
-      </h2>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <p
-        style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-        Hi ${user.name}!<br/> <br>
-      </p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>
-      <p
-        style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-        Welcome to The Good Party! We help you make your vote matter more than money. He’s how to get started:
-      <ol>
-        <li>Check your voter registration</li>
-        <li>Join and share crowd-voting campaigns</li>
-        <li>When it's time, we'll help you get out the vote</li>
-      </ol>
-      <br/>
-
-      The Good Party is free for both people and candidates.
-      <a href="${appBase}/verify-vote?email=${lowerCaseEmail}&token=${user.emailConfToken}">GET STARTED</a>,
-      so we can get you counted.
-      </p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <br/><br/>
-      The Good Party is not affiliated with any campaign or campaign committee.
-      There is no cost to checking your voter registration.
-      The Good Party is always free for both voters and candidates.
-    </td>
-  </tr>
-</table>`;
+        const subject = `${user.firstName || user.name}, please verify your email address`;
+        const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+          <tbody>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-family: Arial, sans-serif;
+                    font-size: 18px;
+                    line-height: 26px;
+                    color: ##555555;
+                    margin: 0;
+                    text-align: left;
+                  "
+                >
+                  Hi ${user.firstName || user.name}!<br /><br />
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-family: Arial, sans-serif;
+                    font-size: 18px;
+                    line-height: 26px;
+                    color: ##555555;
+                    margin: 0;
+                    text-align: left;
+                  "
+                >
+                  We need to know you’re not a bot and to be able to reach you with
+                  important campaign updates.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-family: Arial, sans-serif;
+                    font-size: 18px;
+                    line-height: 26px;
+                    color: ##555555;
+                    margin: 0;
+                    text-align: left;
+                  "
+                >
+                  <br/>
+                  Please click below to verify your email address.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br /><br /><br /><a
+                  href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}"
+                  style="
+                    padding: 16px 32px;
+                    background: linear-gradient(
+                        103.63deg,
+                        rgba(255, 15, 19, 0.15) -3.51%,
+                        rgba(191, 0, 32, 0) 94.72%
+                      ),
+                      linear-gradient(
+                        257.82deg,
+                        rgba(67, 0, 211, 0.25) -11.17%,
+                        rgba(67, 0, 211, 0) 96.34%
+                      ),
+                      #5c00c7;
+                    color: #fff;
+                    font-size: 16px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                  "
+                >
+                  CLICK TO VERIFY
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        `;
         const messageHeader = '';
         await sails.helpers.mailgunSender(
           lowerCaseEmail,
@@ -335,7 +371,7 @@ module.exports = {
       }
       try {
         await sails.helpers.addEmail(lowerCaseEmail, 'The Good Party');
-      } catch (e) {}
+      } catch (e) { }
       const token = await sails.helpers.jwtSign({
         id: user.id,
         email: lowerCaseEmail,
