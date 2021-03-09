@@ -38,6 +38,7 @@ module.exports.policies = {
   'newCandidates/find': true,
   'newCandidates/homepage-candidates': true,
   'newCandidates/list': true,
+  'newCandidates/share-image': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
