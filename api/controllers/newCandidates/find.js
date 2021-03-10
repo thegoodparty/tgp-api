@@ -35,7 +35,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id, withImage } = inputs;
-      const candidate = await Candidate.findOne({ id });
+      const candidate = await Candidate.findOne({ id, isActive: true  });
       if (!candidate) {
         return exits.notFound();
       }
