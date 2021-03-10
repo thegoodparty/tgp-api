@@ -36,6 +36,7 @@ module.exports.policies = {
   'race-candidate/*': true,
   'candidates/*': true,
   'newCandidates/find': true,
+  'newCandidates/find-with-inactive': true,
   'newCandidates/homepage-candidates': true,
   'newCandidates/list': true,
   'newCandidates/share-image': true,
