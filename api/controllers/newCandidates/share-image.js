@@ -33,8 +33,12 @@ module.exports = {
       const { candidate } = inputs;
       const { id, lastName, firstName, imageBase64, suffix } = candidate;
       const name = `${firstName
+        .trim()
         .toLowerCase()
-        .replace(/ /g, '-')}-${lastName.toLowerCase().replace(/ /g, '-')}`;
+        .replace(/ /g, '-')}-${lastName
+        .trim()
+        .toLowerCase()
+        .replace(/ /g, '-')}`;
       // upload the image
 
       if (imageBase64) {
