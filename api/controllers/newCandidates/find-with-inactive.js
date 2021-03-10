@@ -32,7 +32,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id } = inputs;
-      const candidate = await Candidate.findOne({ id, isActive: true });
+      const candidate = await Candidate.findOne({ id });
       if (!candidate) {
         return exits.notFound();
       }
