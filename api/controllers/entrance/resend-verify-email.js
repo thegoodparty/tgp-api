@@ -62,12 +62,10 @@ module.exports = {
           <td>
             <p
               style="
-                font-family: Arial, sans-serif;
-                font-size: 18px;
-                line-height: 26px;
-                color: ##555555;
-                margin: 0;
-                text-align: left;
+                font-size: 16px;
+                font-family: Libre Franklin;
+                margin-top: 0;
+                margin-bottom: 5px;
               "
             >
               Hi ${user.firstName || user.name}!<br /><br />
@@ -78,12 +76,10 @@ module.exports = {
           <td>
             <p
               style="
-                font-family: Arial, sans-serif;
-                font-size: 18px;
-                line-height: 26px;
-                color: ##555555;
-                margin: 0;
-                text-align: left;
+                font-size: 16px;
+                font-family: Libre Franklin;
+                margin-top: 0;
+                margin-bottom: 5px;
               "
             >
               We need to know you’re not a bot and to be able to reach you with
@@ -95,12 +91,10 @@ module.exports = {
           <td>
             <p
               style="
-                font-family: Arial, sans-serif;
-                font-size: 18px;
-                line-height: 26px;
-                color: ##555555;
-                margin: 0;
-                text-align: left;
+                font-size: 16px;
+                font-family: Libre Franklin;
+                margin-top: 0;
+                margin-bottom: 5px;
               "
             >
               <br/>
@@ -110,7 +104,7 @@ module.exports = {
         </tr>
         <tr>
           <td>
-            <br /><br /><br /><a
+            <br /><br /><a
               href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}"
               style="
                 padding: 16px 32px;

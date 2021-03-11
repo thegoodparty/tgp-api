@@ -29,16 +29,15 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { candidate } = inputs;
       const { imageBase64, id } = candidate;
-
       const name = `${candidate.firstName
         .toLowerCase()
         .replace(/ /g, '-')}-${candidate.lastName
-        .toLowerCase()
-        .replace(/ /g, '-')}`;
+          .toLowerCase()
+          .replace(/ /g, '-')}`;
       // upload the image
       let { image } = candidate;
       const assetsBase =
@@ -82,11 +81,10 @@ module.exports = {
         data: JSON.stringify({ ...cleanCandidate, id: updatedCandidate.id }),
       });
       try {
+        const oldData = JSON.parse(oldCandidate.data);
         if (
-          oldCandidate.data &&
-          updatedCandidate.data &&
-          oldCandidate.data.candidateUpdates !=
-            updatedCandidate.data.candidateUpdates
+          oldData.updates !==
+          candidate.updates || oldData.updatesDates !== candidate.updatesDates
         ) {
           await notifySupporterForUpdates(updatedCandidate);
         }
@@ -120,12 +118,10 @@ const notifySupporterForUpdates = async candidate => {
           <td>
             <p
               style="
-                font-family: Arial, sans-serif;
-                font-size: 18px;
-                line-height: 26px;
-                color: ##555555;
-                margin: 0;
-                text-align: left;
+                font-size: 16px;
+                font-family: Libre Franklin;
+                margin-top: 0;
+                margin-bottom: 5px;
               "
             >
               Hi ${support.user.firstName || support.user.name}!<br /><br />
@@ -136,12 +132,10 @@ const notifySupporterForUpdates = async candidate => {
           <td>
             <p
               style="
-                font-family: Arial, sans-serif;
-                font-size: 18px;
-                line-height: 26px;
-                color: ##555555;
-                margin: 0;
-                text-align: left;
+                font-size: 16px;
+                font-family: Libre Franklin;
+                margin-top: 0;
+                margin-bottom: 5px;
               "
             >
             ${firstName} ${lastName}, who you endorsed for ${race}, has posted an update about their campaign.
@@ -152,12 +146,10 @@ const notifySupporterForUpdates = async candidate => {
           <td>
             <p
               style="
-                font-family: Arial, sans-serif;
-                font-size: 18px;
-                line-height: 26px;
-                color: ##555555;
-                margin: 0;
-                text-align: left;
+                font-size: 16px;
+                font-family: Libre Franklin;
+                margin-top: 0;
+                margin-bottom: 5px;
               "
             >
             <br />
@@ -167,10 +159,9 @@ const notifySupporterForUpdates = async candidate => {
         </tr>
         <tr>
           <td>
-            <br /><br /><br /><a
-              href="${appBase}/candidates/${firstName}-${lastName}/${
-      candidate.id
-    }"
+            <br /><br /><a
+              href="${appBase}/candidates/${firstName}-${lastName}/${candidate.id
+      }"
               style="
                 padding: 16px 32px;
                 background: linear-gradient(

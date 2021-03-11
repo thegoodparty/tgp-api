@@ -125,6 +125,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
                   text-align: center;
                   color: #555555;
                   text-decoration: none;
+                  margin-bottom: 0;
                 "
               >
                 Free software for free elections by
