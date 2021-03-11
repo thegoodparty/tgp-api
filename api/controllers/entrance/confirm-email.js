@@ -81,12 +81,10 @@ module.exports = {
             <td>
               <p
                 style="
-                  font-family: Arial, sans-serif;
-                  font-size: 18px;
-                  line-height: 26px;
-                  color: ##555555;
-                  margin: 0;
-                  text-align: left;
+                  font-size: 16px;
+                  font-family: Libre Franklin;
+                  margin-top: 0;
+                  margin-bottom: 5px;
                 "
               >
                 Hi ${user.firstName || user.name}!<br /><br />
@@ -97,12 +95,10 @@ module.exports = {
             <td>
               <p
                 style="
-                  font-family: Arial, sans-serif;
-                  font-size: 18px;
-                  line-height: 26px;
-                  color: ##555555;
-                  margin: 0;
-                  text-align: left;
+                  font-size: 16px;
+                  font-family: Libre Franklin;
+                  margin-top: 0;
+                  margin-bottom: 5px;
                 "
               >
               Your email has been verified and we will update you with campaign updates.
@@ -114,12 +110,10 @@ module.exports = {
             <td>
               <p
                 style="
-                  font-family: Arial, sans-serif;
-                  font-size: 18px;
-                  line-height: 26px;
-                  color: ##555555;
-                  margin: 0;
-                  text-align: left;
+                  font-size: 16px;
+                  font-family: Libre Franklin;
+                  margin-top: 0;
+                  margin-bottom: 5px;
                 "
               >
               
