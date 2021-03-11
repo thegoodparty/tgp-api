@@ -33,7 +33,6 @@ module.exports = {
     try {
       const { candidate } = inputs;
       const { imageBase64, id } = candidate;
-      console.log(candidate);
       const name = `${candidate.firstName
         .toLowerCase()
         .replace(/ /g, '-')}-${candidate.lastName
