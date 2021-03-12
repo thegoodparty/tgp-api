@@ -1,7 +1,11 @@
 module.exports = {
   friendlyName: 'User supports',
 
-  inputs: {},
+  inputs: {
+    withCandidates: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
@@ -16,11 +20,27 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const { withCandidates } = inputs;
       let reqUser = this.req.user;
       // first make sure the user doesn't have that ranking already.
       const supports = await Support.find({
         user: reqUser.id,
       });
+
+      if (withCandidates) {
+        for (let i = 0; i < supports.length; i++) {
+          const candidate = await Candidate.findOne({
+            id: supports[i].candidate,
+          });
+          supports[i].candidate = candidate;
+          if (candidate) {
+            const supporters = await Support.count({
+              candidate: candidate.id,
+            });
+            supports[i].candidate.supporters = supporters || 0;
+          }
+        }
+      }
 
       return exits.success({
         supports,
