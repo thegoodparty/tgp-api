@@ -160,7 +160,7 @@ const notifySupporterForUpdates = async candidate => {
         <tr>
           <td>
             <br /><br /><a
-              href="${appBase}/candidates/${firstName}-${lastName}/${candidate.id
+              href="${appBase}/candidate/${firstName}-${lastName}/${candidate.id
       }"
               style="
                 padding: 16px 32px;
