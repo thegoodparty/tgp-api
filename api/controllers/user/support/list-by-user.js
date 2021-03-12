@@ -33,11 +33,12 @@ module.exports = {
             id: supports[i].candidate,
           });
           supports[i].candidate = candidate;
-
-          const supporters = await Support.count({
-            candidate: candidate.id,
-          });
-          supports[i].candidate.supporters = supporters || 0;
+          if (candidate) {
+            const supporters = await Support.count({
+              candidate: candidate.id,
+            });
+            supports[i].candidate.supporters = supporters || 0;
+          }
         }
       }
 
