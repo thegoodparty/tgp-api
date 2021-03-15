@@ -65,6 +65,7 @@ module.exports = {
           districtNumber: userCrew.districtNumber,
           feedback: userCrew.feedback,
           city: zipCode ? zipCode.primaryCity : null,
+          crewCount: userCrew.crewCount,
         });
       }
       // updating the crewCount for the user - to make sure they are in sync.
