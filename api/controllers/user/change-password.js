@@ -62,7 +62,7 @@ module.exports = {
       // Store the user's new password and clear their reset token so it can't be used again.
       await User.updateOne({ id: user.id }).set({
         password: hashed,
-        haasPassword: true,
+        hasPassword: true,
       });
       // Log the user in.
       return exits.success({ message: 'password successfully changed.' });
