@@ -20,14 +20,26 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { supportId } = inputs;
-
+      const support = await Support.find({
+        id: supportId,
+      });
       await Support.destroyOne({
         id: supportId,
       });
 
+      const user = await User.findOne({
+        id: support.user,
+      });
+
+      await sails.helpers.updateTag(
+        user.email,
+        'The Good Party',
+        support.candidate,
+        'inactive',
+      );
       return exits.success({
         message: 'support deleted',
       });

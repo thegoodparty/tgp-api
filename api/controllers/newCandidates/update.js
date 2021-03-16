@@ -33,7 +33,6 @@ module.exports = {
     try {
       const { candidate } = inputs;
       const { imageBase64, id } = candidate;
-      console.log(candidate);
       const name = `${candidate.firstName
         .toLowerCase()
         .replace(/ /g, '-')}-${candidate.lastName
@@ -120,7 +119,7 @@ const notifySupporterForUpdates = async candidate => {
             <p
               style="
                 font-size: 16px;
-                font-family: Libre Franklin;
+                font-family: Arial, sans-serif;
                 margin-top: 0;
                 margin-bottom: 5px;
               "
@@ -134,7 +133,7 @@ const notifySupporterForUpdates = async candidate => {
             <p
               style="
                 font-size: 16px;
-                font-family: Libre Franklin;
+                font-family: Arial, sans-serif;
                 margin-top: 0;
                 margin-bottom: 5px;
               "
@@ -148,7 +147,7 @@ const notifySupporterForUpdates = async candidate => {
             <p
               style="
                 font-size: 16px;
-                font-family: Libre Franklin;
+                font-family: Arial, sans-serif;
                 margin-top: 0;
                 margin-bottom: 5px;
               "
@@ -161,7 +160,7 @@ const notifySupporterForUpdates = async candidate => {
         <tr>
           <td>
             <br /><br /><a
-              href="${appBase}/candidates/${firstName}-${lastName}/${candidate.id
+              href="${appBase}/candidate/${firstName}-${lastName}/${candidate.id
       }"
               style="
                 padding: 16px 32px;

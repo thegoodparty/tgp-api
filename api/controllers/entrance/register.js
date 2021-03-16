@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+const { lowerCase } = require("lodash");
+
 module.exports = {
   friendlyName: 'register user',
 
@@ -284,7 +286,10 @@ module.exports = {
               <td>
                 <p
                   style="
-                    font-size: 36px;
+                    font-size: 16px;
+                    font-family: Arial, sans-serif;
+                    margin-top: 0;
+                    margin-bottom: 5px;
                   "
                 >
                   Hi ${user.firstName || user.name}!<br /><br />
@@ -296,7 +301,7 @@ module.exports = {
                 <p
                   style="
                     font-size: 16px;
-                    font-family: Libre Franklin;
+                    font-family: Arial, sans-serif;
                     margin-top: 0;
                     margin-bottom: 5px;
                   "
@@ -311,7 +316,7 @@ module.exports = {
                 <p
                   style="
                     font-size: 16px;
-                    font-family: Libre Franklin;
+                    font-family: Arial, sans-serif;
                     margin-top: 0;
                     margin-bottom: 5px;
                   "

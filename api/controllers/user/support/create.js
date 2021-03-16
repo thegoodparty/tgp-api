@@ -45,9 +45,16 @@ module.exports = {
         candidate: candidateId,
         message,
       });
+      
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const firstName = reqUser.name.split(' ')[0];
       const { race } = JSON.parse(candidate.data);
+      await sails.helpers.updateTag(
+        reqUser.email,
+        'The Good Party',
+        candidateId,
+        'active',
+      );
       const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${race}!`;
 
       // const twitterHandler = blocName.replace('@', '');

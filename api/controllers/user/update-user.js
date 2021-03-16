@@ -145,7 +145,7 @@ const sendEmail = async (reqEmail, email) => {
           <p
             style="
               font-size: 16px;
-              font-family: Libre Franklin;
+              font-family: Arial, sans-serif;
               margin-top: 0;
               margin-bottom: 5px;
             "
@@ -159,7 +159,7 @@ const sendEmail = async (reqEmail, email) => {
           <p
             style="
               font-size: 16px;
-              font-family: Libre Franklin;
+              font-family: Arial, sans-serif;
               margin-top: 0;
               margin-bottom: 5px;
             "
@@ -174,7 +174,7 @@ const sendEmail = async (reqEmail, email) => {
           <p
             style="
               font-size: 16px;
-              font-family: Libre Franklin;
+              font-family: Arial, sans-serif;
               margin-top: 0;
               margin-bottom: 5px;
             "
