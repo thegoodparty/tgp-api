@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+
 module.exports = {
   friendlyName: 'register user',
 

@@ -23,27 +23,14 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    chamber: {
-      description: 'Candidate chamber',
-      example: 'presidential',
-      required: true,
-      type: 'string',
-    },
     candidateId: {
       description: 'candidate id to be added',
       example: 1,
       required: true,
       type: 'number',
     },
-    isIncumbent: {
-      description: 'is the candidate an incumbent',
-      example: false,
-      required: false,
-      type: 'boolean',
-    },
     status: {
-      type: 'string',
-      required: true,
+      type: 'string'
     }
   },
   exits: {
@@ -58,7 +45,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      let { email, listName, chamber, candidateId, isIncumbent, status } = inputs;
+      let { email, listName, candidateId, status } = inputs;
 
       listName = appBase === 'https://thegoodparty.org'
         ? listName
@@ -82,16 +69,12 @@ module.exports = {
 
         }
       }
-
-      let { candidate } = await sails.helpers.candidateFinder(
-        candidateId,
-        chamber,
-        isIncumbent,
-      );
+      const candidate = await Candidate.findOne({ id: candidateId, isActive: true });
       if (candidate) {
+        const { race } = JSON.parse(candidate.data);
         let { name } = candidate;
-        name = `${chamber} ${name}`;
-        console.log(name)
+        name = ` ${candidate.firstName} ${candidate.lastName} for ${race}`;
+        console.log(name);
         const obj = {
           body: {
             tags: [{ name, status }],

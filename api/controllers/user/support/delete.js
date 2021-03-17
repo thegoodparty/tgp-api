@@ -31,7 +31,12 @@ module.exports = {
         candidate: candidateId,
       });
       await sails.helpers.triggerCandidateUpdate(candidateId);
-
+      await sails.helpers.updateTag(
+        reqUser.email,
+        'The Good Party',
+        candidateId,
+        'inactive',
+      );
       return exits.success({
         message: 'support deleted',
       });
