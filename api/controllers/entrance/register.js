@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const { lowerCase } = require("lodash");
 
 module.exports = {
   friendlyName: 'register user',
