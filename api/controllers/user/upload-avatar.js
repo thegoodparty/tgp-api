@@ -1,71 +1,66 @@
-const AWS = require('aws-sdk');
+/**
+ * user/register.js
+ *
+ * @description :: Stand Alone action2 for signing up a user.
+ * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
+ */
 
-module.exports = async function uploadAvatar(req, res) {
-  const base64Avatar = req.param('avatar');
-  const fileExt = req.param('fileExt');
-  if (!base64Avatar || !fileExt) {
-    return res.badRequest({
-      message: 'avatar and fileExt are required.',
-    });
-  }
+module.exports = {
+  friendlyName: 'Upload Avatar',
 
-  const cleanBase64 = base64Avatar.replace(
-    /^data:image\/.*;base64,/,
-    '',
-  );
-  const buf = new Buffer(cleanBase64, 'base64');
-  const uuid =
-    Math.random()
-      .toString(36)
-      .substring(2, 15) +
-    Math.random()
-      .toString(36)
-      .substring(2, 15);
-  const fileName = `${uuid}-310${req.user.id}.${fileExt}`;
-  const data = {
-    Key: fileName,
-    Body: buf,
-    ContentEncoding: 'base64',
-    ContentType: `image/${fileExt}`,
-  };
+  inputs: {
+    imageBase64: {
+      type: 'string',
+      required: true,
+    },
+  },
 
-  await uploadToS3(data);
-  const user = await User.updateOne({ id: req.user.id }).set({
-    avatar: `https://s3-us-west-2.amazonaws.com/uploads.thegoodparty.org/${fileName}`,
-  });
+  exits: {
+    success: {
+      description: 'Avatar uploaded',
+      responseType: 'ok',
+    },
+    badRequest: {
+      description: 'user upload failed',
+      responseType: 'badRequest',
+    },
+  },
+  fn: async function(inputs, exits) {
+    try {
+      const user = this.req.user;
+      const fileExt = 'jpeg';
+      const { imageBase64 } = inputs;
 
-  const userWithZip = await User.findOne({ id: req.user.id });
-  const zipCode = await ZipCode.findOne({
-    id: user.zipCode,
-  }).populate('cds');
-  userWithZip.zipCode = zipCode;
+      const assetsBase =
+        sails.config.custom.assetsBase || sails.config.assetsBase;
+      const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
+      const uuid = Math.random()
+        .toString(36)
+        .substring(2, 8);
 
-  return res.ok({
-    user: userWithZip,
-  });
-};
+      const fileName = `user-${uuid}.${fileExt}`;
 
-const uploadToS3 = data => {
-  const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
-  const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
+      const data = {
+        Key: fileName,
+        ContentEncoding: 'base64',
+        ContentType: `image/${fileExt}`,
+      };
+      await sails.helpers.s3Uploader(
+        data,
+        `${assetsBase}/uploads`,
+        cleanBase64,
+      );
+      const avatar = `https://${assetsBase}/uploads/${fileName}`;
+      const updatedUser = await User.updateOne({ id: user.id }).set({
+        avatar,
+      });
 
-  var s3Bucket = new AWS.S3({
-    accessKeyId: s3Key,
-    secretAccessKey: s3Secret,
-    params: { Bucket: 'uploads.thegoodparty.org', ACL: 'public-read' },
-  });
-  return new Promise((resolve, reject) => {
-    s3Bucket.putObject(data, function(err, data) {
-      if (err) {
-        console.log(err);
-        console.log('Error uploading data: ', data);
-        // return res.badRequest({
-        //   message: 'Error uploading data.',
-        // });
-        reject();
-      } else {
-        resolve();
-      }
-    });
-  });
+      return exits.success({
+        user: updatedUser,
+      });
+    } catch (e) {
+      console.log(e);
+      return exits.badRequest({ message: 'Error registering candidate.' });
+    }
+  },
 };
