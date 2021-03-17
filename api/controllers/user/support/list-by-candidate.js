@@ -27,7 +27,9 @@ module.exports = {
       const { candidateId } = inputs;
       const candidateSupports = await Support.find({
         candidate: candidateId,
-      }).populate('user');
+      })
+        .sort([{ updatedAt: 'DESC' }])
+        .populate('user');
       for (let i = 0; i < candidateSupports.length; i++) {
         const support = candidateSupports[i];
         support.timeAgo = timeago.ago(new Date(support.updatedAt));

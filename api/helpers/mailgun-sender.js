@@ -32,18 +32,28 @@ module.exports = {
     fromEmail: {
       friendlyName: 'From Email',
       type: 'string',
-      isEmail: true
-    }
+      isEmail: true,
+    },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
-      const { message, messageHeader, email, name, subject, fromEmail } = inputs;
+      const {
+        message,
+        messageHeader,
+        email,
+        name,
+        subject,
+        fromEmail,
+      } = inputs;
       const MAILGUN_API =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
 
-      const validFromEmail = fromEmail || 'The Good Party <noreply@thegoodparty.org>';
+      // const validFromEmail =
+      //   fromEmail || 'The Good Party <noreply@goodparty.org>';
+      const validFromEmail =
+        fromEmail || 'The Good Party <noreply@thegoodparty.org>';
 
       mg.messages
         .create('mg.thegoodparty.org', {
@@ -53,7 +63,7 @@ module.exports = {
           text: message,
           html: html(message, messageHeader, subject),
         })
-        .then(msg => { }) // logs response data
+        .then(msg => {}) // logs response data
         .catch(err => {
           console.log(err);
           return exits.badRequest({
@@ -96,7 +106,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
             <td>
               <table cellspacing="0" cellpadding="0" border="0" bgcolor="#FFFF" width="100%" style="max-width: 660px; background: #FFFF center center; background-size: cover;"
                 align="center">
-                
+
                 <tr>
                   <td align="center" valign="top"
                     style="font-family: Arial, sans-serif; font-size:14px; line-height:20px; color:#484848; "
@@ -150,12 +160,12 @@ const html = (msg = '', messageHeader = '', subject = '') => {
                   font-size: 11px;
                   line-height: 15px;
                   /* identical to box height, or 136% */
-      
+
                   text-align: center;
                   letter-spacing: 0.5px;
-      
+
                   /* Neutral/N40 - Faded Ink */
-      
+
                   color: #666666;
                 "
               >
