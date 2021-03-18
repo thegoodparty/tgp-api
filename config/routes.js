@@ -105,12 +105,16 @@ module.exports.routes = {
   // New Candidates
   'POST   /api/v1/new-candidate': 'newCandidates/create',
   'GET    /api/v1/new-candidate': 'newCandidates/find',
-  'GET    /api/v1/new-candidate-with-inactive': 'newCandidates/find-with-inactive',
+  'GET    /api/v1/new-candidate-with-inactive':
+    'newCandidates/find-with-inactive',
   'PUT    /api/v1/new-candidate': 'newCandidates/update',
   'GET    /api/v1/homepage-candidates': 'newCandidates/homepage-candidates',
   'GET    /api/v1/new-candidates': 'newCandidates/list',
   'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
   'POST    /api/v1/new-candidate/share-image': 'newCandidates/share-image',
+  'POST   /api/v1/new-candidate/share': 'newCandidates/share/create',
+  'POST   /api/v1/new-candidate/share-guest':
+    'newCandidates/share/create-guest',
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 

@@ -250,6 +250,11 @@ module.exports = {
       via: 'user',
     },
 
+    shareCandidates: {
+      collection: 'shareCandidate',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',

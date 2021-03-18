@@ -40,6 +40,7 @@ module.exports.policies = {
   'newCandidates/homepage-candidates': true,
   'newCandidates/list': true,
   'newCandidates/share-image': true,
+  'newCandidates/share/create-guest': true,
   'counts/*': true,
   'seed/*': true,
   'scrape/*': true,
