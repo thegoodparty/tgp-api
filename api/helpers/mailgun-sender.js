@@ -169,7 +169,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
                   color: #666666;
                 "
               >
-                To stop receiving updates, you can remove this campaign from  <a href="https://thegoodparty.org/you">
+                To stop receiving updates, you can remove this campaign from  <a href="https://thegoodparty.org/profile">
                 your endorsements
                 </a>
               </p>
