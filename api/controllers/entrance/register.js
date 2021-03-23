@@ -204,11 +204,11 @@ module.exports = {
           await User.updateOne({ id: referrerUser.id }).set({
             crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 2,
           });
-          console.log(referrerUser);
           const appBase = sails.config.custom.appBase || sails.config.appBase;
-          const fn = name.split(' ')[0];
-          const ln = name.split(' ').length > 0 && name.split(' ')[1];
-          const subject = `${ln ? `${fn} ${ln[0]}.` : fn} has joined your Good Party crowd-voting crew`;
+          const firstName = name.split(' ')[0];
+          const lastName = name.split(' ').length > 0 && name.split(' ')[1];
+          const nameString = lastName ? `${firstName} ${lastName[0]}.` : firstName;
+          const subject = `${nameString} has joined your Good Party crowd-voting crew`;
           const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
             <tbody>
               <tr>
@@ -235,7 +235,7 @@ module.exports = {
                       margin-bottom: 5px;
                     "
                   >
-                   ${ln ? `${fn} ${ln[0]}.` : fn} joined a crowd-voting campaign using a link you shared.  Your endorsement is the powerful reason they joined.  So, thank you!  
+                   ${nameString} joined a crowd-voting campaign using a link you shared.  Your endorsement is the powerful reason they joined.  So, thank you!  
                   </p>
                 </td>
               </tr>
