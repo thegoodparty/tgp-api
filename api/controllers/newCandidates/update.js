@@ -83,7 +83,7 @@ module.exports = {
       try {
         const oldData = JSON.parse(oldCandidate.data);
         if (
-          oldData.updates.length !== candidate.updates.length
+          oldData.updates.length < candidate.updates.length
         ) {
           await notifySupporterForUpdates(updatedCandidate);
         }
