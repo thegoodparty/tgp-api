@@ -53,7 +53,7 @@ module.exports = {
       // const validFromEmail =
       //   fromEmail || 'The Good Party <noreply@goodparty.org>';
       const validFromEmail =
-        fromEmail || 'The Good Party <noreply@thegoodparty.org>';
+        fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
 
       mg.messages
         .create('mg.thegoodparty.org', {
