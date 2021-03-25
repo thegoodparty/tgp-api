@@ -26,7 +26,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { email } = inputs;
       const lowerCaseEmail = email.toLowerCase();
@@ -57,46 +57,66 @@ module.exports = {
         `${appBase}/you/reset-password?email=${lowerCaseEmail}&token=${token}`,
       );
       const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-                           <tr>
-                            <td>
-                              <h2 style="color: #484848; text-align: left; font-size: 33px;  letter-spacing: 1px; margin-top: 24px; margin-bottom: 24px;">
-                                Reset your password
-                              </h2>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                Hi ${user.name}!<br/> <br>
-                              </p>
-                            </td>
-                          </tr>
-                          
-                          <tr>
-                            <td>
-                                <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                  You told us you forgot your password. If you really did, click here to reset it:
-                                  <a href="${link}">Reset Your Password</a>
-                                </p>
-                             </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <br/><br/><br/>
-                              <a href="${link}" style="padding: 16px 32px; background-color: #117CB6; color: #FFF; border-radius: 40px; text-decoration: none;">
-                                Reset Your Password                              
-                              </a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                                <br/><br/><br/>
-                                <p style="font-family: Arial, sans-serif; font-size:18px; line-height:26px; color:#484848; margin:0; text-align: left">
-                                  If you didn’t mean to reset your password, then you can just ignore this email; your password will not change.
-                                </p>
-                             </td>
-                          </tr>
-                        </table>`;
+          <tbody>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-size: 16px;
+                    font-family: Arial, sans-serif;
+                    margin-top: 0;
+                    margin-bottom: 5px;
+                  "
+                >
+                Hi ${user.name}!<br/> <br>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-size: 16px;
+                    font-family: Arial, sans-serif;
+                    margin-top: 0;
+                    margin-bottom: 5px;
+                  "
+                >
+                You told us you forgot your password. If you really did, click here to reset it:
+                <a href="${link}">Reset Your Password</a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br /><br /><a
+                  href="${link}"
+                  style="
+                    padding: 16px 32px;
+                    background: linear-gradient(
+                        103.63deg,
+                        rgba(255, 15, 19, 0.15) -3.51%,
+                        rgba(191, 0, 32, 0) 94.72%
+                      ),
+                      linear-gradient(
+                        257.82deg,
+                        rgba(67, 0, 211, 0.25) -11.17%,
+                        rgba(67, 0, 211, 0) 96.34%
+                      ),
+                      #5c00c7;
+                    color: #fff;
+                    font-size: 16px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                  "
+                >
+                  Reset Your Password  
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        `;
       const messageHeader = '';
       await sails.helpers.mailgunSender(
         lowerCaseEmail,
