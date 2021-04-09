@@ -1,5 +1,3 @@
-const timeago = require('time-ago');
-
 module.exports = {
   friendlyName: 'Find by id one Presidential Candidates',
 
@@ -53,7 +51,7 @@ module.exports = {
       for (let i = 0; i < recentlyJoinedRecords.length; i++) {
         const rankWithUser = recentlyJoinedRecords[i];
         const { user } = rankWithUser;
-        const timeAgo = timeago.ago(new Date(rankWithUser.createdAt));
+        const timeAgo = await sails.helpers.timeAgo(rankWithUser.createdAt);
         let name = '';
         let district = '';
         if (user && user.name) {

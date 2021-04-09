@@ -1,4 +1,3 @@
-const timeago = require('time-ago');
 module.exports = {
   friendlyName: 'User supports',
 
@@ -22,7 +21,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { candidateId } = inputs;
       const candidateSupports = await Support.find({
@@ -35,7 +34,7 @@ module.exports = {
       const supportLength = Math.min(MAX, candidateSupports.length);
       for (let i = 0; i < supportLength; i++) {
         const support = candidateSupports[i];
-        support.timeAgo = timeago.ago(new Date(support.updatedAt));
+        support.timeAgo = await sails.helpers.timeAgo(support.updatedAt);
         support.message = null;
         support.type = 'endorse';
         if (support.user && support.user.name) {
@@ -56,7 +55,7 @@ module.exports = {
       const shareLength = Math.min(MAX, candidateShares.length);
       for (let i = 0; i < shareLength; i++) {
         const share = candidateShares[i];
-        share.timeAgo = timeago.ago(new Date(share.updatedAt));
+        share.timeAgo = await sails.helpers.timeAgo(share.updatedAt);
         share.type = 'share';
         if (share.user && share.user.name) {
           share.user = await sails.helpers.fullFirstLastInitials(
