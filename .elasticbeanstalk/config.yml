@@ -1,8 +1,8 @@
 branch-defaults:
   develop:
-    environment: TgpApi-dev1
+    environment: gp-api-dev
   master:
-    environment: tgp-api-prod
+    environment: gp-api-prod
 environment-defaults:
   tgp-api-dev:
     branch: null
