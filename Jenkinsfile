@@ -2,9 +2,9 @@ pipeline {
   agent any
   environment {
     DEV_BRANCH            = "develop"
-    EB_DEV                = "TgpApi-dev1"
+    EB_DEV                = "gp-api-dev"
     PROD_BRANCH           = "master"
-    EB_PROD               = "tgp-api-prod"
+    EB_PROD               = "gp-api-prod"
   }
   stages {
     // stage('deploy to develop') {
