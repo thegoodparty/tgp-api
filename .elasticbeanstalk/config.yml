@@ -8,7 +8,7 @@ environment-defaults:
     branch: null
     repository: null
 global:
-  application_name: TGP-API
+  application_name: goodparty.org
   default_ec2_keyname: thegoodparty
   default_platform: Node.js
   default_region: us-west-2
