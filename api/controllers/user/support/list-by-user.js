@@ -22,7 +22,6 @@ module.exports = {
     try {
       const { withCandidates } = inputs;
       let reqUser = this.req.user;
-      // first make sure the user doesn't have that ranking already.
       const supports = await Support.find({
         user: reqUser.id,
       });
@@ -37,7 +36,11 @@ module.exports = {
             const supporters = await Support.count({
               candidate: candidate.id,
             });
-            supports[i].candidate.supporters = supporters || 0;
+            const candidateShares = await ShareCandidate.count({
+              candidate: candidate.id,
+            });
+            supports[i].candidate.supporters =
+              supporters + candidateShares || 0;
           }
         }
       }
