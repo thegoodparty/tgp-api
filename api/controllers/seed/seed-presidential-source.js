@@ -18,47 +18,47 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      
+
       const sources = [
         {
           name: 'Donald Trump',
           source:
             'https://ballotpedia.org/Donald_Trump_presidential_campaign,_2020',
-          image: 'https://assets.thegoodparty.org/candidates/trump.jpg',
+          image: 'https://assets.goodparty.org/candidates/trump.jpg',
         },
         {
           name: 'Joe Biden',
           source:
             'https://ballotpedia.org/Joe_Biden_presidential_campaign,_2020',
-          image: 'https://assets.thegoodparty.org/candidates/biden.jpg',
+          image: 'https://assets.goodparty.org/candidates/biden.jpg',
         },
         {
           name: 'Bernie Sanders',
           source:
             'https://ballotpedia.org/Bernie_Sanders_presidential_campaign,_2020',
-          image: 'https://assets.thegoodparty.org/candidates/sanders.jpg',
+          image: 'https://assets.goodparty.org/candidates/sanders.jpg',
         },
         {
           name: 'Elizabeth Warren',
           source:
             'https://ballotpedia.org/Elizabeth_Warren_presidential_campaign,_2020',
-          image: 'https://assets.thegoodparty.org/candidates/warren.jpg',
+          image: 'https://assets.goodparty.org/candidates/warren.jpg',
         },
         {
           name: 'Andrew Yang',
           source:
             'https://ballotpedia.org/Andrew_Yang_presidential_campaign,_2020',
-          image: 'https://assets.thegoodparty.org/candidates/yang.jpg',
+          image: 'https://assets.goodparty.org/candidates/yang.jpg',
         },
         {
           name: 'Howie Hawkins',
           source: 'https://ballotpedia.org/Howie_Hawkins',
-          image: 'https://assets.thegoodparty.org/candidates/hawkins.jpg',
+          image: 'https://assets.goodparty.org/candidates/hawkins.jpg',
         },
         {
           name: 'Jacob Hornberger',
           source: 'https://ballotpedia.org/Jacob_Hornberger',
-          image: 'https://assets.thegoodparty.org/candidates/hornberger.jpg',
+          image: 'https://assets.goodparty.org/candidates/hornberger.jpg',
         },
       ];
       for (let i = 0; i < sources.length; i++) {

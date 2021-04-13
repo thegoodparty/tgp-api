@@ -147,7 +147,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
             <br />
                 <img
                   style="margin: 0 auto"
-                  src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/new-heart.png"
+                  src="https://s3-us-west-2.amazonaws.com/assets.goodparty.org/new-heart.png"
                 />
             </td>
           </tr>
@@ -180,7 +180,7 @@ const html = (msg = '', messageHeader = '', subject = '') => {
             <br />
               <img
                 style="margin: 0 auto"
-                src="https://s3-us-west-2.amazonaws.com/assets.thegoodparty.org/compliance.png"
+                src="https://s3-us-west-2.amazonaws.com/assets.goodparty.org/compliance.png"
               />
             </td>
           </tr>
