@@ -83,22 +83,8 @@ module.exports.routes = {
     'seed/seed-likely-voters-senate',
   'GET    /api/v1/seed/temp-task': 'seed/temp-task',
 
-  'GET    /api/v1/incumbent/find-by-district': 'incumbent/find-by-district',
-  'GET    /api/v1/incumbent/to-scrape': 'incumbent/to-scrape',
-  'GET    /api/v1/incumbents': 'incumbent/all',
-
-  'GET    /api/v1/race-candidate/house-by-district':
-    'race-candidate/house-by-district',
-  'GET    /api/v1/race-candidate/senate-by-state':
-    'race-candidate/senate-by-state',
-  'GET    /api/v1/race-candidate/all': 'race-candidate/all',
-  'GET    /api/v1/race-candidate/good-challengers':
-    'race-candidate/good-challengers',
-
-  'GET    /api/v1/presidential/all': 'presidential/all',
 
   'GET    /api/v1/candidates/find': 'candidates/find',
-  'GET    /api/v1/candidates/find-by-bloc': 'candidates/find-by-bloc',
   'POST   /api/v1/candidates/track-share': 'candidates/track-share',
 
   // New Candidates
