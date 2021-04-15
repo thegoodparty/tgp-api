@@ -99,7 +99,6 @@ module.exports.routes = {
 
   'GET    /api/v1/candidates/find': 'candidates/find',
   'GET    /api/v1/candidates/find-by-bloc': 'candidates/find-by-bloc',
-  'GET    /api/v1/candidates/all': 'candidates/all',
   'POST   /api/v1/candidates/track-share': 'candidates/track-share',
 
   // New Candidates
