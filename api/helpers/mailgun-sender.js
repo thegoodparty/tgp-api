@@ -56,7 +56,7 @@ module.exports = {
         fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
 
       mg.messages
-        .create('mg.thegoodparty.org', {
+        .create('mg.goodparty.org', {
           from: validFromEmail,
           to: email,
           subject,
