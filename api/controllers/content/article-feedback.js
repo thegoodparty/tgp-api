@@ -64,7 +64,13 @@ module.exports = {
         feedback,
       });
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const env = appBase === 'https://thegoodparty.org' ? 'prod' : 'dev';
+      let env = 'dev';
+      if (
+        appBase === 'https://thegoodparty.org' ||
+        appBase === 'https://goodparty.org'
+      ) {
+        env = 'prod';
+      }
 
       const message = {
         text: `Article Helpful? ${
@@ -77,7 +83,7 @@ module.exports = {
               type: 'mrkdwn',
               text: `__________________________________ \n *Article Helpful? ${
                 isHelpful ? 'YES' : 'No'
-              }* \n <https://thegoodparty.org/party?article=${id}|${title}>\n
+              }* \n <https://goodparty.org/party?article=${id}|${title}>\n
                 \n ENV: ${env}`,
             },
           },

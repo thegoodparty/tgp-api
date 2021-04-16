@@ -40,7 +40,7 @@ module.exports = {
       const { message, replyEmail } = inputs;
       const subject = 'Ama Form Sent';
       const messageHeader = 'Ama Form Sent';
-      const email = 'ask@thegoodparty.org';
+      const email = 'ask@goodparty.org';
       const name = 'TGP Admin';
       const msgWithLineBreaks = message.replace(/\r\n|\r|\n/g, '</br>');
       await sails.helpers.mailgunSender(

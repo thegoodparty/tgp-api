@@ -1,5 +1,3 @@
-const cdThreshold = require('../../../data/cdThreshold');
-
 module.exports = {
   friendlyName: 'Seed',
 
@@ -18,34 +16,41 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
-      const rankings = await Ranking.find()
-      for (let i = 0; i < rankings.length; i++) {
-        const { user, chamber, candidate, isIncumbent } = rankings[i];
-        if (user) {
-          const { email } = await User.findOne({
-            id: user,
-          });
-          try {
-            if (email) {
-              console.log(email, chamber, candidate, isIncumbent);
-              
-              await sails.helpers.updateTag(
-                email,
-                'The Good Party',
-                chamber,
-                candidate,
-                isIncumbent,
-                'active'
-              );
-            }
+      console.log('temp-task1');
+      const candidates = await Candidate.find();
+      console.log('temp-task2');
+      for (let i = 0; i < candidates.length; i++) {
+        console.log('temp-task3 lpop candidates[i]', candidates[i]);
+        const { data } = candidates[i];
+        console.log('temp-task4', data);
+        if (data) {
+          let parsed = JSON.parse(data);
+          console.log('temp-task5');
+          const { image } = parsed;
+          console.log('temp-task6', image);
+          if (image) {
+            console.log('temp-task7');
+            const newImage = image.replace(
+              'https://assets.thegoodparty.org',
+              'https://assets.goodparty.org',
+            );
+            console.log('image', image);
+            console.log('newImage', newImage);
 
-          } catch (e) { }
+            parsed.image = newImage;
+            console.log('temp-task8');
+            const newData = JSON.stringify(parsed);
+            console.log('temp-task9');
+            await Candidate.updateOne({ id: candidates[i].id }).set({
+              data: newData,
+            });
+          }
         }
-
       }
-      return exits.success({});
+      console.log('temp-task10');
+      return exits.success({ message: 'seeded' });
     } catch (e) {
       console.log(e);
       return exits.badRequest({

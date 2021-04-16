@@ -2,7 +2,7 @@
 
 [Sails v1](https://sailsjs.com) based node.js api for [The Good Party](https://thegoodparty.org/).
 
-<img src="https://assets.thegoodparty.org/share.jpg" align="center"
+<img src="https://assets.goodparty.org/share.jpg" align="center"
      title="The Good Party" width="100%">
 
 ## Getting Started
