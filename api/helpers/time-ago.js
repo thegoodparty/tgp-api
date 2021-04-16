@@ -14,10 +14,9 @@ module.exports = {
     try {
       const { date } = inputs;
       let ago = timeago.ago(new Date(date));
-      console.log(date, ago);
       let momentDate = moment(date);
       let momentCurrent = moment(new Date());
-      if (ago.includes('minute') && parseInt(ago[0]) <= 5) {
+      if (ago.includes('ms') || ago.includes('second') || (ago.includes('minute') && parseInt(ago[0]) <= 5)) {
         ago = 'Moments ago';
       } else if (ago === '24 hours ago') {
         ago = '1 day ago';
