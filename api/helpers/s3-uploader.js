@@ -22,10 +22,10 @@ module.exports = {
     },
     isBuffer: {
       type: 'boolean',
-    }
+    },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       let { data, bucketName, base64, isBuffer } = inputs;
       const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
@@ -43,12 +43,9 @@ module.exports = {
         data.Body = new Buffer(JSON.parse(data.Body));
       }
       return new Promise((resolve, reject) => {
-        s3Bucket.putObject(data, function (err, data2) {
+        s3Bucket.putObject(data, function(err, data2) {
           if (err) {
             console.log('error uploading to s3', err);
-            return exits.badRequest({
-              message: 'Error uploading to s3',
-            });
             reject();
           } else {
             return exits.success();
@@ -57,9 +54,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('error uploading to s3', e);
-      return exits.badRequest({
-        message: 'Error uploading to s3',
-      });
+      throw new Error('error uploading to s3');
     }
   },
 };
