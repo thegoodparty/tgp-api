@@ -62,27 +62,6 @@ module.exports.routes = {
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
   'POST   /api/v1/admin/upload-image': 'admin/upload-image',
 
-  'GET    /api/v1/seed/seed': 'seed/seed',
-  'POST    /api/v1/seed/seed-election-dates': 'seed/seed-election-dates',
-  'GET    /api/v1/seed/seed-incumbents': 'seed/seed-incumbents',
-  'GET    /api/v1/seed/seed-presidential': 'seed/seed-presidential',
-  'GET    /api/v1/seed/seed-presidential-add1': 'seed/seed-presidential-add1',
-  'GET    /api/v1/seed/seed-presidential-source':
-    'seed/seed-presidential-source',
-  'GET    /api/v1/seed/seed-races-combined': 'seed/seed-races-combined',
-  'GET    /api/v1/seed/seed-ballotpedia': 'seed/seed-ballotpedia',
-  'GET    /api/v1/seed/seed-howie-total': 'seed/seed-howie-total',
-  'GET    /api/v1/seed/seed-ballotpedia-manual-match':
-    'seed/seed-ballotpedia-manual-match',
-  'GET    /api/v1/seed/seed-twitter-followers': 'seed/seed-twitter-followers',
-  'GET    /api/v1/seed/seed-ballotpedia-cand-profile':
-    'seed/seed-ballotpedia-cand-profile',
-  'GET    /api/v1/seed/seed-likely-voters-house':
-    'seed/seed-likely-voters-house',
-  'GET    /api/v1/seed/seed-likely-voters-senate':
-    'seed/seed-likely-voters-senate',
-  'GET    /api/v1/seed/temp-task': 'seed/temp-task',
-
 
   'GET    /api/v1/candidates/find': 'candidates/find',
   'POST   /api/v1/candidates/track-share': 'candidates/track-share',
@@ -103,7 +82,6 @@ module.exports.routes = {
 
   'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
-  'POST   /api/v1/scrape/scrape-webhook': 'scrape/scrape-webhook',
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
