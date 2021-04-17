@@ -37,15 +37,10 @@ module.exports.routes = {
   'POST   /api/v1/role/create': 'role/create',
 
   'PUT    /api/v1/user/update-user': 'user/update-user',
-  'PUT    /api/v1/user/update-user-ranking': 'user/update-user-ranking',
-  'PUT    /api/v1/user/delete-user-ranking': 'user/ranking/delete-user-ranking',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'POST    /api/v1/user/avatar': 'user/upload-avatar',
   'GET    /api/v1/user/crew': 'user/crew',
   'GET    /api/v1/user/leaderboard': 'user/leaderboard',
-  'POST   /api/v1/user/rank-candidate': 'user/ranking/rank-candidate',
-  'DELETE /api/v1/user/rank-candidate': 'user/ranking/delete-rank-candidate',
-  'GET   /api/v1/user/ranking': 'user/ranking/user-ranking',
   'PUT   /api/v1/user/change-password': 'user/change-password',
   'POST   /api/v1/user/add-password': 'user/add-password',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
@@ -80,7 +75,6 @@ module.exports.routes = {
   'POST   /api/v1/new-candidate/share-guest':
     'newCandidates/share/create-guest',
 
-  'GET    /api/v1/counts/user-counts': 'counts/user-counts',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
