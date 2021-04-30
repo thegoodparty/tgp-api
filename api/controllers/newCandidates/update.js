@@ -32,6 +32,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { candidate } = inputs;
+      console.log('candidate update:', candidate)
       const { imageBase64, id } = candidate;
       const name = `${candidate.firstName
         .toLowerCase()
