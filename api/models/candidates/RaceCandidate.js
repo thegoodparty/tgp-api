@@ -126,10 +126,10 @@ module.exports = {
     },
 
     // many to many relationship to campaignUpdates
-    raceCandUpdates: {
-      collection: 'campaignUpdate',
-      via: 'raceCands',
-    },
+    // raceCandUpdates: {
+    //   collection: 'campaignUpdate',
+    //   via: 'raceCands',
+    // },
   },
 
 

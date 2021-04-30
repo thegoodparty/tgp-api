@@ -45,9 +45,13 @@ module.exports = {
         const imageData = await request.get(data.image, { encoding: null });
         imageAsBase64 = Buffer.from(imageData).toString('base64');
       }
-
+      let candidateUpdates = await CampaignUpdate.find({
+        candidateId: id
+      });
+      let candidateData = JSON.parse(candidate.data);
+      candidateData.updatesList = candidateUpdates;
       return exits.success({
-        candidate: JSON.parse(candidate.data),
+        candidate: candidateData,
         imageAsBase64,
       });
     } catch (e) {

@@ -120,10 +120,10 @@ module.exports = {
     },
 
     // many to many relationship to campaignUpdates
-    presCandUpdates: {
-      collection: 'campaignUpdate',
-      via: 'presCands',
-    },
+    // presCandUpdates: {
+    //   collection: 'campaignUpdate',
+    //   via: 'presCands',
+    // },
   },
 
   customToJSON: function() {

@@ -12,11 +12,9 @@ module.exports = {
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
     text: {
       type: 'string',
-      required: true,
     },
     date: {
       type: 'string',
-      required: true,
     },
     candidateId: {
       type: 'number',

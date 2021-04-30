@@ -36,9 +36,13 @@ module.exports = {
       if (!candidate) {
         return exits.notFound();
       }
-
+      let candidateUpdates = await CampaignUpdate.find({
+        candidateId: id
+      });
+      let candidateData = JSON.parse(candidate.data);
+      candidateData.updatesList = candidateUpdates;
       return exits.success({
-        candidate: JSON.parse(candidate.data),
+        candidate: candidateData
       });
     } catch (e) {
       console.log('Error in find candidate', e);

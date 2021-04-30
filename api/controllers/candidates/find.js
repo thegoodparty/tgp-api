@@ -45,7 +45,6 @@ module.exports = {
         chamber,
         !!isIncumbent,
       );
-
       return exits.success({
         ...candidate,
       });

@@ -129,10 +129,10 @@ module.exports = {
     },
 
     // many to many relationship to campaignUpdates
-    incumbentUpdates: {
-      collection: 'campaignUpdate',
-      via: 'incumbents',
-    },
+    // incumbentUpdates: {
+    //   collection: 'campaignUpdate',
+    //   via: 'incumbents',
+    // },
   },
 
   customToJSON: function() {
