@@ -105,7 +105,7 @@ module.exports = {
         for (let i = 0; i < newItems.length; i++) {
           await CampaignUpdate.create({
             ...newItems[i],
-            candidateId: oldCandidate.id
+            candidate: oldCandidate.id
           }).fetch();
           isUpdated = true;
         }

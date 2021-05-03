@@ -23,12 +23,12 @@ module.exports = {
           for (let j = 0; j < data.updates.length; j++) {
             let candidateUpdate = await CampaignUpdate.findOne({
               date: data.updatesDates[j],
-              candidateId: candidates[i].id
+              candidate: candidates[i].id
             });
             if (!candidateUpdate) {
               const newCandidate = await CampaignUpdate.create({
                 date: data.updatesDates[j],
-                candidateId: candidates[i].id,
+                candidate: candidates[i].id,
                 text: data.updates[j]
               }).fetch();
             }

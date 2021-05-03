@@ -16,7 +16,7 @@ module.exports = {
     date: {
       type: 'string',
     },
-    candidateId: {
+    candidate: {
       model: 'candidate',
     },
   },
