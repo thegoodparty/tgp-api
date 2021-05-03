@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-
 module.exports = {
   friendlyName: 'register user',
 
@@ -32,21 +31,6 @@ module.exports = {
       description: 'Send an email?',
       type: 'boolean',
       defaultsTo: true,
-      required: false,
-    },
-    districtId: {
-      description: 'Selected district id',
-      type: 'number',
-      required: false,
-    },
-    addresses: {
-      description: 'Addresses collected from user during account creation.',
-      type: 'string',
-      required: false,
-    },
-    zip: {
-      description: 'zip collected from user during account creation.',
-      type: 'string',
       required: false,
     },
 
@@ -99,7 +83,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     // Look up the user whose ID was specified in the request.
     // Note that we don't have to validate that `userId` is a number;
     // the machine runner does this for us and returns `badRequest`
@@ -110,8 +94,6 @@ module.exports = {
         password,
         name,
         verify,
-        addresses,
-        zip,
         ranking,
         socialId,
         socialProvider,
@@ -120,7 +102,6 @@ module.exports = {
         referrer,
         guestUuid,
       } = inputs;
-      let { districtId } = inputs;
       const lowerCaseEmail = email.toLowerCase();
 
       const userExists = await User.findOne({
@@ -133,56 +114,12 @@ module.exports = {
         });
       }
 
-      let displayAddress, normalizedAddress, addressZip;
-      if (addresses) {
-        const address = JSON.parse(addresses);
-        displayAddress = address.displayAddress;
-        normalizedAddress = address.normalizedAddress
-          ? JSON.stringify(address.normalizedAddress)
-          : address.normalizedAddress;
-        addressZip = address.zip;
-      }
-      let zipCode;
-
-      if (addressZip) {
-        zipCode = await ZipCode.findOne({ addressZip });
-      } else if (zip) {
-        zipCode = await ZipCode.findOne({ zip });
-      }
-
       const userAttr = {
         email: lowerCaseEmail,
         name,
       };
       if (password) {
         userAttr.password = password;
-      }
-      if (zipCode) {
-        userAttr.zipCode = zipCode.id;
-        userAttr.shortState = zipCode.stateShort;
-      }
-      if (zipCode && !districtId) {
-        // districtId wasn't specified - take the first one in the array
-        let { approxPctArr } = zipCode;
-        if (approxPctArr) {
-          approxPctArr = JSON.parse(approxPctArr);
-          if (approxPctArr.length > 0) {
-            districtId = approxPctArr[0].districtId;
-          }
-        }
-      }
-
-      if (districtId) {
-        const congDistrict = await CongDistrict.findOne({ id: districtId });
-        userAttr.congDistrict = districtId;
-        userAttr.districtNumber = congDistrict.code;
-      }
-
-      if (displayAddress) {
-        userAttr.displayAddress = displayAddress;
-      }
-      if (normalizedAddress) {
-        userAttr.normalizedAddress = normalizedAddress;
       }
 
       if (verify) {
@@ -207,7 +144,9 @@ module.exports = {
           const appBase = sails.config.custom.appBase || sails.config.appBase;
           const firstName = name.split(' ')[0];
           const lastName = name.split(' ').length > 0 && name.split(' ')[1];
-          const nameString = lastName ? `${firstName} ${lastName[0]}.` : firstName;
+          const nameString = lastName
+            ? `${firstName} ${lastName[0]}.`
+            : firstName;
           const subject = `${nameString} has joined your Good Party crowd-voting crew`;
           const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
             <tbody>
@@ -221,7 +160,8 @@ module.exports = {
                       margin-bottom: 5px;
                     "
                   >
-                    Hi ${referrerUser.firstName || referrerUser.name}!<br /><br />
+                    Hi ${referrerUser.firstName ||
+                      referrerUser.name}!<br /><br />
                   </p>
                 </td>
               </tr>
@@ -235,7 +175,7 @@ module.exports = {
                       margin-bottom: 5px;
                     "
                   >
-                   ${nameString} joined a crowd-voting campaign using a link you shared.  Your endorsement is the powerful reason they joined.  So, thank you!  
+                   ${nameString} joined a crowd-voting campaign using a link you shared.  Your endorsement is the powerful reason they joined.  So, thank you!
                   </p>
                 </td>
               </tr>
@@ -365,7 +305,8 @@ module.exports = {
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
         const appBase = sails.config.custom.appBase || sails.config.appBase;
-        const subject = `${user.firstName || user.name}, please verify your email address`;
+        const subject = `${user.firstName ||
+          user.name}, please verify your email address`;
         const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
           <tbody>
             <tr>
@@ -415,7 +356,9 @@ module.exports = {
             <tr>
               <td>
                 <br /><br /><a
-                  href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${user.emailConfToken}"
+                  href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${
+          user.emailConfToken
+        }"
                   style="
                     padding: 16px 32px;
                     background: linear-gradient(
@@ -453,7 +396,7 @@ module.exports = {
       }
       try {
         await sails.helpers.addEmail(lowerCaseEmail, 'The Good Party');
-      } catch (e) { }
+      } catch (e) {}
       const token = await sails.helpers.jwtSign({
         id: user.id,
         email: lowerCaseEmail,
