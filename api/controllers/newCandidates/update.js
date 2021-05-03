@@ -36,7 +36,6 @@ module.exports = {
       delete candidate['updates'];
       delete candidate['updatesDates'];
       delete candidate['candidateUpdates'];
-      console.log('candidate update:', candidate)
       const { imageBase64, id } = candidate;
       const name = `${candidate.firstName
         .toLowerCase()
@@ -76,7 +75,7 @@ module.exports = {
       };
 
       delete cleanCandidate.imageBase64;
-      const oldCandidate = await Candidate.findOne({ id });
+      const oldCandidate = await Candidate.findOne({ id }).populate('candidateUpdates');
 
       const updatedCandidate = await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
@@ -86,9 +85,7 @@ module.exports = {
         data: JSON.stringify({ ...cleanCandidate, id: updatedCandidate.id }),
       });
       try {
-        let oldCandidateUpdates = await CampaignUpdate.find({
-          candidateId: oldCandidate.id
-        });
+        let oldCandidateUpdates = oldCandidate.candidateUpdates;
         let isUpdated = false;
         for (let i = 0; i < oldCandidateUpdates.length; i++) {
           const updatedItem = candidateUpdates.find(item => item.id === oldCandidateUpdates[i].id);
@@ -137,7 +134,6 @@ const notifySupporterForUpdates = async candidate => {
   const { race } = JSON.parse(data);
   for (let i = 0; i < candidateSupports.length; i++) {
     const support = candidateSupports[i];
-    console.log(support);
     if (!support.user) {
       continue;
     }

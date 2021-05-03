@@ -43,10 +43,10 @@ module.exports = {
       description: 'JSON.stringified string of all the other properties',
     },
     // many to many relationship to campaignUpdates
-    // candidateUpdates: {
-    //   collection: 'campaignUpdate',
-    //   via: 'candidateUpdates',
-    // },
+    candidateUpdates: {
+      collection: 'campaignupdate',
+      via: 'candidateId',
+    },
   },
 
   customToJSON: function() {

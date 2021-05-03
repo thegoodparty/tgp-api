@@ -17,8 +17,7 @@ module.exports = {
       type: 'string',
     },
     candidateId: {
-      type: 'number',
-      required: true,
+      model: 'candidate',
     },
   },
 };

@@ -18,6 +18,7 @@ module.exports = {
       let candidates = await Candidate.find();
       for (let i = 0; i < candidates.length; i++) {
         const data = JSON.parse(candidates[i].data);
+        
         if (data.updates) {
           for (let j = 0; j < data.updates.length; j++) {
             let candidateUpdate = await CampaignUpdate.findOne({
@@ -30,9 +31,14 @@ module.exports = {
                 candidateId: candidates[i].id,
                 text: data.updates[j]
               }).fetch();
-              console.log(newCandidate)
             }
           }
+          delete data['updates'];
+          delete data['updatesDates'];
+          await Candidate.updateOne({ id: candidates[i].id }).set({
+            ...candidates[i],
+            data: JSON.stringify(data)
+          });
         }
       }
       // console.log('Hello World')

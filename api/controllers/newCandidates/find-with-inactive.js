@@ -32,15 +32,12 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id } = inputs;
-      const candidate = await Candidate.findOne({ id });
+      const candidate = await Candidate.findOne({ id }).populate('candidateUpdates');
       if (!candidate) {
         return exits.notFound();
       }
-      let candidateUpdates = await CampaignUpdate.find({
-        candidateId: id
-      });
       let candidateData = JSON.parse(candidate.data);
-      candidateData.updatesList = candidateUpdates;
+      candidateData.updatesList = candidate.candidateUpdates;
       return exits.success({
         candidate: candidateData
       });
