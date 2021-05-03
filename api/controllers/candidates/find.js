@@ -4,16 +4,24 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const request = require('request-promise');
+
 
 module.exports = {
-  friendlyName: 'Find by id one Candidate',
+  friendlyName: 'Find by id one Presidential Candidates',
 
-  description: 'Find by id one Candidate ',
+  description: 'Find by id one Presidential Candidates ',
 
   inputs: {
     id: {
       type: 'string',
+      required: true,
+    },
+    chamber: {
+      type: 'string',
+      required: true,
+    },
+    isIncumbent: {
+      type: 'boolean',
       required: true,
     },
   },
@@ -31,15 +39,14 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id } = inputs;
-      const candidate = await Candidate.findOne({ id }).populate('candidateUpdates');
-      if (!candidate) {
-        return exits.notFound();
-      }
-      let candidateData = JSON.parse(candidate.data);
-      candidateData.updatesList = candidate.candidateUpdates;
+      const { id, chamber, isIncumbent } = inputs;
+      const candidate = await sails.helpers.findCandidateWithFields(
+        id,
+        chamber,
+        !!isIncumbent,
+      );
       return exits.success({
-        candidate: candidateData
+        ...candidate,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

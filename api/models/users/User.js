@@ -228,18 +228,6 @@ module.exports = {
       model: 'role',
     },
 
-    congDistrict: {
-      model: 'congDistrict',
-    },
-
-    senateDistrict: {
-      model: 'senateDistrict',
-    },
-
-    zipCode: {
-      model: 'zipCode',
-    },
-
     rankings: {
       collection: 'ranking',
       via: 'user',

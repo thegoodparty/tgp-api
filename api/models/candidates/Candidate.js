@@ -44,8 +44,8 @@ module.exports = {
     },
     // many to many relationship to campaignUpdates
     candidateUpdates: {
-      collection: 'campaignUpdate',
-      via: 'candidateUpdates',
+      collection: 'campaignupdate',
+      via: 'candidate',
     },
   },
 

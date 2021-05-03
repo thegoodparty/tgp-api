@@ -32,6 +32,10 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { candidate } = inputs;
+      const { candidateUpdates } = candidate;
+      delete candidate['updates'];
+      delete candidate['updatesDates'];
+      delete candidate['candidateUpdates'];
       const { imageBase64, id } = candidate;
       const name = `${candidate.firstName
         .toLowerCase()
@@ -71,7 +75,7 @@ module.exports = {
       };
 
       delete cleanCandidate.imageBase64;
-      const oldCandidate = await Candidate.findOne({ id });
+      const oldCandidate = await Candidate.findOne({ id }).populate('candidateUpdates');
 
       const updatedCandidate = await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
@@ -81,10 +85,32 @@ module.exports = {
         data: JSON.stringify({ ...cleanCandidate, id: updatedCandidate.id }),
       });
       try {
+        let oldCandidateUpdates = oldCandidate.candidateUpdates;
+        let isUpdated = false;
+        for (let i = 0; i < oldCandidateUpdates.length; i++) {
+          const updatedItem = candidateUpdates.find(item => item.id === oldCandidateUpdates[i].id);
+          if (oldCandidateUpdates[i].id && !updatedItem) {
+            await CampaignUpdate.destroyOne({ id: oldCandidateUpdates[i].id });
+          }
+          if (updatedItem) {
+            if (updatedItem.date !== oldCandidateUpdates[i].date || updatedItem.text !== oldCandidateUpdates[i].text) {
+              await CampaignUpdate.updateOne({ id: updatedItem.id }).set({
+                ...oldCandidateUpdates[i],
+                ...updatedItem
+              });
+            }
+          }
+        }
+        const newItems = candidateUpdates.filter(item => !item.id);
+        for (let i = 0; i < newItems.length; i++) {
+          await CampaignUpdate.create({
+            ...newItems[i],
+            candidate: oldCandidate.id
+          }).fetch();
+          isUpdated = true;
+        }
         const oldData = JSON.parse(oldCandidate.data);
-        if (
-          oldData.updates.length < candidate.updates.length
-        ) {
+        if (isUpdated) {
           await notifySupporterForUpdates(updatedCandidate);
         }
         await sails.helpers.triggerCandidateUpdate(candidate.id);
@@ -108,6 +134,9 @@ const notifySupporterForUpdates = async candidate => {
   const { race } = JSON.parse(data);
   for (let i = 0; i < candidateSupports.length; i++) {
     const support = candidateSupports[i];
+    if (!support.user) {
+      continue;
+    }
     // support.user.name, support.user.email
     const appBase = sails.config.custom.appBase || sails.config.appBase;
     const subject = `Campaign update from ${firstName} ${lastName} for ${race}`;
