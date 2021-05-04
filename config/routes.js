@@ -22,7 +22,7 @@ module.exports.routes = {
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
   'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',
   'PUT    /api/v1/entrance/twitter-confirm': 'entrance/twitter-confirm',
-  'POST   /api/v1/entrance/register': 'entrance/register',
+  'POST   /api/v1/entrance/registsocial-loginer': 'entrance/register',
   'GET   /api/v1/entrance/resend-verify-email': 'entrance/resend-verify-email',
   'GET    /api/v1/entrance/zip-to-district': 'entrance/zip-to-district',
   'GET    /api/v1/entrance/address-to-district': 'entrance/address-to-district',
@@ -60,7 +60,6 @@ module.exports.routes = {
 
 
   'GET    /api/v1/candidates/find': 'candidates/find',
-  'POST   /api/v1/candidates/track-share': 'candidates/track-share',
 
   // New Candidates
   'POST   /api/v1/new-candidate': 'newCandidates/create',
