@@ -295,12 +295,12 @@ module.exports = {
         // do nothing. Usually the error is for missing state.
       }
 
-      const userWithZip = await User.findOne({ id: user.id });
+      // const userWithZip = await User.findOne({ id: user.id });
 
-      const userZipCode = await ZipCode.findOne({
-        id: userWithZip.zipCode,
-      }).populate('cds');
-      userWithZip.zipCode = userZipCode;
+      // const userZipCode = await ZipCode.findOne({
+      //   id: user.zipCode,
+      // }).populate('cds');
+      // user.zipCode = userZipCode;
 
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
@@ -403,7 +403,7 @@ module.exports = {
       });
 
       return exits.success({
-        user: userWithZip,
+        user,
         token,
       });
     } catch (e) {
