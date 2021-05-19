@@ -45,7 +45,6 @@ module.exports = {
           candidate: candidate.id,
         });
         data.supporters = (supporters || 0) + (shares || 0);
-        console.log(data.supporters)
         data.state = candidate.state;
         if (!candidatesByStates[candidate.state]) {
           candidatesByStates[candidate.state] = [];
