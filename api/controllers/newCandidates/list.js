@@ -41,7 +41,11 @@ module.exports = {
         const supporters = await Support.count({
           candidate: candidate.id,
         });
-        data.supporters = supporters || 0;
+        const shares = await ShareCandidate.count({
+          candidate: candidate.id,
+        });
+        data.supporters = (supporters || 0) + (shares || 0);
+        console.log(data.supporters)
         data.state = candidate.state;
         if (!candidatesByStates[candidate.state]) {
           candidatesByStates[candidate.state] = [];

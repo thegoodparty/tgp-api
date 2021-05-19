@@ -41,7 +41,10 @@ module.exports = {
         const supporters = await Support.count({
           candidate: candidate.id,
         });
-        data.supporters = supporters || 0;
+        const shares = await ShareCandidate.count({
+          candidate: candidate.id,
+        });
+        data.supporters = (supporters || 0) + (shares || 0);
 
         homepageCandidates.push(data);
       }
