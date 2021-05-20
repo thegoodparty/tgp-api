@@ -66,7 +66,7 @@ module.exports = {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let env = 'dev';
       if (
-        appBase === 'https://thegoodparty.org' ||
+        appBase === 'https://goodparty.org' ||
         appBase === 'https://goodparty.org'
       ) {
         env = 'prod';

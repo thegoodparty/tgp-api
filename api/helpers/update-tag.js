@@ -47,7 +47,7 @@ module.exports = {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let { email, listName, candidateId, status } = inputs;
 
-      listName = appBase === 'https://thegoodparty.org'
+      listName = appBase === 'https://goodparty.org'
         ? listName
         : 'thegoodparty';
       const { lists } = await mailchimp.lists.getAllLists();
