@@ -66,6 +66,16 @@ const mapResponse = items => {
         });
       } else if (itemId === 'partyPage') {
         mappedResponse.partyPage = item.fields;
+      } else if (itemId === 'landingPage') {
+        if (!mappedResponse.landingPages) {
+          mappedResponse.landingPages = {};
+        }
+        const page = {
+          ...item.fields,
+          id: elementId,
+        };
+
+        mappedResponse.landingPages[item.fields.slug] = page;
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'researchPage') {
