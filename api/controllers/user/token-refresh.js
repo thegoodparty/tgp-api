@@ -19,11 +19,11 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     const user = this.req.user;
-    const userWithZip = await User.findOne({ id: user.id });
-    const userZipCode = await ZipCode.findOne({
-      id: userWithZip.zipCode,
-    }).populate('cds');
-    userWithZip.zipCode = userZipCode;
+    // const userWithZip = await User.findOne({ id: user.id });
+    // const userZipCode = await ZipCode.findOne({
+    //   id: userWithZip.zipCode,
+    // }).populate('cds');
+    // userWithZip.zipCode = userZipCode;
 
     const token = await sails.helpers.jwtSign({
       id: user.id,
@@ -31,7 +31,7 @@ module.exports = {
     });
 
     return exits.success({
-      user: userWithZip,
+      user,
       token,
     });
   },

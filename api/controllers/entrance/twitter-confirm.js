@@ -56,7 +56,7 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { oauthToken, oauthVerifier } = inputs;
       const consumerKey =
@@ -111,15 +111,15 @@ module.exports = {
           email: userRecord.email,
         });
 
-        const userWithZip = await User.findOne({ id: userRecord.id });
-
-        const zipCode = await ZipCode.findOne({
-          id: userWithZip.zipCode,
-        }).populate('cds');
-        userWithZip.zipCode = zipCode;
+        // const userWithZip = await User.findOne({ id: userRecord.id });
+        //
+        // const zipCode = await ZipCode.findOne({
+        //   id: userWithZip.zipCode,
+        // }).populate('cds');
+        // userWithZip.zipCode = zipCode;
 
         return exits.success({
-          user: userWithZip,
+          user: userRecord,
           token,
         });
       }
@@ -128,9 +128,9 @@ module.exports = {
       const { zip, ranking, referrer, guestUuid } = inputs;
       let zipCode;
 
-      if (zip) {
-        zipCode = await ZipCode.findOne({ zip });
-      }
+      // if (zip) {
+      //   zipCode = await ZipCode.findOne({ zip });
+      // }
       const userAttr = {
         email: user.email,
         name: user.name,
@@ -213,7 +213,7 @@ module.exports = {
               candidate,
               chamber,
               isIncumbent,
-              'active'
+              'active',
             );
           }
         }
@@ -221,19 +221,19 @@ module.exports = {
         // do nothing. Usually the error is for missing state.
       }
 
-      const userWithZip = await User.findOne({ id: newUser.id });
-
-      const userZipCode = await ZipCode.findOne({
-        id: userWithZip.zipCode,
-      }).populate('cds');
-      userWithZip.zipCode = userZipCode;
+      // const userWithZip = await User.findOne({ id: newUser.id });
+      //
+      // const userZipCode = await ZipCode.findOne({
+      //   id: userWithZip.zipCode,
+      // }).populate('cds');
+      // userWithZip.zipCode = userZipCode;
       const token = await sails.helpers.jwtSign({
         id: newUser.id,
         email: newUser.email,
       });
 
       return exits.success({
-        user: userWithZip,
+        user: newUser,
         token,
       });
     } catch (err) {

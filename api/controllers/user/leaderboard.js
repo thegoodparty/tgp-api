@@ -29,11 +29,11 @@ module.exports = {
       for (let i = 0; i < users.length; i++) {
         const user = users[i];
         let zipCode;
-        if (user.zipCode) {
-          zipCode = await ZipCode.findOne({
-            id: user.zipCode,
-          });
-        }
+        // if (user.zipCode) {
+        //   zipCode = await ZipCode.findOne({
+        //     id: user.zipCode,
+        //   });
+        // }
         const fullFirstLastInitials = await sails.helpers.fullFirstLastInitials(user.name)
         leaderboard.push({
           avatar: user.avatar,

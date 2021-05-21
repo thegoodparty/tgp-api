@@ -81,15 +81,15 @@ module.exports = {
         email: lowerCaseEmail,
       });
 
-      const userWithZip = await User.findOne({ id: user.id });
-
-      const zipCode = await ZipCode.findOne({
-        id: userWithZip.zipCode,
-      }).populate('cds');
-      userWithZip.zipCode = zipCode;
+      // const userWithZip = await User.findOne({ id: user.id });
+      //
+      // const zipCode = await ZipCode.findOne({
+      //   id: userWithZip.zipCode,
+      // }).populate('cds');
+      // userWithZip.zipCode = zipCode;
 
       return exits.success({
-        user: userWithZip,
+        user,
         token,
       });
     } catch (err) {

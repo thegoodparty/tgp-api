@@ -67,12 +67,12 @@ module.exports = {
         email: lowerCaseEmail,
       });
 
-      const userWithZip = await User.findOne({ id: user.id });
+      // const userWithZip = await User.findOne({ id: user.id });
 
-      const zipCode = await ZipCode.findOne({
-        id: userWithZip.zipCode,
-      }).populate('cds');
-      userWithZip.zipCode = zipCode;
+      // const zipCode = await ZipCode.findOne({
+      //   id: userWithZip.zipCode,
+      // }).populate('cds');
+      // userWithZip.zipCode = zipCode;
 
       const subject = `You're verified — here's what else you can do to help`;
       const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
@@ -116,7 +116,7 @@ module.exports = {
                   margin-bottom: 5px;
                 "
               >
-              
+
               </p>
             </td>
           </tr>
@@ -133,7 +133,7 @@ module.exports = {
         message,
       );
       return exits.success({
-        user: userWithZip,
+        user,
         token,
       });
     }

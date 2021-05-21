@@ -49,11 +49,11 @@ module.exports = {
       for (let i = 0; i < limit; i++) {
         const userCrew = sortedCrew[i];
         let zipCode;
-        if (userCrew.zipCode) {
-          zipCode = await ZipCode.findOne({
-            id: userCrew.zipCode,
-          });
-        }
+        // if (userCrew.zipCode) {
+        //   zipCode = await ZipCode.findOne({
+        //     id: userCrew.zipCode,
+        //   });
+        // }
         const fullFirstLastInitials = await sails.helpers.fullFirstLastInitials(
           userCrew.name,
         );
