@@ -5,6 +5,9 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+const axios = require('axios');
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 module.exports = {
   friendlyName: 'All Content',
 
@@ -48,10 +51,8 @@ module.exports = {
           content: stringifiedContent,
         });
       }
-      await sails.helpers.cacheHelper(
-        'delete',
-        'content',
-      );
+      await sails.helpers.cacheHelper('delete', 'content');
+      await axios.get(`${appBase}/update-content`);
 
       return exits.success();
     } catch (err) {
