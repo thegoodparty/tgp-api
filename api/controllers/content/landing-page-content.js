@@ -32,10 +32,13 @@ module.exports = {
       let content = await sails.helpers.cacheHelper('get', 'content');
       if (!content) {
         const contents = await CmsContent.find();
+
         if (contents.length === 1) {
           content = { ...JSON.parse(contents[0].content) };
+          await sails.helpers.cacheHelper('set', 'content', content);
         }
       }
+      console.log('content', content.landingPages[slug]);
       if (content.landingPages[slug]) {
         return exits.success({
           content: content.landingPages[slug],
