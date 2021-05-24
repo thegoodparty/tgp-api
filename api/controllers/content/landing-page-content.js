@@ -38,7 +38,6 @@ module.exports = {
           await sails.helpers.cacheHelper('set', 'content', content);
         }
       }
-      console.log('content', content.landingPages[slug]);
       if (content.landingPages[slug]) {
         return exits.success({
           content: content.landingPages[slug],
