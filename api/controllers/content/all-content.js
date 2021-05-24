@@ -47,7 +47,7 @@ module.exports = {
     } catch (err) {
       console.log('content error');
       console.log(err);
-      await sails.helpers.errorLoggerHelper('Error at content/all-content', e);
+      await sails.helpers.errorLoggerHelper('Error at content/all-content', err);
       return exits.badRequest({
         message: 'Content fetch failed. Please load again.',
       });
