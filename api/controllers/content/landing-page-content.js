@@ -35,6 +35,8 @@ module.exports = {
         if (contents.length === 1) {
           content = { ...JSON.parse(contents[0].content) };
         }
+      }
+      if (content.landingPages[slug]) {
         return exits.success({
           content: content.landingPages[slug],
         });
