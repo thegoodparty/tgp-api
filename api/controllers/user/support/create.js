@@ -29,7 +29,10 @@ module.exports = {
     try {
       let reqUser = this.req.user;
       const { candidateId, message } = inputs;
-      const candidate = await Candidate.findOne({ id: candidateId, isActive: true });
+      const candidate = await Candidate.findOne({
+        id: candidateId,
+        isActive: true,
+      });
       // first make sure the user doesn't have that ranking already.
       const existingSupport = await Support.find({
         user: reqUser.id,
@@ -45,7 +48,7 @@ module.exports = {
         candidate: candidateId,
         message,
       });
-      
+
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const firstName = reqUser.name.split(' ')[0];
       const { race } = JSON.parse(candidate.data);
@@ -85,7 +88,7 @@ module.exports = {
                   <br />
                   <br />
                   <a
-                  href="${appBase}/candidate/${candidate.firstName}-${candidate.lastName}/${candidate.id}"
+                  href="${appBase}/candidate/${candidate.firstName}-${candidate.lastName}/${candidate.id}?preview=true&fromshare=true"
               style="
                 padding: 16px 32px;
                 background: linear-gradient(
