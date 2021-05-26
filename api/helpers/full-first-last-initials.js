@@ -9,14 +9,20 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    const { name } = inputs;
-    const names = name.split(' ');
-    if (names.length > 1) {
-      return exits.success(`${names[0]} ${names[names.length - 1].charAt(0)}.`);
+    try {
+      const { name } = inputs;
+      const names = name.split(' ');
+      if (names.length > 1) {
+        return exits.success(
+          `${names[0]} ${names[names.length - 1].charAt(0)}.`,
+        );
+      }
+      if (names.length === 1) {
+        return exits.success(names[0]);
+      }
+      return exits.success('');
+    } catch (e) {
+      return exits.success('');
     }
-    if (names.length === 1) {
-      return exits.success(names[0]);
-    }
-    return exits.success('');
   },
 };

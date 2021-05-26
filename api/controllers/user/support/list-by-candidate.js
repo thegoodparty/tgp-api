@@ -21,7 +21,7 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { candidateId } = inputs;
       const candidateSupports = await Support.find({
@@ -30,6 +30,7 @@ module.exports = {
         .sort([{ updatedAt: 'DESC' }])
         .populate('user');
 
+      const supportWithLimit = [];
       const MAX = 20;
       const supportLength = Math.min(MAX, candidateSupports.length);
       for (let i = 0; i < supportLength; i++) {
@@ -44,6 +45,7 @@ module.exports = {
         } else {
           support.user = '';
         }
+        supportWithLimit.push(support);
       }
 
       const candidateShares = await ShareCandidate.find({
@@ -51,6 +53,8 @@ module.exports = {
       })
         .sort([{ updatedAt: 'DESC' }])
         .populate('user');
+
+      const shareWithLimit = [];
 
       const shareLength = Math.min(MAX, candidateShares.length);
       for (let i = 0; i < shareLength; i++) {
@@ -64,8 +68,9 @@ module.exports = {
         } else {
           share.user = '';
         }
+        shareWithLimit.push(share);
       }
-      const combined = candidateSupports.concat(candidateShares);
+      const combined = supportWithLimit.concat(shareWithLimit);
       combined.sort((a, b) => b.updatedAt - a.updatedAt);
 
       return exits.success({
