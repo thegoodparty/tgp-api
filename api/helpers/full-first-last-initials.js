@@ -11,7 +11,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { name } = inputs;
-      const names = name.split(' ');
+      const names = name.trim().split(' ');
       if (names.length > 1) {
         return exits.success(
           `${names[0]} ${names[names.length - 1].charAt(0)}.`,

@@ -92,7 +92,6 @@ module.exports = {
       const {
         email,
         password,
-        name,
         verify,
         ranking,
         socialId,
@@ -103,6 +102,7 @@ module.exports = {
         guestUuid,
       } = inputs;
       const lowerCaseEmail = email.toLowerCase();
+      const name = inputs.name.trim();
 
       const userExists = await User.findOne({
         email: lowerCaseEmail,
