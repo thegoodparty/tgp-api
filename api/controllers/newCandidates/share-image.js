@@ -40,7 +40,6 @@ module.exports = {
         .toLowerCase()
         .replace(/ /g, '-')}`;
       // upload the image
-
       if (imageBase64) {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
