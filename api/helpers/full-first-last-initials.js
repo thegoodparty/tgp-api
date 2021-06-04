@@ -14,7 +14,7 @@ module.exports = {
       const names = name.trim().split(' ');
       if (names.length > 1) {
         return exits.success(
-          `${names[0]} ${names[names.length - 1].charAt(0)}.`,
+          `${names[0]} ${(names[names.length - 1].charAt(0)).toUpperCase()}.`,
         );
       }
       if (names.length === 1) {
