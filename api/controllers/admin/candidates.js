@@ -29,7 +29,7 @@ module.exports = {
           isActive: true,
         }).sort([{ isIncumbent: 'DESC' }, { combinedRaised: 'DESC' }]);
       } else if (chamber === 'local') {
-        candidates = await Candidate.find();
+        candidates = await Candidate.find().sort([{ updatedAt: 'DESC' }]);
         candidates = candidates.map(candidate => JSON.parse(candidate.data));
         return exits.success({
           candidates,
