@@ -78,6 +78,8 @@ const mapResponse = items => {
         mappedResponse.landingPages[item.fields.slug] = page;
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
+      } else if (itemId === 'goodPracticesPage') {
+        mappedResponse.goodPracticesPage = item.fields;
       } else if (itemId === 'researchPage') {
         mappedResponse.researchPage = item.fields;
       }

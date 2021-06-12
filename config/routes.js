@@ -16,6 +16,7 @@ module.exports.routes = {
   'GET    /api/v1/seed': 'seed/seed',
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/landing-page': 'content/landing-page-content',
+  'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
 
