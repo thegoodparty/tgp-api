@@ -65,6 +65,9 @@ module.exports = {
 
       const cleanCandidate = {
         ...candidate,
+        firstName: candidate.firstName.trim(),
+        lastName: candidate.lastName.trim(),
+        chamber: candidate.chamber.trim(),
         image,
       };
 
