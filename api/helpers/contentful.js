@@ -80,6 +80,12 @@ const mapResponse = items => {
         mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'goodPracticesPage') {
         mappedResponse.goodPracticesPage = item.fields;
+        mappedResponse.goodPracticesPage.videoImage = extractMediaFile(
+          item.fields.videoImage,
+        );
+        mappedResponse.goodPracticesPage.video = extractMediaFile(
+          item.fields.video,
+        );
       } else if (itemId === 'researchPage') {
         mappedResponse.researchPage = item.fields;
       }
