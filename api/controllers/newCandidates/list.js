@@ -10,7 +10,11 @@ module.exports = {
 
   description: 'All Candidates',
 
-  inputs: {},
+  inputs: {
+    noSortByState: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
@@ -25,6 +29,14 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      if (inputs.noSortByState) {
+        const candidates = await Candidate.find({
+          where: { isActive: true },
+        });
+        return exits.success({
+          candidates,
+        });
+      }
       const candidates = await Candidate.find({
         where: { isActive: true },
         sort: 'state',
