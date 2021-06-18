@@ -83,9 +83,6 @@ const mapResponse = items => {
         mappedResponse.goodPracticesPage.videoImage = extractMediaFile(
           item.fields.videoImage,
         );
-        mappedResponse.goodPracticesPage.video = extractMediaFile(
-          item.fields.video,
-        );
       } else if (itemId === 'researchPage') {
         mappedResponse.researchPage = item.fields;
       }

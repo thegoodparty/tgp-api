@@ -31,7 +31,7 @@ module.exports = {
     try {
       if (inputs.noSortByState) {
         const candidates = await Candidate.find({
-          where: { isActive: true },
+          isActive: true
         });
         return exits.success({
           candidates,
