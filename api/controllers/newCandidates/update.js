@@ -36,36 +36,8 @@ module.exports = {
       delete candidate['updates'];
       delete candidate['updatesDates'];
       delete candidate['candidateUpdates'];
-      const { imageBase64, id } = candidate;
-      const name = `${candidate.firstName
-        .toLowerCase()
-        .replace(/ /g, '-')}-${candidate.lastName
-          .toLowerCase()
-          .replace(/ /g, '-')}`;
-      // upload the image
-      let { image } = candidate;
-      const assetsBase =
-        sails.config.custom.assetsBase || sails.config.assetsBase;
-      const uuid = Math.random()
-        .toString(36)
-        .substring(2, 8);
-      if (imageBase64) {
-        const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
+      const {  id } = candidate;
 
-        const fileName = `${name}-${uuid}.${fileExt}`;
-
-        const data = {
-          Key: fileName,
-          ContentEncoding: 'base64',
-          ContentType: `image/${fileExt}`,
-        };
-        await sails.helpers.s3Uploader(
-          data,
-          `${assetsBase}/candidates`,
-          cleanBase64,
-        );
-        image = `https://${assetsBase}/candidates/${fileName}`;
-      }
       await uploadComparedImage(candidate);
 
       const cleanCandidate = {
@@ -73,11 +45,11 @@ module.exports = {
         firstName: candidate.firstName.trim(),
         lastName: candidate.lastName.trim(),
         chamber: candidate.chamber.trim(),
-        image,
+        // image,
         isActive: !!candidate.isActive,
       };
 
-      delete cleanCandidate.imageBase64;
+      // delete cleanCandidate.imageBase64;
       const oldCandidate = await Candidate.findOne({ id }).populate('candidateUpdates');
 
       const updatedCandidate = await Candidate.updateOne({ id }).set({

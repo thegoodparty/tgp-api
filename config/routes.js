@@ -76,6 +76,7 @@ module.exports.routes = {
   'POST   /api/v1/new-candidate/share': 'newCandidates/share/create',
   'POST   /api/v1/new-candidate/share-guest':
     'newCandidates/share/create-guest',
+  'PUT    /api/v1/new-candidate/image': 'newCandidates/image/update',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
