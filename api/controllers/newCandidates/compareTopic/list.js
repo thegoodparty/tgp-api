@@ -16,7 +16,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const topics = await CompareTopic.find();
+      const topics = await CompareTopic.find().sort([{ name: 'ASC' }]);
 
       return exits.success({
         topics,
