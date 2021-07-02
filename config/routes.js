@@ -54,7 +54,6 @@ module.exports.routes = {
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/users': 'admin/delete-user',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
-  'PUT   /api/v1/admin/candidate-image': 'admin/update-candidate-image',
   'GET   /api/v1/admin/voterize': 'admin/all-voterize',
   'PUT   /api/v1/admin/voterize': 'admin/update-voterize',
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
@@ -90,4 +89,9 @@ module.exports.routes = {
   'PUT   /api/v1/support': 'user/support/update',
   'GET   /api/v1/supports': 'user/support/list-by-user',
   'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
+
+  'GET   /api/v1/compare-topics': 'newCandidates/compareTopic/list',
+  'POST   /api/v1/compare-topic': 'newCandidates/compareTopic/create',
+  'PUT   /api/v1/topic-to-candidate':
+    'newCandidates/compareTopic/add-to-candidate',
 };

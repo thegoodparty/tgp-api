@@ -42,10 +42,16 @@ module.exports = {
       type: 'string',
       description: 'JSON.stringified string of all the other properties',
     },
-    // many to many relationship to campaignUpdates
+    // one to many relationship to campaignUpdates
     candidateUpdates: {
       collection: 'campaignupdate',
       via: 'candidate',
+    },
+
+    // many to many relationship to compareTopic
+    compareTopics: {
+      collection: 'compareTopic',
+      via: 'candidates',
     },
   },
 
