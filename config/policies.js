@@ -45,4 +45,5 @@ module.exports.policies = {
   'seed/*': true,
   'subscribe/*': true,
   'user/support/list-by-candidate': true,
+  'newCandidates/compareTopic/list': true,
 };

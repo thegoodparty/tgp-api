@@ -36,7 +36,6 @@ module.exports = {
 
       await uploadComparedImage(candidate);
       delete candidate.imageBase64;
-      console.log('after', candidate);
 
       await Candidate.updateOne({ id }).set({
         ...candidate,
@@ -47,29 +46,24 @@ module.exports = {
         candidate,
       });
     } catch (e) {
-      console.log(e);
+      console.log('error at newCandidates/compared/update', e);
       return exits.badRequest({ message: 'Error updating candidate.' });
     }
   },
 };
 const uploadComparedImage = async candidate => {
-  console.log('upload1');
   const { comparedCandidates } = candidate;
-  console.log('upload2');
   if (!comparedCandidates) {
     return;
   }
-  console.log('upload3');
   const { uploadedImages, candidates } = comparedCandidates;
   if (!uploadedImages) {
     return;
   }
-  console.log('upload4');
   const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
 
   for (let i = 0; i < candidates.length; i++) {
     if (uploadedImages[i]) {
-      console.log('upload5');
       const { base64 } = uploadedImages[i];
       if (base64) {
         const uuid = Math.random()

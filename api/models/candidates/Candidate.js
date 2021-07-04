@@ -47,12 +47,6 @@ module.exports = {
       collection: 'campaignupdate',
       via: 'candidate',
     },
-
-    // many to many relationship to compareTopic
-    compareTopics: {
-      collection: 'compareTopic',
-      via: 'candidates',
-    },
   },
 
   customToJSON: function() {

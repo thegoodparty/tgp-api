@@ -19,11 +19,5 @@ module.exports = {
       type: 'string',
       required: true,
     },
-
-    // many to many
-    candidates: {
-      collection: 'candidate',
-      via: 'compareTopics',
-    },
   },
 };
