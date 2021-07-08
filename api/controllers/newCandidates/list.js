@@ -31,7 +31,7 @@ module.exports = {
     try {
       if (inputs.noSortByState) {
         const candidates = await Candidate.find({
-          isActive: true
+          isActive: true,
         });
         return exits.success({
           candidates,
@@ -53,10 +53,8 @@ module.exports = {
         const supporters = await Support.count({
           candidate: candidate.id,
         });
-        const shares = await ShareCandidate.count({
-          candidate: candidate.id,
-        });
-        data.supporters = (supporters || 0) + (shares || 0);
+
+        data.supporters = supporters || 0;
         data.state = candidate.state;
         if (!candidatesByStates[candidate.state]) {
           candidatesByStates[candidate.state] = [];
