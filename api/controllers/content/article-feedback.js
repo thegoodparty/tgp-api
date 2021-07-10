@@ -69,35 +69,39 @@ module.exports = {
         env = 'prod';
       }
 
-      const message = {
-        text: `Article Helpful? ${
-          isHelpful ? 'YES' : 'No'
-        }. Title: ${title}. ENV: ${env}`,
-        blocks: [
-          {
+      try {
+        const message = {
+          text: `Article Helpful? ${
+            isHelpful ? 'YES' : 'No'
+          }. Title: ${title}. ENV: ${env}`,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `__________________________________ \n *Article Helpful? ${
+                  isHelpful ? 'YES' : 'No'
+                }* \n <https://goodparty.org/party?article=${id}|${title}>\n
+                \n ENV: ${env}`,
+              },
+            },
+          ],
+        };
+
+        if (feedback) {
+          message.blocks.push({
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `__________________________________ \n *Article Helpful? ${
-                isHelpful ? 'YES' : 'No'
-              }* \n <https://goodparty.org/party?article=${id}|${title}>\n
-                \n ENV: ${env}`,
+              text: `Feedback: ${feedback}`,
             },
-          },
-        ],
-      };
+          });
+        }
 
-      if (feedback) {
-        message.blocks.push({
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `Feedback: ${feedback}`,
-          },
-        });
+        await sails.helpers.slackHelper(message, 'content');
+      } catch (e) {
+        console.log('slack error', e);
       }
-
-      await sails.helpers.slackHelper(message, 'content');
 
       return exits.success({
         message: 'Feedback Saved Successfully',
