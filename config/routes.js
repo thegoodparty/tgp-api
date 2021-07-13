@@ -52,9 +52,8 @@ module.exports.routes = {
   'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
   'DELETE    /api/v1/admin/candidate-update': 'admin/delete-candidate-update',
   'GET    /api/v1/admin/users': 'admin/all-users',
-  'DELETE    /api/v1/admin/users': 'admin/delete-user',
+  'DELETE    /api/v1/admin/user': 'admin/delete-user',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
-  'PUT   /api/v1/admin/candidate-image': 'admin/update-candidate-image',
   'GET   /api/v1/admin/voterize': 'admin/all-voterize',
   'PUT   /api/v1/admin/voterize': 'admin/update-voterize',
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
@@ -76,6 +75,8 @@ module.exports.routes = {
   'POST   /api/v1/new-candidate/share': 'newCandidates/share/create',
   'POST   /api/v1/new-candidate/share-guest':
     'newCandidates/share/create-guest',
+  'PUT    /api/v1/new-candidate/image': 'newCandidates/image/update',
+  'PUT    /api/v1/new-candidate/compared': 'newCandidates/compared/update',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
@@ -88,4 +89,9 @@ module.exports.routes = {
   'PUT   /api/v1/support': 'user/support/update',
   'GET   /api/v1/supports': 'user/support/list-by-user',
   'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
+
+  'GET   /api/v1/compare-topics': 'newCandidates/compareTopic/list',
+  'POST   /api/v1/compare-topic': 'newCandidates/compareTopic/create',
+  'PUT   /api/v1/compare-topic': 'newCandidates/compareTopic/update',
+  'DELETE   /api/v1/compare-topic': 'newCandidates/compareTopic/delete',
 };

@@ -29,56 +29,28 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { candidate } = inputs;
       const { candidateUpdates } = candidate;
       delete candidate['updates'];
       delete candidate['updatesDates'];
       delete candidate['candidateUpdates'];
-      const { imageBase64, id } = candidate;
-      const name = `${candidate.firstName
-        .toLowerCase()
-        .replace(/ /g, '-')}-${candidate.lastName
-          .toLowerCase()
-          .replace(/ /g, '-')}`;
-      // upload the image
-      let { image } = candidate;
-      const assetsBase =
-        sails.config.custom.assetsBase || sails.config.assetsBase;
-      const uuid = Math.random()
-        .toString(36)
-        .substring(2, 8);
-      if (imageBase64) {
-        const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
-
-        const fileName = `${name}-${uuid}.${fileExt}`;
-
-        const data = {
-          Key: fileName,
-          ContentEncoding: 'base64',
-          ContentType: `image/${fileExt}`,
-        };
-        await sails.helpers.s3Uploader(
-          data,
-          `${assetsBase}/candidates`,
-          cleanBase64,
-        );
-        image = `https://${assetsBase}/candidates/${fileName}`;
-      }
-      await uploadComparedImage(candidate);
+      const { id } = candidate;
 
       const cleanCandidate = {
         ...candidate,
         firstName: candidate.firstName.trim(),
         lastName: candidate.lastName.trim(),
         chamber: candidate.chamber.trim(),
-        image,
+        // image,
         isActive: !!candidate.isActive,
       };
 
-      delete cleanCandidate.imageBase64;
-      const oldCandidate = await Candidate.findOne({ id }).populate('candidateUpdates');
+      // delete cleanCandidate.imageBase64;
+      const oldCandidate = await Candidate.findOne({ id }).populate(
+        'candidateUpdates',
+      );
 
       const updatedCandidate = await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
@@ -91,15 +63,20 @@ module.exports = {
         let oldCandidateUpdates = oldCandidate.candidateUpdates;
         let isUpdated = false;
         for (let i = 0; i < oldCandidateUpdates.length; i++) {
-          const updatedItem = candidateUpdates.find(item => item.id === oldCandidateUpdates[i].id);
+          const updatedItem = candidateUpdates.find(
+            item => item.id === oldCandidateUpdates[i].id,
+          );
           if (oldCandidateUpdates[i].id && !updatedItem) {
             await CampaignUpdate.destroyOne({ id: oldCandidateUpdates[i].id });
           }
           if (updatedItem) {
-            if (updatedItem.date !== oldCandidateUpdates[i].date || updatedItem.text !== oldCandidateUpdates[i].text) {
+            if (
+              updatedItem.date !== oldCandidateUpdates[i].date ||
+              updatedItem.text !== oldCandidateUpdates[i].text
+            ) {
               await CampaignUpdate.updateOne({ id: updatedItem.id }).set({
                 ...oldCandidateUpdates[i],
-                ...updatedItem
+                ...updatedItem,
               });
             }
           }
@@ -108,7 +85,7 @@ module.exports = {
         for (let i = 0; i < newItems.length; i++) {
           await CampaignUpdate.create({
             ...newItems[i],
-            candidate: oldCandidate.id
+            candidate: oldCandidate.id,
           }).fetch();
           isUpdated = true;
         }
@@ -191,8 +168,9 @@ const notifySupporterForUpdates = async candidate => {
         <tr>
           <td>
             <br /><br /><a
-              href="${appBase}/candidate/${firstName}-${lastName}/${candidate.id
-      }"
+              href="${appBase}/candidate/${firstName}-${lastName}/${
+      candidate.id
+    }"
               style="
                 padding: 16px 32px;
                 background: linear-gradient(
@@ -229,41 +207,4 @@ const notifySupporterForUpdates = async candidate => {
       message,
     );
   }
-};
-const uploadComparedImage = async candidate => {
-  const { comparedCandidates } = candidate;
-  if (!comparedCandidates) {
-    return;
-  }
-  const { uploadedImages, candidates } = comparedCandidates;
-  if (!uploadedImages) {
-    return;
-  }
-  const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
-
-  for (let i = 0; i < candidates.length; i++) {
-    if (uploadedImages[i]) {
-      const { base64 } = uploadedImages[i];
-      if (base64) {
-        const uuid = Math.random()
-          .toString(36)
-          .substring(2, 8);
-        const cleanBase64 = base64.replace(/^data:image\/.*;base64,/, '');
-
-        const fileName = `${candidates[i].name}-${uuid}.${fileExt}`;
-        const data = {
-          Key: fileName,
-          ContentEncoding: 'base64',
-          ContentType: `image/${fileExt}`,
-        };
-        await sails.helpers.s3Uploader(
-          data,
-          `${assetsBase}/candidates`,
-          cleanBase64,
-        );
-        candidates[i].image = `https://${assetsBase}/candidates/${fileName}`;
-      }
-    }
-  }
-  delete comparedCandidates.uploadedImages;
 };

@@ -36,11 +36,8 @@ module.exports = {
             const supporters = await Support.count({
               candidate: candidate.id,
             });
-            const candidateShares = await ShareCandidate.count({
-              candidate: candidate.id,
-            });
-            supports[i].candidate.supporters =
-              supporters + candidateShares || 0;
+
+            supports[i].candidate.supporters = supporters;
           }
         }
       }

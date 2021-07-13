@@ -75,7 +75,7 @@ module.exports = {
 
       return exits.success({
         candidateSupports: combined,
-        total: candidateSupports.length + candidateShares.length,
+        total: candidateSupports.length,
       });
     } catch (e) {
       console.log(e);
