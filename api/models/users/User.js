@@ -219,6 +219,9 @@ module.exports = {
       required: false,
       allowNull: true,
     },
+    metaData: {
+      type: 'string',
+    },
 
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
