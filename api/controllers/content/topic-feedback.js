@@ -46,7 +46,6 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { uuid, candidateId, topicTitle, isHelpful, feedback } = inputs;
-      console.log('==========', inputs)
       const topic = await CompareTopic.findOne({
         name: topicTitle,
       });
