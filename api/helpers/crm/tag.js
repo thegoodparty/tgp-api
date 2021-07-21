@@ -15,6 +15,9 @@ module.exports = {
       type: 'json',
       required: true,
     },
+    deleteTag: {
+      type: 'boolean',
+    },
   },
   exits: {
     success: {
@@ -26,7 +29,7 @@ module.exports = {
     },
   },
   fn: async function(inputs, exits) {
-    const { user, candidate } = inputs;
+    const { user, candidate, deleteTag } = inputs;
     let metaData = user.metaData;
     if (!metaData || metaData === '') {
       return exits.success('no meta data');
@@ -36,25 +39,37 @@ module.exports = {
     if (!nationBuilderId) {
       return exits.success('no nation builder id');
     }
+    const tag = `${candidate.firstName} ${candidate.lastName}`;
 
-    const url = `https://goodparty.nationbuilder.com/api/v1/people/${nationBuilderId}/taggings?access_token=${nationBuilderAccessToken}`;
-    const body = {
-      tagging: ['dogs'],
-    };
+    if (!deleteTag) {
+      const url = `https://goodparty.nationbuilder.com/api/v1/people/${nationBuilderId}/taggings?access_token=${nationBuilderAccessToken}`;
+      const body = {
+        tagging: {
+          tag,
+        },
+      };
 
-    const res = await axios({
-      url,
-      method: 'PUT',
-      data: body,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-    console.log('success');
-    console.log(res.data);
+      await axios({
+        url,
+        method: 'PUT',
+        data: body,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    } else {
+      const url = `https://goodparty.nationbuilder.com/api/v1/people/${nationBuilderId}/taggings/${tag}?access_token=${nationBuilderAccessToken}`;
 
-    // update user record with the id from the crm
+      await axios({
+        url,
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+    }
 
     return exits.success('ok');
   },

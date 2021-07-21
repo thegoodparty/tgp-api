@@ -140,14 +140,6 @@ module.exports = {
         await sails.helpers.crm.tag(reqUser, candidate);
         console.log('success')
       } catch (e) {
-        // console.log('error adding crm tag', e);
-        console.log('response');
-        console.log('response');
-        console.log('');
-        console.log('');
-        console.log('');
-        console.log('');
-        console.log(e.response.data);
       }
 
       return exits.success({
