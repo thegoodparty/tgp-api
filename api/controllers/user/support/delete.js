@@ -30,13 +30,26 @@ module.exports = {
         user: reqUser.id,
         candidate: candidateId,
       });
-      await sails.helpers.triggerCandidateUpdate(candidateId);
-      await sails.helpers.updateTag(
-        reqUser.email,
-        'The Good Party',
-        candidateId,
-        'inactive',
-      );
+      try {
+        await sails.helpers.triggerCandidateUpdate(candidateId);
+      } catch (e) {
+        console.log('error trigger candidate update');
+      }
+      try {
+        await sails.helpers.updateTag(
+          reqUser.email,
+          'The Good Party',
+          candidateId,
+          'inactive',
+        );
+      } catch (e) {
+        console.log('error remove tag');
+      }
+
+      try {
+        const candidate = await Candidate.findOne({ id: candidateId });
+        await sails.helpers.crm.tag(reqUser, candidate, true);
+      } catch (e) {}
       return exits.success({
         message: 'support deleted',
       });

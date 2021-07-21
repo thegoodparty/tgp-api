@@ -43,6 +43,7 @@ module.exports = {
           message: 'User already supports this candidate',
         });
       }
+
       await Support.create({
         user: reqUser.id,
         candidate: candidateId,
@@ -52,12 +53,16 @@ module.exports = {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const firstName = reqUser.name.split(' ')[0];
       const { race } = JSON.parse(candidate.data);
-      await sails.helpers.updateTag(
-        reqUser.email,
-        'The Good Party',
-        candidateId,
-        'active',
-      );
+      try {
+        await sails.helpers.updateTag(
+          reqUser.email,
+          'The Good Party',
+          candidateId,
+          'active',
+        );
+      } catch (e) {
+        console.log('error updating tag');
+      }
       const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${race}!`;
 
       // const twitterHandler = blocName.replace('@', '');
@@ -115,14 +120,28 @@ module.exports = {
         </tr>
       </table>`;
       const messageHeader = '';
-      await sails.helpers.mailgunSender(
-        reqUser.email,
-        reqUser.name,
-        subject,
-        messageHeader,
-        messageContent,
-      );
-      await sails.helpers.triggerCandidateUpdate(candidateId);
+      try {
+        await sails.helpers.mailgunSender(
+          reqUser.email,
+          reqUser.name,
+          subject,
+          messageHeader,
+          messageContent,
+        );
+      } catch (e) {
+        console.log('error sending email');
+      }
+      try {
+        await sails.helpers.triggerCandidateUpdate(candidateId);
+      } catch (e) {
+        console.log('error trigger candidate update');
+      }
+      try {
+        await sails.helpers.crm.tag(reqUser, candidate);
+        console.log('success')
+      } catch (e) {
+      }
+
       return exits.success({
         message: 'support created',
       });
