@@ -175,15 +175,6 @@ const html = (msg = '', messageHeader = '', subject = '') => {
               </p>
             </td>
           </tr>
-          <tr>
-            <td style="text-align: center">
-            <br />
-              <img
-                style="margin: 0 auto"
-                src="https://s3-us-west-2.amazonaws.com/assets.goodparty.org/compliance.png"
-              />
-            </td>
-          </tr>
         </table>
       </center>
     </td>
