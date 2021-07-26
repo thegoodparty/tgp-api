@@ -19,6 +19,7 @@ module.exports.routes = {
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
+  'POST    /api/v1/content/topic-feedback': 'content/topic-feedback',
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
@@ -54,6 +55,7 @@ module.exports.routes = {
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/user': 'admin/delete-user',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
+  'GET   /api/v1/admin/topics-feedback': 'admin/topics-feedback',
   'GET   /api/v1/admin/voterize': 'admin/all-voterize',
   'PUT   /api/v1/admin/voterize': 'admin/update-voterize',
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',

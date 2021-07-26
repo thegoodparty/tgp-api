@@ -397,6 +397,12 @@ module.exports = {
       try {
         await sails.helpers.addEmail(lowerCaseEmail, 'The Good Party');
       } catch (e) {}
+
+      //  add user to our CRM.
+      try {
+        await sails.helpers.crm.create(user);
+      } catch (e) {}
+
       const token = await sails.helpers.jwtSign({
         id: user.id,
         email: lowerCaseEmail,

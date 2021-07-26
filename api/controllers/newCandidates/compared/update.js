@@ -76,6 +76,7 @@ const uploadComparedImage = async candidate => {
           Key: fileName,
           ContentEncoding: 'base64',
           ContentType: `image/${fileExt}`,
+          CacheControl: 'max-age=31536000',
         };
         await sails.helpers.s3Uploader(
           data,
