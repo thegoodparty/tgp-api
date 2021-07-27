@@ -19,36 +19,43 @@ module.exports = async function uploadAvatar(req, res) {
     data: {
       code: 220,
     },
-    success: true
-  }
+    success: true,
+  };
   if (action === 'fileRemove') {
-    await sails.helpers.s3DeleteFile(`${assetsBase}/candidate-info`, `candidate-info/${name}`);
-  }
-  else {
-    const files = await sails.helpers.s3LoadList(`${assetsBase}/candidate-info`, 'candidate-info');
+    await sails.helpers.s3DeleteFile(
+      `${assetsBase}/candidate-info`,
+      `candidate-info/${name}`,
+    );
+  } else {
+    const files = await sails.helpers.s3LoadList(
+      `${assetsBase}/candidate-info`,
+      'candidate-info',
+    );
     response = {
       data: {
         code: 220,
-        sources: {
-          default: {
+        sources: [
+          {
             baseurl: `https://${assetsBase}/candidate-info`,
             files: [],
-            path: ""
-          }
-        }
+            path: '',
+            name: 'default',
+            title: null,
+          },
+        ],
       },
-      success: true
-    }
+      success: true,
+    };
     files.forEach(file => {
       if (file.Size > 0) {
-        response.data.sources.default.files.push({
+        response.data.sources[0].files.push({
           file: file.Key.split('/')[1],
           isImage: true,
           size: `${file.Size / 1024} kB`,
           thumb: file.Key.split('/')[1],
-        })
+        });
       }
     });
   }
-  res.ok(response)
+  res.ok(response);
 };
