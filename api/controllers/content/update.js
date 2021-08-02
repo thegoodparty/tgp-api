@@ -52,13 +52,15 @@ module.exports = {
         });
       }
       await sails.helpers.cacheHelper('delete', 'content');
-      await axios.get(`${appBase}/update-content`);
-
+      // await axios.get(`${appBase}/update-content`);
       return exits.success();
     } catch (err) {
       console.log('content error');
       console.log(err);
-      await sails.helpers.errorLoggerHelper('Error at content/update', err);
+      await sails.helpers.errorLoggerHelper(
+        'Error at content/update',
+        JSON.stringify(err),
+      );
       return exits.badRequest({
         message: 'Content fetch failed. Please load again.',
       });
