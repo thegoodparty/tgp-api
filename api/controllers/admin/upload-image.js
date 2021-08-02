@@ -24,6 +24,9 @@ module.exports = async function uploadAvatar(req, res) {
       secret: s3Secret,
       bucket: bucketName,
       fileACL: 'public-read',
+      headers: {
+        'cache-control': 'max-age=31536000'
+      }
     },
     function(err, uploadedFiles) {
       console.log(err, uploadedFiles);
