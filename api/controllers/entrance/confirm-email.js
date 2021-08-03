@@ -102,7 +102,7 @@ module.exports = {
                 "
               >
               Your email has been verified and we will update you with campaign updates.
-              If you haven’t done so, you should also sign up on the candidates site and follow them on socials to get their direct updates too:
+              If you haven’t done so, check out and endorse some Good Party Certified Candidadates to let your voice be heard!
               </p>
             </td>
           </tr>
