@@ -25,8 +25,6 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const datastores = sails.config.datastores;
-
       const candidates = await Candidate.find({
         isActive: true,
         isOnHomepage: true,
