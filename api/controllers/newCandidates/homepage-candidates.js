@@ -25,13 +25,20 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const datastores = sails.config.datastores;
+
+      console.log('datastores1', JSON.stringify(datastores));
+
+      console.log('home candidates debug1');
       const candidates = await Candidate.find({
         isActive: true,
         isOnHomepage: true,
       }).limit(3);
+      console.log('home candidates debug2', candidates);
 
       const homepageCandidates = [];
       for (let i = 0; i < candidates.length; i++) {
+        console.log('home candidates debug2', i);
         const candidate = candidates[i];
 
         const data = JSON.parse(candidate.data);
@@ -46,6 +53,7 @@ module.exports = {
 
         homepageCandidates.push(data);
       }
+      console.log('home candidates debug4');
 
       return exits.success({
         homepageCandidates,
