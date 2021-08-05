@@ -1,6 +1,6 @@
 branch-defaults:
   develop:
-    environment: gp-api-dev-alpha
+    environment: gp-api-dev
   master:
     environment: gp-api-prod
 environment-defaults:
