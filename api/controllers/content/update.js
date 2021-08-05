@@ -35,6 +35,7 @@ module.exports = {
 
       // save content to our DB. Make sure we have only one version of the content
       // first see if we already have an entry
+      // temp
       const contents = await CmsContent.find();
       if (contents.length === 0) {
         // no content yet, create one
