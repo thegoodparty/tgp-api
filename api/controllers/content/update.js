@@ -35,6 +35,7 @@ module.exports = {
 
       // save content to our DB. Make sure we have only one version of the content
       // first see if we already have an entry
+      // temp
       const contents = await CmsContent.find();
       if (contents.length === 0) {
         // no content yet, create one
@@ -52,13 +53,15 @@ module.exports = {
         });
       }
       await sails.helpers.cacheHelper('delete', 'content');
-      await axios.get(`${appBase}/update-content`);
-
+      // await axios.get(`${appBase}/update-content`);
       return exits.success();
     } catch (err) {
       console.log('content error');
       console.log(err);
-      await sails.helpers.errorLoggerHelper('Error at content/update', err);
+      await sails.helpers.errorLoggerHelper(
+        'Error at content/update',
+        JSON.stringify(err),
+      );
       return exits.badRequest({
         message: 'Content fetch failed. Please load again.',
       });
