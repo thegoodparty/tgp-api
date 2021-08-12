@@ -101,4 +101,6 @@ module.exports.routes = {
   'POST   /api/v1/compare-topic': 'newCandidates/compareTopic/create',
   'PUT   /api/v1/compare-topic': 'newCandidates/compareTopic/update',
   'DELETE   /api/v1/compare-topic': 'newCandidates/compareTopic/delete',
+
+  'GET   /api/v1/candidate-user': 'candidateUser/find',
 };
