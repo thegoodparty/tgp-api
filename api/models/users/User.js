@@ -227,6 +227,12 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
+    // one-to-one
+    candidate: {
+      model: 'candidate',
+      unique: true,
+    },
+
     role: {
       model: 'role',
     },
