@@ -26,7 +26,7 @@ module.exports = {
 
       const verification = await twilioClient.verify
         .services(twilioVerification)
-        .verifications.create({ to: inputs.phone, channel: 'sms' });
+        .verifications.create({ to: `+${inputs.phone}`, channel: 'sms' });
       if (verification) {
         return exits.success({ sid: verification.sid });
       }

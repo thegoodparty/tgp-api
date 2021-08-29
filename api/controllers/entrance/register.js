@@ -101,15 +101,15 @@ module.exports = {
         });
       }
 
-      const phoneExists = await User.findOne({
-        phone,
-      });
-      if (phoneExists) {
-        return exits.badRequest({
-          message: `${phone} already exists in our system. Try login instead`,
-          exists: true,
-        });
-      }
+      // const phoneExists = await User.findOne({
+      //   phone,
+      // });
+      // if (phoneExists) {
+      //   return exits.badRequest({
+      //     message: `${phone} already exists in our system. Try login instead`,
+      //     exists: true,
+      //   });
+      // }
 
       const userAttr = {
         name,
@@ -187,7 +187,7 @@ module.exports = {
         token,
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
+      // await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
       console.log('register error', e);
       return exits.badRequest({ message: 'Error registering account.' });
     }
@@ -200,7 +200,6 @@ const sendWVerifyEmail = async user => {
   }
   const lowerCaseEmail = user.email.toLowerCase();
   const { name } = user;
-  const appBase = sails.config.custom.appBase || sails.config.appBase;
   const subject = `${user.firstName ||
     user.name}, please verify your email address`;
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
@@ -245,37 +244,22 @@ const sendWVerifyEmail = async user => {
                   "
                 >
                   <br/>
-                  Please click below to verify your email address.
+                  Please use this code to verify your email address.
                 </p>
               </td>
             </tr>
             <tr>
               <td>
-                <br /><br /><a
-                  href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${
-    user.emailConfToken
-  }"
-                  style="
-                    padding: 16px 32px;
-                    background: linear-gradient(
-                        103.63deg,
-                        rgba(255, 15, 19, 0.15) -3.51%,
-                        rgba(191, 0, 32, 0) 94.72%
-                      ),
-                      linear-gradient(
-                        257.82deg,
-                        rgba(67, 0, 211, 0.25) -11.17%,
-                        rgba(67, 0, 211, 0) 96.34%
-                      ),
-                      #5c00c7;
-                    color: #fff;
-                    font-size: 16px;
-                    border-radius: 8px;
-                    text-decoration: none;
-                  "
-                >
-                  CLICK TO VERIFY
-                </a>
+                <br /><br />
+                <p style="
+                    font-size: 30px;
+                    font-family: Arial, sans-serif;
+                    background: #cccccc;
+                    padding: 20px;
+                    border-radius: 6px;
+                    text-align: center;
+                    "
+                    >${user.emailConfToken}</p>
               </td>
             </tr>
           </tbody>
