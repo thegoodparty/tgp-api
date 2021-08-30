@@ -4,7 +4,7 @@ module.exports = {
   description: 'Add password for a logged in user without one.',
 
   inputs: {
-    newPassword: {
+    password: {
       description: 'The new, unencrypted password.',
       example: 'abc123v2',
       required: true,
@@ -28,14 +28,14 @@ module.exports = {
   fn: async function(inputs, exits) {
     // Look up the user with this reset token.
     const user = this.req.user;
-    const { newPassword } = inputs;
+    const { password } = inputs;
     try {
       if (user.password) {
         return exits.badRequest({
           message: 'User already has a password',
         });
       }
-      const hashed = await sails.helpers.passwords.hashPassword(newPassword);
+      const hashed = await sails.helpers.passwords.hashPassword(password);
       // Store the user's new password and clear their reset token so it can't be used again.
       const updatedUser = await User.updateOne({ id: user.id }).set({
         password: hashed,
