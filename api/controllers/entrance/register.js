@@ -26,7 +26,6 @@ module.exports = {
     },
     zip: {
       type: 'string',
-      required: true,
     },
 
     socialId: {
@@ -91,6 +90,12 @@ module.exports = {
         });
       }
 
+      if (!socialPic && !socialProvider && !socialId && !zip) {
+        return exits.badRequest({
+          message: 'Zip code is required.',
+        });
+      }
+
       const userExists = await User.findOne({
         email: lowerCaseEmail,
       });
@@ -113,8 +118,10 @@ module.exports = {
 
       const userAttr = {
         name,
-        zip,
       };
+      if (zip) {
+        userAttr.zip = zip;
+      }
       if (lowerCaseEmail) {
         userAttr.email = lowerCaseEmail;
       }

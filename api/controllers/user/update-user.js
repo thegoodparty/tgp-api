@@ -54,7 +54,7 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const reqUser = this.req.user;
       const { name, email, feedback, phone, zip } = inputs;
@@ -76,44 +76,17 @@ module.exports = {
         await sendEmail(reqUser.email, email);
         try {
           await sails.helpers.addEmail(email, 'The Good Party');
-        } catch (e) { }
+        } catch (e) {}
       }
       if (phone) {
         updateFields.phone = phone;
       }
 
       if (zip) {
-        let zipCode = await ZipCode.findOne({ zip });
-        if (zipCode) {
-          const { stateShort } = zipCode;
-          updateFields.zipCode = zipCode.id;
-          updateFields.shortState = stateShort;
-          updateFields.districtNumber = null;
-
-          let { approxPctArr } = zipCode;
-          if (approxPctArr) {
-            approxPctArr = JSON.parse(approxPctArr);
-            if (approxPctArr.length > 0) {
-              const congDistrict = await CongDistrict.findOne({
-                id: approxPctArr[0].districtId,
-              }).populate('state');
-              updateFields.congDistrict = congDistrict.id;
-              updateFields.districtNumber = congDistrict.code;
-              updateFields.shortState = congDistrict.state
-                ? congDistrict.state.shortName
-                : '';
-            }
-          }
-        }
+        updateFields.zip = zip;
       }
 
-      await User.updateOne({ id: reqUser.id }).set(updateFields);
-
-      const user = await User.findOne({ id: reqUser.id });
-      const zipCode = await ZipCode.findOne({
-        id: user.zipCode,
-      }).populate('cds');
-      user.zipCode = zipCode;
+      const user = await User.updateOne({ id: reqUser.id }).set(updateFields);
 
       return exits.success({
         user,
@@ -137,7 +110,8 @@ const sendEmail = async (reqEmail, email) => {
   });
 
   const appBase = sails.config.custom.appBase || sails.config.appBase;
-  const subject = `${user.firstName || user.name}, please verify your email address`;
+  const subject = `${user.firstName ||
+    user.name}, please verify your email address`;
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
     <tbody>
       <tr>
@@ -187,7 +161,9 @@ const sendEmail = async (reqEmail, email) => {
       <tr>
         <td>
           <br /><br /><a
-            href="${appBase}/email-confirmation?email=${email}&token=${user.emailConfToken}"
+            href="${appBase}/email-confirmation?email=${email}&token=${
+    user.emailConfToken
+  }"
             style="
               padding: 16px 32px;
               background: linear-gradient(
