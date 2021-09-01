@@ -22,22 +22,6 @@ module.exports = {
       required: true,
     },
 
-    zip: {
-      description: 'zip collected from user during account creation.',
-      type: 'string',
-      required: false,
-    },
-    ranking: {
-      description: 'stringified array of Ranking objects',
-      type: 'string',
-      required: false,
-    },
-
-    referrer: {
-      description: 'uuid of the inviting user',
-      type: 'string',
-      required: false,
-    },
     guestUuid: {
       description: 'uuid that was generated on the front end',
       type: 'string',
@@ -111,64 +95,21 @@ module.exports = {
           email: userRecord.email,
         });
 
-        // const userWithZip = await User.findOne({ id: userRecord.id });
-        //
-        // const zipCode = await ZipCode.findOne({
-        //   id: userWithZip.zipCode,
-        // }).populate('cds');
-        // userWithZip.zipCode = zipCode;
-
         return exits.success({
           user: userRecord,
           token,
         });
       }
       // register
-      // TODO: move to helper and remove the dup code in register and here.
-      const { zip, ranking, referrer, guestUuid } = inputs;
-      let zipCode;
+      const { guestUuid } = inputs;
 
-      // if (zip) {
-      //   zipCode = await ZipCode.findOne({ zip });
-      // }
       const userAttr = {
         email: user.email,
         name: user.name,
         avatar: user.image,
         socialProvider: 'twitter',
       };
-      if (zipCode) {
-        userAttr.zipCode = zipCode.id;
-        userAttr.shortState = zipCode.stateShort;
-        // districtId wasn't specified - take the first one in the array
-        let districtId;
-        let { approxPctArr } = zipCode;
-        if (approxPctArr) {
-          approxPctArr = JSON.parse(approxPctArr);
-          if (approxPctArr.length > 0) {
-            districtId = approxPctArr[0].districtId;
-            if (districtId) {
-              const congDistrict = await CongDistrict.findOne({
-                id: districtId,
-              });
-              userAttr.congDistrict = districtId;
-              userAttr.districtNumber = congDistrict.code;
-            }
-          }
-        }
-      }
-      if (referrer) {
-        const referrerUser = await User.findOne({ uuid: referrer });
-        if (referrerUser) {
-          userAttr.referrer = referrerUser.id;
-          await User.updateOne({ id: referrerUser.id }).set({
-            crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 2,
-          });
-        } else {
-          // invited by a guest with a referrer (uuid) that was generated on the front end.
-          userAttr.guestReferrer = referrer;
-        }
-      }
+
       const uuid =
         guestUuid ||
         Math.random()
@@ -180,53 +121,6 @@ module.exports = {
         ...userAttr,
       }).fetch();
 
-      // find all the users that were invited by this user
-      const referredUsers = await User.find({ guestReferrer: uuid });
-      for (let i = 0; i < referredUsers.length; i++) {
-        const referredUser = referredUsers[i];
-        await User.updateOne({ id: referredUser.id }).set({
-          referrer: newUser.id,
-          guestReferrer: '',
-        });
-      }
-      //add crewCount from refferedUsers
-      if (referredUsers.length > 0) {
-        newUser.crewCount = referredUsers.length;
-      }
-      try {
-        // convert the guest ranking (from cookies) to actual ranking in our system.
-        if (ranking) {
-          const rankingArr = JSON.parse(ranking);
-          for (let i = 0; i < rankingArr.length; i++) {
-            const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
-            await Ranking.create({
-              user: newUser.id,
-              chamber,
-              candidate,
-              rank,
-              isIncumbent,
-              userState: newUser.shortState,
-            });
-            await sails.helpers.updateTag(
-              newUser.email,
-              'The Good Party',
-              candidate,
-              chamber,
-              isIncumbent,
-              'active',
-            );
-          }
-        }
-      } catch (e) {
-        // do nothing. Usually the error is for missing state.
-      }
-
-      // const userWithZip = await User.findOne({ id: newUser.id });
-      //
-      // const userZipCode = await ZipCode.findOne({
-      //   id: userWithZip.zipCode,
-      // }).populate('cds');
-      // userWithZip.zipCode = userZipCode;
       const token = await sails.helpers.jwtSign({
         id: newUser.id,
         email: newUser.email,
