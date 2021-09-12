@@ -37,43 +37,34 @@ module.exports = {
             user: updatedUser,
           });
         } catch (e) {
-          console.log('error verifying code', e);
-          return exits.badRequest({ message: 'error', e });
+          console.log('error verifying code with phone');
         }
-      } else {
-        console.log('update1');
-        if (user.emailConfToken !== code) {
-          console.log('update2');
-          return exits.badRequest({
-            message: 'Failed to confirm email. Invalid code.',
-          });
-        }
-        console.log('update3');
-        const isExpired =
-          user.emailConfTokenDateCreated +
-            sails.config.custom.passwordResetTokenTTL <
-          Date.now();
-        console.log('update4');
-        if (user.emailConfToken === code && isExpired) {
-          console.log('update5');
-          return exits.badRequest({
-            message: 'Token Expired.',
-            expired: true,
-          });
-        }
-        console.log('update6');
-        if (user.emailConfToken === code) {
-          console.log('update7');
-          const updatedUser = await User.updateOne({ id: user.id }).set({
-            emailConfToken: '',
-            emailConfTokenDateCreated: '',
-            isEmailVerified: true,
-          });
-          await sendVerifiedEmail(user);
-          return exits.success({
-            user: updatedUser,
-          });
-        }
+      }
+      if (user.emailConfToken !== code) {
+        return exits.badRequest({
+          message: 'Failed to confirm email. Invalid code.',
+        });
+      }
+      const isExpired =
+        user.emailConfTokenDateCreated +
+          sails.config.custom.passwordResetTokenTTL <
+        Date.now();
+      if (user.emailConfToken === code && isExpired) {
+        return exits.badRequest({
+          message: 'Token Expired.',
+          expired: true,
+        });
+      }
+      if (user.emailConfToken === code) {
+        const updatedUser = await User.updateOne({ id: user.id }).set({
+          emailConfToken: '',
+          emailConfTokenDateCreated: '',
+          isEmailVerified: true,
+        });
+        await sendVerifiedEmail(user);
+        return exits.success({
+          user: updatedUser,
+        });
       }
     } catch (e) {
       console.log('error at user/confirm/update', e);

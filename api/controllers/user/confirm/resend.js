@@ -1,5 +1,9 @@
 module.exports = {
-  inputs: {},
+  inputs: {
+    withEmail: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
@@ -14,9 +18,10 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const user = this.req.user;
+      const { withEmail } = inputs;
 
-      const { phone, email } = user;
-      if (phone) {
+      const { phone } = user;
+      if (phone && !withEmail) {
         await sails.helpers.sms.smsVerify(phone);
       } else {
         const token = Math.floor(100000 + Math.random() * 900000) + '';

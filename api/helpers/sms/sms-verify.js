@@ -23,10 +23,14 @@ module.exports = {
       if (!twilioClient) {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
+      let cleanPhone = inputs.phone;
+      if (cleanPhone.charAt(0) !== 1) {
+        cleanPhone = `1${cleanPhone}`;
+      }
 
       const verification = await twilioClient.verify
         .services(twilioVerification)
-        .verifications.create({ to: `+${inputs.phone}`, channel: 'sms' });
+        .verifications.create({ to: `+${cleanPhone}`, channel: 'sms' });
       if (verification) {
         return exits.success({ sid: verification.sid });
       }

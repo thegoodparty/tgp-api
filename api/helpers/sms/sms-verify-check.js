@@ -30,10 +30,15 @@ module.exports = {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
 
+      let cleanPhone = inputs.phone;
+      if (cleanPhone.charAt(0) !== 1) {
+        cleanPhone = `1${cleanPhone}`;
+      }
+
       const verificationResult = await twilioClient.verify
         .services(twilioVerification)
         .verificationChecks.create({
-          to: `+${inputs.phone}`,
+          to: `+${cleanPhone}`,
           code: inputs.code,
         });
 

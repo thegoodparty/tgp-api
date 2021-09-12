@@ -17,8 +17,6 @@ module.exports = {
     },
   },
 
-
-
   fn: async function(inputs, exits) {
     try {
       const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
@@ -29,10 +27,15 @@ module.exports = {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
 
+      let cleanPhone = inputs.phone;
+      if (cleanPhone.charAt(0) !== 1) {
+        cleanPhone = `1${cleanPhone}`;
+      }
+
       const verification = await twilioClient.messages.create({
         body: inputs.message,
         from: '+17402004839',
-        to: inputs.phone,
+        to: cleanPhone,
       });
       if (verification) {
         return exits.success({ sid: verification.sid });
