@@ -12,19 +12,20 @@ module.exports = {
     },
   },
 
-
-
   fn: async function(inputs, exits) {
     try {
       const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
-      const twilioAuthToken = sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
-      const twilioVerification = sails.config.custom.twilioVerification || sails.config.twilioVerification;
+      const twilioAuthToken =
+        sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
+      const twilioVerification =
+        sails.config.custom.twilioVerification ||
+        sails.config.twilioVerification;
 
       if (!twilioClient) {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
       let cleanPhone = inputs.phone;
-      if (cleanPhone.charAt(0) !== 1) {
+      if (cleanPhone.charAt(0) !== '1') {
         cleanPhone = `1${cleanPhone}`;
       }
 
@@ -34,9 +35,9 @@ module.exports = {
       if (verification) {
         return exits.success({ sid: verification.sid });
       }
-      return exits.badRequest({ message: 'failed to send sms' });
+      throw new Error({ message: 'failed to send sms' });
     } catch (e) {
-      return exits.badRequest({ message: 'failed to send sms' });
+      throw e;
     }
   },
 };

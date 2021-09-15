@@ -82,13 +82,15 @@ module.exports = {
         socialToken,
         guestUuid,
       } = inputs;
-      const lowerCaseEmail = email.toLowerCase();
-      const name = inputs.name.trim();
-      if (!phone && !name) {
+
+
+      if (!phone && !email) {
         return exits.badRequest({
           message: 'Phone or Email are required.',
         });
       }
+      const lowerCaseEmail = email ? email.toLowerCase() : email;
+      const name = inputs.name.trim();
 
       if (!socialPic && !socialProvider && !socialId && !zip) {
         return exits.badRequest({
@@ -166,9 +168,12 @@ module.exports = {
 
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
+        console.log('here');
         if (phone) {
+          console.log('phone', phone);
           await sails.helpers.sms.smsVerify(phone);
         } else {
+          console.log('email', user);
           await sendWVerifyEmail(user);
         }
       }
