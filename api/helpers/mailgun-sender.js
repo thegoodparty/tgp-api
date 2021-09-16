@@ -52,8 +52,7 @@ module.exports = {
 
       // const validFromEmail =
       //   fromEmail || 'The Good Party <noreply@goodparty.org>';
-      const validFromEmail =
-        fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
+      const validFromEmail = fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
 
       mg.messages
         .create('mg.goodparty.org', {
@@ -64,18 +63,15 @@ module.exports = {
           html: html(message, messageHeader, subject),
         })
         .then(msg => {}) // logs response data
-        .catch(err => {
-          console.log(err);
-          return exits.badRequest({
-            message: 'Error sending email',
-          });
+        .catch(e => {
+          console.log('error at helpers/mailgun-sender', e);
+          throw e;
         }); // logs any error
 
       return exits.success();
     } catch (e) {
-      return exits.badRequest({
-        message: 'Error sending email',
-      });
+      console.log('error at helpers/mailgun-sender', e);
+      throw e;
     }
   },
 };
