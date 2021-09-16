@@ -83,7 +83,6 @@ module.exports = {
         guestUuid,
       } = inputs;
 
-
       if (!phone && !email) {
         return exits.badRequest({
           message: 'Phone or Email are required.',
@@ -97,10 +96,16 @@ module.exports = {
           message: 'Zip code is required.',
         });
       }
-
-      const userExists = await User.findOne({
-        email: lowerCaseEmail,
-      });
+      let userExists = false;
+      if (email) {
+        userExists = await User.findOne({
+          email: lowerCaseEmail,
+        });
+      } else if (phone) {
+        userExists = await User.findOne({
+          phone,
+        });
+      }
       if (userExists) {
         return exits.badRequest({
           message: `${lowerCaseEmail} already exists in our system. Try login instead`,
@@ -168,12 +173,9 @@ module.exports = {
 
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
-        console.log('here');
         if (phone) {
-          console.log('phone', phone);
           await sails.helpers.sms.smsVerify(phone);
         } else {
-          console.log('email', user);
           await sendWVerifyEmail(user);
         }
       }
