@@ -209,7 +209,7 @@ module.exports = {
 };
 
 const sendWVerifyEmail = async user => {
-  if (!user.email) {
+  if (!user.email || user.email === '') {
     return;
   }
   const lowerCaseEmail = user.email.toLowerCase();
