@@ -21,7 +21,7 @@ module.exports = {
     email: {
       type: 'string',
       isEmail: true,
-      unique: true,
+      // unique: true,
       maxLength: 200,
       example: 'mary.sue@example.com',
     },

@@ -96,19 +96,20 @@ module.exports = {
           message: 'Zip code is required.',
         });
       }
-      let userExists = false;
       if (email) {
-        userExists = await User.findOne({
+        await User.findOne({
           email: lowerCaseEmail,
         });
-      } else if (phone) {
-        userExists = await User.findOne({
-          phone,
-        });
-      }
-      if (userExists) {
         return exits.badRequest({
           message: `${lowerCaseEmail} already exists in our system. Try login instead`,
+          exists: true,
+        });
+      } else if (phone) {
+        await User.findOne({
+          phone,
+        });
+        return exits.badRequest({
+          message: `${phone} already exists in our system. Try login instead`,
           exists: true,
         });
       }
