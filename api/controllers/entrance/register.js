@@ -105,12 +105,13 @@ module.exports = {
           exists: true,
         });
       } else if (phone) {
-        await User.findOne({
+        const temp = await User.findOne({
           phone,
         });
         return exits.badRequest({
           message: `${phone} already exists in our system. Try login instead`,
           exists: true,
+          user: JSON.stringify(temp),
         });
       }
 
