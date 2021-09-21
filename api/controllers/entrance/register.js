@@ -100,7 +100,7 @@ module.exports = {
         const exists = await User.findOne({
           email: lowerCaseEmail,
         });
-        if (!exists) {
+        if (exists) {
           return exits.badRequest({
             message: `${lowerCaseEmail} already exists in our system. Try login instead`,
             exists: true,
@@ -110,7 +110,7 @@ module.exports = {
         const exists = await User.findOne({
           phone,
         });
-        if (!exists) {
+        if (exists) {
           return exits.badRequest({
             message: `${phone} already exists in our system. Try login instead`,
             exists: true,
