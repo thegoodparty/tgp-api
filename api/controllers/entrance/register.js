@@ -97,22 +97,25 @@ module.exports = {
         });
       }
       if (email) {
-        await User.findOne({
+        const exists = await User.findOne({
           email: lowerCaseEmail,
         });
-        return exits.badRequest({
-          message: `${lowerCaseEmail} already exists in our system1. Try login instead`,
-          exists: true,
-        });
+        if (!exists) {
+          return exits.badRequest({
+            message: `${lowerCaseEmail} already exists in our system. Try login instead`,
+            exists: true,
+          });
+        }
       } else if (phone) {
-        const temp = await User.findOne({
+        const exists = await User.findOne({
           phone,
         });
-        return exits.badRequest({
-          message: `${phone} already exists in our system2. Try login instead`,
-          exists: true,
-          user: JSON.stringify(temp),
-        });
+        if (!exists) {
+          return exits.badRequest({
+            message: `${phone} already exists in our system. Try login instead`,
+            exists: true,
+          });
+        }
       }
 
       // const phoneExists = await User.findOne({
