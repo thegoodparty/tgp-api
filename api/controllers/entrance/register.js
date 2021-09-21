@@ -101,7 +101,7 @@ module.exports = {
           email: lowerCaseEmail,
         });
         return exits.badRequest({
-          message: `${lowerCaseEmail} already exists in our system. Try login instead`,
+          message: `${lowerCaseEmail} already exists in our system1. Try login instead`,
           exists: true,
         });
       } else if (phone) {
@@ -109,7 +109,7 @@ module.exports = {
           phone,
         });
         return exits.badRequest({
-          message: `${phone} already exists in our system. Try login instead`,
+          message: `${phone} already exists in our system2. Try login instead`,
           exists: true,
           user: JSON.stringify(temp),
         });
