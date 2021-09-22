@@ -158,6 +158,7 @@ module.exports = {
             socialToken,
             socialProvider,
           );
+          userAttr.isEmailVerified = true;
         } catch (e) {
           return exits.badRequest({
             message: 'Invalid Token',

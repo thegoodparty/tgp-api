@@ -50,6 +50,7 @@ module.exports.routes = {
   'POST   /api/v1/user/password': 'user/password/create',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
   'PUT   /api/v1/user/confirm': 'user/confirm/update',
+  'PUT   /api/v1/user/confirm/login': 'user/confirm/from-login',
   'POST   /api/v1/user/confirm': 'user/confirm/resend',
 
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
