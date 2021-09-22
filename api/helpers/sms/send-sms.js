@@ -1,8 +1,8 @@
 let twilioClient;
 module.exports = {
-  friendlyName: 'Phone Verification helper',
+  friendlyName: 'Send SMS helper',
 
-  description: 'Phone verification helper using twilio API',
+  description: 'Send SMS using twilio API',
 
   inputs: {
     phone: {
@@ -10,23 +10,33 @@ module.exports = {
       description: 'User Phone Number to verify with sms.',
       type: 'string',
     },
+    message: {
+      friendlyName: 'Message to send',
+      description: 'Message to send',
+      type: 'string',
+    },
   },
-
-
 
   fn: async function(inputs, exits) {
     try {
       const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
-      const twilioAuthToken = sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
-      const twilioVerification = sails.config.custom.twilioVerification || sails.config.twilioVerification;
+      const twilioAuthToken =
+        sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
 
       if (!twilioClient) {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
 
-      const verification = await twilioClient.verify
-        .services(twilioVerification)
-        .verifications.create({ to: inputs.phone, channel: 'sms' });
+      let cleanPhone = inputs.phone;
+      if (cleanPhone.charAt(0) !== 1) {
+        cleanPhone = `1${cleanPhone}`;
+      }
+
+      const verification = await twilioClient.messages.create({
+        body: inputs.message,
+        from: '+17402004839',
+        to: cleanPhone,
+      });
       if (verification) {
         return exits.success({ sid: verification.sid });
       }

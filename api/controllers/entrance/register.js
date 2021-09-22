@@ -12,32 +12,20 @@ module.exports = {
 
   inputs: {
     email: {
-      description: 'User Email',
       type: 'string',
-      required: true,
       isEmail: true,
     },
-    password: {
-      description: 'User Password',
+    phone: {
       type: 'string',
-      required: false,
     },
+
     name: {
       description: 'User Name',
       type: 'string',
       required: true,
     },
-    verify: {
-      description: 'Send an email?',
-      type: 'boolean',
-      defaultsTo: true,
-      required: false,
-    },
-
-    ranking: {
-      description: 'stringified array of Ranking objects',
+    zip: {
       type: 'string',
-      required: false,
     },
 
     socialId: {
@@ -58,11 +46,6 @@ module.exports = {
     },
     socialToken: {
       description: 'Social Token that needs to be verified',
-      type: 'string',
-      required: false,
-    },
-    referrer: {
-      description: 'uuid of the inviting user',
       type: 'string',
       required: false,
     },
@@ -91,40 +74,73 @@ module.exports = {
     try {
       const {
         email,
-        password,
-        verify,
-        ranking,
+        zip,
+        phone,
         socialId,
         socialProvider,
         socialPic,
         socialToken,
-        referrer,
         guestUuid,
       } = inputs;
-      const lowerCaseEmail = email.toLowerCase();
-      const name = inputs.name.trim();
 
-      const userExists = await User.findOne({
-        email: lowerCaseEmail,
-      });
-      if (userExists) {
+      if (!phone && !email) {
         return exits.badRequest({
-          message: `${lowerCaseEmail} already exists in our system.`,
-          exists: true,
+          message: 'Phone or Email are required.',
         });
       }
+      const lowerCaseEmail = email ? email.toLowerCase() : email;
+      const name = inputs.name.trim();
+
+      if (!socialPic && !socialProvider && !socialId && !zip) {
+        return exits.badRequest({
+          message: 'Zip code is required.',
+        });
+      }
+      if (email) {
+        const exists = await User.findOne({
+          email: lowerCaseEmail,
+        });
+        if (exists) {
+          return exits.badRequest({
+            message: `${lowerCaseEmail} already exists in our system. Try login instead`,
+            exists: true,
+          });
+        }
+      } else if (phone) {
+        const exists = await User.findOne({
+          phone,
+        });
+        if (exists) {
+          return exits.badRequest({
+            message: `${phone} already exists in our system. Try login instead`,
+            exists: true,
+          });
+        }
+      }
+
+      // const phoneExists = await User.findOne({
+      //   phone,
+      // });
+      // if (phoneExists) {
+      //   return exits.badRequest({
+      //     message: `${phone} already exists in our system. Try login instead`,
+      //     exists: true,
+      //   });
+      // }
 
       const userAttr = {
-        email: lowerCaseEmail,
         name,
       };
-      if (password) {
-        userAttr.password = password;
+      if (zip) {
+        userAttr.zip = zip;
+      }
+      if (lowerCaseEmail) {
+        userAttr.email = lowerCaseEmail;
+      }
+      if (phone) {
+        userAttr.phone = phone;
       }
 
-      if (verify) {
-        userAttr.isEmailVerified = false;
-      }
       if (socialId) {
         userAttr.socialId = socialId;
       }
@@ -134,109 +150,7 @@ module.exports = {
       if (socialPic) {
         userAttr.avatar = socialPic;
       }
-      if (referrer) {
-        const referrerUser = await User.findOne({ uuid: referrer });
-        if (referrerUser) {
-          userAttr.referrer = referrerUser.id;
-          await User.updateOne({ id: referrerUser.id }).set({
-            crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 2,
-          });
-          const appBase = sails.config.custom.appBase || sails.config.appBase;
-          const firstName = name.split(' ')[0];
-          const lastName = name.split(' ').length > 0 && name.split(' ')[1];
-          const nameString = lastName
-            ? `${firstName} ${lastName[0]}.`
-            : firstName;
-          const subject = `${nameString} has joined your Good Party crowd-voting crew`;
-          const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-            <tbody>
-              <tr>
-                <td>
-                  <p
-                    style="
-                      font-size: 16px;
-                      font-family: Arial, sans-serif;
-                      margin-top: 0;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    Hi ${referrerUser.firstName ||
-                      referrerUser.name}!<br /><br />
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <p
-                    style="
-                      font-size: 16px;
-                      font-family: Arial, sans-serif;
-                      margin-top: 0;
-                      margin-bottom: 5px;
-                    "
-                  >
-                   ${nameString} joined a crowd-voting campaign using a link you shared.  Your endorsement is the powerful reason they joined.  So, thank you!
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <p
-                    style="
-                      font-size: 16px;
-                      font-family: Arial, sans-serif;
-                      margin-top: 0;
-                      margin-bottom: 5px;
-                    "
-                  >
-                    <br/>
-                    See how your crew is growing and helping you move up our leaderboards.
-                  </p>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <br /><br /><a
-                    href="${appBase}/profile/leaderboard"
-                    style="
-                      padding: 16px 32px;
-                      background: linear-gradient(
-                          103.63deg,
-                          rgba(255, 15, 19, 0.15) -3.51%,
-                          rgba(191, 0, 32, 0) 94.72%
-                        ),
-                        linear-gradient(
-                          257.82deg,
-                          rgba(67, 0, 211, 0.25) -11.17%,
-                          rgba(67, 0, 211, 0) 96.34%
-                        ),
-                        #5c00c7;
-                      color: #fff;
-                      font-size: 16px;
-                      border-radius: 8px;
-                      text-decoration: none;
-                    "
-                  >
-                    SEE YOUR CREW
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          `;
-          const messageHeader = '';
-          await sails.helpers.mailgunSender(
-            referrerUser.email,
-            referrerUser.name,
-            subject,
-            messageHeader,
-            message,
-          );
-        } else {
-          // invited by a guest with a referrer (uuid) that was generated on the front end.
-          userAttr.guestReferrer = referrer;
-        }
-      }
+
       if (socialPic || socialProvider || socialId) {
         try {
           await sails.helpers.verifySocialToken(
@@ -262,52 +176,52 @@ module.exports = {
         ...userAttr,
       }).fetch();
 
-      // find all the users that were invited by this user
-      const referredUsers = await User.find({ guestReferrer: uuid });
-      for (let i = 0; i < referredUsers.length; i++) {
-        const referredUser = referredUsers[i];
-        await User.updateOne({ id: referredUser.id }).set({
-          referrer: user.id,
-          guestReferrer: '',
-        });
-      }
-      //add crewCount from refferedUsers
-      if (referredUsers.length > 0) {
-        user.crewCount = referredUsers.length;
-      }
-      try {
-        // convert the guest ranking (from cookies) to actual ranking in our system.
-        if (ranking) {
-          const rankingArr = JSON.parse(ranking);
-          for (let i = 0; i < rankingArr.length; i++) {
-            const { chamber, candidate, isIncumbent, rank } = rankingArr[i];
-            await Ranking.create({
-              user: user.id,
-              chamber,
-              candidate,
-              rank,
-              isIncumbent,
-              userState: user.shortState ? user.shortState : '',
-            });
-          }
-        }
-      } catch (e) {
-        // do nothing. Usually the error is for missing state.
-      }
-
-      // const userWithZip = await User.findOne({ id: user.id });
-
-      // const userZipCode = await ZipCode.findOne({
-      //   id: user.zipCode,
-      // }).populate('cds');
-      // user.zipCode = userZipCode;
-
       if (!socialPic && !socialProvider && !socialId) {
         // send sms to the newly created user.
-        const appBase = sails.config.custom.appBase || sails.config.appBase;
-        const subject = `${user.firstName ||
-          user.name}, please verify your email address`;
-        const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+        if (phone) {
+          await sails.helpers.sms.smsVerify(phone);
+        } else {
+          await sendWVerifyEmail(user);
+        }
+      }
+      try {
+        if (lowerCaseEmail) {
+          await sails.helpers.addEmail(lowerCaseEmail, 'The Good Party');
+        }
+      } catch (e) {}
+
+      //  add user to our CRM.
+      try {
+        await sails.helpers.crm.create(user);
+      } catch (e) {}
+
+      const token = await sails.helpers.jwtSign({
+        id: user.id,
+        email: lowerCaseEmail,
+        phone: phone,
+      });
+
+      return exits.success({
+        user,
+        token,
+      });
+    } catch (e) {
+      // await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
+      console.log('register error', e);
+      return exits.badRequest({ message: 'Error registering account.' });
+    }
+  },
+};
+
+const sendWVerifyEmail = async user => {
+  if (!user.email || user.email === '') {
+    return;
+  }
+  const lowerCaseEmail = user.email.toLowerCase();
+  const { name } = user;
+  const subject = `${user.firstName ||
+    user.name}, please verify your email address`;
+  const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
           <tbody>
             <tr>
               <td>
@@ -349,73 +263,33 @@ module.exports = {
                   "
                 >
                   <br/>
-                  Please click below to verify your email address.
+                  Please use this code to verify your email address.
                 </p>
               </td>
             </tr>
             <tr>
               <td>
-                <br /><br /><a
-                  href="${appBase}/email-confirmation?email=${lowerCaseEmail}&token=${
-          user.emailConfToken
-        }"
-                  style="
-                    padding: 16px 32px;
-                    background: linear-gradient(
-                        103.63deg,
-                        rgba(255, 15, 19, 0.15) -3.51%,
-                        rgba(191, 0, 32, 0) 94.72%
-                      ),
-                      linear-gradient(
-                        257.82deg,
-                        rgba(67, 0, 211, 0.25) -11.17%,
-                        rgba(67, 0, 211, 0) 96.34%
-                      ),
-                      #5c00c7;
-                    color: #fff;
-                    font-size: 16px;
-                    border-radius: 8px;
-                    text-decoration: none;
-                  "
-                >
-                  CLICK TO VERIFY
-                </a>
+                <br /><br />
+                <p style="
+                    font-size: 30px;
+                    font-family: Arial, sans-serif;
+                    background: #cccccc;
+                    padding: 20px;
+                    border-radius: 6px;
+                    text-align: center;
+                    "
+                    >${user.emailConfToken}</p>
               </td>
             </tr>
           </tbody>
         </table>
         `;
-        const messageHeader = '';
-        await sails.helpers.mailgunSender(
-          lowerCaseEmail,
-          name,
-          subject,
-          messageHeader,
-          message,
-        );
-      }
-      try {
-        await sails.helpers.addEmail(lowerCaseEmail, 'The Good Party');
-      } catch (e) {}
-
-      //  add user to our CRM.
-      try {
-        await sails.helpers.crm.create(user);
-      } catch (e) {}
-
-      const token = await sails.helpers.jwtSign({
-        id: user.id,
-        email: lowerCaseEmail,
-      });
-
-      return exits.success({
-        user,
-        token,
-      });
-    } catch (e) {
-      await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
-      console.log('register error', e);
-      return exits.badRequest({ message: 'Error registering account.' });
-    }
-  },
+  const messageHeader = '';
+  await sails.helpers.mailgunSender(
+    lowerCaseEmail,
+    name,
+    subject,
+    messageHeader,
+    message,
+  );
 };

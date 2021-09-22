@@ -66,6 +66,10 @@ const mapResponse = items => {
         });
       } else if (itemId === 'partyPage') {
         mappedResponse.partyPage = item.fields;
+      } else if (itemId === 'portalEmbed') {
+        mappedResponse.portalEmbed = item.fields;
+      }  else if (itemId === 'teamPage') {
+        mappedResponse.teamPage = item.fields;
       } else if (itemId === 'landingPage') {
         if (!mappedResponse.landingPages) {
           mappedResponse.landingPages = {};

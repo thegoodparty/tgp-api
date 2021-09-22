@@ -9,7 +9,7 @@
     "@sailshq/lodash": "^3.10.3",
     "@tyriar/binary-heap": "^1.0.5",
     "aws-sdk": "^2.595.0",
-    "axios": ">=0.21.1",
+    "axios": ">=0.21.2",
     "cacheman": "^2.2.1",
     "contentful": "^7.10.0",
     "cross-env": "^7.0.2",
@@ -33,7 +33,7 @@
     "sails-hook-organics": "^1.0.0",
     "sails-hook-orm": "^2.1.1",
     "sails-hook-sockets": "^1.5.5",
-    "sails-postgresql": "^1.0.2",
+    "sails-postgresql": "^2.0.0",
     "skipper-s3": "^0.6.0",
     "time-ago": "^0.2.1",
     "twilio": "^3.33.1",
@@ -63,6 +63,6 @@
   "author": "Tomer Almog",
   "license": "CC0-1.0",
   "engines": {
-    "node": "^10.16"
+    "node": ">= 14"
   }
 }

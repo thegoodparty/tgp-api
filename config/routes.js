@@ -43,14 +43,22 @@ module.exports.routes = {
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'POST    /api/v1/user/avatar': 'user/upload-avatar',
-  'GET    /api/v1/user/crew': 'user/crew',
+  'GET    /api/v1/user/crew': 'user/crew/find',
+  'POST    /api/v1/user/crew': 'user/crew/create',
   'GET    /api/v1/user/leaderboard': 'user/leaderboard',
-  'PUT   /api/v1/user/change-password': 'user/change-password',
-  'POST   /api/v1/user/add-password': 'user/add-password',
+  'PUT   /api/v1/user/password': 'user/password/update',
+  'POST   /api/v1/user/password': 'user/password/create',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
+  'PUT   /api/v1/user/confirm': 'user/confirm/update',
+  'POST   /api/v1/user/confirm': 'user/confirm/resend',
 
-  'GET    /api/v1/admin/candidates': 'admin/candidates',
-  'PUT    /api/v1/admin/candidate': 'admin/update-candidate',
+  'GET    /api/v1/admin/candidates': 'admin/candidate/list',
+  'PUT    /api/v1/admin/candidate': 'admin/candidate/update',
+  'PUT    /api/v1/admin/candidate-user':
+    'admin/candidate/associate-user/update',
+  'GET    /api/v1/admin/candidate-user': 'admin/candidate/associate-user/find',
+  'DELETE    /api/v1/admin/candidate-user':
+    'admin/candidate/associate-user/delete',
   'DELETE    /api/v1/admin/candidate-update': 'admin/delete-candidate-update',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/user': 'admin/delete-user',
@@ -96,4 +104,6 @@ module.exports.routes = {
   'POST   /api/v1/compare-topic': 'newCandidates/compareTopic/create',
   'PUT   /api/v1/compare-topic': 'newCandidates/compareTopic/update',
   'DELETE   /api/v1/compare-topic': 'newCandidates/compareTopic/delete',
+
+  'GET   /api/v1/candidate-user': 'candidateUser/find',
 };

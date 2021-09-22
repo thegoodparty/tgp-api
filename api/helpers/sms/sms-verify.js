@@ -1,8 +1,8 @@
 let twilioClient;
 module.exports = {
-  friendlyName: 'Send SMS helper',
+  friendlyName: 'Phone Verification helper',
 
-  description: 'Send SMS using twilio API',
+  description: 'Phone verification helper using twilio API',
 
   inputs: {
     phone: {
@@ -10,36 +10,34 @@ module.exports = {
       description: 'User Phone Number to verify with sms.',
       type: 'string',
     },
-    message: {
-      friendlyName: 'Message to send',
-      description: 'Message to send',
-      type: 'string',
-    },
   },
-
-
 
   fn: async function(inputs, exits) {
     try {
       const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
       const twilioAuthToken =
         sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
+      const twilioVerification =
+        sails.config.custom.twilioVerification ||
+        sails.config.twilioVerification;
 
       if (!twilioClient) {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
+      let cleanPhone = inputs.phone;
+      if (cleanPhone.charAt(0) !== '1') {
+        cleanPhone = `1${cleanPhone}`;
+      }
 
-      const verification = await twilioClient.messages.create({
-        body: inputs.message,
-        from: '+17402004839',
-        to: inputs.phone,
-      });
+      const verification = await twilioClient.verify
+        .services(twilioVerification)
+        .verifications.create({ to: `+${cleanPhone}`, channel: 'sms' });
       if (verification) {
         return exits.success({ sid: verification.sid });
       }
-      return exits.badRequest({ message: 'failed to send sms' });
+      throw new Error({ message: 'failed to send sms' });
     } catch (e) {
-      return exits.badRequest({ message: 'failed to send sms' });
+      throw e;
     }
   },
 };

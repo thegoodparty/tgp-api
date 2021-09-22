@@ -20,9 +20,8 @@ module.exports = {
 
     email: {
       type: 'string',
-      required: true,
       isEmail: true,
-      unique: true,
+      // unique: true,
       maxLength: 200,
       example: 'mary.sue@example.com',
     },
@@ -78,10 +77,9 @@ module.exports = {
       description: 'Google auto-complete address components',
     },
 
-    normalizedAddress: {
-      description: 'Normalized address from civic api. stringified JSON',
-      required: false,
+    zip: {
       type: 'string',
+      required: false,
     },
 
     isPhoneVerified: {
@@ -138,67 +136,12 @@ module.exports = {
       description: 'date that the token was created',
     },
 
-    presidentialRank: {
-      type: 'string',
-      required: false,
-      description: 'array of presidential candidates IDs',
-    },
-
-    senateRank: {
-      type: 'string',
-      required: false,
-      description: 'array of senate candidates IDs',
-    },
-
-    houseRank: {
-      type: 'string',
-      required: false,
-      description: 'array of house candidates IDs',
-    },
-
     voteStatus: {
       type: 'string',
       required: false,
       description: 'voting status - null, verified, na',
     },
-    // more fields from voterize
-    firstName: {
-      type: 'string',
-    },
-    middleName: {
-      type: 'string',
-    },
-    lastName: {
-      type: 'string',
-    },
-    suffix: {
-      type: 'string',
-    },
-    dob: {
-      type: 'string',
-      description: 'ISO 8601, e.g. "2020-07-22"',
-    },
-    address: {
-      type: 'string',
-    },
 
-    city: {
-      type: 'string',
-    },
-    // end voterize fields
-
-    // adding (denormalized) state and district for quick lookups.
-    shortState: {
-      type: 'string',
-      required: false,
-      description: 'short state (ca)',
-    },
-    districtNumber: {
-      type: 'number',
-      required: false,
-      description: 'cong district number',
-      allowNull: true,
-    },
     guestReferrer: {
       type: 'string',
       required: false,
@@ -223,26 +166,26 @@ module.exports = {
       type: 'string',
     },
 
+    address: {
+      type: 'string',
+    },
+
+    city: {
+      type: 'string',
+    },
+
     //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    role: {
-      model: 'role',
-    },
-
-    rankings: {
-      collection: 'ranking',
-      via: 'user',
+    // one-to-one
+    candidate: {
+      model: 'candidate',
+      unique: true,
     },
 
     supports: {
       collection: 'support',
-      via: 'user',
-    },
-
-    shareCandidates: {
-      collection: 'shareCandidate',
       via: 'user',
     },
 
@@ -294,7 +237,8 @@ module.exports = {
       }
 
       if (values.email) {
-        const token = await sails.helpers.strings.random('url-friendly');
+        // const token = await sails.helpers.strings.random('url-friendly');
+        const token = Math.floor(100000 + Math.random() * 900000) + '';
         values.emailConfToken = token;
         values.emailConfTokenDateCreated = Date.now();
       }

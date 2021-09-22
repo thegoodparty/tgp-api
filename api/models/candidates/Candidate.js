@@ -42,6 +42,13 @@ module.exports = {
       type: 'string',
       description: 'JSON.stringified string of all the other properties',
     },
+
+    // one-to-one
+    user: {
+      collection: 'user',
+      via: 'candidate',
+    },
+
     // one to many relationship to campaignUpdates
     candidateUpdates: {
       collection: 'campaignupdate',
