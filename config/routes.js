@@ -21,6 +21,7 @@ module.exports.routes = {
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
   'POST    /api/v1/content/topic-feedback': 'content/topic-feedback',
 
+  'PUT    /api/v1/entrance/login-step1': 'entrance/login-step1',
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
   'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',

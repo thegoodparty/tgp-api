@@ -54,7 +54,7 @@ module.exports = {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const subject = 'Reset your password - The Good Party';
       const link = encodeURI(
-        `${appBase}/you/reset-password?email=${lowerCaseEmail}&token=${token}`,
+        `${appBase}/login/reset-password?email=${lowerCaseEmail}&token=${token}`,
       );
       const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
           <tbody>
@@ -110,7 +110,7 @@ module.exports = {
                     text-decoration: none;
                   "
                 >
-                  Reset Your Password  
+                  Reset Your Password
                 </a>
               </td>
             </tr>
