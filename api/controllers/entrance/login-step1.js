@@ -13,8 +13,11 @@ module.exports = {
     email: {
       description: 'User Email',
       type: 'string',
-      required: true,
       isEmail: true,
+    },
+    phone: {
+      description: 'User Phone',
+      type: 'string',
     },
   },
 
@@ -31,27 +34,30 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      console.log('login');
-      const { email } = inputs;
-      const lowerCaseEmail = email.toLowerCase();
-
-      const user = await User.findOne({ email: lowerCaseEmail });
+      const { email, phone } = inputs;
+      let user;
+      if (email) {
+        const lowerCaseEmail = email.toLowerCase();
+        user = await User.findOne({ email: lowerCaseEmail });
+      } else if (phone) {
+        user = await User.findOne({ phone });
+      }
       if (!user) {
         return exits.badRequest({});
       }
-      console.log('login2', user);
       if (!user.hasPassword) {
-        console.log('logi3');
-        const token = Math.floor(100000 + Math.random() * 900000) + '';
-        const updatedUser = await User.updateOne({ id: user.id }).set({
-          isEmailVerified: false,
-          emailConfToken: token,
-          emailConfTokenDateCreated: Date.now(),
-        });
-        await sendWVerifyEmail(updatedUser);
-        console.log('token', token);
+        if (email) {
+          const token = Math.floor(100000 + Math.random() * 900000) + '';
+          const updatedUser = await User.updateOne({ id: user.id }).set({
+            isEmailVerified: false,
+            emailConfToken: token,
+            emailConfTokenDateCreated: Date.now(),
+          });
+          await sendWVerifyEmail(updatedUser);
+        } else if (phone) {
+          await sails.helpers.sms.smsVerify(phone);
+        }
       }
-      console.log('login4');
 
       return exits.success({
         hasPassword: user.hasPassword,

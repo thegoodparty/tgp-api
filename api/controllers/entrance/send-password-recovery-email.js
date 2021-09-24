@@ -10,8 +10,13 @@ module.exports = {
         'The email address of the alleged user who wants to recover their password.',
       example: 'rydahl@example.com',
       type: 'string',
-      required: true,
       isEmail: true,
+    },
+    phone: {
+      description:
+        'The email address of the alleged user who wants to recover their password.',
+      example: 'rydahl@example.com',
+      type: 'string',
     },
   },
 
@@ -26,18 +31,27 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
-      const { email } = inputs;
-      const lowerCaseEmail = email.toLowerCase();
-      // Find the record for this user.
-      // (Even if no such user exists, pretend it worked to discourage sniffing.)
-      const user = await User.findOne({ email: lowerCaseEmail });
+      const { email, phone } = inputs;
+      if (!email && !phone) {
+        return exits.badRequest({ message: 'phone or email are required' });
+      }
+      let user;
+
+      if (email) {
+        const lowerCaseEmail = email.toLowerCase();
+        // Find the record for this user.
+        // (Even if no such user exists, pretend it worked to discourage sniffing.)
+        user = await User.findOne({ email: lowerCaseEmail });
+      } else {
+        user = await User.findOne({ phone });
+      }
       if (!user) {
-        return exits.success({
-          message: 'email sent.',
+        return exits.badRequest({
+          message: '',
         });
-      } //
+      }
 
       // Come up with a pseudorandom, probabilistically-unique token for use
       // in our password recovery email.
@@ -52,11 +66,36 @@ module.exports = {
       });
 
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const subject = 'Reset your password - The Good Party';
-      const link = encodeURI(
-        `${appBase}/login/reset-password?email=${lowerCaseEmail}&token=${token}`,
-      );
-      const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+
+      if (email) {
+        const lowerCaseEmail = email.toLowerCase();
+        const link = encodeURI(
+          `${appBase}/login/reset-password?email=${lowerCaseEmail}&token=${token}`,
+        );
+        await sentEmail(email, link);
+      } else {
+        const link = encodeURI(
+          `${appBase}/login/reset-password?phone=${phone}&token=${token}`,
+        );
+        await sails.helpers.sms.sendSms(
+          phone,
+          `Reset your Good Party password: ${link}`,
+        );
+      }
+
+      return exits.success({
+        message: 'email sent.',
+      });
+    } catch (e) {
+      console.log('password recovery error', e);
+      return exits.badRequest({ message: 'Password Recovery error' });
+    }
+  },
+};
+
+const sentEmail = async (user, link) => {
+  const subject = 'Reset your password - The Good Party';
+  const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
           <tbody>
             <tr>
               <td>
@@ -117,25 +156,12 @@ module.exports = {
           </tbody>
         </table>
         `;
-      const messageHeader = '';
-      await sails.helpers.mailgunSender(
-        lowerCaseEmail,
-        user.name,
-        subject,
-        messageHeader,
-        message,
-      );
-
-      return exits.success({
-        message: 'email sent.',
-      });
-    } catch (e) {
-      await sails.helpers.errorLoggerHelper(
-        'Error at entrance/send-password-recovery-email',
-        e,
-      );
-      console.log('password recvovery error', e);
-      return exits.badRequest({ message: 'Password Recovery error' });
-    }
-  },
+  const messageHeader = '';
+  await sails.helpers.mailgunSender(
+    user.email,
+    user.name,
+    subject,
+    messageHeader,
+    message,
+  );
 };

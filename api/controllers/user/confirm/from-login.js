@@ -10,8 +10,10 @@ module.exports = {
     },
     email: {
       type: 'string',
-      required: true,
       isEmail: true,
+    },
+    phone: {
+      type: 'string',
     },
   },
 
@@ -27,9 +29,18 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { code, email } = inputs;
-      const user = await User.findOne({ email });
-      let phone;
+      const { code, email, phone } = inputs;
+      if (!email && !phone) {
+        return exits.badRequest({
+          message: 'Email or Phone are required',
+        });
+      }
+      let user;
+      if (email) {
+        user = await User.findOne({ email });
+      } else {
+        user = await User.findOne({ phone });
+      }
       // const { phone } = user;
       if (phone) {
         try {
@@ -37,8 +48,13 @@ module.exports = {
           const updatedUser = await User.updateOne({ id: user.id }).set({
             isPhoneVerified: true,
           });
+          const token = await sails.helpers.jwtSign({
+            id: user.id,
+            email: user.email,
+          });
           return exits.success({
             user: updatedUser,
+            token
           });
         } catch (e) {
           console.log('error verifying code with phone');
