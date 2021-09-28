@@ -58,7 +58,6 @@ module.exports = {
           expired: true,
         });
       }
-      console.log('reset1');
       let user;
       if (email) {
         const lowerCaseEmail = email.toLowerCase();
@@ -69,11 +68,9 @@ module.exports = {
       } else {
         user = await User.findOne({ phone, passwordResetToken: token });
       }
-      console.log('reset2', user);
 
       // If no such user exists, or their token is expired, bail.
       if (!user || user.passwordResetTokenExpiresAt <= Date.now()) {
-        console.log('reset3');
         return exits.badRequest({
           message: 'Token Expired.',
           expired: true,
@@ -90,8 +87,6 @@ module.exports = {
         passwordResetToken: '',
         passwordResetTokenExpiresAt: 0,
       });
-
-      console.log('reset4');
 
       return exits.success({
         message: 'Password successfully updated.',

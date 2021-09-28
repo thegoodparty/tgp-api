@@ -102,7 +102,7 @@ module.exports = {
         });
         if (exists) {
           return exits.badRequest({
-            message: `${lowerCaseEmail} already exists in our system. Try login instead`,
+            message: `An account for ${lowerCaseEmail} already exists. Try logging instead.`,
             exists: true,
           });
         }
@@ -111,8 +111,9 @@ module.exports = {
           phone,
         });
         if (exists) {
+          const formatPhone = await sails.helpers.formatPhone(phone);
           return exits.badRequest({
-            message: `${phone} already exists in our system. Try login instead`,
+            message: `An account for ${formatPhone} already exists. Try logging instead.`,
             exists: true,
           });
         }
