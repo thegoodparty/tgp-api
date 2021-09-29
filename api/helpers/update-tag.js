@@ -63,7 +63,7 @@ module.exports = {
       catch (err) {
         // if email is not existed, subscribe that email
         try {
-          await sails.helpers.addEmail(email, 'The Good Party');
+          await sails.helpers.addEmail(email);
         }
         catch (err) {
 
@@ -72,8 +72,8 @@ module.exports = {
       const candidate = await Candidate.findOne({ id: candidateId, isActive: true });
       if (candidate) {
         const { race } = JSON.parse(candidate.data);
-        let { name } = candidate;
-        name = ` ${candidate.firstName} ${candidate.lastName} for ${race}`;
+        let { firstName, lastName, id, name } = candidate;
+        name = `${firstName} ${lastName} for ${race} ### ${id}`;
         console.log(name);
         const obj = {
           body: {
