@@ -1,5 +1,5 @@
 const mailchimp = require('@mailchimp/mailchimp_marketing');
-const md5 = require("md5");
+const md5 = require('md5');
 
 const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
 const server =
@@ -30,8 +30,8 @@ module.exports = {
       type: 'number',
     },
     status: {
-      type: 'string'
-    }
+      type: 'string',
+    },
   },
   exits: {
     success: {
@@ -42,14 +42,13 @@ module.exports = {
       description: 'Error adding tag',
     },
   },
-  fn: async function (inputs, exits) {
+  async fn(inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let { email, listName, candidateId, status } = inputs;
 
-      listName = appBase === 'https://goodparty.org'
-        ? listName
-        : 'thegoodparty';
+      listName =
+        appBase === 'https://goodparty.org' ? listName : 'thegoodparty';
       const { lists } = await mailchimp.lists.getAllLists();
       const tgpList = lists.find(list => list.name === listName);
 
@@ -58,30 +57,32 @@ module.exports = {
       // check if the email is existed or not
       // (in most cases, this will not be necessary since we register user email when the user sign up.)
       try {
-        await mailchimp.lists.getListMember(tgpList.id, subscriberHash)
-      }
-      catch (err) {
+        await mailchimp.lists.getListMember(tgpList.id, subscriberHash);
+      } catch (err) {
         // if email is not existed, subscribe that email
         try {
-          await sails.helpers.addEmail(email, 'The Good Party');
-        }
-        catch (err) {
-
-        }
+          await sails.helpers.subscribeUser(email);
+        } catch (err) {}
       }
-      const candidate = await Candidate.findOne({ id: candidateId, isActive: true });
+      const candidate = await Candidate.findOne({
+        id: candidateId,
+        isActive: true,
+      });
       if (candidate) {
         const { race } = JSON.parse(candidate.data);
-        let { name } = candidate;
-        name = ` ${candidate.firstName} ${candidate.lastName} for ${race}`;
-        console.log(name);
+        let { firstName, lastName, name, id } = candidate;
+        name = `${firstName} ${lastName} for ${race} ### ${id}`;
         const obj = {
           body: {
             tags: [{ name, status }],
-            is_syncing: true
-          }
-        }
-        const response = await mailchimp.lists.updateListMemberTags(tgpList.id, subscriberHash, obj);
+            is_syncing: true,
+          },
+        };
+        const response = await mailchimp.lists.updateListMemberTags(
+          tgpList.id,
+          subscriberHash,
+          obj,
+        );
         return exits.success(response);
       }
       return exits.success({});

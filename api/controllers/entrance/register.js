@@ -188,7 +188,7 @@ module.exports = {
       }
       try {
         if (lowerCaseEmail) {
-          await sails.helpers.addEmail(lowerCaseEmail, 'The Good Party');
+          await sails.helpers.subscribeUser(lowerCaseEmail);
         }
       } catch (e) {}
 

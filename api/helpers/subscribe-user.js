@@ -18,10 +18,6 @@ module.exports = {
       isEmail: true,
       required: true,
     },
-    listName: {
-      type: 'string',
-      required: true,
-    },
   },
   exits: {
     success: {
@@ -32,13 +28,13 @@ module.exports = {
       description: 'Error subscribing email',
     },
   },
-  fn: async function(inputs, exits) {
+  async fn(inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       let response;
-      let { email, listName } = inputs;
-      listName =
-        appBase === 'https://goodparty.org' ? listName : 'thegoodparty';
+      let { email } = inputs;
+      const listName =
+        appBase === 'https://goodparty.org' ? 'The Good Party' : 'goodparty';
       const subscribingUser = {
         email,
       };

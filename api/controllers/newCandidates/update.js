@@ -6,7 +6,17 @@
  */
 
 const fileExt = 'jpeg';
+const mailchimp = require('@mailchimp/mailchimp_marketing');
+const moment = require('moment');
 
+const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
+const server =
+  sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
+
+mailchimp.setConfig({
+  apiKey,
+  server,
+});
 module.exports = {
   friendlyName: 'Update Candidate',
 
@@ -29,7 +39,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  async fn(inputs, exits) {
     try {
       const { candidate } = inputs;
       const { candidateUpdates } = candidate;
@@ -107,104 +117,72 @@ module.exports = {
   },
 };
 const notifySupporterForUpdates = async candidate => {
-  const candidateSupports = await Support.find({
-    candidate: candidate.id,
-  }).populate('user');
-  const { data, firstName, lastName } = candidate || {};
+  const appBase = sails.config.custom.appBase || sails.config.appBase;
+  const { id, data, firstName, lastName } = candidate || {};
   const { race } = JSON.parse(data);
-  for (let i = 0; i < candidateSupports.length; i++) {
-    const support = candidateSupports[i];
-    if (!support.user) {
-      continue;
-    }
-    // support.user.name, support.user.email
-    const appBase = sails.config.custom.appBase || sails.config.appBase;
-    const subject = `Campaign update from ${firstName} ${lastName} for ${race}`;
-    const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-      <tbody>
-        <tr>
-          <td>
-            <p
-              style="
-                font-size: 16px;
-                font-family: Arial, sans-serif;
-                margin-top: 0;
-                margin-bottom: 5px;
-              "
-            >
-              Hi ${support.user.firstName || support.user.name}!<br /><br />
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p
-              style="
-                font-size: 16px;
-                font-family: Arial, sans-serif;
-                margin-top: 0;
-                margin-bottom: 5px;
-              "
-            >
-            ${firstName} ${lastName}, who you endorsed for ${race}, has posted an update about their campaign.
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p
-              style="
-                font-size: 16px;
-                font-family: Arial, sans-serif;
-                margin-top: 0;
-                margin-bottom: 5px;
-              "
-            >
-            <br />
-            Tap the link below to read the update.
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <br /><br /><a
-              href="${appBase}/candidate/${firstName}-${lastName}/${
-      candidate.id
-    }"
-              style="
-                padding: 16px 32px;
-                background: linear-gradient(
-                    103.63deg,
-                    rgba(255, 15, 19, 0.15) -3.51%,
-                    rgba(191, 0, 32, 0) 94.72%
-                  ),
-                  linear-gradient(
-                    257.82deg,
-                    rgba(67, 0, 211, 0.25) -11.17%,
-                    rgba(67, 0, 211, 0) 96.34%
-                  ),
-                  #5c00c7;
-                color: #fff;
-                font-size: 16px;
-                border-radius: 8px;
-                text-decoration: none;
-              "
-            >
-              READ UPDATE
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-      `;
+  const { lists } = await mailchimp.lists.getAllLists();
+  const listName =
+    appBase === 'https://goodparty.org' ? 'The Good Party' : 'goodparty';
+  const replyTo = 'ask@goodparty.org';
+  const tgpList = lists.find(list => list.name === listName);
+  const name = `${firstName} ${lastName} for ${race} ### ${id}`;
+  const { segments } = await mailchimp.lists.listSegments(tgpList.id, {
+    count: 1000,
+  });
+  let segment = segments.find(item => item.name === name);
 
-    const messageHeader = '';
-    await sails.helpers.mailgunSender(
-      support.user.email,
-      support.user.name,
-      subject,
-      messageHeader,
-      message,
+  const subject = `Campaign update from ${firstName} ${lastName} for ${race}`;
+  const body = `${firstName} ${lastName}, who you endorsed for ${race}, has posted an update about their campaign.`;
+  const url = `${appBase}/candidate/${firstName}-${lastName}/${candidate.id}`;
+
+  const { templates } = await mailchimp.templates.list();
+  const templateName = `Template ### ${id}`;
+  let template = templates.find(item => item.name === templateName);
+  const { campaigns } = await mailchimp.campaigns.list();
+  if (!template) {
+    const sampleCampaign = campaigns.find(
+      campaign => campaign.settings.title === 'Sample',
     );
+    const sampleContent = await mailchimp.campaigns.getContent(
+      sampleCampaign.id,
+    );
+    const { html } = sampleContent;
+    template = await mailchimp.templates.create({
+      name: templateName,
+      html: html
+        .replace('{{Content}}', body)
+        .replace('{{Subject}}', subject)
+        .replace('{{URL}}', url),
+    });
   }
+
+  const oldCampaigns = campaigns.filter(
+    campaign =>
+      campaign.status === 'sent' && campaign.settings.title === subject,
+  );
+  for (let i = 0; i < oldCampaigns.length; i++) {
+    await mailchimp.campaigns.remove(oldCampaigns[i].id);
+  }
+  let campaign = await mailchimp.campaigns.create({
+    type: 'regular',
+    recipients: {
+      segment_opts: {
+        saved_segment_id: segment.id,
+        match: 'any',
+      },
+      list_id: tgpList.id,
+    },
+    settings: {
+      subject_line: subject,
+      preview_text: subject,
+      title: subject,
+      template_id: template.id,
+      from_name: 'Good Party',
+      reply_to: replyTo,
+      to_name: '*|FNAME|*',
+      auto_footer: false,
+      inline_css: true,
+    },
+  });
+  await mailchimp.campaigns.send(campaign.id);
 };
