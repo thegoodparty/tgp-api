@@ -27,7 +27,7 @@ module.exports = {
       const candidateSupports = await Support.find({
         candidate: candidateId,
       })
-        .sort([{ updatedAt: 'DESC' }])
+        .sort([{ createdAt: 'DESC' }])
         .populate('user');
 
       const supportWithLimit = [];
@@ -35,7 +35,7 @@ module.exports = {
       const supportLength = Math.min(MAX, candidateSupports.length);
       for (let i = 0; i < supportLength; i++) {
         const support = candidateSupports[i];
-        support.timeAgo = await sails.helpers.timeAgo(support.updatedAt);
+        support.timeAgo = await sails.helpers.timeAgo(support.createdAt);
         support.message = null;
         support.type = 'endorse';
         if (support.user && support.user.name) {
@@ -51,7 +51,7 @@ module.exports = {
       const candidateShares = await ShareCandidate.find({
         candidate: candidateId,
       })
-        .sort([{ updatedAt: 'DESC' }])
+        .sort([{ createdAt: 'DESC' }])
         .populate('user');
 
       const shareWithLimit = [];
@@ -59,7 +59,7 @@ module.exports = {
       const shareLength = Math.min(MAX, candidateShares.length);
       for (let i = 0; i < shareLength; i++) {
         const share = candidateShares[i];
-        share.timeAgo = await sails.helpers.timeAgo(share.updatedAt);
+        share.timeAgo = await sails.helpers.timeAgo(share.createdAt);
         share.type = 'share';
         if (share.user && share.user.name) {
           share.user = await sails.helpers.fullFirstLastInitials(
@@ -71,7 +71,7 @@ module.exports = {
         shareWithLimit.push(share);
       }
       const combined = supportWithLimit.concat(shareWithLimit);
-      combined.sort((a, b) => b.updatedAt - a.updatedAt);
+      combined.sort((a, b) => b.createdAt - a.createdAt);
 
       return exits.success({
         candidateSupports: combined,
