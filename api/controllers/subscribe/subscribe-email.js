@@ -33,7 +33,7 @@ module.exports = {
     try {
       const { email } = inputs;
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const res = await sails.helpers.addEmail(email);
+      const res = await sails.helpers.subscribeUser(email);
 
       return exits.success(res);
     } catch (err) {

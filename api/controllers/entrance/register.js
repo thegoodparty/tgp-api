@@ -186,7 +186,7 @@ module.exports = {
       }
       try {
         if (lowerCaseEmail) {
-          await sails.helpers.addEmail(lowerCaseEmail);
+          await sails.helpers.subscribeUser(lowerCaseEmail);
         }
       } catch (e) {}
 
