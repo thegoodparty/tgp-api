@@ -55,7 +55,6 @@ module.exports.routes = {
   'POST   /api/v1/user/confirm': 'user/confirm/resend',
 
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
-  'PUT    /api/v1/admin/candidate': 'admin/candidate/update',
   'PUT    /api/v1/admin/candidate-user':
     'admin/candidate/associate-user/update',
   'GET    /api/v1/admin/candidate-user': 'admin/candidate/associate-user/find',
