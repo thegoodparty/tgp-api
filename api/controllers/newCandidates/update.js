@@ -122,7 +122,7 @@ const notifySupporterForUpdates = async candidate => {
   const { race } = JSON.parse(data);
   const { lists } = await mailchimp.lists.getAllLists();
   const listName =
-    appBase === 'https://goodparty.org' ? 'The Good Party' : 'goodparty';
+    appBase === 'https://goodparty.org' ? 'The Good Party' : 'Good Party Dev';
   const replyTo = 'ask@goodparty.org';
   const tgpList = lists.find(list => list.name === listName);
   const name = `${firstName} ${lastName} for ${race} ### ${id}`;
