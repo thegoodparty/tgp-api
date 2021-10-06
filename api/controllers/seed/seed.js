@@ -140,7 +140,11 @@ module.exports = {
       // console.log('Hello World')
       return exits.success(candidateTags);
     } catch (e) {
-      console.log('Error in find candidate', e);
+      console.log('Error in mailchimp seed', e);
+      return exits.success({
+        message: 'Error in mailchimp seed',
+        error: JSON.stringify(e),
+      });
     }
   },
 };
