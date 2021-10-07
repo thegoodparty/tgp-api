@@ -25,6 +25,7 @@ module.exports.policies = {
   'user/support/admin-delete': ['isAuthenticated', 'isAdmin'],
   'newCandidates/find-inactive': ['isAuthenticated', 'isAdmin'],
   'newCandidates/compareTopic/*': ['isAuthenticated', 'isAdmin'],
+  'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
