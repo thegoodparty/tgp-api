@@ -19,10 +19,6 @@ module.exports = {
       isEmail: true,
       required: true,
     },
-    listName: {
-      type: 'string',
-      required: true,
-    },
     candidateId: {
       description: 'candidate id to be added',
       example: 1,
@@ -45,10 +41,10 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      let { email, listName, candidateId, status } = inputs;
+      let { email, candidateId, status } = inputs;
 
-      listName =
-        appBase === 'https://goodparty.org' ? listName : 'thegoodparty';
+      const listName =
+        appBase === 'https://goodparty.org' ? 'Good Party' : 'Good Party Dev';
       const { lists } = await mailchimp.lists.getAllLists();
       const tgpList = lists.find(list => list.name === listName);
 
