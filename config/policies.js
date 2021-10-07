@@ -45,5 +45,6 @@ module.exports.policies = {
   'seed/*': true,
   'subscribe/*': true,
   'user/support/list-by-candidate': true,
+  'user/confirm/from-login': true,
   'newCandidates/compareTopic/list': true,
 };

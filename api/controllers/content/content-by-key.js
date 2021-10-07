@@ -13,6 +13,12 @@ module.exports = {
       required: true,
       type: 'string',
     },
+    subKey: {
+      type: 'string',
+    },
+    subValue: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -28,7 +34,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { key } = inputs;
+      const { key, subKey, subValue } = inputs;
       let content = await sails.helpers.cacheHelper('get', 'content');
       if (!content) {
         const contents = await CmsContent.find();
@@ -38,10 +44,19 @@ module.exports = {
           await sails.helpers.cacheHelper('set', 'content', content);
         }
       }
-      if (content[key]) {
-        return exits.success({
-          content: content[key],
-        });
+      const keyContent = content[key];
+      if (keyContent) {
+        if (subKey) {
+          for (let i = 0; i < keyContent.length; i++) {
+            if (keyContent[i][subKey] === subValue) {
+              return exits.success({ content: keyContent[i] });
+            }
+          }
+        } else {
+          return exits.success({
+            content: keyContent,
+          });
+        }
       } else {
         return exits.badRequest({
           message: 'No Content Found',

@@ -81,7 +81,7 @@ module.exports = {
                 type: 'mrkdwn',
                 text: `__________________________________ \n *Article Helpful? ${
                   isHelpful ? 'YES' : 'No'
-                }* \n <https://goodparty.org/party?article=${id}|${title}>\n
+                }* \n <https://goodparty.org/faqs?article=${id}|${title}>\n
                 \n ENV: ${env}`,
               },
             },

@@ -23,9 +23,11 @@ module.exports = {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const listName =
-        appBase === 'https://goodparty.org' ? 'The Good Party' : 'goodparty';
+        appBase === 'https://goodparty.org'
+          ? 'Good Party'
+          : 'Good Party Dev';
       const { lists } = await mailchimp.lists.getAllLists();
-      console.log(lists);
+      console.log('lists:', lists);
       const tgpList = lists.find(list => list.name === listName);
 
       let users = await User.find();
@@ -36,11 +38,12 @@ module.exports = {
         let { firstName, lastName, id } = candidate;
         const tag = `${firstName} ${lastName} for ${race} ### ${id}`;
         candidateTags[candidate.id] = tag;
-        console.log(tag);
+        console.log('TAG: ', tag);
       });
       let offset = 0;
       let memberList = [];
       while (true) {
+        console.log('while iteration', offset);
         let { members } = await mailchimp.lists.getListMembersInfo(tgpList.id, {
           count: 500,
           offset,
@@ -52,7 +55,7 @@ module.exports = {
           break;
         }
       }
-      console.log(memberList);
+      console.log('memberList.length', memberList.length);
       // const { members } = await mailchimp.lists.getListMembersInfo(tgpList.id, { count: 1000, offset: 0 });
       // console.log(members.map(member => member.id));
       // const response = await mailchimp.lists.addListMember(tgpList.id, {
@@ -65,7 +68,7 @@ module.exports = {
       // });
       const candidateSupports = await Support.find();
       for (let i = 0; i < users.length; i++) {
-        // console.log(users[i].email, users[i].name);
+        console.log(users[i].email, users[i].name);
         // const candidateSupports = await Support.find({
         //   candidate: users[i].id
         // });
@@ -75,14 +78,12 @@ module.exports = {
         const tags = supports
           .map(support => candidateTags[support.candidate])
           .filter(item => !!item);
-        console.log(tags);
-        if (
-          memberList.find(member => member.email_address === users[i].email)
-        ) {
-          const member = memberList.find(
-            member => member.email_address === users[i].email,
-          );
-          console.log('Passed');
+        console.log('user tags', tags);
+        const member = memberList.find(
+          member => member.email_address === users[i].email,
+        );
+        if (member) {
+          console.log('Found', member);
           // console.log(
           //   memberList.find(member => member.email_address === users[i].email),
           // );
@@ -94,6 +95,7 @@ module.exports = {
             member.merge_fields.FNAME === fname &&
             member.merge_fields.LNAME === lname
           ) {
+            console.log('continue', fname, lname);
             continue;
           } else {
             const subscriberHash = md5(users[i].email);
@@ -109,6 +111,7 @@ module.exports = {
               },
               tags,
             });
+            console.log('added ', users[i].email);
             continue;
           }
         }
@@ -122,6 +125,7 @@ module.exports = {
         //   console.log(e);
         // }
         try {
+          console.log('before addListMember', users[i].email);
           await mailchimp.lists.addListMember(tgpList.id, {
             email_address: users[i].email,
             status: 'subscribed',
@@ -133,14 +137,20 @@ module.exports = {
             },
             tags,
           });
+          console.log('after addListMember', users[i].email);
         } catch (e) {
-          // console.log(e);
+          console.log('error addListMember', users[i].email);
+          console.log(e);
         }
       }
       // console.log('Hello World')
       return exits.success(candidateTags);
     } catch (e) {
-      console.log('Error in find candidate', e);
+      console.log('Error in mailchimp seed', e);
+      return exits.success({
+        message: 'Error in mailchimp seed',
+        error: JSON.stringify(e),
+      });
     }
   },
 };

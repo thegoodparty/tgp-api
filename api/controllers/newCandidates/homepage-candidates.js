@@ -47,6 +47,10 @@ module.exports = {
         homepageCandidates.push(data);
       }
 
+      homepageCandidates.sort((a, b) => {
+        return b.supporters - a.supporters;
+      });
+
       return exits.success({
         homepageCandidates,
       });

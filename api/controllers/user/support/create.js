@@ -56,7 +56,6 @@ module.exports = {
       try {
         await sails.helpers.updateTag(
           reqUser.email,
-          'The Good Party',
           candidateId,
           'active',
         );

@@ -21,6 +21,7 @@ module.exports.routes = {
   'POST    /api/v1/content/article-feedback': 'content/article-feedback',
   'POST    /api/v1/content/topic-feedback': 'content/topic-feedback',
 
+  'PUT    /api/v1/entrance/login-step1': 'entrance/login-step1',
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
   'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',
@@ -50,10 +51,10 @@ module.exports.routes = {
   'POST   /api/v1/user/password': 'user/password/create',
   'PUT   /api/v1/user/token-refresh': 'user/token-refresh',
   'PUT   /api/v1/user/confirm': 'user/confirm/update',
+  'PUT   /api/v1/user/confirm/login': 'user/confirm/from-login',
   'POST   /api/v1/user/confirm': 'user/confirm/resend',
 
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
-  'PUT    /api/v1/admin/candidate': 'admin/candidate/update',
   'PUT    /api/v1/admin/candidate-user':
     'admin/candidate/associate-user/update',
   'GET    /api/v1/admin/candidate-user': 'admin/candidate/associate-user/find',

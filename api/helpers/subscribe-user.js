@@ -34,7 +34,7 @@ module.exports = {
       let response;
       let { email } = inputs;
       const listName =
-        appBase === 'https://goodparty.org' ? 'The Good Party' : 'goodparty';
+        appBase === 'https://goodparty.org' ? 'Good Party' : 'Good Party Dev';
       const subscribingUser = {
         email,
       };

@@ -14,8 +14,11 @@ module.exports = {
     email: {
       description: 'User Email',
       type: 'string',
-      required: true,
       isEmail: true,
+    },
+    phone: {
+      description: 'User Phone',
+      type: 'string',
     },
     password: {
       description: 'User Password',
@@ -37,10 +40,17 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { email, password } = inputs;
-      const lowerCaseEmail = email.toLowerCase();
-
-      const user = await User.findOne({ email: lowerCaseEmail });
+      const { email, phone, password } = inputs;
+      if (!email && !phone) {
+        return exits.badRequest({ message: 'phone or email are required' });
+      }
+      let user;
+      if (email) {
+        const lowerCaseEmail = email.toLowerCase();
+        user = await User.findOne({ email: lowerCaseEmail });
+      } else {
+        user = await User.findOne({ phone });
+      }
       if (!user) {
         return exits.badRequest({});
       }
@@ -52,7 +62,6 @@ module.exports = {
 
       const token = await sails.helpers.jwtSign({
         id: user.id,
-        email: lowerCaseEmail,
       });
       return exits.success({ user, token });
     } catch (err) {
