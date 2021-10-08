@@ -43,11 +43,15 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { candidateId, update } = inputs;
-      await CampaignUpdate.create({
+      const attr = {
+        title: update.title,
         date: update.date,
         text: update.text,
+        youtubeId: update.youtubeId,
         candidate: candidateId,
-      });
+      };
+
+      await CampaignUpdate.create(attr);
 
       const candidate = await Candidate.findOne({ id: candidateId });
       try {

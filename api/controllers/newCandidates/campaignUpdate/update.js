@@ -33,6 +33,8 @@ module.exports = {
       await CampaignUpdate.updateOne({ id: update.id }).set({
         date: update.date,
         text: update.text,
+        youtubeId: update.youtubeId,
+        title: update.title,
       });
       return exits.success({
         message: 'updated',

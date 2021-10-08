@@ -16,6 +16,12 @@ module.exports = {
     date: {
       type: 'string',
     },
+    youtubeId: {
+      type: 'string',
+    },
+    title: {
+      type: 'string',
+    },
     candidate: {
       model: 'candidate',
     },
