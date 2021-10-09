@@ -22,6 +22,9 @@ module.exports = {
     title: {
       type: 'string',
     },
+    start: {
+      type: 'number',
+    },
     candidate: {
       model: 'candidate',
     },

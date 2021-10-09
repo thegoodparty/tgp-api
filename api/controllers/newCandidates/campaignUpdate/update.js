@@ -31,10 +31,7 @@ module.exports = {
     try {
       const { update } = inputs;
       await CampaignUpdate.updateOne({ id: update.id }).set({
-        date: update.date,
-        text: update.text,
-        youtubeId: update.youtubeId,
-        title: update.title,
+        ...update,
       });
       return exits.success({
         message: 'updated',

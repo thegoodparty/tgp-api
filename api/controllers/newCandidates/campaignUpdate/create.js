@@ -44,10 +44,7 @@ module.exports = {
     try {
       const { candidateId, update } = inputs;
       const attr = {
-        title: update.title,
-        date: update.date,
-        text: update.text,
-        youtubeId: update.youtubeId,
+        ...update,
         candidate: candidateId,
       };
 
