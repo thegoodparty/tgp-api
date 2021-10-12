@@ -22,6 +22,9 @@ module.exports = {
     title: {
       type: 'string',
     },
+    image: {
+      type: 'string',
+    },
     start: {
       type: 'number',
     },

@@ -25,15 +25,14 @@ module.exports = async function uploadAvatar(req, res) {
       bucket: bucketName,
       fileACL: 'public-read',
       headers: {
-        'cache-control': 'max-age=31536000'
-      }
+        'cache-control': 'max-age=31536000',
+      },
     },
     function(err, uploadedFiles) {
-      console.log(err, uploadedFiles);
       uploadedFiles.forEach(file => {
         response.data.files.push(file.fd);
         response.data.isImages.push(true);
-      })
+      });
       if (!err) {
         return res.ok(response);
       } else {
