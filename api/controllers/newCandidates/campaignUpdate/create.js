@@ -48,7 +48,6 @@ module.exports = {
         candidate: candidateId,
       };
       await CampaignUpdate.create(attr);
-
       const candidate = await Candidate.findOne({ id: candidateId });
       try {
         await notifySupporterForUpdates(candidate, attr);
@@ -67,7 +66,7 @@ module.exports = {
 
 const notifySupporterForUpdates = async (candidate, update) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
-  const { title, date, text, youtubeId } = update;
+  const { title, date, text, youtubeId, image } = update;
   const { id, data, firstName, lastName } = candidate || {};
   const { race } = JSON.parse(data);
   const { lists } = await mailchimp.lists.getAllLists();
@@ -79,6 +78,7 @@ const notifySupporterForUpdates = async (candidate, update) => {
   const { segments } = await mailchimp.lists.listSegments(tgpList.id, {
     count: 1000,
   });
+  const url = `${appBase}/candidate/${firstName}-${lastName}/${candidate.id}`;
   let segment = segments.find(item => item.name === name);
 
   const subject = `Campaign update from ${firstName} ${lastName} for ${race}`;
@@ -97,16 +97,20 @@ const notifySupporterForUpdates = async (candidate, update) => {
     sampleCampaign.id,
   );
   const { html } = sampleContent;
-  let youtubeHtml = ''
+  let bannerHtml = ''
   if(youtubeId) {
-    youtubeHtml = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${youtubeId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" data-gtm-yt-inspected-1_25="true"><br></iframe>`
+    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto" src="https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg" alt='youtube' /></a><br>`;
+  }
+  else if(image){
+    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto" src=${image} alt='uploaded' /></a><br>`;
   }
   template = await mailchimp.templates.create({
     name: templateName,
     html: html
       .replace('{{Date}}', date)
       .replace('{{Subject}}', title)
-      .replace('{{Content}}', youtubeHtml + text),
+      .replace('{{URL}}', url)
+      .replace('{{Content}}', bannerHtml + text),
   });
 
   const oldCampaigns = campaigns.filter(
