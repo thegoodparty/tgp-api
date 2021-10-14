@@ -47,12 +47,11 @@ module.exports = {
         ...update,
         candidate: candidateId,
       };
-
       await CampaignUpdate.create(attr);
 
       const candidate = await Candidate.findOne({ id: candidateId });
       try {
-        await notifySupporterForUpdates(candidate);
+        await notifySupporterForUpdates(candidate, attr);
       } catch (e) {
         console.log('error sending update to mailchimp', e);
       }
@@ -66,8 +65,9 @@ module.exports = {
   },
 };
 
-const notifySupporterForUpdates = async candidate => {
+const notifySupporterForUpdates = async (candidate, update) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
+  const { title, date, text, youtubeId } = update;
   const { id, data, firstName, lastName } = candidate || {};
   const { race } = JSON.parse(data);
   const { lists } = await mailchimp.lists.getAllLists();
@@ -82,29 +82,32 @@ const notifySupporterForUpdates = async candidate => {
   let segment = segments.find(item => item.name === name);
 
   const subject = `Campaign update from ${firstName} ${lastName} for ${race}`;
-  const body = `${firstName} ${lastName}, who you endorsed for ${race}, has posted an update about their campaign.`;
-  const url = `${appBase}/candidate/${firstName}-${lastName}/${candidate.id}`;
 
   const { templates } = await mailchimp.templates.list();
   const templateName = `Template ### ${id}`;
   let template = templates.find(item => item.name === templateName);
   const { campaigns } = await mailchimp.campaigns.list();
-  if (!template) {
-    const sampleCampaign = campaigns.find(
-      campaign => campaign.settings.title === 'Sample',
-    );
-    const sampleContent = await mailchimp.campaigns.getContent(
-      sampleCampaign.id,
-    );
-    const { html } = sampleContent;
-    template = await mailchimp.templates.create({
-      name: templateName,
-      html: html
-        .replace('{{Content}}', body)
-        .replace('{{Subject}}', subject)
-        .replace('{{URL}}', url),
-    });
+  if(template) {
+    await mailchimp.templates.deleteTemplate(template.id);
   }
+  const sampleCampaign = campaigns.find(
+    campaign => campaign.settings.title === 'Sample',
+  );
+  const sampleContent = await mailchimp.campaigns.getContent(
+    sampleCampaign.id,
+  );
+  const { html } = sampleContent;
+  let youtubeHtml = ''
+  if(youtubeId) {
+    youtubeHtml = `<iframe width="560" height="315" src="https://www.youtube.com/embed/${youtubeId}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" data-gtm-yt-inspected-1_25="true"><br></iframe>`
+  }
+  template = await mailchimp.templates.create({
+    name: templateName,
+    html: html
+      .replace('{{Date}}', date)
+      .replace('{{Subject}}', title)
+      .replace('{{Content}}', youtubeHtml + text),
+  });
 
   const oldCampaigns = campaigns.filter(
     campaign =>
