@@ -99,10 +99,10 @@ const notifySupporterForUpdates = async (candidate, update) => {
   const { html } = sampleContent;
   let bannerHtml = ''
   if(youtubeId) {
-    bannerHtml = `<a href="${url}"><img width="560" height="315" src="https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg" alt='youtube' /></a><br>`;
+    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto" src="https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg" alt='youtube' /></a><br>`;
   }
   else if(image){
-    bannerHtml = `<a href="${url}"><img width="560" height="315" src=${image} alt='uploaded' /></a><br>`;
+    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto" src=${image} alt='uploaded' /></a><br>`;
   }
   template = await mailchimp.templates.create({
     name: templateName,
