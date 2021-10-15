@@ -87,22 +87,19 @@ const notifySupporterForUpdates = async (candidate, update) => {
   const templateName = `Template ### ${id}`;
   let template = templates.find(item => item.name === templateName);
   const { campaigns } = await mailchimp.campaigns.list();
-  if(template) {
+  if (template) {
     await mailchimp.templates.deleteTemplate(template.id);
   }
   const sampleCampaign = campaigns.find(
     campaign => campaign.settings.title === 'Sample',
   );
-  const sampleContent = await mailchimp.campaigns.getContent(
-    sampleCampaign.id,
-  );
+  const sampleContent = await mailchimp.campaigns.getContent(sampleCampaign.id);
   const { html } = sampleContent;
-  let bannerHtml = ''
-  if(youtubeId) {
-    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto" src="https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg" alt='youtube' /></a><br>`;
-  }
-  else if(image){
-    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto" src=${image} alt='uploaded' /></a><br>`;
+  let bannerHtml = '';
+  if (youtubeId) {
+    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto;" src="https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg" alt='youtube' /></a><br />`;
+  } else if (image) {
+    bannerHtml = `<a href="${url}"><img style="width:100%; height:auto;" src="${image}" alt='uploaded' /></a><br />`;
   }
   template = await mailchimp.templates.create({
     name: templateName,
