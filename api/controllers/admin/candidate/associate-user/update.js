@@ -26,9 +26,7 @@ module.exports = {
     try {
       const { candidateId, userEmail } = inputs;
       const user = await User.findOne({ email: userEmail });
-      console.log('user', user);
       if (!user) {
-        console.log('no user');
         return this.res.notFound();
       }
       await User.updateOne({ email: userEmail }).set({
