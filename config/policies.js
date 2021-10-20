@@ -28,6 +28,7 @@ module.exports.policies = {
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   'newCandidate/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
   'newCandidate/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
+  'newCandidate/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
   // 'seed/*': ['isAuthenticated', 'isAdmin'],
   'role/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below

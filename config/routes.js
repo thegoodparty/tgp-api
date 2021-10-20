@@ -117,6 +117,7 @@ module.exports.routes = {
 
   // candidate UGC
   'GET   /api/v1/candidate-ugcs': 'newCandidates/candidateUgc/list', //admin
+  'PUT   /api/v1/candidate-ugcs/accept': 'newCandidates/candidateUgc/accept', //admin
   'GET   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/find',
   'PUT   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/update',
 };
