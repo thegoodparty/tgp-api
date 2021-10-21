@@ -10,11 +10,16 @@ module.exports = {
 
   description: 'Candidate Manager endpoint to find candidate UGC',
 
-  inputs: {},
+  inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
-      description: 'found',
+      description: 'accepted',
       responseType: 'ok',
     },
     badRequest: {
@@ -24,20 +29,17 @@ module.exports = {
   },
   async fn(inputs, exits) {
     try {
-      const candidateUgc = await CandidateUgc.find({
-        status: 'pending',
-      }).populate('candidate');
-      candidateUgc.forEach(ugc => {
-        ugc.data = ugc.data !== '' ? JSON.parse(ugc.data) : {};
-        ugc.candidate = JSON.parse(ugc.candidate.data);
-      });
-      return exits.success({
-        ugc: candidateUgc,
+      const { id } = inputs;
+
+      await CandidateUgc.updateOne({
+        id,
+      }).set({
+        status: 'rejected',
       });
 
-      // return exits.success({
-      //   candidateUgc: candidateUgc.length === 1 ? candidateUgc[0] : false,
-      // });
+      return exits.success({
+        message: 'ok',
+      });
     } catch (e) {
       console.log(e);
       return exits.badRequest({ message: 'Error updated candidate content.' });

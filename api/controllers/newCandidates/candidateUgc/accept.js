@@ -33,6 +33,7 @@ module.exports = {
 
       const candidateUgc = await CandidateUgc.findOne({
         id,
+        status: 'pending',
       });
 
       const data = JSON.parse(candidateUgc.data);
@@ -44,8 +45,10 @@ module.exports = {
           ...data,
         }),
       });
-      await CandidateUgc.destroyOne({
+      await CandidateUgc.updateOne({
         id,
+      }).set({
+        status: 'accepted',
       });
 
       return exits.success({

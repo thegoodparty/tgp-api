@@ -26,11 +26,10 @@ module.exports.policies = {
   'newCandidates/find-inactive': ['isAuthenticated', 'isAdmin'],
   'newCandidates/compareTopic/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
-  'newCandidate/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
-  'newCandidate/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
-  'newCandidate/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
-  // 'seed/*': ['isAuthenticated', 'isAdmin'],
-  'role/*': ['isAuthenticated', 'isAdmin'],
+  'newCandidates/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
+  'newCandidates/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
+  'newCandidates/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
+  'newCandidates/candidateUgc/reject': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,

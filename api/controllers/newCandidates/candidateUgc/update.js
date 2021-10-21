@@ -44,6 +44,7 @@ module.exports = {
         id: candidateUgc.id,
       }).set({
         data: JSON.stringify(data),
+        status: 'pending',
       });
 
       return exits.success({

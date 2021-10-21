@@ -28,6 +28,7 @@ module.exports = {
 
       const candidateUgc = await CandidateUgc.findOne({
         candidate: user.candidate,
+        status: 'pending'
       });
       if (candidateUgc) {
         return exits.success({

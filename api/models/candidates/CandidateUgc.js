@@ -17,17 +17,16 @@ module.exports = {
       type: 'string',
       description: 'JSON.stringified string of all the other properties',
     },
+    status: {
+      type: 'string',
+      isIn: ['pending', 'accepted', 'rejected'],
+      defaultsTo: 'pending',
+    },
 
     // one-to-one
     candidate: {
       model: 'candidate',
-      unique: true
-
+      unique: true,
     },
-  },
-
-  customToJSON: function() {
-    // Return a shallow copy of this record with the password removed.
-    return _.omit(this, ['createdAt', 'updatedAt']);
   },
 };

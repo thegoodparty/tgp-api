@@ -39,8 +39,6 @@ module.exports.routes = {
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
   'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
-  'POST   /api/v1/role/create': 'role/create',
-
   'PUT    /api/v1/user/update-user': 'user/update-user',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'POST    /api/v1/user/avatar': 'user/upload-avatar',
@@ -118,6 +116,7 @@ module.exports.routes = {
   // candidate UGC
   'GET   /api/v1/candidate-ugcs': 'newCandidates/candidateUgc/list', //admin
   'PUT   /api/v1/candidate-ugcs/accept': 'newCandidates/candidateUgc/accept', //admin
+  'PUT   /api/v1/candidate-ugcs/reject': 'newCandidates/candidateUgc/reject', //admin
   'GET   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/find',
   'PUT   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/update',
 };
