@@ -47,10 +47,10 @@ module.exports = {
         ...update,
         candidate: candidateId,
       };
-      await CampaignUpdate.create(attr);
+      const newUpdate = await CampaignUpdate.create(attr).fetch();
       const candidate = await Candidate.findOne({ id: candidateId });
       try {
-        await notifySupporterForUpdates(candidate, attr);
+        await notifySupporterForUpdates(candidate, newUpdate);
       } catch (e) {
         console.log('error sending update to mailchimp', e);
       }
@@ -78,7 +78,7 @@ const notifySupporterForUpdates = async (candidate, update) => {
   const { segments } = await mailchimp.lists.listSegments(tgpList.id, {
     count: 1000,
   });
-  const url = `${appBase}/candidate/${firstName}-${lastName}/${candidate.id}`;
+  const url = `${appBase}/candidate/${firstName}-${lastName}/${candidate.id}#candidate-update-${update.id}`;
   let segment = segments.find(item => item.name === name);
 
   const subject = `Campaign update from ${firstName} ${lastName} for ${race}`;
