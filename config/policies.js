@@ -27,6 +27,7 @@ module.exports.policies = {
   'newCandidates/compareTopic/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
+  'candidateUser/*': ['isAuthenticated', 'isCandidate'],
   'newCandidates/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/reject': ['isAuthenticated', 'isAdmin'],
@@ -50,4 +51,5 @@ module.exports.policies = {
   'user/support/list-by-candidate': true,
   'user/confirm/from-login': true,
   'newCandidates/compareTopic/list': true,
+  'visit/create': true,
 };
