@@ -112,6 +112,9 @@ module.exports.routes = {
   'DELETE   /api/v1/compare-topic': 'newCandidates/compareTopic/delete',
 
   'GET   /api/v1/candidate-user': 'candidateUser/find',
+  'GET   /api/v1/candidate-user/stats': 'candidateUser/stats',
+
+  'POST   /api/v1/visit': 'visit/create',
 
   // candidate UGC
   'GET   /api/v1/candidate-ugcs': 'newCandidates/candidateUgc/list', //admin
@@ -119,4 +122,5 @@ module.exports.routes = {
   'PUT   /api/v1/candidate-ugcs/reject': 'newCandidates/candidateUgc/reject', //admin
   'GET   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/find',
   'PUT   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/update',
+
 };
