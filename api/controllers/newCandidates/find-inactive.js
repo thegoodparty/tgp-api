@@ -37,6 +37,11 @@ module.exports = {
       const { id, withImage } = inputs;
       const candidate = await Candidate.findOne({ id }).populate(
         'candidateUpdates',
+        {
+          where: {
+            status: 'accepted',
+          },
+        },
       );
       if (!candidate) {
         return exits.notFound();

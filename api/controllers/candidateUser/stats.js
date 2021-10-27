@@ -84,7 +84,6 @@ module.exports = {
       });
       const candidateData = JSON.parse(candidate.data);
       const chart = groupByDate(visits, endorsements, shares, days);
-      console.log('chart', chart);
       return exits.success({
         stats: {
           visitors: {

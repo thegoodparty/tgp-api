@@ -4,7 +4,6 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const request = require('request-promise');
 
 module.exports = {
   friendlyName: 'Find Candidate associated with user',
@@ -28,11 +27,14 @@ module.exports = {
       if (!user.candidate) {
         return exits.notFound();
       }
-      const candidate = await Candidate.findOne({ id: user.candidate });
+      const candidate = await Candidate.findOne({
+        id: user.candidate,
+      }).populate('candidateUpdates');
       if (!candidate) {
         return exits.notFound();
       }
       let candidateData = JSON.parse(candidate.data);
+      candidateData.updatesList = candidate.candidateUpdates;
       return exits.success({
         candidate: candidateData,
       });

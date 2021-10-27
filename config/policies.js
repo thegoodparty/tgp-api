@@ -31,6 +31,7 @@ module.exports.policies = {
   'newCandidates/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/reject': ['isAuthenticated', 'isAdmin'],
+  'newCandidates/campaignUpdate/approve': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,

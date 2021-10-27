@@ -46,6 +46,7 @@ module.exports = {
       const attr = {
         ...update,
         candidate: candidateId,
+        status: 'accepted'
       };
       const newUpdate = await CampaignUpdate.create(attr).fetch();
       const candidate = await Candidate.findOne({ id: candidateId });
