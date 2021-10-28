@@ -28,6 +28,11 @@ module.exports = {
     start: {
       type: 'number',
     },
+    status: {
+      type: 'string',
+      isIn: ['pending', 'accepted', 'rejected'],
+      defaultsTo: 'pending',
+    },
     candidate: {
       model: 'candidate',
     },

@@ -93,6 +93,8 @@ module.exports.routes = {
     'newCandidates/campaignUpdate/update',
   'DELETE    /api/v1/new-candidate/campaign-update':
     'newCandidates/campaignUpdate/delete',
+  'PUT    /api/v1/new-candidate/approve-update':
+    'newCandidates/campaignUpdate/approve',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
@@ -113,6 +115,8 @@ module.exports.routes = {
 
   'GET   /api/v1/candidate-user': 'candidateUser/find',
   'GET   /api/v1/candidate-user/stats': 'candidateUser/stats',
+  'POST   /api/v1/candidate-user/update-request':
+    'candidateUser/updateRequest/create',
 
   'POST   /api/v1/visit': 'visit/create',
 
@@ -129,7 +133,8 @@ module.exports.routes = {
   'PUT   /api/v1/issue-topic': 'newCandidates/issueTopic/update',
   'DELETE   /api/v1/issue-topic': 'newCandidates/issueTopic/delete',
 
-  // candidate UGC
+  // candidate issue
   'GET   /api/v1/candidate-issue': 'newCandidates/candidateIssue/find',
   'PUT   /api/v1/candidate-issue': 'newCandidates/candidateIssue/update',
+
 };

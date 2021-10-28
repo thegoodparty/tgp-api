@@ -35,7 +35,14 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id, withImage } = inputs;
-      const candidate = await Candidate.findOne({ id, isActive: true }).populate('candidateUpdates');
+      const candidate = await Candidate.findOne({
+        id,
+        isActive: true,
+      }).populate('candidateUpdates', {
+        where: {
+          status: 'accepted',
+        },
+      });
       if (!candidate) {
         return exits.notFound();
       }
