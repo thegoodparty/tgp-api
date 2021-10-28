@@ -123,4 +123,13 @@ module.exports.routes = {
   'GET   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/find',
   'PUT   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/update',
 
+  // issue topic
+  'GET   /api/v1/issue-topics': 'newCandidates/issueTopic/list',
+  'POST   /api/v1/issue-topic': 'newCandidates/issueTopic/create',
+  'PUT   /api/v1/issue-topic': 'newCandidates/issueTopic/update',
+  'DELETE   /api/v1/issue-topic': 'newCandidates/issueTopic/delete',
+
+  // candidate UGC
+  'GET   /api/v1/candidate-issue': 'newCandidates/candidateIssue/find',
+  'PUT   /api/v1/candidate-issue': 'newCandidates/candidateIssue/update',
 };
