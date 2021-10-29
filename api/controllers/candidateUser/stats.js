@@ -142,14 +142,14 @@ const groupByDate = (visits, endorsements, shares, days) => {
 const groupRecordsByDate = (records, key, byDates) => {
   records.forEach(stat => {
     const date = moment(stat.createdAt).format('M-D');
-    // if (!byDates[date]) {
-    //   byDates[date] = {
-    //     date,
-    //     visits: 0,
-    //     endorsements: 0,
-    //     shares: 0,
-    //   };
-    // }
+    if (!byDates[date]) {
+      byDates[date] = {
+        date,
+        visits: 0,
+        endorsements: 0,
+        shares: 0,
+      };
+    }
     byDates[date][key]++;
   });
 };
