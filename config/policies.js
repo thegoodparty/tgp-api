@@ -25,8 +25,10 @@ module.exports.policies = {
   'user/support/admin-delete': ['isAuthenticated', 'isAdmin'],
   'newCandidates/find-inactive': ['isAuthenticated', 'isAdmin'],
   'newCandidates/compareTopic/*': ['isAuthenticated', 'isAdmin'],
+  'newCandidates/issueTopic/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
+  'newCandidates/candidateIssue/*': ['isAuthenticated', 'isCandidate'],
   'candidateUser/*': ['isAuthenticated', 'isCandidate'],
   'newCandidates/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
@@ -52,5 +54,6 @@ module.exports.policies = {
   'user/support/list-by-candidate': true,
   'user/confirm/from-login': true,
   'newCandidates/compareTopic/list': true,
+  'newCandidates/issueTopic/list': true,
   'visit/create': true,
 };
