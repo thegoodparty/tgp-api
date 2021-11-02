@@ -37,6 +37,7 @@ module.exports.routes = {
   'PUT   /api/v1/entrance/reset-password': 'entrance/reset-password',
 
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
+  'POST    /api/v1/notifications/feedback': 'notifications/feedback/create',
   'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
   'PUT    /api/v1/user/update-user': 'user/update-user',
@@ -137,5 +138,4 @@ module.exports.routes = {
   // candidate issue
   'GET   /api/v1/candidate-issue': 'newCandidates/candidateIssue/find',
   'PUT   /api/v1/candidate-issue': 'newCandidates/candidateIssue/update',
-
 };
