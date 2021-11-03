@@ -136,6 +136,9 @@ module.exports.routes = {
   'DELETE   /api/v1/issue-topic': 'newCandidates/issueTopic/delete',
 
   // candidate issue
+  'GET   /api/v1/candidate-issue/pending': 'newCandidates/candidateIssue/list', //admin
+  'PUT   /api/v1/candidate-issue/accept': 'newCandidates/candidateIssue/accept', //admin
+  'PUT   /api/v1/candidate-issue/reject': 'newCandidates/candidateIssue/reject', //admin
   'GET   /api/v1/candidate-issue': 'newCandidates/candidateIssue/find',
   'PUT   /api/v1/candidate-issue': 'newCandidates/candidateIssue/update',
 };
