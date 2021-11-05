@@ -10,7 +10,6 @@ module.exports = {
   inputs: {
     feedbackType: {
       type: 'string',
-      required: true,
     },
     suggestion: {
       type: 'string',
@@ -22,7 +21,6 @@ module.exports = {
     },
     stars: {
       type: 'number',
-      required: true,
     },
   },
 
@@ -104,31 +102,10 @@ const sendSlackMessage = async (suggestion, feedbackType, stars, url, user) => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `Feedback type: ${feedbackType}`,
-      },
-    });
-
-    message.blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `Stars: ${stars}`,
-      },
-    });
-
-    message.blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: suggestion,
-      },
-    });
-
-    message.blocks.push({
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
-        text: `User: ${user.name} ${user.email} ${user.phone}`,
+        text: `Feedback type: ${feedbackType || 'N/A'}
+        \nStars: ${stars || 'N/A'}
+        \nSuggestion: ${suggestion}
+        \nUser: ${user.name} ${user.email} ${user.phone}`,
       },
     });
 
