@@ -51,8 +51,22 @@ module.exports = {
         return b.supporters - a.supporters;
       });
 
+      /*
+      adding endorsment count.
+      static follower from social networks as of 11/11/21
+      TikTok: 127,200
+      Instagram:  497
+      Facebook: 368 followers + 5761 engagements
+      Twitter: 295 followers, 102 likes
+      = 134222
+       */
+      const socialFollowers = 134222;
+      const supportCount = await Support.count();
+      const shareCount = await ShareCandidate.count();
+
       return exits.success({
         homepageCandidates,
+        engagements: socialFollowers + supportCount + shareCount,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
