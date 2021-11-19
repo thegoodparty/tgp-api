@@ -26,6 +26,7 @@ module.exports.policies = {
   'newCandidates/find-inactive': ['isAuthenticated', 'isAdmin'],
   'newCandidates/compareTopic/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/issueTopic/*': ['isAuthenticated', 'isAdmin'],
+  'release/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
   'newCandidates/candidateIssue/*': ['isAuthenticated', 'isCandidate'],
@@ -59,5 +60,6 @@ module.exports.policies = {
   'user/confirm/from-login': true,
   'newCandidates/compareTopic/list': true,
   'newCandidates/issueTopic/list': true,
+  'release/list': true,
   'visit/create': true,
 };
