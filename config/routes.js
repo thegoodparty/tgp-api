@@ -141,4 +141,10 @@ module.exports.routes = {
   'PUT   /api/v1/candidate-issue/reject': 'newCandidates/candidateIssue/reject', //admin
   'GET   /api/v1/candidate-issue': 'newCandidates/candidateIssue/find',
   'PUT   /api/v1/candidate-issue': 'newCandidates/candidateIssue/update',
+
+  // release
+  'GET   /api/v1/releases': 'release/list',
+  'POST   /api/v1/release': 'release/create',
+  'PUT   /api/v1/release': 'release/update',
+  'DELETE   /api/v1/release': 'release/delete',
 };
