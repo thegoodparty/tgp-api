@@ -62,4 +62,5 @@ module.exports.policies = {
   'newCandidates/issueTopic/list': true,
   'release/list': true,
   'visit/create': true,
+  'updates/create': true,
 };
