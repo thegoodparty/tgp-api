@@ -147,4 +147,7 @@ module.exports.routes = {
   'POST   /api/v1/release': 'release/create',
   'PUT   /api/v1/release': 'release/update',
   'DELETE   /api/v1/release': 'release/delete',
+
+  // updates(for notifications)
+  'POST   /api/v1/updates': 'updates/create',
 };
