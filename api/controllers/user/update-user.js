@@ -80,6 +80,8 @@ module.exports = {
       }
       if (phone) {
         updateFields.phone = phone;
+        updateFields.isPhoneVerified = false;
+        await sails.helpers.sms.smsVerify(phone);
       }
 
       if (zip) {
