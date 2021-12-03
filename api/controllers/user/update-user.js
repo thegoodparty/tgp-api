@@ -41,6 +41,16 @@ module.exports = {
       type: 'string',
       maxLength: 5,
     },
+
+    displayName: {
+      required: false,
+      type: 'string',
+    },
+
+    pronouns: {
+      required: false,
+      type: 'string',
+    },
   },
 
   exits: {
@@ -56,13 +66,31 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      console.log('inputs', inputs);
+
       const reqUser = this.req.user;
-      const { name, email, feedback, phone, zip } = inputs;
-      if (!name && !email && !feedback && !zip && !phone) {
-        return exits.badRequest({
-          message: 'Name, Feedback, Zip or Email are required',
-        });
-      }
+      const {
+        name,
+        email,
+        feedback,
+        phone,
+        zip,
+        displayName,
+        pronouns,
+      } = inputs;
+      // if (
+      //   !name &&
+      //   !email &&
+      //   !feedback &&
+      //   !zip &&
+      //   !phone &&
+      //   !displayName &&
+      //   !pronouns
+      // ) {
+      //   return exits.badRequest({
+      //     message: 'Name, Feedback, Zip or Email are required',
+      //   });
+      // }
 
       const updateFields = {};
       if (name) {
@@ -86,6 +114,14 @@ module.exports = {
 
       if (zip) {
         updateFields.zip = zip;
+      }
+
+      if (displayName) {
+        updateFields.displayName = displayName;
+      }
+
+      if (pronouns) {
+        updateFields.pronouns = pronouns;
       }
 
       const user = await User.updateOne({ id: reqUser.id }).set(updateFields);

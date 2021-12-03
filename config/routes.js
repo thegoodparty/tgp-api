@@ -41,6 +41,7 @@ module.exports.routes = {
   'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
   'PUT    /api/v1/user/update-user': 'user/update-user',
+  'DELETE    /api/v1/user': 'user/delete',
   'PUT    /api/v1/user/update-address': 'user/update-address',
   'POST    /api/v1/user/avatar': 'user/upload-avatar',
   'GET    /api/v1/user/crew': 'user/crew/find',
