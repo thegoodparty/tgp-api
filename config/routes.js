@@ -109,6 +109,7 @@ module.exports.routes = {
   'DELETE   /api/v1/admin-support': 'user/support/admin-delete',
   'PUT   /api/v1/support': 'user/support/update',
   'GET   /api/v1/supports': 'user/support/list-by-user',
+  'GET   /api/v1/support-updates': 'user/support/support-updates',
   'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
 
   'GET   /api/v1/compare-topics': 'newCandidates/compareTopic/list',
