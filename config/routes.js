@@ -152,4 +152,10 @@ module.exports.routes = {
 
   // updates(for notifications)
   'POST   /api/v1/updates': 'updates/create',
+
+  // campaign notification
+  'GET   /api/v1/campaign-notification':
+    'newCandidates/campaignNotification/find',
+  'PUT   /api/v1/campaign-notification':
+    'newCandidates/campaignNotification/update',
 };

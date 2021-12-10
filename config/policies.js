@@ -31,6 +31,7 @@ module.exports.policies = {
   'newCandidates/candidateUgc/*': ['isAuthenticated', 'isCandidate'],
   'newCandidates/candidateIssue/*': ['isAuthenticated', 'isCandidate'],
   'candidateUser/*': ['isAuthenticated', 'isCandidate'],
+  'newCandidates/campaignNotification/*': ['isAuthenticated', 'isCandidate'],
   'newCandidates/candidateUgc/list': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/accept': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateUgc/reject': ['isAuthenticated', 'isAdmin'],
