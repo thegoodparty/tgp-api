@@ -22,8 +22,11 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    tags: {
+      type: 'json',
+    },
     isOnline: {
       type: 'boolean',
-    }
+    },
   },
 };
