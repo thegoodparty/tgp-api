@@ -57,10 +57,10 @@ module.exports = {
       TikTok: 127,200
       Instagram:  497
       Facebook: 368 followers + 5761 engagements
-      Twitter: 295 followers, 102 likes
+      Twitter: 299 followers, 138 likes
       = 134222
        */
-      const socialFollowers = 134222;
+      const socialFollowers = 135162;
       const supportCount = await Support.count();
       const shareCount = await ShareCandidate.count();
 
