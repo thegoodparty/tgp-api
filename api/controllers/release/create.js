@@ -16,6 +16,9 @@ module.exports = {
     },
     isOnline: {
       type: 'boolean',
+    },
+    tags: {
+      type: 'json'
     }
   },
 
@@ -32,12 +35,13 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { releaseNote, releaseType, releaseDate, isOnline } = inputs;
+      const { releaseNote, releaseType, releaseDate, isOnline, tags } = inputs;
       await Release.create({
         releaseNote,
         releaseType,
         releaseDate,
         isOnline,
+        tags,
       });
 
       return exits.success({

@@ -27,6 +27,7 @@ module.exports = {
         releaseDate: release.releaseDate,
         releaseType: release.releaseType,
         isOnline: release.isOnline,
+        tags: release.tags,
       });
 
       return exits.success({
