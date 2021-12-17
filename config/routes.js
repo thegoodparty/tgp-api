@@ -155,7 +155,7 @@ module.exports.routes = {
 
   // campaign notification
   'GET   /api/v1/campaign-notification':
-    'newCandidates/campaignNotification/find',
+    'candidateUser/campaignNotification/find',
   'PUT   /api/v1/campaign-notification':
-    'newCandidates/campaignNotification/update',
+    'candidateUser/campaignNotification/update',
 };
