@@ -15,6 +15,10 @@ module.exports = {
       type: 'json',
       required: true,
     },
+    candidateId: {
+      type: 'string',
+      required: true,
+    },
   },
 
   exits: {
@@ -30,13 +34,13 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { data } = inputs;
+      const { data, candidateId } = inputs;
       const candidateIssue = await CandidateIssue.findOrCreate(
         {
-          candidate: user.candidate,
+          candidate: candidateId || user.candidate,
         },
         {
-          candidate: user.candidate,
+          candidate: candidateId || user.candidate,
         },
       );
       await CandidateIssue.updateOne({

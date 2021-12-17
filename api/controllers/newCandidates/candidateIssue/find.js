@@ -10,7 +10,12 @@ module.exports = {
 
   description: 'Candidate Issue endpoint to find candidate issue',
 
-  inputs: {},
+  inputs: {
+    candidateId: {
+      type: 'string',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -25,9 +30,10 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
+      const { candidateId } = inputs;
 
       const candidateIssue = await CandidateIssue.findOne({
-        candidate: user.candidate,
+        candidate: candidateId || user.candidate,
         status: 'pending'
       });
       if (candidateIssue) {
