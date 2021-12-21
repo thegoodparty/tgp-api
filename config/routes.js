@@ -152,4 +152,10 @@ module.exports.routes = {
 
   // updates(for notifications)
   'POST   /api/v1/updates': 'updates/create',
+
+  // application
+  'POST   /api/v1/application': 'newCandidates/application/create',
+  'GET   /api/v1/applications': 'newCandidates/application/list',
+  'GET   /api/v1/application': 'newCandidates/application/find',
+  'PUT   /api/v1/application': 'newCandidates/application/update',
 };
