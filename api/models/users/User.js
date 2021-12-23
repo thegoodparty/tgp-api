@@ -197,6 +197,11 @@ module.exports = {
       via: 'user',
     },
 
+    applications: {
+      collection: 'application',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',

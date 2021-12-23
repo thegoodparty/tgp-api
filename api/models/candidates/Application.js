@@ -1,7 +1,7 @@
 /**
- * Release.js
+ * CampaignUpdate.js
  *
- * @description :: A model definition represents a database table/collection.
+ * @description :: campaign update - many to many relationship with candidates.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
@@ -10,23 +10,18 @@ module.exports = {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
-    releaseType: {
+
+    status: {
       type: 'string',
-      required: true,
+      isIn: ['incomplete', 'in review', 'accepted', 'rejected'],
+      defaultsTo: 'incomplete',
     },
-    releaseDate: {
+    data: {
       type: 'string',
-      required: true,
     },
-    releaseNote: {
-      type: 'string',
-      required: true,
-    },
-    tags: {
-      type: 'json',
-    },
-    isOnline: {
-      type: 'boolean',
+
+    user: {
+      model: 'user',
     },
   },
 };

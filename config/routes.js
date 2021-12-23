@@ -158,4 +158,10 @@ module.exports.routes = {
     'candidateUser/campaignNotification/find',
   'PUT   /api/v1/campaign-notification':
     'candidateUser/campaignNotification/update',
+
+  // application
+  'POST   /api/v1/application': 'newCandidates/application/create',
+  'GET   /api/v1/applications': 'newCandidates/application/list',
+  'GET   /api/v1/application': 'newCandidates/application/find',
+  'PUT   /api/v1/application': 'newCandidates/application/update',
 };
