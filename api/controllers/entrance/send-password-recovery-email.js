@@ -72,7 +72,7 @@ module.exports = {
         const link = encodeURI(
           `${appBase}/login/reset-password?email=${lowerCaseEmail}&token=${token}`,
         );
-        await sentEmail(email, link);
+        await sentEmail(user, link);
       } else {
         const link = encodeURI(
           `${appBase}/login/reset-password?phone=${phone}&token=${token}`,
