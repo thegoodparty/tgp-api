@@ -210,7 +210,7 @@ module.exports = {
     } catch (e) {
       // await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
       console.log('register error', e);
-      if(e.cause.details.includes('`name`')) {
+      if(e?.cause?.details?.includes('`name`')) {
         return exits.badRequest({ message: 'Exceeded max characters for name' });
       }
       else {
