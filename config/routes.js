@@ -164,4 +164,5 @@ module.exports.routes = {
   'GET   /api/v1/applications': 'newCandidates/application/list',
   'GET   /api/v1/application': 'newCandidates/application/find',
   'PUT   /api/v1/application': 'newCandidates/application/update',
+  'POST   /api/v1/application/submit': 'newCandidates/application/submit',
 };
