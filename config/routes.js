@@ -168,4 +168,6 @@ module.exports.routes = {
   'POST   /api/v1/application/submit': 'newCandidates/application/submit',
   'POST   /api/v1/application/upload-image':
     'newCandidates/application/upload-image',
+  'GET   /api/v1/applications/in-review':
+    'newCandidates/application/list-in-review', //admin
 };
