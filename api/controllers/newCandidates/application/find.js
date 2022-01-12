@@ -1,5 +1,5 @@
 module.exports = {
-  friendlyName: 'create a issue topic',
+  friendlyName: 'create a candidate application',
 
   inputs: {
     id: {

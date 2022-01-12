@@ -161,6 +161,7 @@ module.exports.routes = {
 
   // application
   'POST   /api/v1/application': 'newCandidates/application/create',
+  'DELETE   /api/v1/application': 'newCandidates/application/delete',
   'GET   /api/v1/applications': 'newCandidates/application/list',
   'GET   /api/v1/application': 'newCandidates/application/find',
   'PUT   /api/v1/application': 'newCandidates/application/update',
