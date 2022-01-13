@@ -13,7 +13,7 @@ module.exports = {
 
     status: {
       type: 'string',
-      isIn: ['incomplete', 'in review', 'accepted', 'rejected'],
+      isIn: ['incomplete', 'in review', 'approved', 'rejected'],
       defaultsTo: 'incomplete',
     },
     data: {

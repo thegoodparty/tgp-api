@@ -23,10 +23,21 @@ module.exports = {
     try {
       const { id } = inputs;
       const user = this.req.user;
-      const application = await Application.findOne({
-        id,
-        user: user.id,
-      });
+      let application;
+      let reviewMode = false;
+      if (user.isAdmin) {
+        application = await Application.findOne({
+          id,
+        });
+        if (user.id !== application.user.id) {
+          reviewMode = true;
+        }
+      } else {
+        application = await Application.findOne({
+          id,
+          user: user.id,
+        });
+      }
       let data = {};
       if (application.data && application.data !== '') {
         data = JSON.parse(application.data);
@@ -37,6 +48,7 @@ module.exports = {
           ...application,
           ...data,
         },
+        reviewMode,
       });
     } catch (e) {
       console.log('error at applications/create', e);

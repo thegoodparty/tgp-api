@@ -18,7 +18,7 @@ module.exports = {
     try {
       const applications = await Application.find({
         status: 'in review',
-      });
+      }).populate('user');
 
       return exits.success({
         applications,

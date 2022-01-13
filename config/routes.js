@@ -170,4 +170,6 @@ module.exports.routes = {
     'newCandidates/application/upload-image',
   'GET   /api/v1/applications/in-review':
     'newCandidates/application/list-in-review', //admin
+  'PUT   /api/v1/applications/approve': 'newCandidates/application/approve', //admin
+  'PUT   /api/v1/applications/reject': 'newCandidates/application/reject', //admin
 };
