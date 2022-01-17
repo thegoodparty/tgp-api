@@ -89,7 +89,7 @@ async function sendSlackMessage(data) {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Candidate application submitted*.\n*ENV*: ${env}\n__________________________________ \n${summary}
+          text: `__________________________________ \n*Candidate application submitted*.\n*ENV*: ${env}\n\n${summary}
           `,
         },
       },
