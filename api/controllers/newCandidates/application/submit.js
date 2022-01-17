@@ -72,6 +72,16 @@ async function sendSlackMessage(data) {
     env = 'prod';
   }
 
+  const summary = `
+  • *Name:* ${data.candidate.firstName}  ${
+    data.candidate.lastName
+  }\n• *Office Sought:* ${
+    data.campaign['running for']
+  }\n• *Application:* <${appBase}/campaign-application/${
+    data.id
+  }/1|Admin Approval Link>
+ `;
+
   const message = {
     text: `Candidate application submitted. ENV: ${env}`,
     blocks: [
@@ -79,8 +89,7 @@ async function sendSlackMessage(data) {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Candidate application submitted. ENV: ${env}.*__________________________________ \n\n
-          ${JSON.stringify(data, undefined, 4)}
+          text: `*Candidate application submitted*.\n*ENV*: ${env}\n__________________________________ \n${summary}
           `,
         },
       },
