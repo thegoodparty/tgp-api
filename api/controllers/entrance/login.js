@@ -62,6 +62,7 @@ module.exports = {
 
       const token = await sails.helpers.jwtSign({
         id: user.id,
+        email: lowerCaseEmail,
       });
       return exits.success({ user, token });
     } catch (err) {
