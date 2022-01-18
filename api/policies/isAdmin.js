@@ -31,14 +31,7 @@ module.exports = async function(req, res, next) {
           ) {
             return next();
           } else {
-            const message = `user email: ${
-              decoded && decoded.data
-                ? JSON.stringify(decoded.data)
-                : 'No email found'
-            }. Admin emails: ${JSON.stringify(adminEmails)}`;
-            return res
-              .status(401)
-              .send('Admin permission access required1 ' + message);
+            return res.status(401).send('Admin permission access required1');
           }
         } catch (err) {
           return res.status(401).send('Admin permission access required2');
