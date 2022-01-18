@@ -21,11 +21,22 @@ module.exports = async function(req, res, next) {
         token = credentials;
         try {
           const decoded = await sails.helpers.jwtVerify(token);
-          const adminEmails = sails.config.custom.adminEmails || sails.config.adminEmails;
-          if (decoded && decoded.data && adminEmails && adminEmails.includes(decoded.data.email)) {
+          const adminEmails =
+            sails.config.custom.adminEmails || sails.config.adminEmails;
+          if (
+            decoded &&
+            decoded.data &&
+            adminEmails &&
+            adminEmails.includes(decoded.data.email)
+          ) {
             return next();
           } else {
-            return res.status(401).send('Admin permission access required1');
+            const message = `user email: ${
+              decoded && decoded.data ? decoded.data.email : 'No email found'
+            }. Admin emails: ${JSON.stringify(adminEmails)}`;
+            return res
+              .status(401)
+              .send('Admin permission access required1 ' + message);
           }
         } catch (err) {
           return res.status(401).send('Admin permission access required2');
