@@ -29,7 +29,7 @@ module.exports = {
         application = await Application.findOne({
           id,
         });
-        if (user.id !== application.user.id) {
+        if (user.id !== application.user) {
           reviewMode = true;
         }
       } else {
