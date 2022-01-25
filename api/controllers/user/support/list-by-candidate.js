@@ -38,7 +38,7 @@ module.exports = {
         support.timeAgo = await sails.helpers.timeAgo(support.createdAt);
         support.message = null;
         support.type = 'endorse';
-        if (support.user && support.user.name) {
+        if (support.user) {
           support.user = await sails.helpers.getDisplayName(
             support.user,
           );
