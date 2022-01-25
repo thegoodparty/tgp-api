@@ -134,7 +134,7 @@ module.exports = {
           </table>
           `;
           const messageHeader = '';
-          await sails.helpers.mailgunSender(
+          await sails.helpers.mailgun.mailgunSender(
             referrerUser.email,
             referrerUser.name,
             subject,

@@ -128,7 +128,7 @@ const sendVerifiedEmail = async user => {
       `;
 
   const messageHeader = '';
-  await sails.helpers.mailgunSender(
+  await sails.helpers.mailgun.mailgunSender(
     user.email,
     user.name,
     subject,

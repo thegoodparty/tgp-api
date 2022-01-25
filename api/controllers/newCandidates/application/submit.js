@@ -1,3 +1,9 @@
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+let env = 'dev';
+if (appBase === 'https://goodparty.org') {
+  env = 'prod';
+}
+
 module.exports = {
   friendlyName: 'create a issue topic',
 
@@ -51,6 +57,11 @@ module.exports = {
       } catch (e) {
         console.log('error sending slack');
       }
+      try {
+        await sendEmail(newData);
+      } catch (e) {
+        console.log('error sending slack');
+      }
 
       return exits.success({
         application: newData,
@@ -66,12 +77,6 @@ module.exports = {
 };
 
 async function sendSlackMessage(data) {
-  const appBase = sails.config.custom.appBase || sails.config.appBase;
-  let env = 'dev';
-  if (appBase === 'https://goodparty.org') {
-    env = 'prod';
-  }
-
   const summary = `
   • *Name:* ${data.candidate.firstName}  ${
     data.candidate.lastName
@@ -101,4 +106,66 @@ async function sendSlackMessage(data) {
   };
 
   await sails.helpers.slackHelper(message, 'content');
+}
+
+async function sendEmail(data) {
+  const to = 'jed@goodparty.org,tomer@goodparty.org,pravash@onpathtesting.com';
+  const subject = 'Candidate Application submitted';
+  const template = 'appplication-submission';
+  // const templateDomain = encodeURI(domain);
+  const link = `${appBase}/campaign-application/${data.id}/1`;
+  const content = { link };
+  content.sections = [];
+
+  const candidateSection = createSection(data.candidate, 'Candidate');
+  content.sections.push(candidateSection);
+
+  const campaignSection = createSection(data.campaign, 'Campaign');
+  content.sections.push(campaignSection);
+
+  const contactsSection = createSection(data.contacts, 'Contacts');
+  content.sections.push(contactsSection);
+
+  const issuesSection = createSection(data.issues, 'Positions');
+  content.sections.push(issuesSection);
+
+  const endorsementsSection = createSection(
+    { endorsements: data.endorsements },
+    'Endorsements',
+  );
+  content.sections.push(endorsementsSection);
+  const variables = JSON.stringify(content);
+  await sails.helpers.mailgun.mailgunTemplateSender(
+    to,
+    subject,
+    template,
+    variables,
+  );
+}
+
+function createSection(data, name) {
+  const section = { name };
+  section.body = [];
+  Object.keys(data).forEach(key => {
+    if (typeof data[key] === 'string') {
+      section.body.push({ key: camelToSpaces(key), value: data[key] });
+    } else if (Array.isArray(data[key])) {
+      section.body.push({
+        key: camelToSpaces(key),
+        value: JSON.stringify(data[key]),
+      });
+    }
+  });
+  return section;
+}
+
+function camelToSpaces(str) {
+  return (
+    str
+      .replace(/([A-Z])/g, ' $1')
+      // uppercase the first character
+      .replace(/^./, function(str) {
+        return str.toUpperCase();
+      })
+  );
 }

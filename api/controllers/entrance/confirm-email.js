@@ -125,7 +125,7 @@ module.exports = {
       `;
 
       const messageHeader = '';
-      await sails.helpers.mailgunSender(
+      await sails.helpers.mailgun.mailgunSender(
         lowerCaseEmail,
         user.name,
         subject,

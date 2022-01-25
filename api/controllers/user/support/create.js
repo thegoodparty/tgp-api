@@ -120,7 +120,7 @@ module.exports = {
       </table>`;
       const messageHeader = '';
       try {
-        await sails.helpers.mailgunSender(
+        await sails.helpers.mailgun.mailgunSender(
           reqUser.email,
           reqUser.name,
           subject,

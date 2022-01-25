@@ -230,7 +230,7 @@ const sendEmail = async (reqEmail, email) => {
   `;
 
   const messageHeader = '';
-  await sails.helpers.mailgunSender(
+  await sails.helpers.mailgun.mailgunSender(
     email,
     user.name,
     subject,

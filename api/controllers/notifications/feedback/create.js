@@ -52,7 +52,7 @@ module.exports = {
         Suggestion: ${msgWithLineBreaks}
       `;
       const replyEmail = user.email || '';
-      await sails.helpers.mailgunSender(
+      await sails.helpers.mailgun.mailgunSender(
         email,
         name,
         subject,

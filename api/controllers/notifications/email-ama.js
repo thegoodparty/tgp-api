@@ -43,7 +43,7 @@ module.exports = {
       const email = 'ask@goodparty.org';
       const name = 'TGP Admin';
       const msgWithLineBreaks = message.replace(/\r\n|\r|\n/g, '</br>');
-      await sails.helpers.mailgunSender(
+      await sails.helpers.mailgun.mailgunSender(
         email,
         name,
         subject,

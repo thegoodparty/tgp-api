@@ -144,7 +144,7 @@ const sendWVerifyEmail = async user => {
         `;
   const messageHeader = '';
   console.log('email sent');
-  await sails.helpers.mailgunSender(
+  await sails.helpers.mailgun.mailgunSender(
     lowerCaseEmail,
     name,
     subject,
