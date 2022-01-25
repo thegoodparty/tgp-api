@@ -11,14 +11,11 @@ module.exports = {
     fn: async function(inputs, exits) {
       try {
         const { user } = inputs;
-        if(user && user.displayName) {
+        if(user.displayName) {
             return exits.success(user.displayName);
         }
-        if(user && user.name) {
-            const initials = await sails.helpers.fullFirstLastInitials(user && user.name);
-            return exits.success(initials);
-        }
-        return exits.success('');
+        const initials = await sails.helpers.fullFirstLastInitials(user.name);
+        return exits.success(initials);
       } catch (e) {
         return exits.success('');
       }
