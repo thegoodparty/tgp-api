@@ -39,8 +39,8 @@ module.exports = {
         support.message = null;
         support.type = 'endorse';
         if (support.user && support.user.name) {
-          support.user = await sails.helpers.fullFirstLastInitials(
-            support.user.name,
+          support.user = await sails.helpers.getDisplayName(
+            support.user,
           );
         } else {
           support.user = '';
