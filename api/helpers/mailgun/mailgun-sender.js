@@ -49,11 +49,11 @@ module.exports = {
       const MAILGUN_API =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
       const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
-      
+
       // const validFromEmail =
       //   fromEmail || 'The Good Party <noreply@goodparty.org>';
       const validFromEmail = fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
-      
+
       mg.messages
         .create('mg.goodparty.org', {
           from: validFromEmail,

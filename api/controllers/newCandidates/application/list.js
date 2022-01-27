@@ -19,7 +19,7 @@ module.exports = {
       const user = this.req.user;
       const applications = await Application.find({
         user: user.id,
-      });
+      }).sort([{ createdAt: 'ASC' }]);;
 
       return exits.success({
         applications,
