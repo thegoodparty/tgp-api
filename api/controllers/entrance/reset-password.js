@@ -66,7 +66,10 @@ module.exports = {
           passwordResetToken: token,
         });
       } else {
-        user = await User.findOne({ phone, passwordResetToken: token });
+        const users = await User.find({ phone, passwordResetToken: token });
+        if (users.length > 0) {
+          user = users[0];
+        }
       }
 
       // If no such user exists, or their token is expired, bail.

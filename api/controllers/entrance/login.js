@@ -49,7 +49,10 @@ module.exports = {
         const lowerCaseEmail = email.toLowerCase();
         user = await User.findOne({ email: lowerCaseEmail });
       } else {
-        user = await User.findOne({ phone });
+        const users = await User.find({ phone });
+        if (users.length > 0) {
+          user = users[0];
+        }
       }
       if (!user) {
         return exits.badRequest({});

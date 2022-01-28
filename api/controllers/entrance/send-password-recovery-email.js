@@ -45,7 +45,10 @@ module.exports = {
         // (Even if no such user exists, pretend it worked to discourage sniffing.)
         user = await User.findOne({ email: lowerCaseEmail });
       } else {
-        user = await User.findOne({ phone });
+        const users = await User.find({ phone });
+        if (users.length > 0) {
+          user = users[0];
+        }
       }
       if (!user) {
         return exits.badRequest({
