@@ -39,7 +39,10 @@ module.exports = {
       if (email) {
         user = await User.findOne({ email });
       } else {
-        user = await User.findOne({ phone });
+        const users = await User.find({ phone });
+        if (users.length > 0) {
+          user = users[0];
+        }
       }
       // const { phone } = user;
       if (phone) {
@@ -54,7 +57,7 @@ module.exports = {
           });
           return exits.success({
             user: updatedUser,
-            token
+            token,
           });
         } catch (e) {
           console.log('error verifying code with phone');
