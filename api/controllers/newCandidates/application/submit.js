@@ -109,7 +109,7 @@ async function sendSlackMessage(data) {
 }
 
 async function sendEmail(data) {
-  const to = 'jed@goodparty.org,tomer@goodparty.org,pravash@onpathtesting.com';
+  const to = 'politics@goodparty.org';
   const subject = 'Candidate Application submitted';
   const template = 'appplication-submission';
   // const templateDomain = encodeURI(domain);
