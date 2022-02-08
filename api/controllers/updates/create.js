@@ -80,7 +80,6 @@ module.exports = {
       console.log('error at updates/create', e);
       return exits.badRequest({
         message: 'Error creating updates signup',
-        e,
       });
     }
   },
