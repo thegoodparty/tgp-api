@@ -1,6 +1,8 @@
 branch-defaults:
   develop:
     environment: gp-api-dev
+  qa:
+    environment: gp-api-qa
   master:
     environment: gp-api-prod
 environment-defaults:
