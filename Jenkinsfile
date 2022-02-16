@@ -3,6 +3,8 @@ pipeline {
   environment {
     DEV_BRANCH            = "develop"
     EB_DEV                = "gp-api-dev"
+    QA_BRANCH            = "qa"
+    EB_QA                = "gp-api-qa"
     PROD_BRANCH           = "master"
     EB_PROD               = "gp-api-prod"
   }
@@ -21,6 +23,8 @@ pipeline {
           script {
             if(env.BRANCH_NAME == PROD_BRANCH) {
             sh '/var/lib/jenkins/eb deploy $EB_PROD'
+          } else if(env.BRANCH_NAME == QA_BRANCH) {
+            sh '/var/lib/jenkins/eb deploy $EB_QA'
           } else if(env.BRANCH_NAME == DEV_BRANCH) {
             sh '/var/lib/jenkins/eb deploy $EB_DEV'
           }
