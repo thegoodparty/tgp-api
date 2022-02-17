@@ -48,6 +48,54 @@ module.exports = {
         status: 'approved',
         data: JSON.stringify(newData),
       });
+      const { firstName, lastName } = newData.candidate;
+      // create candidate in our system
+      const newCandidate = await Candidate.create({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        isActive: true,
+        chamber: 'local',
+      }).fetch();
+      const {
+        campaignSummary,
+        state,
+        facebook,
+        twitter,
+        tiktok,
+        snap,
+        youtube,
+        reddit,
+        votesToWin,
+        likelySupport,
+        headshotPhoto,
+      } = newData.campaign;
+
+      const cleanCandidate = {
+        id: newCandidate.id,
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        isActive: true,
+        chamber: 'local',
+        headline: campaignSummary,
+        state,
+        party: 'I',
+        facebook,
+        twitter,
+        tiktok,
+        snap,
+        youtube,
+        reddit,
+        votesNeeded: votesToWin,
+        likelyVoters: likelySupport,
+        image: headshotPhoto,
+        race: newData.campaign['running for'],
+        user: newData.user,
+      };
+
+      await Candidate.updateOne({ id: newCandidate.id }).set({
+        data: JSON.stringify(cleanCandidate),
+      });
+      await sails.helpers.triggerCandidateUpdate(newCandidate.id);
       try {
         await sendSlackMessage(newData);
       } catch (e) {

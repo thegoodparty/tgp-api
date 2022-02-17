@@ -56,6 +56,7 @@
     "lint-fix": "eslint --fix",
     "custom-tests": "echo \"(No other custom tests yet.)\" && echo",
     "deploy-dev": "git checkout develop && eb deploy",
+    "deploy-qa": "git checkout qa && eb deploy",
     "deploy-prod": "git checkout master && eb deploy"
   },
   "main": "app.js",
