@@ -186,12 +186,6 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    // one-to-one
-    candidate: {
-      model: 'candidate',
-      unique: true,
-    },
-
     supports: {
       collection: 'support',
       via: 'user',
@@ -199,6 +193,12 @@ module.exports = {
 
     applications: {
       collection: 'application',
+      via: 'user',
+    },
+
+    // a user can be a staff for multiple candidates.
+    staff: {
+      collection: 'staff',
       via: 'user',
     },
 

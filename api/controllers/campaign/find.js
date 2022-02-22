@@ -8,7 +8,12 @@
 module.exports = {
   friendlyName: 'Find Candidate associated with user',
 
-  inputs: {},
+  inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -19,20 +24,34 @@ module.exports = {
       description: 'Candidate Not Found.',
       responseType: 'notFound',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
 
   fn: async function(inputs, exits) {
     try {
+      const { id } = inputs;
       const user = this.req.user;
-      if (!user.candidate) {
-        return exits.notFound();
-      }
+
       const candidate = await Candidate.findOne({
-        id: user.candidate,
+        id,
       }).populate('candidateUpdates');
+
+      try {
+        const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+        if (!canAccess) {
+          return exits.forbidden();
+        }
+      } catch (e) {
+        return exits.forbidden();
+      }
+
       if (!candidate) {
         return exits.notFound();
       }
+
       let candidateData = JSON.parse(candidate.data);
       candidateData.updatesList = candidate.candidateUpdates;
       return exits.success({

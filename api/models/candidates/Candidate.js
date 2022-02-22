@@ -44,12 +44,6 @@ module.exports = {
     },
 
     // one-to-one
-    user: {
-      collection: 'user',
-      via: 'candidate',
-    },
-
-    // one-to-one
     candidateUgc: {
       collection: 'candidateUgc',
       via: 'candidate',
@@ -58,6 +52,12 @@ module.exports = {
     // one to many relationship to campaignUpdates
     candidateUpdates: {
       collection: 'campaignupdate',
+      via: 'candidate',
+    },
+
+    // one to many relationship to staff members
+    staff: {
+      collection: 'staff',
       via: 'candidate',
     },
   },

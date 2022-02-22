@@ -21,11 +21,10 @@ module.exports = {
       let candidates;
 
       candidates = await Candidate.find()
-        .populate('user')
         .sort([{ updatedAt: 'DESC' }]);
 
       candidates = candidates.map(candidate => {
-        return { ...JSON.parse(candidate.data), user: candidate.user };
+        return { ...JSON.parse(candidate.data) };
       });
       return exits.success({
         candidates,

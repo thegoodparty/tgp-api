@@ -12,6 +12,10 @@ module.exports = {
   friendlyName: 'Track Visit',
 
   inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
     range: {
       type: 'string',
     },
@@ -26,11 +30,15 @@ module.exports = {
       description: 'Error creating',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { range } = inputs;
+      const { range, id } = inputs;
       const days = range === 'Last 30 days' ? 30 : 7;
       const startDate = moment()
         .subtract(days, 'days')
@@ -40,7 +48,12 @@ module.exports = {
         .subtract(days * 2, 'days')
         .format('YYYY-MM-DD');
 
-      const candidate = await Candidate.findOne({ id: user.candidate });
+      const candidate = await Candidate.findOne({ id });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess) {
+        return exits.forbidden();
+      }
+
       const name = slugify(`${candidate.firstName} ${candidate.lastName}`);
       const url = `/candidate/${name}/${candidate.id}`;
 

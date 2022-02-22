@@ -30,10 +30,21 @@ module.exports = {
       description: 'Error creating',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
+      const { user } = this.req;
+
       const { candidateId, update } = inputs;
+      const candidate = await Candidate.findOne({ id: candidateId });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess) {
+        return exits.forbidden();
+      }
       const attr = {
         ...update,
         candidate: candidateId,
