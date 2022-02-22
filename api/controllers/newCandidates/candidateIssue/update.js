@@ -30,17 +30,26 @@ module.exports = {
       description: 'Candidate update Failed',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
       const { data, candidateId } = inputs;
+      const candidate = await Candidate.findOne({ id: candidateId });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess) {
+        return exits.forbidden();
+      }
       const candidateIssue = await CandidateIssue.findOrCreate(
         {
-          candidate: candidateId || user.candidate,
+          candidate: candidateId,
         },
         {
-          candidate: candidateId || user.candidate,
+          candidate: candidateId,
         },
       );
       await CandidateIssue.updateOne({
