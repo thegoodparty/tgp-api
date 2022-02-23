@@ -131,11 +131,11 @@ module.exports.routes = {
   'POST   /api/v1/campaign/update-request': 'campaign/updateRequest/create',
 
   // candidate UGC
-  'GET   /api/v1/candidate-ugcs': 'newCandidates/candidateUgc/list', //admin
-  'PUT   /api/v1/candidate-ugcs/accept': 'newCandidates/candidateUgc/accept', //admin
-  'PUT   /api/v1/candidate-ugcs/reject': 'newCandidates/candidateUgc/reject', //admin
-  'GET   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/find',
-  'PUT   /api/v1/candidate-ugc': 'newCandidates/candidateUgc/update',
+  'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin
+  'PUT   /api/v1/ugcs/accept': 'campaign/ugc/accept', //admin
+  'PUT   /api/v1/ugcs/reject': 'campaign/ugc/reject', //admin
+  'GET   /api/v1/ugc': 'campaign/ugc/find',
+  'PUT   /api/v1/ugc': 'campaign/ugc/update',
 
   // issue topic
   'GET   /api/v1/issue-topics': 'newCandidates/issueTopic/list',

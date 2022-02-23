@@ -11,6 +11,10 @@ module.exports = {
   description: 'Candidate Manager endpoint to edit a candidate.',
 
   inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
     data: {
       type: 'json',
       required: true,
@@ -26,17 +30,27 @@ module.exports = {
       description: 'Candidate update Failed',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { data } = inputs;
+      const { data, id } = inputs;
+      const candidate = await Candidate.findOne({ id });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess) {
+        return exits.forbidden();
+      }
+
       const candidateUgc = await CandidateUgc.findOrCreate(
         {
-          candidate: user.candidate,
+          candidate: id,
         },
         {
-          candidate: user.candidate,
+          candidate: id,
         },
       );
 

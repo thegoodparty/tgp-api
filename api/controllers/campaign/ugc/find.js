@@ -10,7 +10,12 @@ module.exports = {
 
   description: 'Candidate Manager endpoint to find candidate UGC',
 
-  inputs: {},
+  inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -21,14 +26,24 @@ module.exports = {
       description: 'error finding',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
+      const { id } = inputs;
+      const candidate = await Candidate.findOne({ id });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess) {
+        return exits.forbidden();
+      }
 
       const candidateUgc = await CandidateUgc.findOne({
-        candidate: user.candidate,
-        status: 'pending'
+        candidate: id,
+        status: 'pending',
       });
       if (candidateUgc) {
         return exits.success({
