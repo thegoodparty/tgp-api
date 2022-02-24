@@ -45,7 +45,7 @@ module.exports = {
         return exits.notFound(false);
       }
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
-      if (!canAccess) {
+      if (!canAccess || canAccess === 'staff') {
         return exits.badRequest(false);
       }
 

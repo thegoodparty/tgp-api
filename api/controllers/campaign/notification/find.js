@@ -10,7 +10,12 @@ module.exports = {
 
   description: 'Campaign Notification endpoint to find Campaign Notification',
 
-  inputs: {},
+  inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -21,13 +26,24 @@ module.exports = {
       description: 'error finding',
       responseType: 'badRequest',
     },
+
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
+      const { id } = inputs;
+      const candidate = await Candidate.findOne({ id });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess || canAccess === 'staff') {
+        return exits.forbidden();
+      }
 
       const campaignNotification = await CampaignNotification.findOne({
-        candidate: user.candidate,
+        candidate: id,
       });
       if (campaignNotification) {
         return exits.success({

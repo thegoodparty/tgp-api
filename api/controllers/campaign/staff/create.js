@@ -46,7 +46,7 @@ module.exports = {
 
       const candidate = await Candidate.findOne({ id });
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
-      if (!canAccess) {
+      if (!canAccess || canAccess === 'staff') {
         return exits.forbidden();
       }
 

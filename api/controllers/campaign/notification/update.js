@@ -11,6 +11,10 @@ module.exports = {
   description: 'Campaign Notification endpoint to edit campaign notification',
 
   inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
     data: {
       type: 'json',
       required: true,
@@ -26,17 +30,27 @@ module.exports = {
       description: 'Campaign Notification update Failed',
       responseType: 'badRequest',
     },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    },
   },
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { data } = inputs;
+      const { data, id } = inputs;
+      const candidate = await Candidate.findOne({ id });
+      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
+      if (!canAccess || canAccess === 'staff') {
+        return exits.forbidden();
+      }
+
       const candidateIssue = await CampaignNotification.findOrCreate(
         {
-          candidate: user.candidate,
+          candidate: id,
         },
         {
-          candidate: user.candidate,
+          candidate: id,
         },
       );
       await CampaignNotification.updateOne({
