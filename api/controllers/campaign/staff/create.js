@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 module.exports = {
   friendlyName: 'Find Candidate associated with user',
 
@@ -16,6 +17,7 @@ module.exports = {
     email: {
       type: 'string',
       required: true,
+      isEmail: true,
     },
     role: {
       type: 'string',
@@ -37,11 +39,16 @@ module.exports = {
       description: 'Unauthorized',
       responseType: 'forbidden',
     },
+    badRequest: {
+      description: 'Login Error',
+      responseType: 'badRequest',
+    },
   },
 
   fn: async function(inputs, exits) {
     try {
       const { id, email, role } = inputs;
+      const lowerCaseEmail = email.toLowerCase();
       const user = this.req.user;
 
       const candidate = await Candidate.findOne({ id });
@@ -50,7 +57,7 @@ module.exports = {
         return exits.forbidden();
       }
 
-      const invitedUser = await User.findOne({ email });
+      const invitedUser = await User.findOne({ email: lowerCaseEmail });
       if (invitedUser) {
         const isExisting = await Staff.findOne({
           user: invitedUser.id,
@@ -61,7 +68,6 @@ module.exports = {
             message: 'Staff member already exist for this user',
           });
         }
-        console.log('invitedUser', invitedUser);
         await Staff.create({
           role,
           user: invitedUser.id,
@@ -70,7 +76,34 @@ module.exports = {
         });
       } else {
         // send invitation
-        console.log('no user');
+
+        await StaffInvitation.create({
+          role,
+          email: lowerCaseEmail,
+          candidate: id,
+          createdBy: user.id,
+        });
+
+        const candidateName = `${candidate.firstName} ${candidate.lastName}`;
+        const roleName = role === 'staff' ? 'staff member' : 'campaign manager';
+        const content = {
+          role: roleName,
+          candidateName,
+          user: user.name,
+          link: `${appBase}/register`,
+        };
+
+        const to = lowerCaseEmail;
+        const subject = `You were invited to be a ${roleName} for ${candidateName} at Good Party`;
+        const template = 'staff-invitation';
+
+        const variables = JSON.stringify(content);
+        await sails.helpers.mailgun.mailgunTemplateSender(
+          to,
+          subject,
+          template,
+          variables,
+        );
       }
 
       return exits.success({

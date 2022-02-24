@@ -200,8 +200,23 @@ module.exports = {
       const token = await sails.helpers.jwtSign({
         id: user.id,
         email: lowerCaseEmail,
-        phone: phone,
+        phone,
       });
+
+      // check if the user has a pending invitation for a candidate campaign staff
+      const invitations = await StaffInvitation.find({ email: lowerCaseEmail });
+      if (invitations.length > 0) {
+        for (let i = 0; i < invitations.length; i++) {
+          const invitation = invitations[i];
+          await Staff.create({
+            role: invitation.role,
+            user: user.id,
+            candidate: invitation.candidate,
+            createdBy: invitation.createdBy,
+          });
+          await StaffInvitation.destroyOne({ id: invitation.id });
+        }
+      }
 
       return exits.success({
         user,
@@ -211,14 +226,14 @@ module.exports = {
       // await sails.helpers.errorLoggerHelper('Error at entrance/register', e);
       console.log('register error', e);
       try {
-        if(e.cause.details.includes('`name`')) {
-          return exits.badRequest({ message: 'Exceeded max characters for name' });
-        }
-        else {
+        if (e.cause.details.includes('`name`')) {
+          return exits.badRequest({
+            message: 'Exceeded max characters for name',
+          });
+        } else {
           return exits.badRequest({ message: 'Error registering account.' });
         }
-      }
-      catch(error) {
+      } catch (error) {
         return exits.badRequest({ message: 'Error registering account.' });
       }
     }

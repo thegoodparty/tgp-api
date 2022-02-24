@@ -48,7 +48,11 @@ module.exports = {
         candidate: id,
       }).populate('user');
 
-      return exits.success({ staff });
+      const staffInvitations = await StaffInvitation.find({
+        candidate: id,
+      });
+
+      return exits.success({ staff, staffInvitations });
     } catch (e) {
       return exits.forbidden();
     }
