@@ -90,7 +90,7 @@ module.exports = {
           role: roleName,
           candidateName,
           user: user.name,
-          link: `${appBase}/register`,
+          link: `${appBase}/register?email=${lowerCaseEmail}`,
         };
 
         const to = lowerCaseEmail;
