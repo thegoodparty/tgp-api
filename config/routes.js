@@ -69,7 +69,6 @@ module.exports.routes = {
   'PUT   /api/v1/admin/voterize': 'admin/update-voterize',
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
   'POST   /api/v1/admin/upload-image': 'admin/upload-image',
-  'PUT   /api/v1/admin/log-as-candidate': 'admin/candidate/log-as-candidate',
 
   'GET    /api/v1/candidates/find': 'candidates/find',
 
