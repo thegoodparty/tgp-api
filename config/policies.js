@@ -29,7 +29,6 @@ module.exports.policies = {
   'release/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateIssue/*': ['isAuthenticated', 'isAdmin'],
-  'candidateUser/*': ['isAuthenticated', 'isCandidate'],
   'campaign/ugc/list': ['isAuthenticated', 'isAdmin'],
   'campaign/ugc/accept': ['isAuthenticated', 'isAdmin'],
   'campaign/ugc/reject': ['isAuthenticated', 'isAdmin'],
