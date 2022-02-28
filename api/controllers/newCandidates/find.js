@@ -61,15 +61,20 @@ module.exports = {
       candidateData.updatesList = candidate.candidateUpdates;
 
       let topIssues = [];
+      let similarCampaigns = [];
 
       if (withIssues) {
         topIssues = await issueFinder(id);
       }
 
+      if (withSimilar) {
+        similarCampaigns = await similarFinder(id, topIssues);
+      }
+
       return exits.success({
         candidate: candidateData,
-        // imageAsBase64,
         topIssues,
+        similarCampaigns,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
@@ -99,4 +104,13 @@ const issueFinder = async id => {
     return data;
   }
   return [];
+};
+
+const similarFinder = async (id, topIssues) => {
+  const similar = [];
+  // for (let i = 0; i < topIssues.length; i++) {
+  //   const issue = topIssues[i];
+  //   const topic = await IssueTopic.find({ id: issue.topicId });
+  // }
+  return similar;
 };
