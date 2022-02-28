@@ -17,7 +17,7 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    withImage: {
+    withSimilar: {
       type: 'boolean',
     },
     withIssues: {
@@ -38,7 +38,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, withImage, withIssues } = inputs;
+      const { id, withSimilar, withIssues } = inputs;
       const candidate = await Candidate.findOne({
         id,
         isActive: true,
@@ -63,25 +63,7 @@ module.exports = {
       let topIssues = [];
 
       if (withIssues) {
-        const candidateIssues = await CandidateIssue.findOne({ candidate: id });
-        const issueTopics = await IssueTopic.find();
-        const topicsHash = {};
-        issueTopics.forEach(topic => {
-          topicsHash[topic.id] = topic;
-        });
-        if (candidateIssues) {
-          const { data } = candidateIssues;
-          data.forEach(issue => {
-            const topic = topicsHash[issue.topicId];
-            issue.topic = topic.topic;
-            topic.positions.forEach(position => {
-              if (position.id === issue.positionId) {
-                issue.candidatePosition = position.name;
-              }
-            });
-          });
-          topIssues = data;
-        }
+        topIssues = await issueFinder(id);
       }
 
       return exits.success({
@@ -94,4 +76,27 @@ module.exports = {
       return exits.notFound();
     }
   },
+};
+
+const issueFinder = async id => {
+  const candidateIssues = await CandidateIssue.findOne({ candidate: id });
+  const issueTopics = await IssueTopic.find();
+  const topicsHash = {};
+  issueTopics.forEach(topic => {
+    topicsHash[topic.id] = topic;
+  });
+  if (candidateIssues) {
+    const { data } = candidateIssues;
+    data.forEach(issue => {
+      const topic = topicsHash[issue.topicId];
+      issue.topic = topic.topic;
+      topic.positions.forEach(position => {
+        if (position.id === issue.positionId) {
+          issue.candidatePosition = position.name;
+        }
+      });
+    });
+    return data;
+  }
+  return [];
 };
