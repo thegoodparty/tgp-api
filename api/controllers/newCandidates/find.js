@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 const request = require('request-promise');
+const timeago = require('time-ago');
 
 module.exports = {
   friendlyName: 'Find by id one Candidate',
@@ -17,6 +18,9 @@ module.exports = {
       required: true,
     },
     withImage: {
+      type: 'boolean',
+    },
+    withIssues: {
       type: 'boolean',
     },
   },
@@ -34,7 +38,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, withImage } = inputs;
+      const { id, withImage, withIssues } = inputs;
       const candidate = await Candidate.findOne({
         id,
         isActive: true,
@@ -46,17 +50,44 @@ module.exports = {
       if (!candidate) {
         return exits.notFound();
       }
-      let imageAsBase64;
-      const data = JSON.parse(candidate.data);
-      if (withImage && data.image) {
-        const imageData = await request.get(data.image, { encoding: null });
-        imageAsBase64 = Buffer.from(imageData).toString('base64');
+
+      for (let i = 0; i < candidate.candidateUpdates.length; i++) {
+        const update = candidate.candidateUpdates[i];
+        const timeAgo = timeago.ago(new Date(update.date));
+        update.timeAgo = timeAgo;
       }
+
       let candidateData = JSON.parse(candidate.data);
       candidateData.updatesList = candidate.candidateUpdates;
+
+      let topIssues = [];
+
+      if (withIssues) {
+        const candidateIssues = await CandidateIssue.findOne({ candidate: id });
+        const issueTopics = await IssueTopic.find();
+        const topicsHash = {};
+        issueTopics.forEach(topic => {
+          topicsHash[topic.id] = topic;
+        });
+        if (candidateIssues) {
+          const { data } = candidateIssues;
+          data.forEach(issue => {
+            const topic = topicsHash[issue.topicId];
+            issue.topic = topic.topic;
+            topic.positions.forEach(position => {
+              if (position.id === issue.positionId) {
+                issue.candidatePosition = position.name;
+              }
+            });
+          });
+          topIssues = data;
+        }
+      }
+
       return exits.success({
         candidate: candidateData,
-        imageAsBase64,
+        // imageAsBase64,
+        topIssues,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
