@@ -31,8 +31,9 @@ module.exports = {
     try {
       const { id } = inputs;
 
-      await CandidateIssue.updateOne({
-        id,
+      await CandidateIssueItem.update({
+        candidate: id,
+        status: 'pending'
       }).set({
         status: 'accepted',
       });
