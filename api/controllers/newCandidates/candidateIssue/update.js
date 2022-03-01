@@ -39,8 +39,6 @@ module.exports = {
     try {
       const { user } = this.req;
       const { data, candidateId } = inputs;
-      console.log('==================');
-      console.log(data);
       const candidate = await Candidate.findOne({ id: candidateId });
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
       if (!canAccess) {
