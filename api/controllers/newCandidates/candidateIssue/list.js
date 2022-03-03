@@ -24,11 +24,10 @@ module.exports = {
   },
   async fn(inputs, exits) {
     try {
-      const candidateIssues = await CandidateIssue.find({
+      const candidateIssues = await CandidateIssueItem.find({
         status: 'pending',
-      }).populate('candidate');
+      }).populate('candidate').populate('topic');
       candidateIssues.forEach(issue => {
-        issue.data = issue.data !== '' ? issue.data : {};
         issue.candidate = JSON.parse(issue.candidate.data);
       });
       return exits.success({

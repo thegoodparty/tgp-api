@@ -30,13 +30,12 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { id } = inputs;
-
-      await CandidateIssue.updateOne({
-        id,
+      await CandidateIssueItem.update({
+        candidate: id,
+        status: 'pending'
       }).set({
         status: 'rejected',
       });
-
       return exits.success({
         message: 'ok',
       });

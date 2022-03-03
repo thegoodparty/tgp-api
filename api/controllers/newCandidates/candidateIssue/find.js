@@ -42,19 +42,13 @@ module.exports = {
         return exits.forbidden();
       }
 
-      const candidateIssue = await CandidateIssue.findOne({
+      const candidateIssues = await CandidateIssueItem.find({
         candidate: candidateId,
         status: 'pending',
+      }).populate('topic');
+      return exits.success({
+        candidateIssue: candidateIssues,
       });
-      if (candidateIssue) {
-        return exits.success({
-          candidateIssue: candidateIssue.data,
-        });
-      } else {
-        return exits.success({
-          candidateIssue: false,
-        });
-      }
     } catch (e) {
       console.log(e);
       return exits.badRequest({ message: 'Error updated candidate issue.' });

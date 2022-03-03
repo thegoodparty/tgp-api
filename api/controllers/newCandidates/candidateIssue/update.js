@@ -44,20 +44,29 @@ module.exports = {
       if (!canAccess) {
         return exits.forbidden();
       }
-      const candidateIssue = await CandidateIssue.findOrCreate(
-        {
-          candidate: candidateId,
-        },
-        {
-          candidate: candidateId,
-        },
-      );
-      await CandidateIssue.updateOne({
-        id: candidateIssue.id,
-      }).set({
-        data,
-        status: 'pending',
-      });
+      for (let i = 0; i < data.length; i++) {
+        const { topic, positionId, candidate, description, websiteUrl } = data[i];
+        const candidateIssueItem = await CandidateIssueItem.findOrCreate(
+          {
+            topic,
+            candidate,
+          },
+          {
+            candidate,
+            topic,
+          },
+        );
+        await CandidateIssueItem.updateOne({
+          id: candidateIssueItem.id,
+        }).set({
+          candidate,
+          topic,
+          positionId,
+          description,
+          websiteUrl,
+          status: 'pending',
+        });
+      }
 
       return exits.success({
         message: 'updated',
