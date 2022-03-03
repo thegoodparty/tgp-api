@@ -23,6 +23,9 @@ module.exports = {
     withIssues: {
       type: 'boolean',
     },
+    withEndorsements: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -38,15 +41,29 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, withSimilar, withIssues } = inputs;
-      const candidate = await Candidate.findOne({
-        id,
-        isActive: true,
-      }).populate('candidateUpdates', {
-        where: {
-          status: 'accepted',
-        },
-      });
+      const { id, withSimilar, withIssues, withEndorsements } = inputs;
+      let candidate;
+      if (withEndorsements) {
+        candidate = await Candidate.findOne({
+          id,
+          isActive: true,
+        })
+          .populate('candidateUpdates', {
+            where: {
+              status: 'accepted',
+            },
+          })
+          .populate('endorsements');
+      } else {
+        candidate = await Candidate.findOne({
+          id,
+          isActive: true,
+        }).populate('candidateUpdates', {
+          where: {
+            status: 'accepted',
+          },
+        });
+      }
       if (!candidate) {
         return exits.notFound();
       }
@@ -69,6 +86,10 @@ module.exports = {
 
       if (withSimilar) {
         similarCampaigns = await similarFinder(id, topIssues);
+      }
+
+      if (withEndorsements) {
+        candidateData.endorsements = candidate.endorsements;
       }
 
       return exits.success({

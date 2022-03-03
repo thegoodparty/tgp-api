@@ -128,6 +128,8 @@ module.exports.routes = {
   'GET   /api/v1/campaign/staff': 'campaign/staff/list',
   'DELETE   /api/v1/campaign/staff': 'campaign/staff/delete',
   'POST   /api/v1/campaign/update-request': 'campaign/updateRequest/create',
+  'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
+  'GET   /api/v1/campaign/endorsements': 'campaign/endorsement/list',
 
   // candidate UGC
   'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin
@@ -161,7 +163,8 @@ module.exports.routes = {
   // campaign notification
   'GET   /api/v1/campaign/notification': 'campaign/notification/find',
   'PUT   /api/v1/campaign/notification': 'campaign/notification/update',
-  'GET   /api/v1/campaign/schedule-notification': 'campaign/notification/schedule',
+  'GET   /api/v1/campaign/schedule-notification':
+    'campaign/notification/schedule',
 
   // application
   'POST   /api/v1/application': 'newCandidates/application/create',
