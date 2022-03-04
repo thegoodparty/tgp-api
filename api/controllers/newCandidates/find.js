@@ -105,26 +105,22 @@ module.exports = {
 };
 
 const issueFinder = async id => {
-  const candidateIssues = await CandidateIssue.findOne({ candidate: id });
-  const issueTopics = await IssueTopic.find();
-  const topicsHash = {};
-  issueTopics.forEach(topic => {
-    topicsHash[topic.id] = topic;
-  });
-  if (candidateIssues) {
-    const { data } = candidateIssues;
-    data.forEach(issue => {
-      const topic = topicsHash[issue.topicId];
-      issue.topic = topic.topic;
+  const issues = await CandidateIssueItem.find({ candidate: id }).populate(
+    'topic',
+  );
+
+  issues.forEach(issue => {
+    const { topic } = issue;
+    if (topic.positions) {
       topic.positions.forEach(position => {
         if (position.id === issue.positionId) {
           issue.candidatePosition = position.name;
         }
       });
-    });
-    return data;
-  }
-  return [];
+      issue.topic = topic.topic;
+    }
+  });
+  return issues;
 };
 
 const similarFinder = async (id, topIssues) => {
