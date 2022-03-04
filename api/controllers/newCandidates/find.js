@@ -118,16 +118,53 @@ const issueFinder = async id => {
         }
       });
       issue.topic = topic.topic;
+      issue.topicId = topic.id;
     }
   });
   return issues;
 };
 
 const similarFinder = async (id, topIssues) => {
-  const similar = [];
-  // for (let i = 0; i < topIssues.length; i++) {
-  //   const issue = topIssues[i];
-  //   const topic = await IssueTopic.find({ id: issue.topicId });
-  // }
-  return similar;
+  const candidatesCount = {};
+  const matchingIssues = {};
+
+  for (let i = 0; i < topIssues.length; i++) {
+    const topIssue = topIssues[i];
+    // for each topic find the issues with the same topic with differnet candidates
+    const issues = await CandidateIssueItem.find({
+      topic: topIssue.topicId,
+      candidate: { '!=': id },
+    });
+    // count how many times each candidate shows up
+    issues.forEach(issue => {
+      if (!candidatesCount[issue.candidate]) {
+        candidatesCount[issue.candidate] = 0;
+        matchingIssues[issue.candidate] = [];
+      }
+      matchingIssues[issue.candidate].push(topIssue.candidatePosition);
+      candidatesCount[issue.candidate]++;
+    });
+  }
+
+  // now convert from object like  { '2': 1, '3': 2 } to a sorted array
+  const keys = Object.keys(candidatesCount);
+  const sorted = [];
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const candidateId = key;
+    const candidate = await Candidate.findOne({ id: candidateId });
+    const data = JSON.parse(candidate.data);
+    const { firstName, lastName, race, party, id } = data;
+    const similar = { firstName, lastName, race, party, id };
+    sorted.push({
+      count: candidatesCount[key],
+      candidate: similar,
+      matchingIssues: matchingIssues[candidateId],
+    });
+  }
+  sorted.sort((a, b) => {
+    return b.count - a.count;
+  });
+
+  return sorted;
 };
