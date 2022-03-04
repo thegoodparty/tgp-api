@@ -44,7 +44,7 @@ module.exports = {
 
       const candidateIssues = await CandidateIssueItem.find({
         candidate: candidateId,
-        status: 'pending',
+        // status: 'pending',
       }).populate('topic');
       return exits.success({
         candidateIssue: candidateIssues,

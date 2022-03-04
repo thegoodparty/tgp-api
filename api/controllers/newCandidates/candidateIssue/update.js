@@ -45,21 +45,23 @@ module.exports = {
         return exits.forbidden();
       }
       for (let i = 0; i < data.length; i++) {
-        const { topic, positionId, candidate, description, websiteUrl } = data[i];
+        const { topic, positionId, candidate, description, websiteUrl } = data[
+          i
+        ];
         const candidateIssueItem = await CandidateIssueItem.findOrCreate(
           {
             topic,
-            candidate,
+            candidate: candidateId,
           },
           {
-            candidate,
+            candidate: candidateId,
             topic,
           },
         );
         await CandidateIssueItem.updateOne({
           id: candidateIssueItem.id,
         }).set({
-          candidate,
+          candidate: candidateId,
           topic,
           positionId,
           description,
