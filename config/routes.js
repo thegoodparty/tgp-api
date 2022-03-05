@@ -130,6 +130,7 @@ module.exports.routes = {
   'POST   /api/v1/campaign/update-request': 'campaign/updateRequest/create',
   'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
   'GET   /api/v1/campaign/endorsements': 'campaign/endorsement/list',
+  'POST   /api/v1/campaign/image': 'campaign/image/create',
 
   // candidate UGC
   'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin
