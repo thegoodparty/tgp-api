@@ -66,6 +66,7 @@ module.exports = {
         if (isExisting) {
           return exits.badRequest({
             message: 'Staff member already exist for this user',
+            exists: true,
           });
         }
         await Staff.create({
