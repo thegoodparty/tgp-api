@@ -25,6 +25,7 @@ module.exports = {
       description: 'Candidates Not Found.',
       responseType: 'notFound',
     },
+
   },
 
   fn: async function(inputs, exits) {
@@ -45,8 +46,7 @@ module.exports = {
       const candidatesByStates = {};
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
-
-        const data = JSON.parse(candidate.data);
+        const data = candidate.data ? JSON.parse(candidate.data) : {};
         delete data.comparedCandidates;
         delete data.updates;
         delete data.updatesDates;
@@ -68,7 +68,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find candidate', e);
-      return exits.notFound();
+      return exits.badRequest({ message: 'error finding candidates' });
     }
   },
 };

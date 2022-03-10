@@ -54,47 +54,11 @@ module.exports = {
       if (!canAccess || canAccess === 'staff') {
         return exits.forbidden();
       }
-
-      const outputFile = path.join(
-        __dirname,
-        `../../../../tempImages/img-removed-from-file.png`,
-      );
-      const result = await removeBackgroundFromImageUrl({
+      const s3Url = await sails.helpers.images.transparentImage(
         url,
-        apiKey: removeBgKey,
-        size: 'regular',
-        type: 'person',
-        crop: true,
-        outputFile,
-      });
+        `${candidate.firstName}-${candidate.lastName}`,
+      );
 
-      console.log(`File saved to ${outputFile}`);
-
-      const bucketName = `${assetsBase}/candidate-info`;
-
-      const content = fs.readFileSync(outputFile);
-      const uuid = Math.random()
-        .toString(36)
-        .substring(2, 8);
-      const fileName = `${candidate.firstName}-${candidate.lastName}-${uuid}.png`;
-
-      let params = {
-        Bucket: bucketName,
-        Key: fileName,
-        Body: content,
-        ContentType: 'image/png',
-        ACL: 'public-read',
-        CacheControl: 'max-age=31536000',
-      };
-
-      const s3 = new AWS.S3({
-        accessKeyId: s3Key,
-        secretAccessKey: s3Secret,
-      });
-
-      await s3.putObject(params).promise();
-
-      const s3Url = `https://${bucketName}/${fileName}`;
       const data = JSON.parse(candidate.data);
       const newData = { ...data, image: s3Url };
       await Candidate.updateOne({ id }).set({
