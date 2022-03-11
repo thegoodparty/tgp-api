@@ -25,7 +25,6 @@ module.exports = {
       description: 'Candidates Not Found.',
       responseType: 'notFound',
     },
-
   },
 
   fn: async function(inputs, exits) {
@@ -44,9 +43,19 @@ module.exports = {
       });
 
       const candidatesByStates = {};
+      const currentYear = new Date().getFullYear();
+      const janFirst = new Date(`01-01-${currentYear}`);
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
         const data = candidate.data ? JSON.parse(candidate.data) : {};
+        const { raceDate } = data;
+        // skip candidates with a race date before this calendar year.
+        if (raceDate) {
+          const date = new Date(raceDate);
+          if (date < janFirst) {
+            continue;
+          }
+        }
         delete data.comparedCandidates;
         delete data.updates;
         delete data.updatesDates;
