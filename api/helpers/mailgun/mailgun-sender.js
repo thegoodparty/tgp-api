@@ -1,4 +1,4 @@
-const mailgun = require('mailgun.js');
+const mailgun = require('mailgun-js');
 
 module.exports = {
   friendlyName: 'MAIL GUN Sender',
@@ -46,16 +46,19 @@ module.exports = {
         subject,
         fromEmail,
       } = inputs;
-      const MAILGUN_API =
+
+      const mailgunApiKey =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
-      const mg = mailgun.client({ username: 'api', key: MAILGUN_API });
+
+      const domain = 'mg.goodparty.org';
+      const mg = mailgun({ apiKey: mailgunApiKey, domain });
 
       // const validFromEmail =
       //   fromEmail || 'The Good Party <noreply@goodparty.org>';
       const validFromEmail = fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
 
-      mg.messages
-        .create('mg.goodparty.org', {
+      mg.messages()
+        .send({
           from: validFromEmail,
           to: email,
           subject,

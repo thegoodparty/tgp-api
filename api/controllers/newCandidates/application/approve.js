@@ -147,7 +147,7 @@ module.exports = {
 
       for (let i = 0; i < topIssues.length; i++) {
         const { selectedTopic, selectedPosition, description } = topIssues[i];
-        if (selectedTopic && selectedPosition && description !== '') {
+        if (selectedTopic && selectedPosition) {
           await CandidateIssueItem.create({
             candidate: newCandidate.id,
             topic: selectedTopic.id,

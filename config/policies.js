@@ -65,4 +65,5 @@ module.exports.policies = {
   'release/list': true,
   'visit/create': true,
   'updates/create': true,
+  'newCandidates/application/upload-image': true, // for guest applications
 };
