@@ -1,4 +1,5 @@
 const shortParty = {
+  Independent: 'I',
   Democratic: 'D',
   Republican: 'R',
   Green: 'GP',
@@ -109,13 +110,13 @@ module.exports = {
         about: campaignSummary,
         state,
         party: party === 'Other' ? otherParty : shortParty[party],
-        facebook,
-        twitter,
-        tiktok,
-        snap,
-        youtube,
-        reddit,
-        linkedin,
+        facebook: addSocial(facebook, 'facebook.com'),
+        twitter: addSocial(twitter, 'twitter.com'),
+        tiktok: addSocial(tiktok, 'tiktok.com'),
+        snap: addSocial(snap, 'snap.com'),
+        youtube: addSocial(youtube, 'youtube.com'),
+        reddit: addSocial(reddit, 'reddit.com'),
+        linkedin: addSocial(linkedin, 'linkedin.com'),
         website,
         image: transparentImg,
         user: newData.user,
@@ -210,180 +211,9 @@ function getParameterByName(name, url) {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-const application = {
-  createdAt: 1646615427024,
-  updatedAt: 1646615427024,
-  id: 1,
-  status: 'in review',
-  user: 1,
-  pledge: {
-    disAffiliate: true,
-    notJoin: true,
-    noPay: true,
-    peoplePowered: true,
-    honest: true,
-    transparent: true,
-    choices: true,
-    isCompleted: true,
-  },
-  candidate: {
-    firstName: 'Tomer',
-    lastName: 'Almog',
-    zip: '91406',
-    citizen: 'Yes',
-    ranBefore: 'No',
-    electedBefore: 'No',
-    memberPolitical: 'No',
-    partyHistory: '',
-    ethnicity: '',
-    race: '',
-    pronouns: '',
-    twitter: 'goodparty',
-    facebook: 'goodparty',
-    youtube: '',
-    linkedin: '',
-    snap: '',
-    tiktok: '',
-    reddit: '',
-    website: 'https://mysite.com',
-    candidatePhone: '13109759102',
-    candidateEmail: 'tomeralmog@gmail.com',
-    party: 'Forward',
-    otherParty: 'sdadsa',
-    dob: '2021-11-03',
-  },
-  campaign: {
-    'running for': 'Mayor of my home',
-    electionDate: '2022-04-24',
-    state: 'AK',
-    district: '',
-    campaignSummary: 'This is my campaign summary',
-    campaignVideo: 'https://www.youtube.com/watch?v=0JrrFQ0si-8d',
-    photos: [
-      {
-        key: 'headshotPhoto',
-        label: 'Candidate headshot',
-        value: '',
-      },
-      {
-        key: 'trailPhoto',
-        label: 'Campaign trail photo',
-        value: '',
-      },
-      {
-        key: 'bannerPhoto',
-        label: 'Campaign page banner',
-        value: '',
-      },
-    ],
-    committeeName: '',
-    candidacyStatement: 'No',
-    fecStatement: 'No',
-    fromWhom: 'Yes',
-    signatures: '1000',
-    likelySupport: '1200',
-    votesToWin: '5000',
-    twitter: 'campaign',
-    facebook: 'campaign',
-    youtube: '',
-    linkedin: '',
-    snap: '',
-    tiktok: '',
-    reddit: '',
-    website: 'https://campaign.com',
-    headshotPhoto:
-      'https://assets.goodparty.org/candidate-info/d2e3e28d-fa11-40c1-92ff-8d3476175e78.jpg',
-    moneyRaisedAmount: 'Less than $10,000',
-    headline: 'Mandate Freedom!',
-  },
-  contacts: {
-    candidateEmail: 'candidate@candiate.com',
-    candidatePhone: '5555555555',
-    contactName: 'Tomer Almog',
-    contactRole: 'sdsd',
-    contactEmail: 'tomeralmog@gmail.com',
-    contactPhone: '13109759102',
-    contactAddress: '6656 Langdon Avenue',
-  },
-  issues: {
-    positions: [
-      {
-        id: '18ixscq7ss',
-        name: 'Free healthcare',
-      },
-      {
-        id: '5u4gxfhisl',
-        name: 'No Mandate',
-      },
-    ],
-  },
-  endorsements: [
-    {
-      body: 'This is an endorsement from the application',
-      link: 'https://proof.com',
-      title: 'Endorsement title',
-      image:
-        'https://assets.goodparty.org/candidate-info/644bcdbe-b77d-4cca-88f5-291b3cfdebbd.jpg',
-    },
-  ],
-  socialMedia: {
-    candidateTwitter: '',
-    candidateFacebook: '123',
-    candidateYoutube: '',
-    candidateLinkedin: '',
-    candidateSnap: '',
-    candidateTiktok: '',
-    candidateReddit: '',
-    candidateWebsite: '',
-    twitter: 'tomeralmog@gmail.com',
-    facebook: 'fff',
-    youtube: 'yyy',
-    linkedin: '',
-    snap: '',
-    tiktok: '',
-    reddit: '',
-    website: '',
-  },
-  topIssues: [
-    {
-      selectedTopic: {
-        createdAt: 1645497898804,
-        updatedAt: 1645497907134,
-        id: 1,
-        topic: 'Healthcare',
-        positions: [
-          {
-            id: '18ixscq7ss',
-            name: 'Free healthcare',
-          },
-        ],
-      },
-      selectedPosition: {
-        id: '18ixscq7ss',
-        name: 'Free healthcare',
-      },
-      description: '',
-    },
-    {
-      selectedTopic: null,
-      selectedPosition: null,
-      description: '',
-    },
-    {
-      selectedTopic: null,
-      selectedPosition: null,
-      description: '',
-    },
-    {
-      selectedTopic: null,
-      selectedPosition: null,
-      description: '',
-    },
-    {
-      selectedTopic: null,
-      selectedPosition: null,
-      description: '',
-    },
-  ],
-  reviewMode: false,
-};
+function addSocial(handle, base) {
+  if (!handle || hadnle === '') {
+    return handle;
+  }
+  return `https://${base}/${handle}`;
+}
