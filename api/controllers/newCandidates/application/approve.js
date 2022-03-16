@@ -126,6 +126,7 @@ module.exports = {
 
       await Candidate.updateOne({ id: newCandidate.id }).set({
         data: JSON.stringify(cleanCandidate),
+        state,
       });
 
       await Staff.create({
