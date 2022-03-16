@@ -10,11 +10,7 @@ module.exports = {
 
   description: 'All Candidates',
 
-  inputs: {
-    noSortByState: {
-      type: 'boolean',
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -29,20 +25,11 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      if (inputs.noSortByState) {
-        const candidates = await Candidate.find({
-          isActive: true,
-        });
-        return exits.success({
-          candidates,
-        });
-      }
       const candidates = await Candidate.find({
         where: { isActive: true },
-        sort: 'state',
-      });
+      }).populate('candidateIssueItems');
 
-      const candidatesByStates = {};
+      const activeCandidates = [];
       const currentYear = new Date().getFullYear();
       const janFirst = new Date(`01-01-${currentYear}`);
       for (let i = 0; i < candidates.length; i++) {
@@ -56,24 +43,38 @@ module.exports = {
             continue;
           }
         }
-        delete data.comparedCandidates;
-        delete data.updates;
-        delete data.updatesDates;
-        const supporters = await Support.count({
-          candidate: candidate.id,
+
+        const {
+          firstName,
+          lastName,
+          id,
+          headline,
+          image,
+          party,
+          race,
+          state,
+          zip,
+        } = data;
+
+        activeCandidates.push({
+          firstName,
+          lastName,
+          id,
+          headline,
+          image,
+          party,
+          race,
+          state,
+          zip,
+          topics: candidate.candidateIssueItems,
         });
-
-        data.supporters = supporters || 0;
-        data.state = candidate.state;
-        if (!candidatesByStates[candidate.state]) {
-          candidatesByStates[candidate.state] = [];
-        }
-
-        candidatesByStates[candidate.state].push(data);
       }
 
+      const topics = await IssueTopic.find();
+
       return exits.success({
-        candidates: candidatesByStates,
+        candidates: activeCandidates,
+        topics,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

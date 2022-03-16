@@ -68,7 +68,7 @@ module.exports = {
         chamber: 'local',
       }).fetch();
 
-      const { party, otherParty } = newData.candidate;
+      const { party, otherParty, zip } = newData.candidate;
       const {
         campaignSummary,
         headline,
@@ -121,6 +121,7 @@ module.exports = {
         image: transparentImg,
         user: newData.user,
         raceDate: electionDate,
+        zip,
       };
 
       await Candidate.updateOne({ id: newCandidate.id }).set({

@@ -40,8 +40,6 @@ module.exports = {
         isActive: !!candidate.isActive,
       };
 
-      const oldCandidate = await Candidate.findOne({ id });
-
       const updatedCandidate = await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
       });
