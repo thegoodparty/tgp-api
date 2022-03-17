@@ -70,11 +70,8 @@ module.exports = {
         });
       }
 
-      const topics = await IssueTopic.find();
-
       return exits.success({
         candidates: activeCandidates,
-        topics,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
