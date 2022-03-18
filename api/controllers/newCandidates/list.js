@@ -10,7 +10,11 @@ module.exports = {
 
   description: 'All Candidates',
 
-  inputs: {},
+  inputs: {
+    filters: {
+      type: 'string',
+    },
+  },
 
   exits: {
     success: {
@@ -25,6 +29,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const { filters } = inputs;
       const candidates = await Candidate.find({
         where: { isActive: true },
       }).populate('candidateIssueItems');
@@ -69,13 +74,64 @@ module.exports = {
           topics: candidate.candidateIssueItems,
         });
       }
+      let filtered = activeCandidates;
+      let positionNames = [];
+
+      if (filters) {
+        const queryPositions = filters.split(',');
+        const positions = [];
+        queryPositions.forEach(position => {
+          positions.push({ id: position });
+        });
+        filtered = filterCandidates(activeCandidates, positions);
+        const topics = await IssueTopic.find();
+        positionNames = getPositions(topics, queryPositions);
+      }
 
       return exits.success({
-        candidates: activeCandidates,
+        candidates: filtered,
+        positionNames,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
       return exits.badRequest({ message: 'error finding candidates' });
     }
   },
+};
+
+const filterCandidates = (allCandidates, positions) => {
+  if (positions.length === []) {
+    return allCandidates;
+  }
+  const filtered = allCandidates.filter(candidate => {
+    if (candidate.topics) {
+      for (let i = 0; i < candidate.topics.length; i++) {
+        const positionId = candidate.topics[i].positionId;
+        if (positions.find(position => position.id === positionId)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  });
+  return filtered;
+};
+
+const getPositions = (topics, positions) => {
+  const positionsNames = [];
+
+  const idToName = {};
+  topics.forEach(topic => {
+    if (topic.positions) {
+      topic.positions.forEach(position => {
+        idToName[position.id] = position.name;
+      });
+    }
+  });
+  positions.forEach(positionId => {
+    if (idToName[positionId]) {
+      positionsNames.push(idToName[positionId]);
+    }
+  });
+  return positionsNames;
 };
