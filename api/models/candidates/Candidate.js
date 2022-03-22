@@ -55,16 +55,26 @@ module.exports = {
       via: 'candidate',
     },
 
-    // one to many relationship to endorsments
+    // one to many relationship to endorsements
     endorsements: {
       collection: 'endorsement',
       via: 'candidate',
     },
 
     // one to many relationship to candidateIssueItem
-    candidateIssueItems: {
-      collection: 'candidateIssueItem',
+    candidatePositions: {
+      collection: 'candidatePosition',
       via: 'candidate',
+    },
+
+    positions: {
+      collection: 'position',
+      via: 'candidates',
+    },
+
+    topIssues: {
+      collection: 'topIssue',
+      via: 'candidates',
     },
 
     // one to many relationship to staff members

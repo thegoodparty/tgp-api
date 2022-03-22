@@ -138,12 +138,30 @@ module.exports.routes = {
   'PUT   /api/v1/ugcs/reject': 'campaign/ugc/reject', //admin
   'GET   /api/v1/ugc': 'campaign/ugc/find',
   'PUT   /api/v1/ugc': 'campaign/ugc/update',
+  //
+  // // issue topic
+  // 'GET   /api/v1/issue-topics': 'newCandidates/issueTopic/list',
+  // 'POST   /api/v1/issue-topic': 'newCandidates/issueTopic/create',
+  // 'PUT   /api/v1/issue-topic': 'newCandidates/issueTopic/update',
+  // 'DELETE   /api/v1/issue-topic': 'newCandidates/issueTopic/delete',
 
   // issue topic
-  'GET   /api/v1/issue-topics': 'newCandidates/issueTopic/list',
-  'POST   /api/v1/issue-topic': 'newCandidates/issueTopic/create',
-  'PUT   /api/v1/issue-topic': 'newCandidates/issueTopic/update',
-  'DELETE   /api/v1/issue-topic': 'newCandidates/issueTopic/delete',
+  'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
+  'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
+  'PUT   /api/v1/top-issue': 'topIssues/topIssue/update',
+  'DELETE   /api/v1/top-issue': 'topIssues/topIssue/delete',
+
+  // position
+  'GET   /api/v1/positions': 'topIssues/position/list',
+  'POST   /api/v1/position': 'topIssues/position/create',
+  'PUT   /api/v1/position': 'topIssues/position/update',
+  'DELETE   /api/v1/position': 'topIssues/position/delete',
+
+  // candidatePositions
+  'GET   /api/v1/candidate-positions': 'topIssues/candidatePosition/list',
+  'POST   /api/v1/candidate-position': 'topIssues/candidatePosition/create',
+  'PUT   /api/v1/candidate-position': 'topIssues/candidatePosition/update',
+  'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
 
   // candidate issue
   'GET   /api/v1/candidate-issue/pending': 'newCandidates/candidateIssue/list', //admin

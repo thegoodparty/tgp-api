@@ -76,7 +76,7 @@ module.exports = {
       }
       let filtered = activeCandidates;
       let positionNames = [];
-
+      const topics = await IssueTopic.find();
       if (filters) {
         const queryPositions = filters.split(',');
         const positions = [];
@@ -84,13 +84,13 @@ module.exports = {
           positions.push({ id: position });
         });
         filtered = filterCandidates(activeCandidates, positions);
-        const topics = await IssueTopic.find();
+
         positionNames = getPositions(topics, queryPositions);
       }
-
       return exits.success({
         candidates: filtered,
         positionNames,
+        topics,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
