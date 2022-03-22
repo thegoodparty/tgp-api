@@ -60,6 +60,9 @@ module.exports = {
         topIssue: topIssueId,
         order,
       });
+      // update the many to many relationships
+      await Candidate.addToCollection(candidateId, 'positions', positionId);
+      await Candidate.addToCollection(candidateId, 'topIssues', topIssueId);
 
       return exits.success({
         message: 'created',

@@ -32,7 +32,7 @@ module.exports = {
       const { filters } = inputs;
       const candidates = await Candidate.find({
         where: { isActive: true },
-      }).populate('candidateIssueItems');
+      }).populate('positions');
 
       const activeCandidates = [];
       const currentYear = new Date().getFullYear();
@@ -71,26 +71,26 @@ module.exports = {
           race,
           state,
           zip,
-          topics: candidate.candidateIssueItems,
+          positions: candidate.positions,
         });
       }
       let filtered = activeCandidates;
       let positionNames = [];
-      const topics = await IssueTopic.find();
-      if (filters) {
-        const queryPositions = filters.split(',');
-        const positions = [];
-        queryPositions.forEach(position => {
-          positions.push({ id: position });
-        });
-        filtered = filterCandidates(activeCandidates, positions);
-
-        positionNames = getPositions(topics, queryPositions);
-      }
+      const topIssues = await TopIssue.find();
+      // if (filters) {
+      //   const queryPositions = filters.split(',');
+      //   const positions = [];
+      //   queryPositions.forEach(position => {
+      //     positions.push({ id: position });
+      //   });
+      //   filtered = filterCandidates(activeCandidates, positions);
+      //
+      //   positionNames = getPositions(topIssues, queryPositions);
+      // }
       return exits.success({
         candidates: filtered,
         positionNames,
-        topics,
+        topIssues,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

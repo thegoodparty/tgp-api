@@ -34,6 +34,16 @@ module.exports = {
         return exits.forbidden();
       }
 
+      await Candidate.removeFroCollection(
+        id,
+        'positions',
+        candidatePosition.position,
+      );
+      await Candidate.removeFroCollection(
+        id,
+        'topIssues',
+        candidatePosition.topIssue,
+      );
       await CandidatePosition.destroyOne({ id });
 
       return exits.success({

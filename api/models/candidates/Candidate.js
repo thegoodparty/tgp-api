@@ -67,11 +67,12 @@ module.exports = {
       via: 'candidate',
     },
 
+    //many to many
     positions: {
       collection: 'position',
       via: 'candidates',
     },
-
+    //many to many
     topIssues: {
       collection: 'topIssue',
       via: 'candidates',
