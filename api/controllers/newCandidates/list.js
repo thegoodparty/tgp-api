@@ -11,7 +11,10 @@ module.exports = {
   description: 'All Candidates',
 
   inputs: {
-    filters: {
+    position: {
+      type: 'string',
+    },
+    state: {
       type: 'string',
     },
   },
@@ -29,16 +32,40 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { filters } = inputs;
-      const candidates = await Candidate.find({
-        where: { isActive: true },
-      }).populate('positions');
+      const { position, state } = inputs;
+      const criteria = { isActive: true };
+      if (state) {
+        criteria.state = state;
+      }
+      let positionId = false;
+      if (position && position !== 'all') {
+        positionId = parseInt(position.split('|')[1], 10);
+      }
+      const positionCriteria = {};
+      if (positionId) {
+        positionCriteria.id = positionId;
+      }
+      const candidates = await Candidate.find(criteria).populate('positions');
 
       const activeCandidates = [];
+      const possibleStates = {};
       const currentYear = new Date().getFullYear();
       const janFirst = new Date(`01-01-${currentYear}`);
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
+        if (positionId) {
+          let hasPosition = false;
+          // filter candidates who don't match the position id
+          for (let j = 0; j < candidate.positions.length; j++) {
+            if (candidate.positions[j].id === positionId) {
+              hasPosition = true;
+              break;
+            }
+          }
+          if (!hasPosition) {
+            continue; // skip this candidate
+          }
+        }
         const data = candidate.data ? JSON.parse(candidate.data) : {};
         const { raceDate } = data;
         // skip candidates with a race date before this calendar year.
@@ -73,10 +100,11 @@ module.exports = {
           zip,
           positions: candidate.positions,
         });
+        if (candidate.state && candidate.state !== '') {
+          possibleStates[candidate.state] = candidate.state;
+        }
       }
       let filtered = activeCandidates;
-      let positionNames = [];
-      const topIssues = await TopIssue.find();
       // if (filters) {
       //   const queryPositions = filters.split(',');
       //   const positions = [];
@@ -87,10 +115,18 @@ module.exports = {
       //
       //   positionNames = getPositions(topIssues, queryPositions);
       // }
+      const positions = await Position.find()
+        .populate('candidates')
+        .sort([{ name: 'ASC' }]);
+      const filteredPositions = positions.filter(
+        position => position.candidates.length > 0,
+      );
+      const states = Object.values(possibleStates);
+      states.sort();
       return exits.success({
         candidates: filtered,
-        positionNames,
-        topIssues,
+        positions: filteredPositions,
+        states,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
