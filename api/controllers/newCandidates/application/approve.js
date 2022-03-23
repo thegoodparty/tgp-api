@@ -151,13 +151,23 @@ module.exports = {
       for (let i = 0; i < topIssues.length; i++) {
         const { selectedTopic, selectedPosition, description } = topIssues[i];
         if (selectedTopic && selectedPosition) {
-          await CandidateIssueItem.create({
+          await CandidatePosition.create({
             candidate: newCandidate.id,
-            topic: selectedTopic.id,
-            positionId: selectedPosition.id,
+            topIssue: selectedTopic.id,
+            position: selectedPosition.id,
             description,
-            status: 'accepted',
+            order: i + 1,
           });
+          await Candidate.addToCollection(
+            newCandidate.id,
+            'positions',
+            selectedPosition.id,
+          );
+          await Candidate.addToCollection(
+            newCandidate.id,
+            'topIssues',
+            selectedTopic.id,
+          );
         }
       }
 
@@ -214,7 +224,7 @@ function getParameterByName(name, url) {
 }
 
 function addSocial(handle, base) {
-  if (!handle || hadnle === '') {
+  if (!handle || handle === '') {
     return handle;
   }
   return `https://${base}/${handle}`;
