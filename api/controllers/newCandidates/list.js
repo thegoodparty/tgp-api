@@ -104,17 +104,7 @@ module.exports = {
           possibleStates[candidate.state] = candidate.state;
         }
       }
-      let filtered = activeCandidates;
-      // if (filters) {
-      //   const queryPositions = filters.split(',');
-      //   const positions = [];
-      //   queryPositions.forEach(position => {
-      //     positions.push({ id: position });
-      //   });
-      //   filtered = filterCandidates(activeCandidates, positions);
-      //
-      //   positionNames = getPositions(topIssues, queryPositions);
-      // }
+
       const positions = await Position.find()
         .populate('candidates')
         .sort([{ name: 'ASC' }]);
@@ -124,7 +114,7 @@ module.exports = {
       const states = Object.values(possibleStates);
       states.sort();
       return exits.success({
-        candidates: filtered,
+        candidates: activeCandidates,
         positions: filteredPositions,
         states,
       });
@@ -133,41 +123,4 @@ module.exports = {
       return exits.badRequest({ message: 'error finding candidates' });
     }
   },
-};
-
-const filterCandidates = (allCandidates, positions) => {
-  if (positions.length === []) {
-    return allCandidates;
-  }
-  const filtered = allCandidates.filter(candidate => {
-    if (candidate.topics) {
-      for (let i = 0; i < candidate.topics.length; i++) {
-        const positionId = candidate.topics[i].positionId;
-        if (positions.find(position => position.id === positionId)) {
-          return true;
-        }
-      }
-    }
-    return false;
-  });
-  return filtered;
-};
-
-const getPositions = (topics, positions) => {
-  const positionsNames = [];
-
-  const idToName = {};
-  topics.forEach(topic => {
-    if (topic.positions) {
-      topic.positions.forEach(position => {
-        idToName[position.id] = position.name;
-      });
-    }
-  });
-  positions.forEach(positionId => {
-    if (idToName[positionId]) {
-      positionsNames.push(idToName[positionId]);
-    }
-  });
-  return positionsNames;
 };
