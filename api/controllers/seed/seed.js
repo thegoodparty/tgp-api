@@ -4,16 +4,7 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const mailchimp = require('@mailchimp/mailchimp_marketing');
-const md5 = require('md5');
-const apiKey = sails.config.custom.MAILCHIMP_API || sails.config.MAILCHIMP_API;
-const server =
-  sails.config.custom.MAILCHIMP_SERVER || sails.config.MAILCHIMP_SERVER;
 
-mailchimp.setConfig({
-  apiKey,
-  server,
-});
 module.exports = {
   inputs: {},
 
@@ -21,51 +12,36 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      // console.log(await CandidateIssue.find({}));
-      const oldCandidateIssueList = await CandidateIssue.find({});
-      const allIssueTopics = await IssueTopic.find({});
-      const issueTopicList = {};
-      allIssueTopics.forEach(issueTopic => {
-        issueTopicList[issueTopic.id] = issueTopic;
-      });
-      
-      for (let i = 0; i < oldCandidateIssueList.length; i++) {
-        const oldCandidateIssue = oldCandidateIssueList[i];
-        for (let j = 0; j < oldCandidateIssueList[i].data.length; j++) {
-          
-          const item = oldCandidateIssue.data[j];
-          const candidate = await Candidate.findOne({
-            id: oldCandidateIssue.candidate,
-          });
-          
-          const topic = issueTopicList[item.topicId];
-          const candidateIssueItem = await CandidateIssueItem.findOrCreate(
-            {
-              topic: topic.id,
-              candidate: candidate.id,
-            },
-            {
-              candidate: candidate.id,
-              topic: topic.id,
-            },
-          );
-          await CandidateIssueItem.updateOne({
-            id: candidateIssueItem.id,
-          }).set({
-            candidate: candidate.id,
-            topic: topic.id,
-            positionId: item.positionId,
-            description: item.description,
-            websiteUrl: item.websiteUrl,
-            status: oldCandidateIssue.status,
-          });
+      const oldIssueTopic = await IssueTopic.find();
+      let issueCount = 0;
+      let positionCount = 0;
+      for (let i = 0; i < oldIssueTopic.length; i++) {
+        try {
+          const { topic, positions } = oldIssueTopic[i];
+          const topIssue = await TopIssue.create({
+            name: topic,
+          }).fetch();
+          issueCount++;
+          for (let j = 0; j < positions.length; j++) {
+            await Position.create({
+              name: positions[j].name,
+              topIssue: topIssue.id,
+            });
+            positionCount++;
+          }
+        } catch (e) {
+          console.log('error in loop ', i, oldIssueTopic[i], e);
         }
       }
-      return exits.success(oldCandidateIssueList);
-    } catch (e) {
-      console.log('Error in mailchimp seed', e);
+
       return exits.success({
-        message: 'Error in mailchimp seed',
+        issueCount,
+        positionCount,
+      });
+    } catch (e) {
+      console.log('Error in seed', e);
+      return exits.success({
+        message: 'Error in seed',
         error: JSON.stringify(e),
       });
     }
