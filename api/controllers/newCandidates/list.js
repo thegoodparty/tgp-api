@@ -105,9 +105,22 @@ module.exports = {
         }
       }
 
+      const positionsByTopIssues = {};
+
       const positions = await Position.find()
         .populate('candidates')
+        .populate('topIssue')
         .sort([{ name: 'ASC' }]);
+
+      positions.forEach(position => {
+        if (position.candidates.length > 0) {
+          if (!positionsByTopIssues[position.topIssue.name]) {
+            positionsByTopIssues[position.topIssue.name] = [];
+          }
+          positionsByTopIssues[position.topIssue.name].push(position);
+        }
+      });
+
       const filteredPositions = positions.filter(
         position => position.candidates.length > 0,
       );
@@ -116,6 +129,7 @@ module.exports = {
       return exits.success({
         candidates: activeCandidates,
         positions: filteredPositions,
+        positionsByTopIssues,
         states,
       });
     } catch (e) {
