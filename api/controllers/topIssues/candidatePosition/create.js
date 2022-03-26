@@ -53,6 +53,16 @@ module.exports = {
         return exits.forbidden();
       }
 
+      const existing = await CandidatePosition.findOne({
+        topIssue: topIssueId,
+        candidate: candidateId,
+      });
+      if (existing) {
+        return exits.badRequest({
+          message: 'This top issue already exists for this candidate',
+        });
+      }
+
       await CandidatePosition.create({
         description,
         candidate: candidateId,
