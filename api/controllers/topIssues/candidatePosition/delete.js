@@ -34,12 +34,12 @@ module.exports = {
         return exits.forbidden();
       }
 
-      await Candidate.removeFroCollection(
+      await Candidate.removeFromCollection(
         id,
         'positions',
         candidatePosition.position,
       );
-      await Candidate.removeFroCollection(
+      await Candidate.removeFromCollection(
         id,
         'topIssues',
         candidatePosition.topIssue,
