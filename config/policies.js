@@ -26,8 +26,7 @@ module.exports.policies = {
   'newCandidates/find-inactive': ['isAuthenticated', 'isAdmin'],
   'newCandidates/compareTopic/*': ['isAuthenticated', 'isAdmin'],
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
-  'topIssues/candidatePosition': ['isAuthenticated'],
-  'newCandidates/topIssue/*': ['isAuthenticated', 'isAdmin'],
+  'topIssues/candidatePosition/*': ['isAuthenticated'],
   'release/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/campaignUpdate/*': ['isAuthenticated', 'isAdmin'],
   'newCandidates/candidateIssue/*': ['isAuthenticated', 'isAdmin'],
@@ -67,7 +66,8 @@ module.exports.policies = {
   'topIssues/topIssue/list': true,
   'topIssues/position/list': true,
   'release/list': true,
-  'visit/create': true,
+  'visit/*': true,
+  'endorseButton/*': true,
   'updates/create': true,
   'newCandidates/application/upload-image': true, // for guest applications
 };

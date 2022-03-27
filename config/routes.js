@@ -119,6 +119,9 @@ module.exports.routes = {
 
   'POST   /api/v1/visit': 'visit/create',
 
+  // endorseButton
+  'GET   /api/v1/button/impression': 'endorseButton/impression',
+
   // campaign
   'GET   /api/v1/campaign': 'campaign/find',
   'GET   /api/v1/campaign/stats': 'campaign/stats',
