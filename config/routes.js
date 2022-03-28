@@ -123,17 +123,18 @@ module.exports.routes = {
   'GET   /api/v1/button/impression': 'endorseButton/impression',
 
   // campaign
-  'GET   /api/v1/campaign': 'campaign/find',
-  'GET   /api/v1/campaign/stats': 'campaign/stats',
+  'GET    /api/v1/campaign': 'campaign/find',
+  'GET    /api/v1/campaign/stats': 'campaign/stats',
   'POST   /api/v1/campaign/staff': 'campaign/staff/create',
-  'PUT   /api/v1/campaign/staff': 'campaign/staff/update',
-  'GET   /api/v1/campaign/staff-role': 'campaign/staff/find',
-  'GET   /api/v1/campaign/staff': 'campaign/staff/list',
+  'PUT    /api/v1/campaign/staff': 'campaign/staff/update',
+  'GET    /api/v1/campaign/staff-role': 'campaign/staff/find',
+  'GET    /api/v1/campaign/staff': 'campaign/staff/list',
   'DELETE   /api/v1/campaign/staff': 'campaign/staff/delete',
   'POST   /api/v1/campaign/update-request': 'campaign/updateRequest/create',
   'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
-  'GET   /api/v1/campaign/endorsements': 'campaign/endorsement/list',
+  'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
   'POST   /api/v1/campaign/image': 'campaign/image/create',
+  'PUT    /api/v1/campaign/preferences': 'campaign/preferences/update',
 
   // candidate UGC
   'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin
