@@ -130,7 +130,7 @@ module.exports.routes = {
   'GET    /api/v1/campaign/staff-role': 'campaign/staff/find',
   'GET    /api/v1/campaign/staff': 'campaign/staff/list',
   'DELETE   /api/v1/campaign/staff': 'campaign/staff/delete',
-  'POST   /api/v1/campaign/update-request': 'campaign/updateRequest/create',
+  'POST   /api/v1/campaign/update': 'campaign/update/create',
   'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
   'POST   /api/v1/campaign/image': 'campaign/image/create',

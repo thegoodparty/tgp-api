@@ -42,21 +42,13 @@ module.exports = {
           id,
           isActive: true,
         })
-          .populate('candidateUpdates', {
-            where: {
-              status: 'accepted',
-            },
-          })
+          .populate('candidateUpdates')
           .populate('endorsements');
       } else {
         candidate = await Candidate.findOne({
           id,
           isActive: true,
-        }).populate('candidateUpdates', {
-          where: {
-            status: 'accepted',
-          },
-        });
+        }).populate('candidateUpdates');
       }
       if (!candidate) {
         return exits.notFound();

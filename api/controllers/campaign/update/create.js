@@ -48,7 +48,6 @@ module.exports = {
       const attr = {
         ...update,
         candidate: candidateId,
-        status: 'pending',
       };
       await CampaignUpdate.create(attr);
 
