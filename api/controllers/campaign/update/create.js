@@ -49,10 +49,10 @@ module.exports = {
         ...update,
         candidate: candidateId,
       };
-      await CampaignUpdate.create(attr);
+      const newUpdate = await CampaignUpdate.create(attr).fetch();
 
       return exits.success({
-        message: 'created',
+        updateId: newUpdate.id,
       });
     } catch (e) {
       console.log('Error creating campaign updates', e);
