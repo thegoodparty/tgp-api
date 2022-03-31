@@ -124,6 +124,7 @@ module.exports.routes = {
 
   // campaign
   'GET    /api/v1/campaign': 'campaign/find',
+  'PUT    /api/v1/campaign': 'campaign/update',
   'GET    /api/v1/campaign/stats': 'campaign/stats',
   'POST   /api/v1/campaign/staff': 'campaign/staff/create',
   'PUT    /api/v1/campaign/staff': 'campaign/staff/update',
