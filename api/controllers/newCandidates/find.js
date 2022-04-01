@@ -62,6 +62,9 @@ module.exports = {
 
       let candidateData = JSON.parse(candidate.data);
       candidateData.updatesList = candidate.candidateUpdates;
+      candidateData.updatesList.sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
 
       let candidatePositions = [];
       let similarCampaigns = [];

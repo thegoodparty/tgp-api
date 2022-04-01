@@ -113,7 +113,7 @@ module.exports = {
         .sort([{ name: 'ASC' }]);
 
       positions.forEach(position => {
-        if (position.candidates.length > 0) {
+        if (position.topIssue && position.candidates.length > 0) {
           if (!positionsByTopIssues[position.topIssue.name]) {
             positionsByTopIssues[position.topIssue.name] = [];
           }
