@@ -45,7 +45,13 @@ module.exports = {
       if (positionId) {
         positionCriteria.id = positionId;
       }
-      const candidates = await Candidate.find(criteria).populate('positions');
+      const candidates = await Candidate.find(criteria)
+        .populate('positions')
+        .populate('endorsements');
+
+      candidates.sort((a, b) => {
+        return a.endorsements.length - b.endorsements.length;
+      });
 
       const activeCandidates = [];
       const possibleStates = {};
