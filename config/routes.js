@@ -136,6 +136,7 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign/update': 'campaign/update/delete',
   'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
+  'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
   'POST   /api/v1/campaign/image': 'campaign/image/create',
   'PUT    /api/v1/campaign/preferences': 'campaign/preferences/update',
 
