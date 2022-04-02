@@ -1,33 +1,26 @@
-/**
- * user/register.js
- *
- * @description :: Stand Alone action2 for signing up a user.
- * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
- */
-
 module.exports = {
-  friendlyName: 'edit Candidate update',
+  friendlyName: 'delete Candidate update',
 
-  description: 'Portal endpoint to edit update',
+  description: 'Portal endpoint to delete update',
 
   inputs: {
     candidateId: {
       type: 'number',
       required: true,
     },
-    update: {
-      type: 'json',
+    id: {
+      type: 'number',
       required: true,
     },
   },
 
   exits: {
     success: {
-      description: 'Updated',
+      description: 'Delete',
       responseType: 'ok',
     },
     badRequest: {
-      description: 'Error editing',
+      description: 'Error deleting',
       responseType: 'badRequest',
     },
     forbidden: {
@@ -39,26 +32,24 @@ module.exports = {
     try {
       const { user } = this.req;
 
-      const { candidateId, update } = inputs;
+      const { candidateId, id } = inputs;
       const candidate = await Candidate.findOne({ id: candidateId });
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
       if (!canAccess) {
         return exits.forbidden();
       }
-      const attr = {
-        ...update,
-      };
-      await CampaignUpdate.updateOne({
-        id: update.id,
+
+      await CampaignUpdate.destroyOne({
+        id,
         candidate: candidateId,
-      }).set(attr);
+      });
 
       return exits.success({
-        message: 'updated',
+        message: 'deleted',
       });
     } catch (e) {
-      console.log('Error editing campaign updates', e);
-      return exits.badRequest({ message: 'Error editing campaign updates' });
+      console.log('Error deleting campaign updates', e);
+      return exits.badRequest({ message: 'Error deleting campaign updates' });
     }
   },
 };
