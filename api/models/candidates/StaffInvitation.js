@@ -19,6 +19,11 @@ module.exports = {
       unique: true,
     },
 
+    name: {
+      type: 'string',
+      required: true,
+    },
+
     role: {
       type: 'string',
       required: true,

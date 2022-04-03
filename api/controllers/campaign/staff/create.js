@@ -14,6 +14,10 @@ module.exports = {
       type: 'number',
       required: true,
     },
+    name: {
+      type: 'string',
+      required: true,
+    },
     email: {
       type: 'string',
       required: true,
@@ -47,7 +51,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, email, role } = inputs;
+      const { id, email, role, name } = inputs;
       const lowerCaseEmail = email.toLowerCase();
       const user = this.req.user;
 
@@ -81,6 +85,7 @@ module.exports = {
         await StaffInvitation.create({
           role,
           email: lowerCaseEmail,
+          name: name.trim(),
           candidate: id,
           createdBy: user.id,
         });
@@ -89,13 +94,14 @@ module.exports = {
         const roleName = role === 'staff' ? 'staff member' : 'campaign manager';
         const content = {
           role: roleName,
+          name,
           candidateName,
           user: user.name,
           link: `${appBase}/register?email=${lowerCaseEmail}`,
         };
 
         const to = lowerCaseEmail;
-        const subject = `You were invited to be a ${roleName} for ${candidateName} at Good Party`;
+        const subject = `${name}, you are invited to be a ${roleName} for ${candidateName} at Good Party`;
         const template = 'staff-invitation';
 
         const variables = JSON.stringify(content);
