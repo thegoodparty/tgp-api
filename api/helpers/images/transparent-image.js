@@ -53,7 +53,7 @@ module.exports = {
 
       console.log(`File saved to ${outputFile}`);
 
-      await sails.helpers.images.optimizeImage(outputFile);
+      // await sails.helpers.images.optimizeImage(outputFile);
 
       const bucketName = `${assetsBase}/candidate-info`;
 
