@@ -224,7 +224,7 @@ const groupRecordsByDate = (records, key, byDates) => {
 };
 
 const ctrByDate = (clicks, impressions, byDates) => {
-  impressions.forEach((impression, index) => {
+  impressions.forEach(impression => {
     const date = moment(impression.createdAt).format('M-D');
     const { clicks, impressions } = byDates[date];
     if (impressions !== 0) {
