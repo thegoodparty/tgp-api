@@ -87,16 +87,52 @@ module.exports = {
         createdAt: { '<': new Date(startDate), '>': new Date(lastPeriod) },
       });
 
+      // button impressions
+      const impressions = await ButtonImpression.find({
+        candidate: candidate.id,
+        createdAt: { '>': new Date(startDate) },
+        type: 'impression',
+      });
+
+      const lastPeriodImpressions = await ButtonImpression.count({
+        candidate: candidate.id,
+        createdAt: { '<': new Date(startDate), '>': new Date(lastPeriod) },
+        type: 'impression',
+      });
+
+      // button clicks
+      const clicks = await ButtonImpression.find({
+        candidate: candidate.id,
+        createdAt: { '>': new Date(startDate) },
+        type: 'click',
+      });
+
+      const lastPeriodClicks = await ButtonImpression.count({
+        candidate: candidate.id,
+        createdAt: { '<': new Date(startDate), '>': new Date(lastPeriod) },
+        type: 'clicks',
+      });
+
       // totals
 
-      const totalEndorsers = await Support.count({
+      // const totalEndorsers = await Support.count({
+      //   candidate: candidate.id,
+      // });
+      // const totalVisits = await Visit.count({
+      //   url,
+      // });
+      const totalImpressions = await ButtonImpression.count({
         candidate: candidate.id,
+        type: 'impression',
       });
-      const totalVisits = await Visit.count({
-        url,
-      });
-      const candidateData = JSON.parse(candidate.data);
-      const chart = groupByDate(visits, endorsements, shares, days);
+      const chart = groupByDate(
+        visits,
+        endorsements,
+        shares,
+        impressions,
+        clicks,
+        days,
+      );
       return exits.success({
         stats: {
           visitors: {
@@ -111,15 +147,19 @@ module.exports = {
             total: shares.length,
             lastPeriod: lastPeriodShares,
           },
+          impressions: {
+            total: impressions.length,
+            lastPeriod: lastPeriodImpressions,
+          },
+          clicks: {
+            total: clicks.length,
+            lastPeriod: lastPeriodClicks,
+          },
         },
         chart,
 
         totals: {
-          visits: totalVisits,
-          endorsers: totalEndorsers,
-          likelyVoters: candidateData.likelyVoters,
-          unrepVoters: candidateData.unrepVoters,
-          votesNeeded: candidateData.votesNeeded,
+          impressions: totalImpressions,
         },
       });
     } catch (e) {
@@ -129,11 +169,18 @@ module.exports = {
   },
 };
 
-const groupByDate = (visits, endorsements, shares, days) => {
+const groupByDate = (
+  visits,
+  endorsements,
+  shares,
+  impressions,
+  clicks,
+  days,
+) => {
   const byDates = {};
-  const startDate = moment()
-    .subtract(days, 'days')
-    .format('M-D');
+  // const startDate = moment()
+  //   .subtract(days, 'days')
+  //   .format('M-D');
   for (let i = 0; i < days; i++) {
     const date = moment()
       .subtract(days - i - 1, 'days')
@@ -143,11 +190,17 @@ const groupByDate = (visits, endorsements, shares, days) => {
       visits: 0,
       endorsements: 0,
       shares: 0,
+      impressions: 0,
+      clicks: 0,
+      ctr: 0,
     };
   }
   groupRecordsByDate(visits, 'visits', byDates);
   groupRecordsByDate(endorsements, 'endorsements', byDates);
   groupRecordsByDate(shares, 'shares', byDates);
+  groupRecordsByDate(impressions, 'impressions', byDates);
+  groupRecordsByDate(clicks, 'clicks', byDates);
+  ctrByDate(clicks, impressions, byDates);
   const datesArray = Object.keys(byDates).map(key => byDates[key]);
   return datesArray;
 };
@@ -161,8 +214,21 @@ const groupRecordsByDate = (records, key, byDates) => {
         visits: 0,
         endorsements: 0,
         shares: 0,
+        impressions: 0,
+        clicks: 0,
+        ctr: 0,
       };
     }
     byDates[date][key]++;
+  });
+};
+
+const ctrByDate = (clicks, impressions, byDates) => {
+  impressions.forEach((impression, index) => {
+    const date = moment(impression.createdAt).format('M-D');
+    const { clicks, impressions } = byDates[date];
+    if (impressions !== 0) {
+      byDates[date]['ctr'] = (clicks * 100) / impressions;
+    }
   });
 };

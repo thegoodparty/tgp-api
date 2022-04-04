@@ -121,6 +121,7 @@ module.exports.routes = {
 
   // endorseButton
   'GET   /api/v1/button/impression': 'endorseButton/impression',
+  'GET   /api/v1/button/click': 'endorseButton/click',
 
   // campaign
   'GET    /api/v1/campaign': 'campaign/find',

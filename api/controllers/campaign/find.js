@@ -32,7 +32,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id } = inputs;
+      const { id, withImpressions } = inputs;
       const user = this.req.user;
 
       const candidate = await Candidate.findOne({

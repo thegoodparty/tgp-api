@@ -24,16 +24,13 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { id } = inputs;
-      const outputFile = path.join(__dirname, `../../../tempImages/pixel.png`);
 
       await ButtonImpression.create({
         candidate: id,
-        type: 'impression',
+        type: 'click',
       });
 
-      this.res.sendFile(outputFile, {
-        headers: { 'Content-Type': 'image/png' },
-      });
+      return exits.success({ message: 'created' });
     } catch (e) {
       console.log('Error creating button impression', e);
       return exits.badRequest({ message: 'Error registering visit' });
