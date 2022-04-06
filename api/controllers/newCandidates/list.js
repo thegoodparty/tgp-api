@@ -116,6 +116,8 @@ module.exports = {
         }
       }
 
+      activeCandidates.sort((a, b) => b.supporters - a.supporters);
+
       const positionsByTopIssues = {};
 
       const positions = await Position.find()
