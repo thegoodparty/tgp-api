@@ -105,6 +105,7 @@ module.exports = {
           state,
           zip,
           positions: candidate.positions,
+          supporters: candidate.endorsements.length,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
