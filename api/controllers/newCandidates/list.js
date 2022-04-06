@@ -95,6 +95,8 @@ module.exports = {
           zip,
         } = data;
 
+        const supporters = await Support.count({ candidate: id });
+
         activeCandidates.push({
           firstName,
           lastName,
@@ -107,7 +109,7 @@ module.exports = {
           state,
           zip,
           positions: candidate.positions,
-          supporters: candidate.endorsements.length,
+          supporters,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
