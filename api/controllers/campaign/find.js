@@ -57,6 +57,17 @@ module.exports = {
       candidateData.updatesList.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       );
+      candidateData.contactName = candidate.contact
+        ? candidate.contact.contactName
+        : '';
+
+      candidateData.contactEmail = candidate.contact
+        ? candidate.contact.contactEmail
+        : '';
+
+      candidateData.contactPhone = candidate.contact
+        ? candidate.contact.contactPhone
+        : '';
       return exits.success({
         candidate: candidateData,
       });

@@ -42,6 +42,10 @@ module.exports = {
       type: 'string',
       description: 'JSON.stringified string of all the other properties',
     },
+    contact: {
+      type: 'json',
+      description: 'contact info',
+    },
 
     // one-to-one
     candidateUgc: {
