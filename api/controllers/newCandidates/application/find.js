@@ -48,7 +48,7 @@ module.exports = {
           ...application,
           ...data,
         },
-        reviewMode,
+        reviewMode:true,
       });
     } catch (e) {
       console.log('error at applications/create', e);

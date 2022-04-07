@@ -59,16 +59,29 @@ module.exports = {
         status: 'approved',
         data: JSON.stringify(newData),
       });
-      const { firstName, lastName } = newData.candidate;
+      const {
+        firstName,
+        lastName,
+        party,
+        otherParty,
+        zip,
+        candidateEmail,
+        candidatePhone,
+      } = newData.candidate;
       // create candidate in our system
       const newCandidate = await Candidate.create({
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         isActive: true,
         chamber: 'local',
+        contact: {
+          contactFirstName: firstName.trim(),
+          contactLastName: lastName.trim(),
+          contactEmail: candidateEmail,
+          contactPhone: candidatePhone,
+        },
       }).fetch();
 
-      const { party, otherParty, zip } = newData.candidate;
       const {
         campaignSummary,
         headline,

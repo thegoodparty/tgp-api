@@ -63,7 +63,12 @@ module.exports = {
         lastName: candidate.lastName.trim(),
         state: candidate.state.trim(),
       };
-      const { contactName, contactPhone, contactEmail } = candidate;
+      const {
+        contactFirstName,
+        contactLastName,
+        contactPhone,
+        contactEmail,
+      } = candidate;
 
       const data = {
         ...JSON.parse(candidateAccess.data),
@@ -71,14 +76,20 @@ module.exports = {
         id,
       };
 
-      delete data.contactName;
+      delete data.contactFirstName;
+      delete data.contactLastName;
       delete data.contactPhone;
       delete data.contactEmail;
 
       await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
         data: JSON.stringify(data),
-        contact: { contactName, contactPhone, contactEmail },
+        contact: {
+          contactFirstName,
+          contactLastName,
+          contactPhone,
+          contactEmail,
+        },
       });
 
       return exits.success({
