@@ -136,7 +136,7 @@ module.exports = {
         console.log('error trigger candidate update');
       }
       try {
-        await sails.helpers.crm.tag(reqUser, candidate);
+        // await sails.helpers.crm.tag(reqUser, candidate);
         console.log('success')
       } catch (e) {
       }

@@ -47,7 +47,7 @@ module.exports = {
 
       try {
         const candidate = await Candidate.findOne({ id: candidateId });
-        await sails.helpers.crm.tag(reqUser, candidate, true);
+        // await sails.helpers.crm.tag(reqUser, candidate, true);
       } catch (e) {}
       return exits.success({
         message: 'support deleted',

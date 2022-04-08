@@ -1,9 +1,7 @@
-// https://nationbuilder.com/api_documentation
-const axios = require('axios');
+// https://developers.hubspot.com/docs/api/crm/contacts
+const hubspot = require('@hubspot/api-client');
 
-const nationBuilderAccessToken =
-  sails.config.custom.nationBuilderAccessToken ||
-  sails.config.nationBuilderAccessToken;
+const hubSpotKey = sails.config.custom.hubSpotKey || sails.config.hubSpotKey;
 
 module.exports = {
   inputs: {
@@ -22,52 +20,77 @@ module.exports = {
     },
   },
   fn: async function(inputs, exits) {
-    const { user } = inputs;
-
-    const url = `https://goodparty.nationbuilder.com/api/v1/people?access_token=${nationBuilderAccessToken}`;
-    const body = {
-      person: {
-        first_name: user.name
-          .split(' ')
-          .slice(0, -1)
-          .join(' '),
-        last_name: user.name
-          .split(' ')
-          .slice(-1)
-          .join(' '),
-        email: user.email,
-        phone: user.phone,
-        profile_image_url_ssl: user.avatar,
-      },
-    };
-
-    const res = await axios({
-      url,
-      method: 'POST',
-      data: body,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-
-    // update user record with the id from the crm
-
-    let metaData;
-    const nationBuilderId = res.data.person.id;
-    if (user.metaData && user.metaData !== '') {
-      const parsedMeta = JSON.parse(user.metaData);
-      metaData = {
-        ...parsedMeta,
-        nationBuilderId,
-      };
-    } else {
-      metaData = { nationBuilderId };
+    if (!hubSpotKey) {
+      // for non production env.
+      return exits.success('no api key');
     }
+    const hubspotClient = new hubspot.Client({ apiKey: hubSpotKey });
 
-    await User.updateOne({ id: user.id }).set({
-      metaData: JSON.stringify(metaData),
-    });
-    return exits.success('ok');
+    const { user } = inputs;
+    try {
+      const contactObj = {
+        properties: {
+          firstname: user.name
+            .split(' ')
+            .slice(0, -1)
+            .join(' '),
+          lastname: user.name
+            .split(' ')
+            .slice(-1)
+            .join(' '),
+          email: user.email,
+          phone: user.phone,
+          zip: user.zip,
+        },
+      };
+
+      // update user record with the id from the crm
+      console.log('creating contact...');
+      const createContactResponse = await hubspotClient.crm.contacts.basicApi.create(
+        contactObj,
+      );
+      console.log('created', createContactResponse);
+
+      const hubspotId = createContactResponse.id;
+      await updateMeta(user, hubspotId);
+      return exits.success('ok');
+    } catch (e) {
+      // Error if same phone...
+      try {
+        if (
+          e &&
+          e.body &&
+          e.body.message.startsWith('Contact already exists.')
+        ) {
+          const id = e.body.message.substring(
+            'Contact already exists. Existing ID: '.length,
+          );
+          console.log('id from error', id);
+          await updateMeta(user, id);
+        }
+      } catch (err) {
+        console.log('error updating meta', err);
+      }
+      // console.log('hubspot error', e);
+      return exits.success('not ok');
+    }
   },
+};
+
+const updateMeta = async (user, hubspotId) => {
+  let metaData;
+
+  if (user.metaData && user.metaData !== '') {
+    const parsedMeta = JSON.parse(user.metaData);
+    metaData = {
+      ...parsedMeta,
+      hubspotId,
+    };
+  } else {
+    metaData = { hubspotId };
+  }
+
+  await User.updateOne({ id: user.id }).set({
+    metaData: JSON.stringify(metaData),
+  });
 };

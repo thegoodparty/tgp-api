@@ -5,6 +5,7 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "@hubspot/api-client": "^6.0.1-beta4",
     "@mailchimp/mailchimp_marketing": "^3.0.15",
     "@sailshq/lodash": "^3.10.3",
     "@tyriar/binary-heap": "^1.0.5",
