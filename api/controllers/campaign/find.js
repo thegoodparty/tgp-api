@@ -71,6 +71,10 @@ module.exports = {
       candidateData.contactPhone = candidate.contact
         ? candidate.contact.contactPhone
         : '';
+
+      candidateData.hubspotId = candidate.contact
+        ? candidate.contact.hubspotId
+        : '';
       return exits.success({
         candidate: candidateData,
       });

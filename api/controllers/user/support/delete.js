@@ -36,11 +36,13 @@ module.exports = {
         console.log('error trigger candidate update');
       }
       try {
-        await sails.helpers.updateTag(
-          reqUser.email,
-          candidateId,
-          'inactive',
-        );
+        //   await sails.helpers.updateTag(
+        //     reqUser.email,
+        //     candidateId,
+        //     'inactive',
+        //   );
+        const candidate = await Candidate.findOne({ id: candidateId });
+        await sails.helpers.crm.associateUserCandidate(reqUser, candidate, true);
       } catch (e) {
         console.log('error remove tag');
       }

@@ -62,12 +62,21 @@ module.exports = {
         firstName: candidate.firstName.trim(),
         lastName: candidate.lastName.trim(),
         state: candidate.state.trim(),
+        isActive:
+          typeof candidate.isActive !== 'undefined'
+            ? !!candidate.isActive
+            : candidateAccess.isActive,
+        isOnHomepage:
+          typeof candidate.isOnHomepage !== 'undefined'
+            ? !!candidate.isOnHomepage
+            : candidateAccess.isOnHomepage,
       };
       const {
         contactFirstName,
         contactLastName,
         contactPhone,
         contactEmail,
+        hubspotId,
       } = candidate;
 
       const data = {
@@ -80,17 +89,29 @@ module.exports = {
       delete data.contactLastName;
       delete data.contactPhone;
       delete data.contactEmail;
+      delete data.hubspotId;
+
+      console.log('candidateAccess.contact', candidateAccess.contact);
+      console.log('contactPhone', contactPhone);
+      console.log('chubspotId', hubspotId);
 
       await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
         data: JSON.stringify(data),
         contact: {
+          ...candidateAccess.contact,
           contactFirstName,
           contactLastName,
           contactPhone,
           contactEmail,
+          hubspotId: hubspotId ? hubspotId : candidateAccess.contact.hubspotId,
         },
       });
+
+      const finalCandidate = await Candidate.findOne({ id });
+      console.log('id', id);
+      console.log('updateing final: ', finalCandidate);
+      await sails.helpers.crm.createCandidate(finalCandidate);
 
       return exits.success({
         message: 'updated',

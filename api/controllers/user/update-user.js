@@ -93,8 +93,17 @@ module.exports = {
       // }
 
       const updateFields = {};
+      const crmFields = {};
       if (name) {
         updateFields.name = name;
+        crmFields.firstname = name
+          .split(' ')
+          .slice(0, -1)
+          .join(' ');
+        crmFields.lastname = name
+          .split(' ')
+          .slice(-1)
+          .join(' ');
       }
       if (feedback) {
         updateFields.feedback = feedback;
@@ -105,15 +114,18 @@ module.exports = {
         try {
           await sails.helpers.subscribeUser(email);
         } catch (e) {}
+        crmFields.email = email;
       }
       if (phone) {
         updateFields.phone = phone;
         updateFields.isPhoneVerified = false;
         await sails.helpers.sms.smsVerify(phone);
+        crmFields.phone = phone;
       }
 
       if (zip) {
         updateFields.zip = zip;
+        crmFields.zip = zip;
       }
 
       if (displayName) {
@@ -125,6 +137,7 @@ module.exports = {
       }
 
       const user = await User.updateOne({ id: reqUser.id }).set(updateFields);
+      await sails.helpers.crm.update(user, crmFields);
 
       return exits.success({
         user,

@@ -191,6 +191,9 @@ module.exports = {
         console.log('error sending slack');
       }
 
+      const finalCandidate = await Candidate.findOne({ id });
+      await sails.helpers.crm.createCandidate(finalCandidate);
+
       return exits.success({
         application: newData,
       });

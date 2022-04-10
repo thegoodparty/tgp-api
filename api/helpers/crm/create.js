@@ -41,6 +41,7 @@ module.exports = {
           email: user.email,
           phone: user.phone,
           zip: user.zip,
+          referral_link: `https://goodparty.org/?u=${user.uuid}`,
         },
       };
 

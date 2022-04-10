@@ -47,6 +47,8 @@ module.exports = {
       await Candidate.updateOne({ id: updatedCandidate.id }).set({
         data: JSON.stringify({ ...cleanCandidate, id: updatedCandidate.id }),
       });
+      const finalCandidate = await Candidate.findOne({ id });
+      await sails.helpers.crm.createCandidate(finalCandidate);
       return exits.success({
         message: 'created',
       });

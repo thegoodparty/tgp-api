@@ -54,13 +54,10 @@ module.exports = {
       const firstName = reqUser.name.split(' ')[0];
       const { race } = JSON.parse(candidate.data);
       try {
-        await sails.helpers.updateTag(
-          reqUser.email,
-          candidateId,
-          'active',
-        );
+        // await sails.helpers.updateTag(reqUser.email, candidateId, 'active');
+        await sails.helpers.crm.associateUserCandidate(reqUser, candidate);
       } catch (e) {
-        console.log('error updating tag');
+        console.log('error updating tag', e);
       }
       const subject = `Thank you for endorsing ${candidate.firstName} ${candidate.lastName} for ${race}!`;
 
@@ -137,9 +134,8 @@ module.exports = {
       }
       try {
         // await sails.helpers.crm.tag(reqUser, candidate);
-        console.log('success')
-      } catch (e) {
-      }
+        console.log('success');
+      } catch (e) {}
 
       return exits.success({
         message: 'support created',
@@ -152,3 +148,4 @@ module.exports = {
     }
   },
 };
+
