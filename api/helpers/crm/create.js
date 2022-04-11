@@ -28,6 +28,7 @@ module.exports = {
 
     const { user } = inputs;
     try {
+      const userCrew = await User.findOne({ id: user.id }).populate('crew');
       const contactObj = {
         properties: {
           firstname: user.name
@@ -42,6 +43,7 @@ module.exports = {
           phone: user.phone,
           zip: user.zip,
           referral_link: `https://goodparty.org/?u=${user.uuid}`,
+          referrals: userCrew.crew.length,
         },
       };
 

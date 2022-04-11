@@ -26,6 +26,7 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { id, feedback } = inputs;
+      const user = this.req.user;
       const application = await Application.findOne({
         id,
       });
@@ -53,6 +54,20 @@ module.exports = {
       } catch (e) {
         console.log('error sending slack');
       }
+
+      const applicationApproved = await Application.count({
+        user: user.id,
+        status: 'approved',
+      });
+      const applicationDeclined = await Application.count({
+        user: user.id,
+        status: 'rejected',
+      });
+
+      await sails.helpers.crm.update(user, {
+        application_approved: applicationApproved,
+        application_declined: applicationDeclined,
+      });
 
       return exits.success({
         application: newData,
