@@ -193,7 +193,7 @@ module.exports = {
       } catch (e) {}
 
       //  add user to our CRM.
-      await sails.helpers.crm.create(user);
+      await sails.helpers.crm.updateUser(user);
 
       const token = await sails.helpers.jwtSign({
         id: user.id,

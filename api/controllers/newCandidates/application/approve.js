@@ -192,21 +192,9 @@ module.exports = {
       }
 
       const finalCandidate = await Candidate.findOne({ id });
-      await sails.helpers.crm.createCandidate(finalCandidate);
+      await sails.helpers.crm.updateCandidate(finalCandidate);
 
-      const applicationApproved = await Application.count({
-        user: user.id,
-        status: 'approved',
-      });
-      const applicationDeclined = await Application.count({
-        user: user.id,
-        status: 'rejected',
-      });
-
-      await sails.helpers.crm.update(user, {
-        application_approved: applicationApproved,
-        application_declined: applicationDeclined,
-      });
+      await sails.helpers.crm.updateUser(user);
 
       return exits.success({
         application: newData,

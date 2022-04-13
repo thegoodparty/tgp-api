@@ -45,15 +45,14 @@ module.exports = {
       }
 
       if (!contactId) {
-        await sails.helpers.crm.create(user);
+        await sails.helpers.crm.updateUser(user);
       }
 
       let companyId = candidate.contact ? candidate.contact.hubspotId : false;
       if (!companyId) {
-        companyId = await sails.helpers.crm.createCandidate(candidate);
+        companyId = await sails.helpers.crm.updateCandidate(candidate);
       }
 
-      console.log('associating ', contactId, ' with ', companyId);
       if (remove) {
         await hubspotClient.crm.companies.associationsApi.archive(
           companyId,
@@ -61,7 +60,6 @@ module.exports = {
           contactId,
           'company_to_contact',
         );
-        console.log('remove association');
       } else {
         await hubspotClient.crm.companies.associationsApi.create(
           companyId,
@@ -70,7 +68,7 @@ module.exports = {
           'company_to_contact',
         );
 
-        console.log('associated');
+        await sails.helpers.crm.updateUser(user);
       }
 
       return exits.success('ok');

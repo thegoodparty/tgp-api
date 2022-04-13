@@ -63,6 +63,8 @@ module.exports = {
         console.log('error sending slack');
       }
 
+      await sails.helpers.crm.updateUser(user);
+
       return exits.success({
         application: newData,
       });

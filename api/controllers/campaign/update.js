@@ -91,10 +91,6 @@ module.exports = {
       delete data.contactEmail;
       delete data.hubspotId;
 
-      console.log('candidateAccess.contact', candidateAccess.contact);
-      console.log('contactPhone', contactPhone);
-      console.log('chubspotId', hubspotId);
-
       await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
         data: JSON.stringify(data),
@@ -109,9 +105,7 @@ module.exports = {
       });
 
       const finalCandidate = await Candidate.findOne({ id });
-      console.log('id', id);
-      console.log('updateing final: ', finalCandidate);
-      await sails.helpers.crm.createCandidate(finalCandidate);
+      await sails.helpers.crm.updateCandidate(finalCandidate);
 
       return exits.success({
         message: 'updated',

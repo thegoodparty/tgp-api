@@ -52,6 +52,7 @@ module.exports = {
         id: update.id,
         candidate: candidateId,
       }).set(attr);
+      await sails.helpers.crm.updateCandidate(candidate);
 
       return exits.success({
         message: 'updated',

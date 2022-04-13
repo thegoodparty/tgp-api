@@ -44,6 +44,8 @@ module.exports = {
         candidate: candidateId,
       });
 
+      await sails.helpers.crm.updateCandidate(candidate);
+
       return exits.success({
         message: 'deleted',
       });

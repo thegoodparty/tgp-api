@@ -51,6 +51,8 @@ module.exports = {
       };
       const newUpdate = await CampaignUpdate.create(attr).fetch();
 
+      await sails.helpers.crm.updateCandidate(candidate);
+
       return exits.success({
         updateId: newUpdate.id,
       });

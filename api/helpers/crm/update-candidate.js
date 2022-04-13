@@ -29,14 +29,36 @@ module.exports = {
     const hubspotClient = new hubspot.Client({ apiKey: hubSpotKey });
 
     const { candidate } = inputs;
-    console.log('in crm create candidate. Got candidate', candidate.contact);
     const data = JSON.parse(candidate.data);
     try {
       const slug = slugify(`${data.firstName} ${data.lastName}`);
+      const totalImpressions = await ButtonImpression.count({
+        candidate: candidate.id,
+        type: 'impression',
+      });
+      const endorsementsCount = await Endorsement.count({
+        candidate: candidate.id,
+      });
+      const updateCounts = await CampaignUpdate.count({
+        candidate: candidate.id,
+      });
+
+      const candidatePositions = await CandidatePosition.find({
+        candidate: candidate.id,
+      })
+        .sort([{ order: 'ASC' }])
+        .populate('topIssue')
+        .populate('position');
+
+      let topIssues = '';
+      candidatePositions.forEach(candPosition => {
+        topIssues += `Top Issue: ${candPosition.topIssue.name} | Position: ${candPosition.position.name} | Candidate Position: ${candPosition.description} \n`;
+      });
       const companyObj = {
         properties: {
           name: `${data.firstName} ${data.lastName} for ${data.race}`,
           candidate_name: `${data.firstName} ${data.lastName}`,
+          campaign_id: candidate.id,
           candidate_office: data.race,
           about_us: data.about,
           candidate_party: partyResolver(data.party),
@@ -46,11 +68,14 @@ module.exports = {
           candidate_email: candidate.contact.contactEmail,
           phone: candidate.contact.contactPhone,
           domain: `${appBase}/candidate/${slug}/${candidate.id}`,
+          installed_button: totalImpressions,
+          featured_endorsements: endorsementsCount,
+          total_updates: updateCounts,
+          top_issues: topIssues,
         },
       };
 
       const existingId = candidate.contact.hubspotId;
-      console.log('existingId', existingId, candidate.contact);
       if (existingId) {
         await hubspotClient.crm.companies.basicApi.update(
           existingId,

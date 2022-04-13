@@ -84,7 +84,7 @@ module.exports = {
       });
 
       const finalCandidate = await Candidate.findOne({ id: newCandidate.id });
-      await sails.helpers.crm.createCandidate(finalCandidate);
+      await sails.helpers.crm.updateCandidate(finalCandidate);
 
       return exits.success({
         message: 'created',
