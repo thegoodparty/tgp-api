@@ -1,6 +1,7 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
 const hubspot = require('@hubspot/api-client');
 const slugify = require('slugify');
+const moment = require('moment');
 
 const hubSpotKey = sails.config.custom.hubSpotKey || sails.config.hubSpotKey;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -72,6 +73,7 @@ module.exports = {
           featured_endorsements: endorsementsCount,
           total_updates: updateCounts,
           top_issues: topIssues,
+          modify_page: moment().format('YYYY-MM-DD'),
         },
       };
 
