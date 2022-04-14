@@ -194,7 +194,8 @@ module.exports = {
       const finalCandidate = await Candidate.findOne({ id });
       await sails.helpers.crm.updateCandidate(finalCandidate);
 
-      await sails.helpers.crm.updateUser(user);
+      const applicationUser = await User.findOne({ id: application.user });
+      await sails.helpers.crm.updateUser(applicationUser);
 
       return exits.success({
         application: newData,

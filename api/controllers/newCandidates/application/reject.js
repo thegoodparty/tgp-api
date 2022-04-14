@@ -55,7 +55,8 @@ module.exports = {
         console.log('error sending slack');
       }
 
-      await sails.helpers.crm.updateUser(user);
+      const applicationUser = await User.findOne({ id: application.user });
+      await sails.helpers.crm.updateUser(applicationUser);
 
       return exits.success({
         application: newData,
