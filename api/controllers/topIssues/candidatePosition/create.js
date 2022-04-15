@@ -74,6 +74,8 @@ module.exports = {
       await Candidate.addToCollection(candidateId, 'positions', positionId);
       await Candidate.addToCollection(candidateId, 'topIssues', topIssueId);
 
+      await sails.helpers.crm.updateCandidate(candidate);
+
       return exits.success({
         message: 'created',
       });

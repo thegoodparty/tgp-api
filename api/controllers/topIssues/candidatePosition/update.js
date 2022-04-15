@@ -52,6 +52,8 @@ module.exports = {
         topIssue: topIssueId,
       });
 
+      await sails.helpers.crm.updateCandidate(candidate);
+
       return exits.success({
         message: 'updated',
       });
