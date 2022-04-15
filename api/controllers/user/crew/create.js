@@ -50,6 +50,8 @@ module.exports = {
           await User.updateOne({ id: referrerUser.id }).set({
             crewCount: referrerUser.crewCount ? referrerUser.crewCount + 1 : 2,
           });
+          await sails.helpers.crm.updateUser(referrerUser);
+
           const appBase = sails.config.custom.appBase || sails.config.appBase;
           const firstName = name.split(' ')[0];
           const lastName = name.split(' ').length > 0 && name.split(' ')[1];
@@ -168,6 +170,7 @@ module.exports = {
       if (referredUsers.length > 0) {
         user.crewCount = referredUsers.length;
       }
+      await sails.helpers.crm.updateUser(user);
 
       return exits.success({
         message: 'ok',
