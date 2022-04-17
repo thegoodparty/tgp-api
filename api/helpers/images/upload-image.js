@@ -24,7 +24,7 @@ module.exports = {
       success: true,
       time: moment().format('YYYY-MM-DD hh:mm:dd'),
       data: {
-        baseurl: `https://${assetsBase}/candidate-info/`,
+        baseurl: `https://${bucketName}/`,
         messages: [],
         files: [],
         isImages: [],
