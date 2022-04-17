@@ -103,7 +103,6 @@ module.exports = {
         }
       }
 
-      console.log('contactId', contactId)
       if (contactId) {
         await hubspotClient.crm.contacts.basicApi.update(contactId, contactObj);
       } else {

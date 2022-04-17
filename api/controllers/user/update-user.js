@@ -84,14 +84,14 @@ module.exports = {
       if (feedback) {
         updateFields.feedback = feedback;
       }
-      if (email) {
+      if (email && reqUser.email !== email) {
         updateFields.email = email;
         await sendEmail(reqUser.email, email);
         try {
           await sails.helpers.subscribeUser(email);
         } catch (e) {}
       }
-      if (phone) {
+      if (phone && reqUser.phone !== phone) {
         updateFields.phone = phone;
         updateFields.isPhoneVerified = false;
         await sails.helpers.sms.smsVerify(phone);
