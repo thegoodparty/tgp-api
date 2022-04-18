@@ -165,6 +165,7 @@ module.exports = {
           referrer: user.id,
           guestReferrer: '',
         });
+        await sails.helpers.crm.updateUser(referredUser);
       }
       //add crewCount from refferedUsers
       if (referredUsers.length > 0) {
