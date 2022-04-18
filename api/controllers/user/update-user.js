@@ -109,6 +109,21 @@ module.exports = {
         updateFields.pronouns = pronouns;
       }
 
+      // this one is for profile settings where they can remove email/phone/display name
+      // name and zip are the required fields
+      if (name && zip) {
+        if (!displayName) {
+          updateFields.displayName = '';
+        }
+        // only one is required.
+        if (email && !phone) {
+          updateFields.phone = '';
+        }
+        if (phone && !email) {
+          updateFields.email = '';
+        }
+      }
+
       const user = await User.updateOne({ id: reqUser.id }).set(updateFields);
       await sails.helpers.crm.updateUser(user);
 
