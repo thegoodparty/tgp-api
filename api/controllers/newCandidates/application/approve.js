@@ -117,7 +117,7 @@ module.exports = {
         isActive: true,
         isDraft: false,
         chamber: 'local',
-        heroVideo: campaignVideo ? getParameterByName('v', campaignVideo) : '',
+        heroVideo: campaignVideo ? campaignVideo : '',
         headline,
         race: newData.campaign['running for'],
         about: campaignSummary,
@@ -231,15 +231,6 @@ async function sendSlackMessage(data) {
   };
 
   await sails.helpers.slackHelper(message, 'content');
-}
-
-function getParameterByName(name, url) {
-  name = name.replace(/[\[\]]/g, '\\$&');
-  var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-    results = regex.exec(url);
-  if (!results) return null;
-  if (!results[2]) return '';
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
 function addSocial(handle, base) {
