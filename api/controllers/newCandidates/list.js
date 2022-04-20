@@ -93,6 +93,7 @@ module.exports = {
           race,
           state,
           zip,
+          color,
         } = data;
 
         const supporters = await Support.count({ candidate: id });
@@ -108,6 +109,7 @@ module.exports = {
           race,
           state,
           zip,
+          color,
           positions: candidate.positions,
           supporters,
         });
