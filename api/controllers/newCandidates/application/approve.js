@@ -100,7 +100,7 @@ module.exports = {
         tiktok,
         reddit,
         website,
-      } = newData.socialMedia;
+      } = newData.socialMedia || {};
 
       // endorsements, top issues
 
@@ -153,34 +153,35 @@ module.exports = {
       for (let i = 0; i < endorsements.length; i++) {
         const { link, title, body, image } = endorsements[i];
         await Endorsement.create({
-          title,
+          title: title || 'no title',
           summary: body,
           link,
           image,
           candidate: newCandidate.id,
         });
       }
-
-      for (let i = 0; i < topIssues.length; i++) {
-        const { selectedTopic, selectedPosition, description } = topIssues[i];
-        if (selectedTopic && selectedPosition) {
-          await CandidatePosition.create({
-            candidate: newCandidate.id,
-            topIssue: selectedTopic.id,
-            position: selectedPosition.id,
-            description,
-            order: i + 1,
-          });
-          await Candidate.addToCollection(
-            newCandidate.id,
-            'positions',
-            selectedPosition.id,
-          );
-          await Candidate.addToCollection(
-            newCandidate.id,
-            'topIssues',
-            selectedTopic.id,
-          );
+      if (topIssues) {
+        for (let i = 0; i < topIssues.length; i++) {
+          const { selectedTopic, selectedPosition, description } = topIssues[i];
+          if (selectedTopic && selectedPosition) {
+            await CandidatePosition.create({
+              candidate: newCandidate.id,
+              topIssue: selectedTopic.id,
+              position: selectedPosition.id,
+              description,
+              order: i + 1,
+            });
+            await Candidate.addToCollection(
+              newCandidate.id,
+              'positions',
+              selectedPosition.id,
+            );
+            await Candidate.addToCollection(
+              newCandidate.id,
+              'topIssues',
+              selectedTopic.id,
+            );
+          }
         }
       }
 
@@ -191,7 +192,7 @@ module.exports = {
         console.log('error sending slack');
       }
 
-      const finalCandidate = await Candidate.findOne({ id });
+      const finalCandidate = await Candidate.findOne({ id: newCandidate.id });
       await sails.helpers.crm.updateCandidate(finalCandidate);
 
       const applicationUser = await User.findOne({ id: application.user });
