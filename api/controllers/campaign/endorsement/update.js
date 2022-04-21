@@ -4,29 +4,19 @@ module.exports = {
       required: true,
       type: 'number',
     },
-    title: {
-      type: 'string',
+    endorsement: {
+      type: 'ref',
       required: true,
-    },
-    summary: {
-      type: 'string',
-      required: true,
-    },
-    link: {
-      type: 'string',
-    },
-    image: {
-      type: 'string',
     },
   },
 
   exits: {
     success: {
-      description: 'Created',
+      description: 'Updated',
     },
 
     badRequest: {
-      description: 'Error creating',
+      description: 'Error updating',
       responseType: 'badRequest',
     },
     forbidden: {
@@ -37,7 +27,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { summary, link, candidateId, image, title } = inputs;
+      const { candidateId, endorsement } = inputs;
       const { user } = this.req;
 
       const candidate = await Candidate.findOne({ id: candidateId });
@@ -45,23 +35,25 @@ module.exports = {
       if (!canAccess || canAccess === 'staff') {
         return exits.forbidden();
       }
-      await Endorsement.create({
-        title,
-        summary,
-        link,
-        image,
-        candidate: candidateId,
-      });
 
-      await sails.helpers.crm.updateCandidate(candidate);
+      if (
+        !endorsement.title ||
+        !endorsement.summary ||
+        endorsement.candidate !== candidateId
+      ) {
+        return exits.badRequest({
+          message: 'Missing Required fields',
+        });
+      }
+      await Endorsement.updateOne({ id: endorsement.id }).set(endorsement);
 
       return exits.success({
-        message: 'created',
+        message: 'updated',
       });
     } catch (e) {
-      console.log('error at campaign/endorsement/create', e);
+      console.log('error at campaign/endorsement/update', e);
       return exits.badRequest({
-        message: 'Error creating endorsement',
+        message: 'Error updating endorsement',
         e,
       });
     }
