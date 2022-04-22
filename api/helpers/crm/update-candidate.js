@@ -60,7 +60,7 @@ module.exports = {
           name: `${data.firstName} ${data.lastName} for ${data.race}`,
           candidate_name: `${data.firstName} ${data.lastName}`,
           campaign_id: candidate.id,
-          is_active: candidate.isActive ? 'yes' : 'no',
+          is_active: candidate.isActive,
           candidate_office: data.race,
           about_us: data.about,
           candidate_party: partyResolver(data.party),
