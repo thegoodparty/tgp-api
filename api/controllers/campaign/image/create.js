@@ -56,7 +56,7 @@ module.exports = {
       }
       const s3Url = await sails.helpers.images.transparentImage(
         url,
-        `${candidate.firstName}-${candidate.lastName}`,
+        `${encodeURI(candidate.firstName)}-${encodeURI(candidate.lastName)}`,
       );
 
       const data = JSON.parse(candidate.data);
