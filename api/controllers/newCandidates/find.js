@@ -17,6 +17,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    withImage: {
+      type: 'boolean',
+    },
     allFields: {
       type: 'boolean',
     },
@@ -35,7 +38,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, allFields } = inputs;
+      const { id, allFields, withImage } = inputs;
       let candidate;
       if (allFields) {
         candidate = await Candidate.findOne({
@@ -53,7 +56,7 @@ module.exports = {
       if (!candidate) {
         return exits.notFound();
       }
-
+      
       for (let i = 0; i < candidate.candidateUpdates.length; i++) {
         const update = candidate.candidateUpdates[i];
         const timeAgo = timeago.ago(new Date(update.date));
@@ -65,7 +68,11 @@ module.exports = {
       candidateData.updatesList.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       );
-
+      let imageAsBase64;
+      if (withImage && candidateData.image) {
+        const imageData = await request.get(candidateData.image, { encoding: null });
+        imageAsBase64 = Buffer.from(imageData).toString('base64');
+      }
       let candidatePositions = [];
       let similarCampaigns = [];
 
@@ -79,6 +86,7 @@ module.exports = {
         candidate: candidateData,
         candidatePositions,
         similarCampaigns,
+        imageAsBase64
       });
     } catch (e) {
       console.log('Error in find candidate', e);
