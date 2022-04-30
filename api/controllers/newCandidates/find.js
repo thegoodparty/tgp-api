@@ -74,18 +74,18 @@ module.exports = {
         imageAsBase64 = Buffer.from(imageData).toString('base64');
       }
       let candidatePositions = [];
-      let similarCampaigns = [];
+      // let similarCampaigns = [];
 
       if (allFields) {
         candidatePositions = await candidatePositionFinder(id);
-        similarCampaigns = await similarFinder(id, candidatePositions);
+        // similarCampaigns = await similarFinder(id, candidatePositions);
         candidateData.endorsements = candidate.endorsements;
       }
 
       return exits.success({
         candidate: candidateData,
         candidatePositions,
-        similarCampaigns,
+        // similarCampaigns,
         imageAsBase64
       });
     } catch (e) {
