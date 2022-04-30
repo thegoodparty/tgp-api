@@ -53,14 +53,14 @@ module.exports = {
 
       /*
       adding endorsment count.
-      static follower from social networks as of 11/11/21
-      TikTok: 127,200
-      Instagram:  497
-      Facebook: 368 followers + 5761 engagements
-      Twitter: 299 followers, 138 likes
+      static follower from social networks as of 04/29/22
+      TikTok: 132,200
+      Instagram:  597
+      Facebook: 376 followers + 5761 engagements
+      Twitter: 314 followers, 138 likes
       = 134222
        */
-      const socialFollowers = 135162;
+      const socialFollowers = 137373;
       const supportCount = await Support.count();
       const shareCount = await ShareCandidate.count();
 
