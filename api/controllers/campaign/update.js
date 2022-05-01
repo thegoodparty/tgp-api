@@ -4,6 +4,7 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
+const moment = require('moment');
 
 module.exports = {
   inputs: {
@@ -71,6 +72,7 @@ module.exports = {
             ? !!candidate.isOnHomepage
             : candidateAccess.isOnHomepage,
       };
+
       const {
         contactFirstName,
         contactLastName,
@@ -84,6 +86,11 @@ module.exports = {
         ...candidate,
         id,
       };
+      if (!data.certifiedDate) {
+        data.certifiedDate = moment(candidateAccess.createdAt).format(
+          'M D, YYYY',
+        );
+      }
 
       delete data.contactFirstName;
       delete data.contactLastName;

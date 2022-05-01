@@ -1,3 +1,4 @@
+const moment = require('moment');
 const shortParty = {
   Independent: 'I',
   Democratic: 'D',
@@ -90,7 +91,7 @@ module.exports = {
         electionDate,
         campaignVideo,
         ballotDate,
-        fillingDate,
+        earlyVotingDate,
       } = newData.campaign;
 
       const {
@@ -111,6 +112,8 @@ module.exports = {
         headshotPhoto,
         `${newCandidate.firstName}-${newCandidate.lastName}`,
       );
+
+      const now = moment().format('M D, YYYY');
 
       const cleanCandidate = {
         id: newCandidate.id,
@@ -138,7 +141,8 @@ module.exports = {
         raceDate: electionDate,
         zip,
         ballotDate,
-        fillingDate,
+        earlyVotingDate,
+        certifiedDate: now
       };
 
       await Candidate.updateOne({ id: newCandidate.id }).set({
