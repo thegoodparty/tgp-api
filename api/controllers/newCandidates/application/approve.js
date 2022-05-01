@@ -89,6 +89,8 @@ module.exports = {
         headshotPhoto,
         electionDate,
         campaignVideo,
+        ballotDate,
+        fillingDate,
       } = newData.campaign;
 
       const {
@@ -135,6 +137,8 @@ module.exports = {
         user: newData.user,
         raceDate: electionDate,
         zip,
+        ballotDate,
+        fillingDate,
       };
 
       await Candidate.updateOne({ id: newCandidate.id }).set({
