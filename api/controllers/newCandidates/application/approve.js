@@ -113,7 +113,7 @@ module.exports = {
         `${newCandidate.firstName}-${newCandidate.lastName}`,
       );
 
-      const now = moment().format('M D, YYYY');
+      const now = moment().format('MM/DD/YYYY');
 
       const cleanCandidate = {
         id: newCandidate.id,
@@ -142,7 +142,7 @@ module.exports = {
         zip,
         ballotDate,
         earlyVotingDate,
-        certifiedDate: now
+        certifiedDate: now,
       };
 
       await Candidate.updateOne({ id: newCandidate.id }).set({

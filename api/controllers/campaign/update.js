@@ -88,7 +88,7 @@ module.exports = {
       };
       if (!data.certifiedDate) {
         data.certifiedDate = moment(candidateAccess.createdAt).format(
-          'M D, YYYY',
+          'MM/DD/YYYY',
         );
       }
 

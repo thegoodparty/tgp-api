@@ -6,6 +6,7 @@
  */
 const request = require('request-promise');
 const timeago = require('time-ago');
+const moment = require('moment');
 
 module.exports = {
   friendlyName: 'Find by id one Candidate',
@@ -70,7 +71,9 @@ module.exports = {
       );
       let imageAsBase64;
       if (withImage && candidateData.image) {
-        const imageData = await request.get(candidateData.image, { encoding: null });
+        const imageData = await request.get(candidateData.image, {
+          encoding: null,
+        });
         imageAsBase64 = Buffer.from(imageData).toString('base64');
       }
       let candidatePositions = [];
@@ -81,12 +84,17 @@ module.exports = {
         // similarCampaigns = await similarFinder(id, candidatePositions);
         candidateData.endorsements = candidate.endorsements;
       }
+      if (!candidateData.certifiedDate) {
+        // we can remove this after all candidates were updated.
+        const certifiedDate = moment(candidate.createdAt).format('MM/DD/YYYY');
+        candidateData.certifiedDate = certifiedDate;
+      }
 
       return exits.success({
         candidate: candidateData,
         candidatePositions,
         // similarCampaigns,
-        imageAsBase64
+        imageAsBase64,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
