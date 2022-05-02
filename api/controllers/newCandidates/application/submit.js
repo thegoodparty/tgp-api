@@ -85,7 +85,7 @@ async function sendSlackMessage(data) {
   }\n• *Office Sought:* ${
     data.campaign['running for']
   }\n• *Date of Election:* ${
-    data.campaign.electionDate
+    data.campaign.raceDate
   }\n• *Party Affiliation:* ${
     data.candidate.party
   }\n• *Application:* <${appBase}/campaign-application/${
