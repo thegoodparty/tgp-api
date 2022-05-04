@@ -17,7 +17,7 @@ module.exports = {
       required: true,
     },
     range: {
-      type: 'string',
+      type: 'number',
     },
   },
 
@@ -39,7 +39,7 @@ module.exports = {
     try {
       const { user } = this.req;
       const { range, id } = inputs;
-      const days = range === 'Last 30 days' ? 30 : 7;
+      const days = range === 30 ? 30 : 7;
       const startDate = moment()
         .subtract(days, 'days')
         .format('YYYY-MM-DD');
