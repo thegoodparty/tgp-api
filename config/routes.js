@@ -38,6 +38,7 @@ module.exports.routes = {
 
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
   'POST    /api/v1/notifications/feedback': 'notifications/feedback/create',
+  'POST    /api/v1/notifications/guest-feedback': 'notifications/feedback/create-guest',
   'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
   'PUT    /api/v1/user/update-user': 'user/update-user',
