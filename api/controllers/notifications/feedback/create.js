@@ -8,9 +8,6 @@ module.exports = {
   friendlyName: 'Send Feedback',
 
   inputs: {
-    feedbackType: {
-      type: 'string',
-    },
     suggestion: {
       type: 'string',
       required: true,
@@ -19,8 +16,8 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    stars: {
-      type: 'number',
+    thumbs: {
+      type: 'string',
     },
   },
 
@@ -38,15 +35,14 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { user } = this.req;
-      const { suggestion, feedbackType, stars, url } = inputs;
-      const subject = `Feedback provided - ${feedbackType}`;
-      const messageHeader = `Feedback provided - ${feedbackType}`;
+      const { suggestion, thumbs, url } = inputs;
+      const subject = `Feedback provided - Thumbs ${thumbs}`;
+      const messageHeader = `Feedback provided - Thumbs ${thumbs}`;
       const email = 'product@goodparty.org';
       const name = 'TGP Admin';
       const msgWithLineBreaks = suggestion.replace(/\r\n|\r|\n/g, '<br/>');
       const message = `
-        Stars: ${stars}<br/><br/>
-        FeedbackType: ${feedbackType}<br/><br/>
+        Thumbs: ${thumbs}<br/><br/>
         URL: https://goodparty.org${url}<br/><br/>
         User: ${user.name} ${user.email} ${user.phone}<br/><br/>
         Suggestion: ${msgWithLineBreaks}
@@ -60,8 +56,7 @@ module.exports = {
         message,
         replyEmail,
       );
-
-      await sendSlackMessage(suggestion, feedbackType, stars, url, user);
+      await sendSlackMessage(suggestion, thumbs, url, user);
       return exits.success({
         message: 'Email Sent Successfully',
       });
@@ -75,7 +70,7 @@ module.exports = {
   },
 };
 
-const sendSlackMessage = async (suggestion, feedbackType, stars, url, user) => {
+const sendSlackMessage = async (suggestion,  thumbs, url, user) => {
   const appBase = sails.config.custom.appBase || sails.config.appBase;
   let env = 'dev';
   if (appBase === 'https://goodparty.org') {
@@ -84,13 +79,13 @@ const sendSlackMessage = async (suggestion, feedbackType, stars, url, user) => {
 
   try {
     const message = {
-      text: `Feedback Sent - Type: ${feedbackType}. ENV: ${env}`,
+      text: `Feedback Sent - Thumbs: ${thumbs}. ENV: ${env}`,
       blocks: [
         {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `__________________________________ \n *Feedback Sent - Type: ${feedbackType}*
+            text: `__________________________________ \n *Feedback Sent - Thumbs: ${thumbs}*
                 \n <https://goodparty.org${url}>\n
                 \n ENV: ${env}`,
           },
@@ -102,8 +97,7 @@ const sendSlackMessage = async (suggestion, feedbackType, stars, url, user) => {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `Feedback type: ${feedbackType || 'N/A'}
-        \nStars: ${stars || 'N/A'}
+        text: `Thumbs: ${thumbs || 'N/A'}
         \nSuggestion: ${suggestion}
         \nUser: ${user.name} ${user.email} ${user.phone}`,
       },
