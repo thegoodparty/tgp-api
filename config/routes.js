@@ -38,7 +38,8 @@ module.exports.routes = {
 
   'POST    /api/v1/notifications/email-ama': 'notifications/email-ama',
   'POST    /api/v1/notifications/feedback': 'notifications/feedback/create',
-  'POST    /api/v1/notifications/guest-feedback': 'notifications/feedback/create-guest',
+  'POST    /api/v1/notifications/guest-feedback':
+    'notifications/feedback/create-guest',
   'POST    /api/v1/notifications/log-error': 'notifications/log-error',
 
   'PUT    /api/v1/user/update-user': 'user/update-user',
@@ -151,14 +152,7 @@ module.exports.routes = {
   'PUT   /api/v1/ugcs/reject': 'campaign/ugc/reject', //admin
   'GET   /api/v1/ugc': 'campaign/ugc/find',
   'PUT   /api/v1/ugc': 'campaign/ugc/update',
-  //
-  // // issue topic
-  // 'GET   /api/v1/issue-topics': 'newCandidates/issueTopic/list',
-  // 'POST   /api/v1/issue-topic': 'newCandidates/issueTopic/create',
-  // 'PUT   /api/v1/issue-topic': 'newCandidates/issueTopic/update',
-  // 'DELETE   /api/v1/issue-topic': 'newCandidates/issueTopic/delete',
 
-  // issue topic
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
   'PUT   /api/v1/top-issue': 'topIssues/topIssue/update',
@@ -176,12 +170,7 @@ module.exports.routes = {
   'PUT   /api/v1/candidate-position': 'topIssues/candidatePosition/update',
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
 
-  // candidate issue
-  'GET   /api/v1/candidate-issue/pending': 'newCandidates/candidateIssue/list', //admin
-  'PUT   /api/v1/candidate-issue/accept': 'newCandidates/candidateIssue/accept', //admin
-  'PUT   /api/v1/candidate-issue/reject': 'newCandidates/candidateIssue/reject', //admin
-  'GET   /api/v1/candidate-issue': 'newCandidates/candidateIssue/find',
-  'PUT   /api/v1/candidate-issue': 'newCandidates/candidateIssue/update',
+
 
   // release
   'GET   /api/v1/releases': 'release/list',
