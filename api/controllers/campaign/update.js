@@ -98,6 +98,15 @@ module.exports = {
       delete data.contactEmail;
       delete data.hubspotId;
 
+      let resolvedHubspotId = hubspotId;
+      if (!hubspotId) {
+        if (candidateAccess && candidateAccess.contact) {
+          resolvedHubspotId = candidateAccess.contact.hubspotId;
+        } else {
+          resolvedHubspotId = '';
+        }
+      }
+
       await Candidate.updateOne({ id }).set({
         ...cleanCandidate,
         data: JSON.stringify(data),
@@ -107,7 +116,7 @@ module.exports = {
           contactLastName,
           contactPhone,
           contactEmail,
-          hubspotId: hubspotId ? hubspotId : candidateAccess.contact.hubspotId,
+          hubspotId: resolvedHubspotId,
         },
       });
 
