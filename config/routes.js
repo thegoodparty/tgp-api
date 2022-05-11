@@ -12,7 +12,8 @@ module.exports.routes = {
   //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
-  'GET   /': 'general/health',
+  'GET    /': 'general/health',
+  'GET    /api/v1/homepage': 'general/homepage',
   'GET    /api/v1/seed': 'seed/seed',
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/landing-page': 'content/landing-page-content',

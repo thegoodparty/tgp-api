@@ -85,7 +85,7 @@ async function sendSlackMessage(data) {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Candidate application rejected. ENV: ${env}. (This is a temp message)`,
+          text: `*Candidate application rejected. ENV: ${env}.`,
         },
       },
     ],
