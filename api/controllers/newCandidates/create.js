@@ -69,6 +69,7 @@ module.exports = {
         firstName: candidate.firstName.trim(),
         lastName: candidate.lastName.trim(),
         chamber: 'local',
+        contact: {},
         image,
       };
 
