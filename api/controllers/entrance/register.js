@@ -27,6 +27,9 @@ module.exports = {
     zip: {
       type: 'string',
     },
+    source: {
+      type: 'string',
+    },
 
     socialId: {
       type: 'string',
@@ -81,6 +84,7 @@ module.exports = {
         socialPic,
         socialToken,
         guestUuid,
+        source,
       } = inputs;
 
       if (!phone && !email) {
@@ -100,6 +104,21 @@ module.exports = {
         const exists = await User.findOne({
           email: lowerCaseEmail,
         });
+        if (source === 'homepageModal') {
+          await submitCrmForm(name, email, phone);
+          if (exists) {
+            // only add to hubspot form
+            const token = await sails.helpers.jwtSign({
+              id: exists.id,
+              email: lowerCaseEmail,
+              phone,
+            });
+            return exits.success({
+              user: exists,
+              token,
+            });
+          }
+        }
         if (exists) {
           return exits.badRequest({
             message: `An account for ${lowerCaseEmail} already exists. Try logging instead.`,
@@ -236,6 +255,22 @@ module.exports = {
       }
     }
   },
+};
+
+const submitCrmForm = async (name, email, phone) => {
+  const firstName = name.split(' ')[0];
+  const lastName = name.split(' ').length > 0 && name.split(' ')[1];
+  const crmFields = [
+    { name: 'firstName', value: firstName, objectTypeId: '0-1' },
+    { name: 'lastName', value: lastName, objectTypeId: '0-1' },
+    { name: 'email', value: email, objectTypeId: '0-1' },
+  ];
+
+  await sails.helpers.crm.submitForm(
+    '39b42d7f-826d-435d-a41f-bd692ee1298e',
+    crmFields,
+    'homepage',
+  );
 };
 
 const sendWVerifyEmail = async user => {

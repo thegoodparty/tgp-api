@@ -34,8 +34,6 @@ module.exports = {
         path: `/form-integrations/v1/submissions/forms/${formId}`,
       });
 
-      console.log('count', count);
-
       return exits.success(count);
     } catch (e) {
       console.log('hubspot error', e);
