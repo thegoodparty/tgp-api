@@ -300,6 +300,7 @@ const sendWVerifyEmail = async user => {
   if (!user.email || user.email === '') {
     return;
   }
+  const appBase = sails.config.custom.appBase || sails.config.appBase;
   const lowerCaseEmail = user.email.toLowerCase();
   const { name } = user;
   const subject = `${user.firstName ||
@@ -346,7 +347,7 @@ const sendWVerifyEmail = async user => {
                   "
                 >
                   <br/>
-                  Please use this code to verify your email address.
+                  Please use this code to verify your email address at <a href="${appBase}/register/confirm">https://goodparty.org/register/confirm</a>
                 </p>
               </td>
             </tr>

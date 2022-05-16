@@ -34,7 +34,6 @@ module.exports = {
         !appBase.includes('localhost:4000') &&
         !appBase.includes('dev.goodparty.org')
       ) {
-        console.log('here');
         return exits.forbidden({
           message: 'This action is allowed only on dev.',
         });
