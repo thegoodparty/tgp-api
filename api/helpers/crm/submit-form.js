@@ -15,6 +15,10 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    uri: {
+      type: 'string',
+      required: true,
+    },
   },
   exits: {
     success: {
@@ -26,7 +30,7 @@ module.exports = {
     },
   },
   fn: async function(inputs, exits) {
-    const { formId, fields, pageName } = inputs;
+    const { formId, fields, pageName, uri } = inputs;
     try {
       const url = `https://api.hsforms.com/submissions/v3/integration/submit/21589597/${formId}`;
       await axios({
@@ -36,6 +40,7 @@ module.exports = {
           fields,
           context: {
             pageName,
+            pageUri: uri,
           },
         },
         headers: {

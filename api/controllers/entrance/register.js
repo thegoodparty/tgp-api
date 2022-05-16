@@ -30,6 +30,9 @@ module.exports = {
     source: {
       type: 'string',
     },
+    uri: {
+      type: 'string',
+    },
 
     socialId: {
       type: 'string',
@@ -85,6 +88,7 @@ module.exports = {
         socialToken,
         guestUuid,
         source,
+        uri,
       } = inputs;
 
       if (!phone && !email) {
@@ -104,8 +108,13 @@ module.exports = {
         const exists = await User.findOne({
           email: lowerCaseEmail,
         });
+        try {
+          await submitCrmForm(name, email, phone, source, uri);
+        } catch (e) {
+          //do nothing
+        }
+
         if (source === 'homepageModal') {
-          await submitCrmForm(name, email, phone);
           if (exists) {
             // only add to hubspot form
             const token = await sails.helpers.jwtSign({
@@ -257,7 +266,11 @@ module.exports = {
   },
 };
 
-const submitCrmForm = async (name, email, phone) => {
+const submitCrmForm = async (name, email, phone, source, uri) => {
+  if (!email) {
+    // candidate page doesn't require email
+    return;
+  }
   const firstName = name.split(' ')[0];
   const lastName = name.split(' ').length > 0 && name.split(' ')[1];
   const crmFields = [
@@ -265,12 +278,22 @@ const submitCrmForm = async (name, email, phone) => {
     { name: 'lastName', value: lastName, objectTypeId: '0-1' },
     { name: 'email', value: email, objectTypeId: '0-1' },
   ];
+  if (phone) {
+    crmFields.push({ name: 'phone', value: phone, objectTypeId: '0-1' });
+  }
 
-  await sails.helpers.crm.submitForm(
-    '39b42d7f-826d-435d-a41f-bd692ee1298e',
-    crmFields,
-    'homepage',
-  );
+  let formId;
+  if (source === 'homepageModal') {
+    formId = '39b42d7f-826d-435d-a41f-bd692ee1298e';
+  } else if (source === 'candidatePage') {
+    formId = '7769fe08-bd84-4be0-9e2d-d7474abb0ea1';
+  } else {
+    formId = '37d98f01-7062-405f-b0d1-c95179057db1';
+  }
+
+  let resolvedSource = source || 'registerPage';
+
+  await sails.helpers.crm.submitForm(formId, crmFields, resolvedSource, uri);
 };
 
 const sendWVerifyEmail = async user => {
