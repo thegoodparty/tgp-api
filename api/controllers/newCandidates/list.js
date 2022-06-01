@@ -45,6 +45,12 @@ module.exports = {
       if (positionId) {
         positionCriteria.id = positionId;
       }
+      const cacheKey = `candidates-${position || 'none'}-${state || 'none'}`;
+      const response = await sails.helpers.cacheHelper('get', cacheKey);
+      if (response) {
+        return exits.success(response);
+      }
+
       const candidates = await Candidate.find(criteria)
         .populate('positions')
         .populate('endorsements');
@@ -141,12 +147,15 @@ module.exports = {
       );
       const states = Object.values(possibleStates);
       states.sort();
-      return exits.success({
+
+      const finalResponse = {
         candidates: activeCandidates,
         positions: filteredPositions,
         positionsByTopIssues,
         states,
-      });
+      };
+      await sails.helpers.cacheHelper('set', cacheKey, finalResponse);
+      return exits.success(finalResponse);
     } catch (e) {
       console.log('Error in find candidate', e);
       return exits.badRequest({ message: 'error finding candidates' });

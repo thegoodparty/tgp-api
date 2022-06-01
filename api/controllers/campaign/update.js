@@ -122,6 +122,7 @@ module.exports = {
 
       const finalCandidate = await Candidate.findOne({ id });
       await sails.helpers.crm.updateCandidate(finalCandidate);
+      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'updated',

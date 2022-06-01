@@ -64,6 +64,7 @@ module.exports = {
       await Candidate.updateOne({ id }).set({
         data: JSON.stringify(newData),
       });
+      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         image: s3Url,

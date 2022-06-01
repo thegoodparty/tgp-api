@@ -206,6 +206,8 @@ module.exports = {
       const applicationUser = await User.findOne({ id: application.user });
       await sails.helpers.crm.updateUser(applicationUser);
 
+      await sails.helpers.cacheHelper('clear', 'all');
+
       return exits.success({
         application: newData,
       });

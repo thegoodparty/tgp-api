@@ -30,6 +30,8 @@ module.exports = {
         name,
       });
 
+      await sails.helpers.cacheHelper('clear', 'all');
+
       return exits.success({
         message: 'updated',
       });

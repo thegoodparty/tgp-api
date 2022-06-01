@@ -23,6 +23,7 @@ module.exports = {
     try {
       const { id } = inputs;
       await TopIssue.destroyOne({ id });
+      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'deleted',

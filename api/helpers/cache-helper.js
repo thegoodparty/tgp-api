@@ -49,11 +49,15 @@ module.exports = {
         await cache.del(name);
         return exits.success();
       }
+      if (operation === 'clear' && name === 'all') {
+        await cache.clear();
+        return exits.success();
+      }
 
-      return exits.badRequest();
+      return exits.success();
     } catch (e) {
       console.log(e);
-      return exits.badRequest();
+      return exits.success();
     }
   },
 };

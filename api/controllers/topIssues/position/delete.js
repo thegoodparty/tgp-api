@@ -24,6 +24,8 @@ module.exports = {
       const { id } = inputs;
       await Position.destroyOne({ id });
 
+      await sails.helpers.cacheHelper('clear', 'all');
+
       return exits.success({
         message: 'deleted',
       });
