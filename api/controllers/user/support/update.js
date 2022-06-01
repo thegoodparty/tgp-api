@@ -35,6 +35,8 @@ module.exports = {
         candidate: candidateId,
       }).set({ message });
 
+      await sails.helpers.cacheHelper('clear', 'all');
+
       return exits.success({
         message: 'support updated',
       });

@@ -132,10 +132,7 @@ module.exports = {
       } catch (e) {
         console.log('error trigger candidate update');
       }
-      try {
-        // await sails.helpers.crm.tag(reqUser, candidate);
-        console.log('success');
-      } catch (e) {}
+      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'support created',

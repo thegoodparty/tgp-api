@@ -47,10 +47,7 @@ module.exports = {
         console.log('error remove tag');
       }
 
-      try {
-        const candidate = await Candidate.findOne({ id: candidateId });
-        // await sails.helpers.crm.tag(reqUser, candidate, true);
-      } catch (e) {}
+      await sails.helpers.cacheHelper('clear', 'all');
       return exits.success({
         message: 'support deleted',
       });
