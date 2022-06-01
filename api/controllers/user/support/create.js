@@ -49,6 +49,7 @@ module.exports = {
         candidate: candidateId,
         message,
       });
+      await sails.helpers.cacheHelper('clear', 'all');
 
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const firstName = reqUser.name.split(' ')[0];
@@ -132,7 +133,6 @@ module.exports = {
       } catch (e) {
         console.log('error trigger candidate update');
       }
-      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'support created',
@@ -145,4 +145,3 @@ module.exports = {
     }
   },
 };
-
