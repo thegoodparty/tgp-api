@@ -37,8 +37,6 @@ module.exports = {
         }
       }
 
-      console.log('brandId', brandId);
-
       const today = moment().format('YYYY-MM-DD');
 
       const stats = await SocialStat.find({
