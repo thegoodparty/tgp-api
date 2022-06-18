@@ -9,6 +9,9 @@ module.exports = {
     brand: {
       type: 'string',
     },
+    showChannels: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -24,7 +27,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { brand } = inputs;
+      const { brand, showChannels } = inputs;
       let brandId = 1; // good party socialBrand id
       if (brand) {
         const brandRecord = await SocialBrand.find({ name: brand });
@@ -50,6 +53,7 @@ module.exports = {
         stats.forEach(stat => (total += stat.count));
         return exits.success({
           total,
+          channels: showChannels ? stats : undefined,
         });
       } else {
         // try yesterday
@@ -68,6 +72,7 @@ module.exports = {
           stats.forEach(stat => (total += stat.count));
           return exits.success({
             total,
+            channels: showChannels ? stats : undefined,
           });
         }
       }
