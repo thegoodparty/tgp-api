@@ -64,4 +64,5 @@ module.exports.policies = {
   'updates/create': true,
   'newCandidates/application/upload-image': true, // for guest applications
   'notifications/feedback/create-guest': true,
+  'socialListening/*': true,
 };

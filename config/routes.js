@@ -193,4 +193,9 @@ module.exports.routes = {
     'newCandidates/application/list-in-review', //admin
   'PUT   /api/v1/applications/approve': 'newCandidates/application/approve', //admin
   'PUT   /api/v1/applications/reject': 'newCandidates/application/reject', //admin
+
+  // socialListening
+  'GET   /api/v1/listening/followers': 'socialListening/followers',
+  'GET   /api/v1/listening/followers-count': 'socialListening/followers-count',
+  'GET   /api/v1/listening/brands': 'socialListening/brands',
 };
