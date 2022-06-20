@@ -50,7 +50,30 @@ module.exports = {
 
       if (stats.length > 0) {
         let total = 0;
-        stats.forEach(stat => (total += stat.count));
+        let tiktokFound = false;
+        stats.forEach(stat => {
+          total += stat.count;
+          if (stat.channel === 'tiktok') {
+            tiktokFound = true;
+          }
+        });
+        // if tiktok is not found, try tiktok from yesterday
+        if (!tiktokFound) {
+          const yesterday = moment()
+            .subtract(1, 'days')
+            .format('YYYY-MM-DD');
+
+          const stat = await SocialStat.findOne({
+            socialBrand: brandId,
+            date: yesterday,
+            action: 'followers',
+            channel: 'tiktok',
+          });
+          if (stat) {
+            total += stat.count;
+          }
+        }
+
         return exits.success({
           total,
           channels: showChannels ? stats : undefined,
