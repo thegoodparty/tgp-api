@@ -71,9 +71,7 @@ module.exports = {
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({
-        message: 'Error sending Slack message',
-      });
+      return exits.success({ message: 'Error sending Slack message' });
     }
   },
 };

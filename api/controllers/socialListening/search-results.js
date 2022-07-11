@@ -52,7 +52,6 @@ module.exports = {
               engagement
               likesCount
               url
-              userAvatarUrl
               images
               userName
               userScreenName
