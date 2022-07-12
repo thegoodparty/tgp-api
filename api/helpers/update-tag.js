@@ -56,9 +56,9 @@ module.exports = {
         await mailchimp.lists.getListMember(tgpList.id, subscriberHash);
       } catch (err) {
         // if email is not existed, subscribe that email
-        try {
-          await sails.helpers.subscribeUser(email);
-        } catch (err) {}
+        // try {
+        //   await sails.helpers.subscribeUser(email);
+        // } catch (err) {}
       }
       const candidate = await Candidate.findOne({
         id: candidateId,

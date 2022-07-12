@@ -87,9 +87,9 @@ module.exports = {
       if (email && reqUser.email !== email) {
         updateFields.email = email;
         await sendEmail(reqUser.email, email);
-        try {
-          await sails.helpers.subscribeUser(email);
-        } catch (e) {}
+        // try {
+        //   await sails.helpers.subscribeUser(email);
+        // } catch (e) {}
       }
       if (phone && reqUser.phone !== phone) {
         updateFields.phone = phone;

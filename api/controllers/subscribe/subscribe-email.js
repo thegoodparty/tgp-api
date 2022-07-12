@@ -8,7 +8,7 @@
 module.exports = {
   friendlyName: 'Subscribe email',
 
-  description: 'Subscribe email to mailing list on mailChimp.',
+  description: 'Subscribe email hubspot.',
 
   inputs: {
     email: {
@@ -16,11 +16,16 @@ module.exports = {
       type: 'string',
       isEmail: true,
     },
+
+    uri: {
+      required: true,
+      type: 'string',
+    },
   },
 
   exits: {
     success: {
-      description: 'Email has been subscribed successfuly',
+      description: 'Email has been subscribed successfully',
     },
 
     badRequest: {
@@ -31,20 +36,18 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { email } = inputs;
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const res = await sails.helpers.subscribeUser(email);
+      const { email, uri } = inputs;
+      const formId = '5d84452a-01df-422b-9734-580148677d2c';
 
-      return exits.success(res);
+      const crmFields = [
+        { name: 'email', value: email.toLowerCase(), objectTypeId: '0-1' },
+      ];
+
+      await sails.helpers.crm.submitForm(formId, crmFields, 'homePage', uri);
+
+      return exits.success({ message: 'success' });
     } catch (err) {
-      if (err && err.response && err.response.text) {
-        const parsedText = JSON.parse(err.response.text);
-        return exits.badRequest({
-          message: `Error: ${parsedText.title}`,
-        });
-      } else {
-        return exits.badRequest({ message: 'Error subscribing email' });
-      }
+      return exits.badRequest({ message: 'Error subscribing email' });
     }
   },
 };

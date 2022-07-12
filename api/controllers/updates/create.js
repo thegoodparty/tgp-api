@@ -51,9 +51,9 @@ module.exports = {
         await mailchimp.lists.getListMember(tgpList.id, subscriberHash);
       } catch (err) {
         // if email is not existed, subscribe that email
-        try {
-          await sails.helpers.subscribeUser(email);
-        } catch (err) {}
+        // try {
+        //   await sails.helpers.subscribeUser(email);
+        // } catch (err) {}
       }
       let tags = [];
       if (notifications['new-job-notifications']) {

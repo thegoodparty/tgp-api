@@ -214,11 +214,11 @@ module.exports = {
           await sendWVerifyEmail(user);
         }
       }
-      try {
-        if (lowerCaseEmail) {
-          await sails.helpers.subscribeUser(lowerCaseEmail);
-        }
-      } catch (e) {}
+      // try {
+      //   if (lowerCaseEmail) {
+      //     await sails.helpers.subscribeUser(lowerCaseEmail);
+      //   }
+      // } catch (e) {}
 
       //  add user to our CRM.
       await sails.helpers.crm.updateUser(user);
