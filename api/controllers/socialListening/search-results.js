@@ -48,14 +48,16 @@ module.exports = {
             total
             results {
               content
-              domainName
+              source
               engagement
               likesCount
+              commentsCount
               url
               images
               userName
               userScreenName
               publishedAt
+              videos
             }
           }
         }
