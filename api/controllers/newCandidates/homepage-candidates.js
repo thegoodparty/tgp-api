@@ -28,45 +28,35 @@ module.exports = {
       const candidates = await Candidate.find({
         isActive: true,
         isOnHomepage: true,
-      }).limit(3);
+      }).limit(6);
 
       const homepageCandidates = [];
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
-
         const data = JSON.parse(candidate.data);
-        delete data.comparedCandidates;
-        delete data.updates;
-        delete data.updatesDates;
+        const { id, firstName, lastName, image, color } = data;
         const supporters = await Support.count({
           candidate: candidate.id,
         });
 
         data.supporters = supporters || 0;
 
-        homepageCandidates.push(data);
+        homepageCandidates.push({
+          id,
+          firstName,
+          lastName,
+          image,
+          color,
+          supporters: supporters || 0,
+        });
       }
 
       homepageCandidates.sort((a, b) => {
         return b.supporters - a.supporters;
       });
 
-      /*
-      adding endorsment count.
-      static follower from social networks as of 04/29/22
-      TikTok: 132,200
-      Instagram:  597
-      Facebook: 376 followers + 5761 engagements
-      Twitter: 314 followers, 138 likes
-      = 134222
-       */
-      const socialFollowers = 137373;
-      const supportCount = await Support.count();
-      const shareCount = await ShareCandidate.count();
-
       return exits.success({
         homepageCandidates,
-        engagements: socialFollowers + supportCount + shareCount,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
