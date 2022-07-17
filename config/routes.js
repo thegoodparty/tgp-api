@@ -200,4 +200,5 @@ module.exports.routes = {
   'GET   /api/v1/listening/brands': 'socialListening/brands',
   'GET   /api/v1/listening/tiktok-scrape': 'socialListening/tiktok-scrape',
   'GET   /api/v1/listening/search-results': 'socialListening/search-results',
+  'GET   /api/v1/listening/searches': 'socialListening/searches',
 };
