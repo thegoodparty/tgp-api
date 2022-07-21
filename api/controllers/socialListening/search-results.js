@@ -69,6 +69,7 @@ module.exports = {
           dateFrom: `2022-04-01T23:59:59Z`,
           dateTo: `${today}T23:59:59Z`,
           searches: [searchId],
+          tags: ['53434'],
         },
         options: {
           sortBy: 'REACTION',
