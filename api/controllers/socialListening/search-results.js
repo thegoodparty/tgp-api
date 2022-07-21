@@ -45,7 +45,6 @@ module.exports = {
       const query = `
         query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
           results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
-            total
             results {
               content
               source
@@ -83,7 +82,25 @@ module.exports = {
         'trac',
       );
 
+      const queryTotal = `
+        query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
+          results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
+            total
+          }
+        }
+      `;
+
+      const variablesTotal = { ...variables };
+      delete variablesTotal.filter.tags;
+
+      const dataTotal = await sails.helpers.socialListening.pulsarQueryHelper(
+        queryTotal,
+        variablesTotal,
+        'trac',
+      );
+
       const results = data ? data.results : [];
+      results.total = dataTotal ? dataTotal.results.total : 100;
       if (save) {
         const resultsStr = JSON.stringify(results);
         await KeyValue.findOrCreate(
