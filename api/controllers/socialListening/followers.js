@@ -37,7 +37,7 @@ module.exports = {
       const brands = await SocialBrand.find();
       for (let i = 0; i < brands.length; i++) {
         const { brandId, profiles } = brands[i];
-        const brandRecordId = brands[i].id
+        const brandRecordId = brands[i].id;
 
         console.log('profiles type', typeof profiles);
         console.log('profiles', profiles);
@@ -89,18 +89,13 @@ module.exports = {
               }).set({
                 count: data.followers,
               });
-
-              console.log('data', data);
             }
           }
         }
       }
 
-      console.log('done');
-
       return exits.success({
         message: 'ok',
-        stats,
       });
     } catch (e) {
       console.log('error at socialListening/followers');
