@@ -31,7 +31,7 @@ module.exports = {
       `;
       const today = moment().format('YYYY-MM-DD');
 
-      const stats = await SocialStat.find();
+      // const stats = await SocialStat.find();
 
       // get all brands and profiles.
       const brands = await SocialBrand.find();
@@ -62,7 +62,7 @@ module.exports = {
               'core',
             );
             if (data) {
-              await SocialStat.findOrCreate(
+              const record = await SocialStat.findOrCreate(
                 {
                   socialBrand: brandRecordId,
                   profileId: id,
@@ -80,15 +80,15 @@ module.exports = {
                   count: data.followers,
                 },
               );
-
-              await SocialStat.updateOne({
-                socialBrand: brandRecordId,
-                profileId: id,
-                date: today,
-                channel: source,
-              }).set({
-                count: data.followers,
-              });
+              try {
+                await SocialStat.updateOne({
+                  id: record.id,
+                }).set({
+                  count: data.followers,
+                });
+              } catch (e) {
+                //do nothing
+              }
             }
           }
         }

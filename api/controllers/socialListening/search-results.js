@@ -19,6 +19,10 @@ module.exports = {
       type: 'boolean',
       defaultsTo: true,
     },
+    filterApproved: {
+      type: 'boolean',
+      defaultsTo: true,
+    },
   },
 
   exits: {
@@ -33,92 +37,19 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    const { searchId, limit, save, useCache } = inputs;
-    const cacheKey = `${searchId}-${limit}`;
-    if (useCache) {
-      const existing = await KeyValue.findOne({ key: cacheKey });
-      if (existing) {
-        return exits.success(JSON.parse(existing.value));
-      }
-    }
     try {
-      const query = `
-        query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
-          results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
-            results {
-              content
-              source
-              engagement
-              likesCount
-              commentsCount
-              url
-              images
-              userName
-              userScreenName
-              publishedAt
-              videos
-            }
-          }
-        }
-      `;
-
-      const today = moment().format('YYYY-MM-DD');
-      const variables = {
-        filter: {
-          dateFrom: `2022-04-01T23:59:59Z`,
-          dateTo: `${today}T23:59:59Z`,
-          searches: [searchId],
-          tags: ['53434'],
-        },
-        options: {
-          sortBy: 'REACTION',
-          limit,
-        },
-      };
-
-      const data = await sails.helpers.socialListening.pulsarQueryHelper(
-        query,
-        variables,
-        'trac',
+      const { searchId, limit, save, useCache, filterApproved } = inputs;
+      const results = await sails.helpers.socialListening.searchResultsHelper(
+        searchId,
+        limit,
+        save,
+        useCache,
+        filterApproved,
       );
-
-      const queryTotal = `
-        query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
-          results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
-            total
-          }
-        }
-      `;
-
-      const variablesTotal = { ...variables };
-      delete variablesTotal.filter.tags;
-
-      const dataTotal = await sails.helpers.socialListening.pulsarQueryHelper(
-        queryTotal,
-        variablesTotal,
-        'trac',
-      );
-
-      const results = data ? data.results : [];
-      results.total = dataTotal ? dataTotal.results.total : 100;
-      if (save) {
-        const resultsStr = JSON.stringify(results);
-        await KeyValue.findOrCreate(
-          { key: cacheKey },
-          {
-            key: cacheKey,
-            value: resultsStr,
-          },
-        );
-        await KeyValue.updateOne({ key: cacheKey }).set({
-          key: cacheKey,
-          value: resultsStr,
-        });
-      }
 
       return exits.success(results);
     } catch (e) {
-      console.log('error at socialListening/goodparty-search');
+      console.log('error at socialListening/search-results');
       console.log(e);
       return exits.success({
         error: true,

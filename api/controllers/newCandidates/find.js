@@ -77,11 +77,9 @@ module.exports = {
         imageAsBase64 = Buffer.from(imageData).toString('base64');
       }
       let candidatePositions = [];
-      // let similarCampaigns = [];
 
       if (allFields) {
         candidatePositions = await candidatePositionFinder(id);
-        // similarCampaigns = await similarFinder(id, candidatePositions);
         candidateData.endorsements = candidate.endorsements;
       }
       if (!candidateData.certifiedDate) {
@@ -89,12 +87,61 @@ module.exports = {
         const certifiedDate = moment(candidate.createdAt).format('MM/DD/YYYY');
         candidateData.certifiedDate = certifiedDate;
       }
+      const followers = {};
+      let feed;
+      if (allFields) {
+        const today = moment().format('YYYY-MM-DD');
+        const name = `${candidateData.firstName} ${candidateData.lastName}`;
+        const brand = await SocialBrand.findOne({ name });
+        if (brand) {
+          const currentFollowers = await SocialStat.find({
+            socialBrand: brand.id,
+            date: today,
+          });
+
+
+          const lastWeek = moment()
+            .subtract(7, 'days')
+            .format('YYYY-MM-DD');
+          const lastWeekFollowers = await SocialStat.find({
+            socialBrand: brand.id,
+            date: lastWeek,
+          });
+
+          let totalFollowers = 0;
+          currentFollowers.forEach(item => {
+            totalFollowers += item.count;
+          });
+
+          let totalLastWeek = 0;
+          lastWeekFollowers.forEach(item => {
+            totalLastWeek += item.count;
+          });
+
+          console.log('total', totalFollowers);
+          console.log('total last week', totalLastWeek);
+          followers.thisWeek = totalFollowers;
+          followers.lastWeek = totalLastWeek;
+        }
+
+        if (candidateData.pulsarSearchId) {
+          feed = await sails.helpers.socialListening.searchResultsHelper(
+            candidateData.pulsarSearchId,
+            30,
+            true,
+            true,
+            false,
+            true
+          );
+        }
+      }
 
       return exits.success({
         candidate: candidateData,
         candidatePositions,
-        // similarCampaigns,
         imageAsBase64,
+        followers,
+        feed,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
@@ -108,35 +155,4 @@ const candidatePositionFinder = async id => {
     .sort([{ order: 'ASC' }])
     .populate('topIssue')
     .populate('position');
-};
-
-const similarFinder = async (id, candidatePositions) => {
-  const topicIds = candidatePositions.map(
-    candPosition => candPosition.topIssue.id,
-  );
-  const candidates = await Candidate.find({
-    id: { '!=': id },
-  }).populate('topIssues', {
-    where: {
-      id: { in: topicIds },
-    },
-  });
-  const sorted = [];
-  candidates.forEach(candidate => {
-    if (candidate.topIssues.length > 0) {
-      const data = JSON.parse(candidate.data);
-      const { firstName, lastName, race, party, id } = data;
-      const similar = { firstName, lastName, race, party, id };
-      sorted.push({
-        // count: candidatesCount[key],
-        candidate: similar,
-        matchingIssues: candidate.topIssues,
-      });
-    }
-  });
-  sorted.sort((a, b) => {
-    return b.matchingIssues.length - a.matchingIssues.length;
-  });
-
-  return sorted;
 };
