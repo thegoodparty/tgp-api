@@ -33,10 +33,6 @@ module.exports = {
       description: 'ok',
     },
 
-    badRequest: {
-      description: 'Error',
-      responseType: 'badRequest',
-    },
   },
 
   fn: async function(inputs, exits) {

@@ -45,30 +45,19 @@ module.exports = {
         candidate = await Candidate.findOne({
           id,
           isActive: true,
-        })
-          .populate('candidateUpdates')
-          .populate('endorsements');
+        }).populate('endorsements');
       } else {
         candidate = await Candidate.findOne({
           id,
           isActive: true,
-        }).populate('candidateUpdates');
+        });
       }
       if (!candidate) {
         return exits.notFound();
       }
 
-      for (let i = 0; i < candidate.candidateUpdates.length; i++) {
-        const update = candidate.candidateUpdates[i];
-        const timeAgo = timeago.ago(new Date(update.date));
-        update.timeAgo = timeAgo;
-      }
-
       let candidateData = JSON.parse(candidate.data);
-      candidateData.updatesList = candidate.candidateUpdates;
-      candidateData.updatesList.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
+
       let imageAsBase64;
       if (withImage && candidateData.image) {
         const imageData = await request.get(candidateData.image, {
@@ -98,7 +87,6 @@ module.exports = {
             socialBrand: brand.id,
             date: today,
           });
-
 
           const lastWeek = moment()
             .subtract(7, 'days')
@@ -131,7 +119,7 @@ module.exports = {
             true,
             true,
             false,
-            true
+            true,
           );
         }
       }
