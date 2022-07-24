@@ -40,9 +40,7 @@ module.exports = {
       `;
 
       const variables = {
-        filter: {
-          page,
-        },
+        page,
       };
 
       const data = await sails.helpers.socialListening.pulsarQueryHelper(
@@ -70,7 +68,6 @@ module.exports = {
                 }),
               });
               console.log('candidate found', candidate);
-
             }
           }
         }
