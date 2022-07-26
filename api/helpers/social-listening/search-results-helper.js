@@ -32,7 +32,6 @@ module.exports = {
     success: {
       description: 'ok',
     },
-
   },
 
   fn: async function(inputs, exits) {
@@ -93,6 +92,7 @@ module.exports = {
           dateTo: `${today}T23:59:59Z`,
           searches: [searchId],
           tags: filterApproved ? ['53434'] : undefined,
+          sentiments: ['POSITIVE', 'NEUTRAL'],
         },
         options: {
           sortBy: 'REACTION',
