@@ -16,6 +16,10 @@ module.exports = {
       type: 'string',
       isEmail: true,
     },
+    name: {
+      required: true,
+      type: 'string',
+    },
 
     uri: {
       required: true,
@@ -36,11 +40,12 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { email, uri } = inputs;
+      const { email, uri, name } = inputs;
       const formId = '5d84452a-01df-422b-9734-580148677d2c';
 
       const crmFields = [
         { name: 'email', value: email.toLowerCase(), objectTypeId: '0-1' },
+        { name: 'full_name', value: name, objectTypeId: '0-1' },
       ];
 
       await sails.helpers.crm.submitForm(formId, crmFields, 'homePage', uri);
