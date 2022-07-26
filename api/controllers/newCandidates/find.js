@@ -77,7 +77,7 @@ module.exports = {
         candidateData.certifiedDate = certifiedDate;
       }
       const followers = {};
-      let feed;
+      let feed = {};
       if (allFields) {
         const today = moment().format('YYYY-MM-DD');
         const name = `${candidateData.firstName} ${candidateData.lastName}`;
