@@ -1,7 +1,11 @@
 module.exports = {
   friendlyName: 'Pulsar Social listening for brands',
 
-  inputs: {},
+  inputs: {
+    page: {
+      type: 'number',
+    },
+  },
 
   exits: {
     success: {
@@ -15,6 +19,7 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
+    const { page } = inputs;
     try {
       const query = `
         query BrandsPlusProfiles($page: Int, $limit: Int) {
@@ -36,7 +41,7 @@ module.exports = {
       `;
 
       const variables = {
-        page: 1,
+        page: page || 1,
       };
 
       const data = await sails.helpers.socialListening.pulsarQueryHelper(
