@@ -43,53 +43,53 @@ module.exports = {
         console.log('profiles', profiles);
 
         for (let j = 0; j < profiles.length; j++) {
-          const profile = profiles[j];
-          const { id, source, name } = profile;
-          if (profile) {
-            const variables = {
-              filter: {
-                dateFrom: `${today}T00:00:00Z`,
-                dateTo: `${today}T23:59:59Z`,
-                brandId,
-                profiles: [id],
-              },
-              metric: 'COUNT',
-            };
+          try {
+            const profile = profiles[j];
+            const { id, source, name } = profile;
+            if (profile) {
+              const variables = {
+                filter: {
+                  dateFrom: `${today}T00:00:00Z`,
+                  dateTo: `${today}T23:59:59Z`,
+                  brandId,
+                  profiles: [id],
+                },
+                metric: 'COUNT',
+              };
 
-            const data = await sails.helpers.socialListening.pulsarQueryHelper(
-              query,
-              variables,
-              'core',
-            );
-            if (data) {
-              const record = await SocialStat.findOrCreate(
-                {
-                  socialBrand: brandRecordId,
-                  profileId: id,
-                  date: today,
-                  channel: source,
-                  action: 'followers',
-                },
-                {
-                  channel: source,
-                  socialBrand: brandRecordId,
-                  name,
-                  profileId: id,
-                  date: today,
-                  action: 'followers',
-                  count: data.followers,
-                },
+              const data = await sails.helpers.socialListening.pulsarQueryHelper(
+                query,
+                variables,
+                'core',
               );
-              try {
+              if (data) {
+                const record = await SocialStat.findOrCreate(
+                  {
+                    socialBrand: brandRecordId,
+                    profileId: id,
+                    date: today,
+                    channel: source,
+                    action: 'followers',
+                  },
+                  {
+                    channel: source,
+                    socialBrand: brandRecordId,
+                    name,
+                    profileId: id,
+                    date: today,
+                    action: 'followers',
+                    count: data.followers,
+                  },
+                );
                 await SocialStat.updateOne({
                   id: record.id,
                 }).set({
                   count: data.followers,
                 });
-              } catch (e) {
-                //do nothing
               }
             }
+          } catch (e) {
+            await sails.helpers.errorLoggerHelper('Error in followers loop', e);
           }
         }
       }
