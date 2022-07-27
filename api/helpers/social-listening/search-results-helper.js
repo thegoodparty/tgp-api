@@ -69,6 +69,7 @@ module.exports = {
           results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
             total
             results {
+              title
               content
               source
               engagement
