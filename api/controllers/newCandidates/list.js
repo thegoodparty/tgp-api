@@ -123,7 +123,7 @@ module.exports = {
 
       activeCandidates.sort((a, b) => {
         if (a.followers && b.followers) {
-          return b.followers.thisWeek - a.followers.thisWeek;
+          return  a.followers.thisWeek - b.followers.thisWeek;
         }
         return 0;
       });
