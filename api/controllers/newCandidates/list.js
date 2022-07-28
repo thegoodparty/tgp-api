@@ -51,13 +51,7 @@ module.exports = {
         return exits.success(response);
       }
 
-      const candidates = await Candidate.find(criteria)
-        .populate('positions')
-        .populate('endorsements');
-
-      candidates.sort((a, b) => {
-        return a.endorsements.length - b.endorsements.length;
-      });
+      const candidates = await Candidate.find(criteria).populate('positions');
 
       const activeCandidates = [];
       const possibleStates = {};
@@ -92,7 +86,6 @@ module.exports = {
           firstName,
           lastName,
           id,
-          headline,
           image,
           party,
           otherParty,
@@ -100,15 +93,17 @@ module.exports = {
           state,
           zip,
           color,
+          votesNeeded,
         } = data;
 
-        const supporters = await Support.count({ candidate: id });
+        const followers = await sails.helpers.socialListening.candidateFollowersHelper(
+          candidate,
+        );
 
         activeCandidates.push({
           firstName,
           lastName,
           id,
-          headline,
           image,
           party,
           otherParty,
@@ -117,14 +112,21 @@ module.exports = {
           zip,
           color,
           positions: candidate.positions,
-          supporters,
+          raceDate,
+          votesNeeded,
+          followers
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
         }
       }
 
-      activeCandidates.sort((a, b) => b.supporters - a.supporters);
+      activeCandidates.sort((a, b) => {
+        if (a.followers && b.followers) {
+          return b.followers.thisWeek - a.followers.thisWeek;
+        }
+        return 0;
+      });
 
       const positionsByTopIssues = {};
 
