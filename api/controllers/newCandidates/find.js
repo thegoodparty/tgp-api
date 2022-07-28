@@ -76,41 +76,10 @@ module.exports = {
         const certifiedDate = moment(candidate.createdAt).format('MM/DD/YYYY');
         candidateData.certifiedDate = certifiedDate;
       }
-      const followers = {};
+      let followers = {};
       let feed = {};
       if (allFields) {
-        const today = moment().format('YYYY-MM-DD');
-        const name = `${candidateData.firstName} ${candidateData.lastName}`;
-        const brand = await SocialBrand.findOne({ name });
-        if (brand) {
-          const currentFollowers = await SocialStat.find({
-            socialBrand: brand.id,
-            date: today,
-          });
-
-          const lastWeek = moment()
-            .subtract(7, 'days')
-            .format('YYYY-MM-DD');
-          const lastWeekFollowers = await SocialStat.find({
-            socialBrand: brand.id,
-            date: lastWeek,
-          });
-
-          let totalFollowers = 0;
-          currentFollowers.forEach(item => {
-            totalFollowers += item.count;
-          });
-
-          let totalLastWeek = 0;
-          lastWeekFollowers.forEach(item => {
-            totalLastWeek += item.count;
-          });
-
-          console.log('total', totalFollowers);
-          console.log('total last week', totalLastWeek);
-          followers.thisWeek = totalFollowers;
-          followers.lastWeek = totalLastWeek;
-        }
+        followers = await sails.helpers.socialListening.candidateFollowersHelper(candidate);
 
         if (candidateData.pulsarSearchId) {
           feed = await sails.helpers.socialListening.searchResultsHelper(

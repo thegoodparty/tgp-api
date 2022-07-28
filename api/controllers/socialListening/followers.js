@@ -39,9 +39,6 @@ module.exports = {
         const { brandId, profiles } = brands[i];
         const brandRecordId = brands[i].id;
 
-        console.log('profiles type', typeof profiles);
-        console.log('profiles', profiles);
-
         for (let j = 0; j < profiles.length; j++) {
           try {
             const profile = profiles[j];

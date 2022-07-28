@@ -17,7 +17,7 @@ module.exports = {
       description: 'Candidates Found',
       responseType: 'ok',
     },
-    badRequest: {
+    notFound: {
       description: 'Candidates Not Found.',
       responseType: 'notFound',
     },
@@ -34,12 +34,21 @@ module.exports = {
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
         const data = JSON.parse(candidate.data);
-        const { id, firstName, lastName, image, color } = data;
-        const supporters = await Support.count({
-          candidate: candidate.id,
-        });
+        const {
+          id,
+          firstName,
+          lastName,
+          image,
+          color,
+          race,
+          party,
+          raceDate,
+          votesNeeded
+        } = data;
 
-        data.supporters = supporters || 0;
+        const followers = await sails.helpers.socialListening.candidateFollowersHelper(
+          candidate,
+        );
 
         homepageCandidates.push({
           id,
@@ -47,12 +56,19 @@ module.exports = {
           lastName,
           image,
           color,
-          supporters: supporters || 0,
+          race,
+          party,
+          followers,
+          raceDate,
+          votesNeeded
         });
       }
 
       homepageCandidates.sort((a, b) => {
-        return b.supporters - a.supporters;
+        if (a.followers && b.followers) {
+          return b.followers.thisWeek - a.followers.thisWeek;
+        }
+        return 0;
       });
 
       return exits.success({
