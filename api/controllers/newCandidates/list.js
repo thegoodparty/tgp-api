@@ -114,7 +114,7 @@ module.exports = {
           positions: candidate.positions,
           raceDate,
           votesNeeded,
-          followers
+          followers,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
@@ -123,7 +123,17 @@ module.exports = {
 
       activeCandidates.sort((a, b) => {
         if (a.followers && b.followers) {
-          return  a.followers.thisWeek - b.followers.thisWeek;
+          return b.followers.thisWeek - a.followers.thisWeek;
+        }
+        if (!a.followers && !b.followers) {
+          return 0;
+        }
+        if (a.followers) {
+          return 1;
+        }
+
+        if (b.followers) {
+          return -1;
         }
         return 0;
       });
