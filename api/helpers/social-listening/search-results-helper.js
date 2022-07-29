@@ -93,7 +93,7 @@ module.exports = {
           dateTo: `${today}T23:59:59Z`,
           searches: [searchId],
           tags: filterApproved ? ['53434'] : undefined,
-          sentiments: filterApproved ? undefined : ['POSITIVE', 'NEUTRAL'],
+          sentiments: filterApproved ? undefined : ['POSITIVE'],
         },
         options: {
           sortBy: 'REACTION',
