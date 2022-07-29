@@ -128,11 +128,11 @@ module.exports = {
         if (!a.followers && !b.followers) {
           return 0;
         }
-        if (a.followers) {
+        if (a.followers && a.followers.thisWeek !== 0) {
           return 1;
         }
 
-        if (b.followers) {
+        if (b.followers && b.followers.thisWeek !== 0) {
           return -1;
         }
         return 0;
