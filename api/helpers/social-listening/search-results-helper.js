@@ -89,7 +89,7 @@ module.exports = {
       const today = moment().format('YYYY-MM-DD');
       const variables = {
         filter: {
-          dateFrom: `2022-04-01T23:59:59Z`,
+          dateFrom: `2022-05-01T23:59:59Z`,
           dateTo: `${today}T23:59:59Z`,
           searches: [searchId],
           tags: filterApproved ? ['53434'] : undefined,
