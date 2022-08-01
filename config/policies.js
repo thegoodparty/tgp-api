@@ -49,7 +49,7 @@ module.exports.policies = {
   'newCandidates/find': true,
   'newCandidates/find-with-inactive': true,
   'newCandidates/homepage-candidates': true,
-  'newCandidates/list': true,
+  'list': true,
   'newCandidates/share-image': true,
   'newCandidates/share/create-guest': true,
   'seed/*': true,
@@ -65,4 +65,5 @@ module.exports.policies = {
   'newCandidates/application/upload-image': true, // for guest applications
   'notifications/feedback/create-guest': true,
   'socialListening/*': true,
+  'newCandidates/claim': true,
 };
