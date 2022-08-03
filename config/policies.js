@@ -49,7 +49,7 @@ module.exports.policies = {
   'newCandidates/find': true,
   'newCandidates/find-with-inactive': true,
   'newCandidates/homepage-candidates': true,
-  'list': true,
+  'newCandidates/list': true,
   'newCandidates/share-image': true,
   'newCandidates/share/create-guest': true,
   'seed/*': true,

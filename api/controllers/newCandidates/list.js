@@ -164,7 +164,7 @@ module.exports = {
 
       const finalResponse = {
         candidates: activeCandidates,
-        positions: filteredPositions,
+        positions: filteredPositions || [],
         positionsByTopIssues,
         states,
       };
