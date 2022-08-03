@@ -57,6 +57,18 @@ module.exports = {
       });
 
       //send email here
+      const formId = '6c52b3d2-6642-4be3-b12a-c6b857b4a554';
+
+      const crmFields = [
+        { name: 'email', value: user.email, objectTypeId: '0-1' },
+      ];
+
+      await sails.helpers.crm.submitForm(
+        formId,
+        crmFields,
+        'Candidate Protal Admin Page',
+        `/candidate/portal/admin/${candidateId}`,
+      );
 
       return exits.success({ message: 'success' });
     } catch (err) {
