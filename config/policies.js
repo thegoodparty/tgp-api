@@ -35,6 +35,7 @@ module.exports.policies = {
   'newCandidates/application/list-in-review': ['isAuthenticated', 'isAdmin'],
   'newCandidates/application/approve': ['isAuthenticated', 'isAdmin'],
   'newCandidates/application/reject': ['isAuthenticated', 'isAdmin'],
+  'campaign/claim/approveClaim': ['isAuthenticated', 'isAdmin'],
   'notifications/feedback/create': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
@@ -65,5 +66,5 @@ module.exports.policies = {
   'newCandidates/application/upload-image': true, // for guest applications
   'notifications/feedback/create-guest': true,
   'socialListening/*': true,
-  'newCandidates/claim': true,
+  'campaign/claim/claim': true,
 };

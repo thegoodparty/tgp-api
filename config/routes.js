@@ -93,7 +93,6 @@ module.exports.routes = {
   'PUT    /api/v1/new-candidate/image': 'newCandidates/image/update',
   'PUT    /api/v1/new-candidate/compared': 'newCandidates/compared/update',
 
-  'POST    /api/v1/new-candidate/claim': 'newCandidates/claim',
 
   'POST    /api/v1/new-candidate/campaign-update':
     'newCandidates/campaignUpdate/create',
@@ -148,6 +147,9 @@ module.exports.routes = {
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
   'POST   /api/v1/campaign/image': 'campaign/image/create',
   'PUT    /api/v1/campaign/preferences': 'campaign/preferences/update',
+  'POST    /api/v1/campaign/pledge': 'campaign/claim/pledge',
+  'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
+  'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
   // candidate UGC
   'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin

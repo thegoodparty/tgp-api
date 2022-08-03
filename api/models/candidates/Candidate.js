@@ -88,6 +88,11 @@ module.exports = {
       via: 'candidate',
     },
 
+    campaignClaim: {
+      collection: 'campaignClaim',
+      via: 'candidate',
+    },
+
     // one to many relationship to button impression
     buttonImpressions: {
       collection: 'buttonImpression',

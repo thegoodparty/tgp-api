@@ -202,6 +202,11 @@ module.exports = {
       via: 'user',
     },
 
+    campaignClaim: {
+      collection: 'campaignClaim',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',
