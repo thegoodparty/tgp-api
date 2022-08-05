@@ -124,19 +124,37 @@ module.exports = {
       }
 
       activeCandidates.sort((a, b) => {
-        if (a.followers && b.followers) {
+        if (
+          a.followers &&
+          b.followers &&
+          Object.keys(a.followers).length !== 0 &&
+          Object.keys(b.followers).length !== 0
+        ) {
           return b.followers.thisWeek - a.followers.thisWeek;
         }
-        if (!a.followers && !b.followers) {
+        if (
+          (!a.followers && !b.followers) ||
+          (Object.keys(a.followers).length === 0 &&
+            Object.keys(b.followers).length === 0)
+        ) {
           return 0;
         }
-        if (a.followers && a.followers.thisWeek !== 0) {
+        if (
+          a.followers &&
+          Object.keys(a.followers).length !== 0 &&
+          a.followers.thisWeek !== 0
+        ) {
+          return -1;
+        }
+
+        if (
+          b.followers &&
+          Object.keys(b.followers).length !== 0 &&
+          b.followers.thisWeek !== 0
+        ) {
           return 1;
         }
 
-        if (b.followers && b.followers.thisWeek !== 0) {
-          return -1;
-        }
         return 0;
       });
 
