@@ -67,15 +67,10 @@ module.exports = {
         createdAt: { '<': new Date(startDate), '>': new Date(lastPeriod) },
       });
 
-      const endorsements = await Support.find({
-        candidate: candidate.id,
-        createdAt: { '>': new Date(startDate) },
-      });
-
-      const lastPeriodEndorsements = await Support.count({
-        candidate: candidate.id,
-        createdAt: { '<': new Date(startDate), '>': new Date(lastPeriod) },
-      });
+      const followers = await sails.helpers.socialListening.candidateFollowersByDayHelper(
+        candidate,
+        days
+      );
 
       const shares = await ShareCandidate.find({
         candidate: candidate.id,
@@ -127,7 +122,7 @@ module.exports = {
       });
       const chart = groupByDate(
         visits,
-        endorsements,
+        followers,
         shares,
         impressions,
         clicks,
@@ -139,9 +134,10 @@ module.exports = {
             total: visits.length,
             lastPeriod: lastPeriodVisitCount,
           },
-          endorsers: {
-            total: endorsements.length,
-            lastPeriod: lastPeriodEndorsements,
+          followers: {
+            total:
+              followers.length > 0 ? followers[followers.length - 1].total : 0,
+            lastPeriod: followers.length > 0 ? followers[0].total : 0,
           },
           shares: {
             total: shares.length,
@@ -163,20 +159,13 @@ module.exports = {
         },
       });
     } catch (e) {
-      console.log('Error creating campaign updates', e);
-      return exits.badRequest({ message: 'Error registering visit' });
+      console.log('Error at campaign/stats', e);
+      return exits.badRequest({ message: 'Error generating stats' });
     }
   },
 };
 
-const groupByDate = (
-  visits,
-  endorsements,
-  shares,
-  impressions,
-  clicks,
-  days,
-) => {
+const groupByDate = (visits, followers, shares, impressions, clicks, days) => {
   const byDates = {};
   // const startDate = moment()
   //   .subtract(days, 'days')
@@ -188,7 +177,7 @@ const groupByDate = (
     byDates[date] = {
       date,
       visits: 0,
-      endorsements: 0,
+      followers: 0,
       shares: 0,
       impressions: 0,
       clicks: 0,
@@ -196,11 +185,11 @@ const groupByDate = (
     };
   }
   groupRecordsByDate(visits, 'visits', byDates);
-  groupRecordsByDate(endorsements, 'endorsements', byDates);
   groupRecordsByDate(shares, 'shares', byDates);
   groupRecordsByDate(impressions, 'impressions', byDates);
   groupRecordsByDate(clicks, 'clicks', byDates);
   ctrByDate(clicks, impressions, byDates);
+  groupFollowersByDate(followers, byDates);
   const datesArray = Object.keys(byDates).map(key => byDates[key]);
   return datesArray;
 };
@@ -212,7 +201,7 @@ const groupRecordsByDate = (records, key, byDates) => {
       byDates[date] = {
         date,
         visits: 0,
-        endorsements: 0,
+        followers: 0,
         shares: 0,
         impressions: 0,
         clicks: 0,
@@ -229,6 +218,14 @@ const ctrByDate = (clicks, impressions, byDates) => {
     const { clicks, impressions } = byDates[date];
     if (impressions !== 0) {
       byDates[date]['ctr'] = (clicks * 100) / impressions;
+    }
+  });
+};
+
+const groupFollowersByDate = (followers, byDates) => {
+  followers.forEach(follow => {
+    if (follow) {
+      byDates[follow.date]['followers'] = follow.total;
     }
   });
 };
