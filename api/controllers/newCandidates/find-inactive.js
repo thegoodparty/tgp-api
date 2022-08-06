@@ -35,14 +35,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id, withImage } = inputs;
-      const candidate = await Candidate.findOne({ id }).populate(
-        'candidateUpdates',
-        {
-          where: {
-            status: 'accepted',
-          },
-        },
-      );
+      const candidate = await Candidate.findOne({ id });
       if (!candidate) {
         return exits.notFound();
       }
@@ -52,8 +45,7 @@ module.exports = {
         const imageData = await request.get(data.image, { encoding: null });
         imageAsBase64 = Buffer.from(imageData).toString('base64');
       }
-      let candidateData = JSON.parse(candidate.data);
-      candidateData.updatesList = candidate.candidateUpdates;
+      const candidateData = JSON.parse(candidate.data);
       return exits.success({
         candidate: candidateData,
         imageAsBase64,

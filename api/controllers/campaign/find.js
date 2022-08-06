@@ -37,7 +37,7 @@ module.exports = {
 
       const candidate = await Candidate.findOne({
         id,
-      }).populate('candidateUpdates');
+      });
 
       try {
         const canAccess = await sails.helpers.staff.canAccess(candidate, user);
@@ -53,10 +53,6 @@ module.exports = {
       }
 
       let candidateData = JSON.parse(candidate.data);
-      candidateData.updatesList = candidate.candidateUpdates;
-      candidateData.updatesList.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
       candidateData.contactFirstName = candidate.contact
         ? candidate.contact.contactFirstName
         : '';

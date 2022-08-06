@@ -53,11 +53,6 @@ module.exports = {
       via: 'candidate',
     },
 
-    // one to many relationship to campaignUpdates
-    candidateUpdates: {
-      collection: 'campaignupdate',
-      via: 'candidate',
-    },
 
     // one to many relationship to endorsements
     endorsements: {

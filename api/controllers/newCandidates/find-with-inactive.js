@@ -32,14 +32,13 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { id } = inputs;
-      const candidate = await Candidate.findOne({ id }).populate('candidateUpdates');
+      const candidate = await Candidate.findOne({ id });
       if (!candidate) {
         return exits.notFound();
       }
-      let candidateData = JSON.parse(candidate.data);
-      candidateData.updatesList = candidate.candidateUpdates;
+      const candidateData = JSON.parse(candidate.data);
       return exits.success({
-        candidate: candidateData
+        candidate: candidateData,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
