@@ -143,6 +143,7 @@ module.exports = {
         ballotDate,
         earlyVotingDate,
         certifiedDate: now,
+        isClaimed: true,
       };
 
       await Candidate.updateOne({ id: newCandidate.id }).set({
