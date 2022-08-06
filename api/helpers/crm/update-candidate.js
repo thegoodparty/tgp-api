@@ -40,9 +40,6 @@ module.exports = {
       const endorsementsCount = await Endorsement.count({
         candidate: candidate.id,
       });
-      const updateCounts = await CampaignUpdate.count({
-        candidate: candidate.id,
-      });
 
       const candidatePositions = await CandidatePosition.find({
         candidate: candidate.id,
@@ -72,7 +69,6 @@ module.exports = {
           domain: `${appBase}/candidate/${slug}/${candidate.id}`,
           installed_button: totalImpressions,
           featured_endorsements: endorsementsCount,
-          total_updates: updateCounts,
           top_issues: topIssues,
           modify_page: moment().format('YYYY-MM-DD'),
         },

@@ -93,16 +93,6 @@ module.exports.routes = {
   'PUT    /api/v1/new-candidate/image': 'newCandidates/image/update',
   'PUT    /api/v1/new-candidate/compared': 'newCandidates/compared/update',
 
-
-  'POST    /api/v1/new-candidate/campaign-update':
-    'newCandidates/campaignUpdate/create',
-  'PUT    /api/v1/new-candidate/campaign-update':
-    'newCandidates/campaignUpdate/update',
-  'DELETE    /api/v1/new-candidate/campaign-update':
-    'newCandidates/campaignUpdate/delete',
-  'PUT    /api/v1/new-candidate/approve-update':
-    'newCandidates/campaignUpdate/approve',
-
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
@@ -138,9 +128,7 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign/staff': 'campaign/staff/delete',
   'DELETE   /api/v1/campaign/staff-invitation':
     'campaign/staff/delete-invitation',
-  'POST   /api/v1/campaign/update': 'campaign/update/create',
-  'PUT   /api/v1/campaign/update': 'campaign/update/update',
-  'DELETE   /api/v1/campaign/update': 'campaign/update/delete',
+
   'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
   'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
