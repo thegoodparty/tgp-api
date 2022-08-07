@@ -69,7 +69,7 @@ module.exports = {
 
       const followers = await sails.helpers.socialListening.candidateFollowersByDayHelper(
         candidate,
-        days
+        days,
       );
 
       const shares = await ShareCandidate.find({
@@ -223,6 +223,9 @@ const ctrByDate = (clicks, impressions, byDates) => {
 };
 
 const groupFollowersByDate = (followers, byDates) => {
+  if (!byDates) {
+    return;
+  }
   followers.forEach(follow => {
     if (follow) {
       byDates[follow.date]['followers'] = follow.total;
