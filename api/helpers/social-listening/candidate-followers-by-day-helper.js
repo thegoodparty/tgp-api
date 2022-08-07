@@ -21,7 +21,7 @@ module.exports = {
       const brand = await SocialBrand.findOne({ name });
       const results = [];
       if (brand) {
-        for (let i = days - 1; i >= 0; i--) {
+        for (let i = days; i >= 0; i--) {
           const date = moment()
             .subtract(i, 'days')
             .format('YYYY-MM-DD');
