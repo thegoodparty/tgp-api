@@ -158,14 +158,6 @@ module.exports.routes = {
   'PUT   /api/v1/candidate-position': 'topIssues/candidatePosition/update',
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
 
-  // updates(for notifications)
-  'POST   /api/v1/updates': 'updates/create',
-
-  // campaign notification
-  'GET   /api/v1/campaign/notification': 'campaign/notification/find',
-  'PUT   /api/v1/campaign/notification': 'campaign/notification/update',
-  'GET   /api/v1/campaign/schedule-notification':
-    'campaign/notification/schedule',
 
   // application
   'POST   /api/v1/application': 'newCandidates/application/create',
