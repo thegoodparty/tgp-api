@@ -134,12 +134,7 @@ module.exports.routes = {
   'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
-  // candidate UGC
-  'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin
-  'PUT   /api/v1/ugcs/accept': 'campaign/ugc/accept', //admin
-  'PUT   /api/v1/ugcs/reject': 'campaign/ugc/reject', //admin
-  'GET   /api/v1/ugc': 'campaign/ugc/find',
-  'PUT   /api/v1/ugc': 'campaign/ugc/update',
+
 
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',

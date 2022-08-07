@@ -47,11 +47,6 @@ module.exports = {
       description: 'contact info',
     },
 
-    // one-to-one
-    candidateUgc: {
-      collection: 'candidateUgc',
-      via: 'candidate',
-    },
 
 
     // one to many relationship to endorsements
