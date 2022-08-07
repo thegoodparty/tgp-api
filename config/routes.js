@@ -98,12 +98,7 @@ module.exports.routes = {
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
   'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
 
-  'POST   /api/v1/support': 'user/support/create',
-  'DELETE   /api/v1/support': 'user/support/delete',
-  'DELETE   /api/v1/admin-support': 'user/support/admin-delete',
-  'PUT   /api/v1/support': 'user/support/update',
-  'GET   /api/v1/supports': 'user/support/list-by-user',
-  'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
+
   'GET   /api/v1/user/staff': 'user/staff',
 
   'GET   /api/v1/compare-topics': 'newCandidates/compareTopic/list',
