@@ -24,7 +24,6 @@ module.exports = {
     try {
       const { user } = this.req;
 
-      await Support.destroy({ user: user.id });
       await ShareCandidate.destroy({ user: user.id });
       await Application.destroy({ user: user.id });
       await User.destroyOne({ id: user.id });

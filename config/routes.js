@@ -98,18 +98,7 @@ module.exports.routes = {
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
   'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
 
-  'POST   /api/v1/support': 'user/support/create',
-  'DELETE   /api/v1/support': 'user/support/delete',
-  'DELETE   /api/v1/admin-support': 'user/support/admin-delete',
-  'PUT   /api/v1/support': 'user/support/update',
-  'GET   /api/v1/supports': 'user/support/list-by-user',
-  'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
   'GET   /api/v1/user/staff': 'user/staff',
-
-  'GET   /api/v1/compare-topics': 'newCandidates/compareTopic/list',
-  'POST   /api/v1/compare-topic': 'newCandidates/compareTopic/create',
-  'PUT   /api/v1/compare-topic': 'newCandidates/compareTopic/update',
-  'DELETE   /api/v1/compare-topic': 'newCandidates/compareTopic/delete',
 
   'POST   /api/v1/visit': 'visit/create',
 
@@ -139,13 +128,6 @@ module.exports.routes = {
   'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
-  // candidate UGC
-  'GET   /api/v1/ugcs': 'campaign/ugc/list', //admin
-  'PUT   /api/v1/ugcs/accept': 'campaign/ugc/accept', //admin
-  'PUT   /api/v1/ugcs/reject': 'campaign/ugc/reject', //admin
-  'GET   /api/v1/ugc': 'campaign/ugc/find',
-  'PUT   /api/v1/ugc': 'campaign/ugc/update',
-
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
   'PUT   /api/v1/top-issue': 'topIssues/topIssue/update',
@@ -162,15 +144,6 @@ module.exports.routes = {
   'POST   /api/v1/candidate-position': 'topIssues/candidatePosition/create',
   'PUT   /api/v1/candidate-position': 'topIssues/candidatePosition/update',
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
-
-  // updates(for notifications)
-  'POST   /api/v1/updates': 'updates/create',
-
-  // campaign notification
-  'GET   /api/v1/campaign/notification': 'campaign/notification/find',
-  'PUT   /api/v1/campaign/notification': 'campaign/notification/update',
-  'GET   /api/v1/campaign/schedule-notification':
-    'campaign/notification/schedule',
 
   // application
   'POST   /api/v1/application': 'newCandidates/application/create',

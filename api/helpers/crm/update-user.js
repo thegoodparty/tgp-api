@@ -45,18 +45,6 @@ module.exports = {
         user: id,
         status: 'in review',
       });
-      const supports = await Support.find({
-        user: id,
-      }).sort([{ createdAt: 'DESC' }]);
-
-      let allEndorsements = '';
-      for (let i = 0; i < supports.length; i++) {
-        const candidate = await Candidate.findOne({
-          id: supports[i].candidate,
-        });
-        allEndorsements += `${candidate.firstName} ${candidate.lastName} \n`;
-        supports[i].candidate = candidate;
-      }
 
       const contactObj = {
         properties: {
@@ -72,11 +60,7 @@ module.exports = {
           phone,
           type: applicationApproved > 0 ? 'Campaign' : 'User',
           source: 'Good Party Site',
-          all_endorsements: allEndorsements,
-          recent_endorsement:
-            supports.length > 0
-              ? `${supports[0].candidate.firstName} ${supports[0].candidate.lastName}`
-              : '',
+
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
           referrals: crew.length,
