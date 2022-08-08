@@ -64,24 +64,18 @@ module.exports = {
         uri,
       );
 
-      console.log('in claim');
-
       let isUserExists = false;
       const emailUser = await User.findOne({ email: lowerEmail });
       if (emailUser) {
-        console.log('email user exists');
         isUserExists = true;
       } else if (phone && phone !== '') {
         const phoneUser = await User.findOne({ phone });
         if (phoneUser) {
-          console.log('phone user exists');
           isUserExists = true;
         }
       }
 
-      console.log('isUserExists', isUserExists);
       if (!isUserExists) {
-        console.log('creatung a user');
         const uuid = Math.random()
           .toString(36)
           .substring(2, 12);

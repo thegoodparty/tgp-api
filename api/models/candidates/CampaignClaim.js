@@ -16,13 +16,11 @@ module.exports = {
     // one-to-one
     user: {
       model: 'user',
-      unique: true,
     },
 
     // has one candidate
     candidate: {
       model: 'candidate',
-      unique: true,
     },
   },
 };

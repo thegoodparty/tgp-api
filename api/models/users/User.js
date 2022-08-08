@@ -199,7 +199,7 @@ module.exports = {
       via: 'user',
     },
 
-    campaignClaim: {
+    campaignClaims: {
       collection: 'campaignClaim',
       via: 'user',
     },

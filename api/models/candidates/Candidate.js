@@ -78,7 +78,7 @@ module.exports = {
       via: 'candidate',
     },
 
-    campaignClaim: {
+    campaignClaims: {
       collection: 'campaignClaim',
       via: 'candidate',
     },
