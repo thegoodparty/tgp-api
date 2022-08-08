@@ -45,68 +45,69 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { uuid, candidateId, topicTitle, isHelpful, feedback } = inputs;
-      const topic = await CompareTopic.findOne({
-        name: topicTitle,
-      });
-      const dbFeedback = await HelpfulTopic.findOrCreate(
-        {
-          candidateId,
-          topicId: topic.id,
-          uuid,
-        },
-        {
-          uuid,
-          candidateId,
-          topicId: topic.id,
-          isHelpful,
-          feedback,
-        },
-      );
-
-      await HelpfulTopic.updateOne({ id: dbFeedback.id }).set({
-        isHelpful,
-        feedback,
-      });
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      let env = 'dev';
-      if (appBase === 'https://goodparty.org') {
-        env = 'prod';
-      }
-
-      try {
-        const message = {
-          text: `Topic Helpful? ${
-            isHelpful ? 'YES' : 'No'
-          }. Title: ${topicTitle}. ENV: ${env}`,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `__________________________________ \n *Article Helpful? ${
-                  isHelpful ? 'YES' : 'No'
-                }* \n 
-                  \n ENV: ${env}`,
-              },
-            },
-          ],
-        };
-
-        if (feedback) {
-          message.blocks.push({
-            type: 'section',
-            text: {
-              type: 'mrkdwn',
-              text: `Feedback: ${feedback}`,
-            },
-          });
-        }
-
-        await sails.helpers.slackHelper(message, 'content');
-      } catch (e) {
-        console.log('slack error', e);
-      }
+      // const { uuid, candidateId, topicTitle, isHelpful, feedback } = inputs;
+      // const topic = await CompareTopic.findOne({
+      //   name: topicTitle,
+      // });
+      // const dbFeedback = await HelpfulTopic.findOrCreate(
+      //   {
+      //     candidateId,
+      //     topicId: topic.id,
+      //     uuid,
+      //   },
+      //   {
+      //     uuid,
+      //     candidateId,
+      //     topicId: topic.id,
+      //     isHelpful,
+      //     feedback,
+      //   },
+      // );
+      //
+      // await HelpfulTopic.updateOne({ id: dbFeedback.id }).set({
+      //   isHelpful,
+      //   feedback,
+      // });
+      // const appBase = sails.config.custom.appBase || sails.config.appBase;
+      // let env = 'dev';
+      // if (appBase === 'https://goodparty.org') {
+      //   env = 'prod';
+      // }
+      //
+      // try {
+      //   const message = {
+      //     text: `Topic Helpful? ${
+      //       isHelpful ? 'YES' : 'No'
+      //     }. Title: ${topicTitle}. ENV: ${env}`,
+      //     blocks: [
+      //       {
+      //         type: 'section',
+      //         text: {
+      //           type: 'mrkdwn',
+      //           text: `__________________________________ \n *Article Helpful? ${
+      //             isHelpful ? 'YES' : 'No'
+      //           }* \n
+      //             \n ENV: ${env}`,
+      //         },
+      //       },
+      //     ],
+      //   };
+      //
+      //   if (feedback) {
+      //     message.blocks.push({
+      //       type: 'section',
+      //       text: {
+      //         type: 'mrkdwn',
+      //         text: `Feedback: ${feedback}`,
+      //       },
+      //     });
+      //   }
+      //
+      //   await sails.helpers.slackHelper(message, 'content');
+      // } catch (e) {
+      //   console.log('slack error', e);
+      // }
+      // needs more cleanup here
 
       return exits.success({
         message: 'Feedback Saved Successfully',

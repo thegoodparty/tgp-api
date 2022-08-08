@@ -98,13 +98,7 @@ module.exports.routes = {
   'GET   /api/v1/voterize/verify-vote': 'voterize/verify-vote',
   'GET   /api/v1/voterize/register-vote': 'voterize/register-vote',
 
-
   'GET   /api/v1/user/staff': 'user/staff',
-
-  'GET   /api/v1/compare-topics': 'newCandidates/compareTopic/list',
-  'POST   /api/v1/compare-topic': 'newCandidates/compareTopic/create',
-  'PUT   /api/v1/compare-topic': 'newCandidates/compareTopic/update',
-  'DELETE   /api/v1/compare-topic': 'newCandidates/compareTopic/delete',
 
   'POST   /api/v1/visit': 'visit/create',
 
@@ -134,8 +128,6 @@ module.exports.routes = {
   'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
-
-
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
   'PUT   /api/v1/top-issue': 'topIssues/topIssue/update',
@@ -152,7 +144,6 @@ module.exports.routes = {
   'POST   /api/v1/candidate-position': 'topIssues/candidatePosition/create',
   'PUT   /api/v1/candidate-position': 'topIssues/candidatePosition/update',
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
-
 
   // application
   'POST   /api/v1/application': 'newCandidates/application/create',
