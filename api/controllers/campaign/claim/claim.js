@@ -64,18 +64,9 @@ module.exports = {
         uri,
       );
 
-      let isUserExists = false;
-      const emailUser = await User.findOne({ email: lowerEmail });
-      if (emailUser) {
-        isUserExists = true;
-      } else if (phone && phone !== '') {
-        const phoneUser = await User.findOne({ phone });
-        if (phoneUser) {
-          isUserExists = true;
-        }
-      }
+      const existingUser = await User.findOne({ email: lowerEmail });
 
-      if (!isUserExists) {
+      if (!existingUser) {
         const uuid = Math.random()
           .toString(36)
           .substring(2, 12);
@@ -83,13 +74,12 @@ module.exports = {
           uuid,
           name,
           email: lowerEmail,
-          phone,
         });
       }
 
       return exits.success({ message: 'success' });
     } catch (err) {
-      return exits.badRequest({ message: 'Error subscribing email' });
+      return exits.badRequest({ message: 'Error claiming campaign' });
     }
   },
 };
