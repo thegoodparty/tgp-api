@@ -52,17 +52,49 @@ module.exports = {
       candidatePositions.forEach(candPosition => {
         topIssues += `Top Issue: ${candPosition.topIssue.name} | Position: ${candPosition.position.name} | Candidate Position: ${candPosition.description} \n`;
       });
+
+      const followers = await sails.helpers.socialListening.candidateFollowersHelper(
+        candidate,
+      );
+      let thisWeek = 0;
+      let lastWeek = 0;
+      if (followers) {
+        thisWeek = followers.thisWeek;
+        lastWeek = followers.lastWeek;
+      }
+      const diff = thisWeek - lastWeek;
+
+      const {
+        firstName,
+        lastName,
+        race,
+        isActive,
+        about,
+        party,
+        zip,
+        state,
+        facebook,
+        twitter,
+        tiktok,
+        instagram,
+        heroVideo,
+      } = data;
       const companyObj = {
         properties: {
-          name: `${data.firstName} ${data.lastName} for ${data.race}`,
-          candidate_name: `${data.firstName} ${data.lastName}`,
+          name: `${firstName} ${lastName} for ${race}`,
+          candidate_name: `${firstName} ${lastName}`,
           campaign_id: candidate.id,
-          is_active: !!data.isActive,
-          candidate_office: data.race,
-          about_us: data.about,
-          candidate_party: partyResolver(data.party),
-          candidate_state: data.state,
-          zip: data.zip,
+          is_active: !!isActive,
+          candidate_office: race,
+          about_us: about,
+          candidate_party: partyResolver(party),
+          candidate_state: state,
+          zip,
+          twitter_url: twitter,
+          tiktok_url: tiktok,
+          facebook_url: facebook,
+          instagram_url: instagram,
+          video_added: !!heroVideo,
           type: 'CAMPAIGN',
           candidate_email: candidate.contact.contactEmail,
           phone: candidate.contact.contactPhone,
@@ -71,6 +103,8 @@ module.exports = {
           featured_endorsements: endorsementsCount,
           top_issues: topIssues,
           modify_page: moment().format('YYYY-MM-DD'),
+          follower_count: thisWeek,
+          follower_growth: diff,
         },
       };
 
