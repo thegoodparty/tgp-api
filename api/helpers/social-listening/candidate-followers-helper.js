@@ -34,7 +34,6 @@ module.exports = {
 
         let totalFollowers = 0;
         currentFollowers.forEach(item => {
-          console.log('item', item)
           totalFollowers += item.count;
         });
 

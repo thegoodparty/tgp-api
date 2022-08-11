@@ -107,6 +107,7 @@ module.exports = {
           follower_growth: diff,
         },
       };
+      console.log('update hubspot candidate companyObj', companyObj.properties);
 
       const existingId = candidate.contact.hubspotId;
       if (existingId) {
