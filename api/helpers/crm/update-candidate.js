@@ -94,7 +94,7 @@ module.exports = {
           tiktok_url: tiktok,
           facebook_url: facebook,
           instagram_url: instagram,
-          video_added: !!heroVideo,
+          video_added: heroVideo ? 'yes' : 'no',
           type: 'CAMPAIGN',
           candidate_email: candidate.contact.contactEmail,
           phone: candidate.contact.contactPhone,
