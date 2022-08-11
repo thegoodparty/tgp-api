@@ -35,7 +35,7 @@ module.exports = {
         followers: getVal(followers),
       });
     } catch (e) {
-      console.log('error at helpers/socialListening/tiktok-scraper', e);
+      console.log('error at helpers/socialListening/tiktok-scraper');
       throw e;
     }
   },
