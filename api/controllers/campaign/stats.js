@@ -228,6 +228,9 @@ const groupFollowersByDate = (followers, byDates) => {
   }
   followers.forEach(follow => {
     if (follow) {
+      if (!byDates[follow.date]) {
+        byDates[follow.date] = {};
+      }
       byDates[follow.date]['followers'] = follow.total;
     }
   });
