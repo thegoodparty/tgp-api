@@ -41,9 +41,10 @@ module.exports = {
         lastWeekFollowers.forEach(item => {
           totalLastWeek += item.count;
         });
+        let offset = candidateData.followersOffset || 0;
 
-        followers.thisWeek = totalFollowers;
-        followers.lastWeek = totalLastWeek;
+        followers.thisWeek = totalFollowers + offset;
+        followers.lastWeek = totalLastWeek + offset;
       }
 
       return exits.success(followers);
