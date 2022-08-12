@@ -31,6 +31,7 @@ module.exports.policies = {
   'newCandidates/application/approve': ['isAuthenticated', 'isAdmin'],
   'newCandidates/application/reject': ['isAuthenticated', 'isAdmin'],
   'campaign/claim/approveClaim': ['isAuthenticated', 'isAdmin'],
+  'socialListening/followers-filler': ['isAuthenticated', 'isAdmin'],
   'notifications/feedback/create': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
