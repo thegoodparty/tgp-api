@@ -34,7 +34,6 @@ module.exports.policies = {
   'notifications/feedback/create': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
-  'campaign/notification/schedule': true,
   'general/*': true,
   'entrance/*': true,
   'content/*': true,

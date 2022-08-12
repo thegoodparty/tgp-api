@@ -64,7 +64,6 @@ module.exports.routes = {
   'GET    /api/v1/admin/candidate-user': 'admin/candidate/associate-user/find',
   'DELETE    /api/v1/admin/candidate-user':
     'admin/candidate/associate-user/delete',
-  'DELETE    /api/v1/admin/candidate-update': 'admin/delete-candidate-update',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/user': 'admin/delete-user',
   'GET   /api/v1/admin/articles-feedback': 'admin/articles-feedback',
@@ -161,10 +160,13 @@ module.exports.routes = {
 
   // socialListening
   'GET   /api/v1/listening/followers': 'socialListening/followers',
+  'GET   /api/v1/listening/followers-filler':
+    'socialListening/followers-filler',
   'GET   /api/v1/listening/followers-count': 'socialListening/followers-count',
   'GET   /api/v1/listening/brands': 'socialListening/brands',
   'GET   /api/v1/listening/tiktok-scrape': 'socialListening/tiktok-scrape',
-  'GET   /api/v1/listening/candidates-tiktok-scrape': 'socialListening/candidates-tiktok-scrape',
+  'GET   /api/v1/listening/candidates-tiktok-scrape':
+    'socialListening/candidates-tiktok-scrape',
   'GET   /api/v1/listening/search-results': 'socialListening/search-results',
   'GET   /api/v1/listening/searches': 'socialListening/searches',
 };
