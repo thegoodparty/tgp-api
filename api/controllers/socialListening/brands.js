@@ -54,6 +54,22 @@ module.exports = {
         const { brands } = data.brands;
         for (let i = 0; i < brands.length; i++) {
           const { name, id, profiles } = brands[i];
+          let candidateId;
+          try {
+            const nameArr = name.split(' ');
+            if (nameArr.length === 2) {
+              const candidate = await Candidate.findOne({
+                firstName: nameArr[0],
+                lastName: nameArr[1],
+              });
+              if (candidate) {
+                console.log('candidate found', candidate);
+                candidateId = candidate.id;
+              }
+            }
+          } catch (e) {
+            console.log('error mapping to candidate', e);
+          }
 
           await SocialBrand.findOrCreate(
             { brandId: id },
@@ -61,12 +77,14 @@ module.exports = {
               name,
               brandId: id,
               profiles,
+              candidate: candidateId,
             },
           );
           await SocialBrand.updateOne({ brandId: id }).set({
             name,
             brandId: id,
             profiles,
+            candidate: candidateId,
           });
         }
       }

@@ -5,7 +5,12 @@ module.exports = {
 
   description: 'root level health check',
 
-  inputs: {},
+  inputs: {
+    page: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -19,6 +24,9 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
+    const { page } = inputs;
+    const perPage = 10;
+    const from = perPage * (page - 1);
     try {
       const query = `
        query Followers(
@@ -31,19 +39,18 @@ module.exports = {
       `;
       const today = moment().format('YYYY-MM-DD');
 
-      // const stats = await SocialStat.find();
-
       // get all brands and profiles.
       const brands = await SocialBrand.find();
-      for (let i = 0; i < brands.length; i++) {
+      const until = Math.min(from + perPage, brands.length);
+      for (let i = from; i < until; i++) {
         const { brandId, profiles } = brands[i];
         const brandRecordId = brands[i].id;
 
         for (let j = 0; j < profiles.length; j++) {
           try {
             const profile = profiles[j];
-            const { id, source, name } = profile;
             if (profile) {
+              const { id, source, name } = profile;
               const variables = {
                 filter: {
                   dateFrom: `${today}T00:00:00Z`,
@@ -89,10 +96,20 @@ module.exports = {
             await sails.helpers.errorLoggerHelper('Error in followers loop', e);
           }
         }
+        if (profiles.length > 0 && brands[i].candidate) {
+          const candidate = await Candidate.findOne({
+            id: brands[i].candidate,
+          });
+          await sails.helpers.crm.updateCandidate(candidate);
+        }
       }
 
       return exits.success({
         message: 'ok',
+        brandsCount: brands.length,
+        page,
+        perPage,
+        pages: Math.ceil(brands.length / perPage),
       });
     } catch (e) {
       console.log('error at socialListening/followers');
