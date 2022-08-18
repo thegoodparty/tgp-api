@@ -158,21 +158,10 @@ module.exports = {
         return 0;
       });
 
-      const positionsByTopIssues = {};
-
       const positions = await Position.find()
         .populate('candidates')
         .populate('topIssue')
         .sort([{ name: 'ASC' }]);
-
-      positions.forEach(position => {
-        if (position.topIssue && position.candidates.length > 0) {
-          if (!positionsByTopIssues[position.topIssue.name]) {
-            positionsByTopIssues[position.topIssue.name] = [];
-          }
-          positionsByTopIssues[position.topIssue.name].push(position);
-        }
-      });
 
       const filteredPositions = positions.filter(
         position => position.candidates.length > 0,
@@ -183,7 +172,6 @@ module.exports = {
       const finalResponse = {
         candidates: activeCandidates,
         positions: filteredPositions || [],
-        positionsByTopIssues,
         states,
       };
       await sails.helpers.cacheHelper('set', cacheKey, finalResponse);
