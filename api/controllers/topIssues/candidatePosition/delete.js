@@ -35,12 +35,12 @@ module.exports = {
       }
 
       await Candidate.removeFromCollection(
-        id,
+        candidate.id,
         'positions',
         candidatePosition.position,
       );
       await Candidate.removeFromCollection(
-        id,
+        candidate.id,
         'topIssues',
         candidatePosition.topIssue,
       );
