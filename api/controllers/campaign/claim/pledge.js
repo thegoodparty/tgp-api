@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+const moment = require('moment');
+
 module.exports = {
   friendlyName: 'Pledge after claim',
 
@@ -37,6 +39,7 @@ module.exports = {
         candidate: claim.candidate,
         createdBy: user.id,
       });
+      const now = moment().format('MM/DD/YYYY');
 
       const candidate = await Candidate.findOne({ id: claim.candidate });
       const data = JSON.parse(candidate.data);
@@ -44,6 +47,7 @@ module.exports = {
         data: JSON.stringify({
           ...data,
           isClaimed: true,
+          certifiedDate: now,
         }),
       });
       await CampaignClaim.destroyOne({
@@ -52,7 +56,7 @@ module.exports = {
 
       return exits.success({ candidateId: claim.candidate });
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return exits.badRequest({ message: 'Error saving pledge' });
     }
   },
