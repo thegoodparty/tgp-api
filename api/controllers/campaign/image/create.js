@@ -4,16 +4,7 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
-const removeBackgroundFromImageUrl = require('remove.bg')
-  .removeBackgroundFromImageUrl;
-const removeBgKey = sails.config.custom.removeBgKey || sails.config.removeBgKey;
-const fs = require('fs');
-const path = require('path');
-const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
-const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
-const AWS = require('aws-sdk');
-const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
+const slugify = require('slugify');
 
 module.exports = {
   friendlyName: 'Find Candidate associated with user',
@@ -56,7 +47,7 @@ module.exports = {
       }
       const s3Url = await sails.helpers.images.transparentImage(
         url,
-        `${encodeURI(candidate.firstName)}-${encodeURI(candidate.lastName)}`,
+        `${slugify(candidate.firstName)}-${slugify(candidate.lastName)}`,
       );
 
       const data = JSON.parse(candidate.data);
