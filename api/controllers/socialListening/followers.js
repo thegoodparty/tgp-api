@@ -100,7 +100,9 @@ module.exports = {
           const candidate = await Candidate.findOne({
             id: brands[i].candidate,
           });
-          await sails.helpers.crm.updateCandidate(candidate);
+          if (candidate) {
+            await sails.helpers.crm.updateCandidate(candidate);
+          }
         }
       }
 
