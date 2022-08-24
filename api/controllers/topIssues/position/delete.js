@@ -22,6 +22,20 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { id } = inputs;
+
+      const position = await Position.findOne({ id }).populate('candidates');
+      for (let i = 0; i < position.candidates.length; i++) {
+        await Candidate.removeFromCollection(
+          position.candidates[i].id,
+          'positions',
+          id,
+        );
+      }
+
+      await CandidatePosition.destroy({
+        position: id,
+      });
+
       await Position.destroyOne({ id });
 
       await sails.helpers.cacheHelper('clear', 'all');
