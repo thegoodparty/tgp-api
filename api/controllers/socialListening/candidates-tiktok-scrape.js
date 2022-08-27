@@ -86,6 +86,10 @@ module.exports = {
 
       return exits.success({
         updated,
+        candidatesCount: candidates.length,
+        page,
+        perPage,
+        pages: Math.ceil(candidates.length / perPage),
       });
     } catch (e) {
       console.log('error at socialListening/brands');
