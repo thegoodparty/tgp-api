@@ -52,38 +52,46 @@ module.exports = {
       });
 
       console.log(`File saved to ${outputFile}`);
-
-      // await sails.helpers.images.optimizeImage(outputFile);
-
-      const bucketName = `${assetsBase}/candidate-info`;
-
-      const content = fs.readFileSync(outputFile);
       const uuid = Math.random()
         .toString(36)
         .substring(2, 8);
-      const fileName = `${candidateName}-${uuid}.png`;
 
-      let params = {
-        Bucket: bucketName,
-        Key: fileName,
-        Body: content,
-        ContentType: 'image/png',
-        ACL: 'public-read',
-        CacheControl: 'max-age=31536000',
-      };
+      const s3Url = await uploadToS3(outputFile, candidateName, uuid);
+      //optimizing
+      await sails.helpers.images.optimizeImage(s3Url, outputFile);
+      console.log('after optimze');
+      const optimizedS3Url = await uploadToS3(outputFile, candidateName, uuid+'opt');
 
-      const s3 = new AWS.S3({
-        accessKeyId: s3Key,
-        secretAccessKey: s3Secret,
-      });
-
-      await s3.putObject(params).promise();
-
-      const s3Url = `https://${bucketName}/${fileName}`;
-      return exits.success(s3Url);
+      return exits.success(optimizedS3Url);
     } catch (e) {
       console.log('error at transparent image helper', e);
       return exits.success(inputs.url);
     }
   },
 };
+
+async function uploadToS3(localFile, candidateName, uuid) {
+  const bucketName = `${assetsBase}/candidate-info`;
+
+  const content = fs.readFileSync(localFile);
+
+  const fileName = `${candidateName}-${uuid}.png`;
+
+  let params = {
+    Bucket: bucketName,
+    Key: fileName,
+    Body: content,
+    ContentType: 'image/png',
+    ACL: 'public-read',
+    CacheControl: 'max-age=31536000',
+  };
+
+  const s3 = new AWS.S3({
+    accessKeyId: s3Key,
+    secretAccessKey: s3Secret,
+  });
+
+  await s3.putObject(params).promise();
+
+  return `https://${bucketName}/${fileName}`;
+}

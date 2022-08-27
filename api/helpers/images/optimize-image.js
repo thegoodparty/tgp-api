@@ -1,16 +1,20 @@
-// const imagemin = require('imagemin');
-// const imageminPngquant = require('imagemin-pngquant');
+// https://imageoptim.com/api
+const axios = require('axios');
+const fs = require('fs');
 
-const path = require('path');
+const imageOptimkey =
+  sails.config.custom.imageOptimkey || sails.config.imageOptimkey;
+const baseUrl = `https://im2.io/${imageOptimkey}/`;
 
 module.exports = {
-  friendlyName: 'Cache helper',
-
-  description:
-    'in memoery caching using cacheman: https://github.com/cayasso/cacheman',
+  friendlyName: 'Otimize Image using imageOptim API',
 
   inputs: {
     imgPath: {
+      type: 'string',
+      required: true,
+    },
+    outputFile: {
       type: 'string',
       required: true,
     },
@@ -27,7 +31,14 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      // const { imgPath } = inputs;
+      const { imgPath, outputFile } = inputs;
+      console.log('imgPath', imgPath);
+      console.log('outputFile', outputFile);
+      const url = `${baseUrl}500,scale-down,quality=low,format=png/${imgPath}`;
+      const { data } = await axios.post(url);
+      const base64Data = data.replace(/^data:image\/png;base64,/, '');
+      const buffer = Buffer.from(data, 'base64');
+      await fs.writeFileSync(outputFile, data);
       //
       // const outputFolder = path.join(
       //   __dirname,
