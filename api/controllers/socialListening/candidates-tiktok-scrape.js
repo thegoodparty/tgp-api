@@ -3,7 +3,12 @@ const moment = require('moment');
 module.exports = {
   friendlyName: 'Pulsar Social listening for brands',
 
-  inputs: {},
+  inputs: {
+    page: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -18,9 +23,14 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      const { page } = inputs;
+      const perPage = 10;
+      const from = perPage * (page - 1);
+
       const candidates = await Candidate.find();
+      const until = Math.min(from + perPage, candidates.length);
       let updated = 0;
-      for (let i = 0; i < candidates.length; i++) {
+      for (let i = from; i < until; i++) {
         try {
           const data = JSON.parse(candidates[i].data);
           const { tiktok, firstName, lastName } = data;
