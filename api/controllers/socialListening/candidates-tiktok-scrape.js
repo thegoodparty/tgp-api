@@ -24,7 +24,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { page } = inputs;
-      const perPage = 10;
+      const perPage = 20;
       const from = perPage * (page - 1);
 
       const candidates = await Candidate.find();
