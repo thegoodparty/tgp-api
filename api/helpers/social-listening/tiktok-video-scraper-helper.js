@@ -27,9 +27,21 @@ module.exports = {
 
       const html = res.data;
       const $ = cheerio.load(html, null, false);
+
       const videos = $('video');
       if (videos.length > 0) {
-        return exits.success(videos[0].attribs.src);
+        const poster = $('img[class*="-ImgPoster "]');
+        console.log('poster', poster);
+
+        const video = {
+          src: videos[0].attribs.src,
+        };
+        if (poster && poster.length > 0) {
+          video.poster = poster[0].attribs.src;
+          video.alt = poster[0].attribs.alt;
+        }
+
+        return exits.success(video);
       }
       return exits.success();
     } catch (e) {
