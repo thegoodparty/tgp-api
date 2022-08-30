@@ -109,7 +109,6 @@ module.exports = {
         'trac',
       );
       const results = data ? data.results : [];
-      console.log('search6');
       if (filterApproved) {
         const queryTotal = `
         query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {

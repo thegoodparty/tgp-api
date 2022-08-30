@@ -53,6 +53,8 @@ module.exports = {
 
       const candidates = await Candidate.find(criteria).populate('positions');
 
+      let totalFollowers = 0;
+      let totalFromLastWeek = 0;
       const activeCandidates = [];
       const possibleStates = {};
       const currentYear = new Date().getFullYear();
@@ -100,6 +102,12 @@ module.exports = {
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
           candidate,
         );
+        if (followers.thisWeek) {
+          totalFollowers += followers.thisWeek;
+        }
+        if (followers.lastWeek) {
+          totalFromLastWeek += followers.lastWeek;
+        }
 
         activeCandidates.push({
           firstName,
@@ -173,6 +181,8 @@ module.exports = {
         candidates: activeCandidates,
         positions: filteredPositions || [],
         states,
+        totalFollowers,
+        totalFromLastWeek: totalFollowers - totalFromLastWeek,
       };
       await sails.helpers.cacheHelper('set', cacheKey, finalResponse);
       return exits.success(finalResponse);
