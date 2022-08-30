@@ -87,12 +87,15 @@ module.exports = {
       `;
 
       const today = moment().format('YYYY-MM-DD');
+      const lastMonth = moment()
+        .subtract(30, 'days')
+        .format('YYYY-MM-DD');
       const variables = {
         filter: {
-          dateFrom: `2022-05-01T23:59:59Z`,
+          dateFrom: `${lastMonth}T23:59:59Z`,
           dateTo: `${today}T23:59:59Z`,
           searches: [searchId],
-          tags: filterApproved ? ['53434'] : undefined,
+          // tags: filterApproved ? ['53434'] : undefined,
           sentiments: filterApproved ? undefined : ['POSITIVE'],
         },
         options: {
@@ -100,14 +103,13 @@ module.exports = {
           limit,
         },
       };
-
       const data = await sails.helpers.socialListening.pulsarQueryHelper(
         query,
         variables,
         'trac',
       );
       const results = data ? data.results : [];
-
+      console.log('search6');
       if (filterApproved) {
         const queryTotal = `
         query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
@@ -126,6 +128,25 @@ module.exports = {
           'trac',
         );
         results.total = dataTotal ? dataTotal.results.total : 100;
+      }
+      for (let i = 0; i < results.results.length; i++) {
+        try {
+          const post = results.results[i];
+          if (
+            post.source === 'TIKTOK' &&
+            post.url &&
+            post.videos.length === 0
+          ) {
+            const video = await sails.helpers.socialListening.tiktokVideoScraperHelper(
+              post.url,
+            );
+            if (video) {
+              post.video = video;
+            }
+          }
+        } catch (e) {
+          console.log('error getting tiktok video', e);
+        }
       }
 
       if (save) {
