@@ -32,24 +32,13 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const { imgPath, outputFile } = inputs;
-      console.log('imgPath', imgPath);
-      console.log('outputFile', outputFile);
       const url = `${baseUrl}500,scale-down,quality=low,format=png/${imgPath}`;
-      const { data } = await axios.post(url);
-      const base64Data = data.replace(/^data:image\/png;base64,/, '');
-      const buffer = Buffer.from(data, 'base64');
+      const { data } = await axios({
+        url,
+        method: 'POST',
+        responseType: 'arraybuffer',
+      });
       await fs.writeFileSync(outputFile, data);
-      //
-      // const outputFolder = path.join(
-      //   __dirname,
-      //   `../../../tempImages`,
-      // );
-      //
-      // await imagemin([imgPath], {
-      //   destination: outputFolder,
-      //   plugins: [imageminPngquant()],
-      // });
-
       return exits.success('ok');
     } catch (e) {
       console.log('error at transparent image helper', e);
