@@ -61,6 +61,8 @@ module.exports = {
         count: followers,
       });
 
+      await sails.helpers.cacheHelper('clear', 'all');
+
       return exits.success({
         followers,
       });

@@ -84,6 +84,8 @@ module.exports = {
         }
       }
 
+      await sails.helpers.cacheHelper('clear', 'all');
+
       return exits.success({
         updated,
         candidatesCount: candidates.length,
