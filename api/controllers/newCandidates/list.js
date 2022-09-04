@@ -97,6 +97,10 @@ module.exports = {
           color,
           votesNeeded,
           isClaimed,
+          facebook,
+          twitter,
+          instagram,
+          tiktok
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -125,6 +129,10 @@ module.exports = {
           votesNeeded,
           followers,
           isClaimed,
+          facebook,
+          twitter,
+          instagram,
+          tiktok
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;

@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 const request = require('request-promise');
-const timeago = require('time-ago');
 const moment = require('moment');
 
 module.exports = {
