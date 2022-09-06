@@ -100,7 +100,7 @@ module.exports = {
           facebook,
           twitter,
           instagram,
-          tiktok
+          tiktok,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -132,7 +132,7 @@ module.exports = {
           facebook,
           twitter,
           instagram,
-          tiktok
+          tiktok,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
