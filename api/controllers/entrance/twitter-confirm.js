@@ -27,6 +27,11 @@ module.exports = {
       type: 'string',
       required: false,
     },
+
+    candidateFollow: {
+      description: 'Indicates follow candidate',
+      type: 'number',
+    },
   },
 
   exits: {
@@ -42,7 +47,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { oauthToken, oauthVerifier } = inputs;
+      const { oauthToken, oauthVerifier, candidateFollow } = inputs;
       const consumerKey =
         sails.config.custom.twitterApiKey || sails.config.twitterApiKey;
       const consumerSecret =
@@ -64,6 +69,12 @@ module.exports = {
         access_token_key: res.oauth_token,
         access_token_secret: res.oauth_token_secret,
       });
+      if (candidateFollow) {
+        await twitterFollow(candidateFollow, client2, exits);
+        return exits.success({
+          message: 'success',
+        });
+      }
 
       const credentials = await client2.get('account/verify_credentials', {
         include_email: true,
@@ -142,4 +153,25 @@ module.exports = {
       });
     }
   },
+};
+
+const twitterFollow = async (candidateFollow, client, exits) => {
+  const candidate = await Candidate.findOne({ id: candidateFollow });
+  const data = JSON.parse(candidate.data);
+  let { twitter } = data;
+  const screenName = twitter
+    .replace('https://twitter.com/', '')
+    .replace('https://www.twitter.com/', '');
+
+  const credentials = await client.get('account/verify_credentials', {
+    skip_status: true,
+    include_entities: true,
+  });
+  const userTwitterId = credentials.id;
+
+  await client.post('friendships/create', {
+    screen_name: screenName,
+    user_id: userTwitterId,
+    follow: true,
+  });
 };
