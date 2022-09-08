@@ -1,4 +1,4 @@
-let twilioClient;
+const moment = require('moment');
 module.exports = {
   friendlyName: 'Phone Verification helper',
 
@@ -26,6 +26,15 @@ module.exports = {
         user: user.id,
       });
       if (staff) {
+        const now = moment().format('YYYY-MM-DD');
+        const data = JSON.parse(candidate.data);
+        await Candidate.updateOne({ id: candidate.id }).set({
+          data: JSON.stringify({
+            ...data,
+            lastPortalVisit: now,
+          }),
+        });
+
         return exits.success(staff.role);
       }
       return exits.success(false);

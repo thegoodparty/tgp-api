@@ -56,6 +56,20 @@ module.exports = {
       const followers = await sails.helpers.socialListening.candidateFollowersHelper(
         candidate,
       );
+      let totalFeed = 0;
+      if (data.pulsarSearchId) {
+        const feed = await sails.helpers.socialListening.searchResultsHelper(
+          data.pulsarSearchId,
+          2,
+          true,
+          true,
+          false,
+          true,
+        );
+
+        totalFeed = feed.total;
+      }
+
       let thisWeek = 0;
       let lastWeek = 0;
       if (followers) {
@@ -78,6 +92,8 @@ module.exports = {
         tiktok,
         instagram,
         heroVideo,
+        isClaimed,
+        lastPortalVisit,
       } = data;
       const companyObj = {
         properties: {
@@ -95,6 +111,7 @@ module.exports = {
           facebook_url: facebook,
           instagram_url: instagram,
           video_added: heroVideo ? 'yes' : 'no',
+          claimed_active: isClaimed ? 'yes' : 'no',
           type: 'CAMPAIGN',
           candidate_email: candidate.contact.contactEmail,
           phone: candidate.contact.contactPhone,
@@ -105,6 +122,8 @@ module.exports = {
           modify_page: moment().format('YYYY-MM-DD'),
           follower_count: thisWeek,
           follower_growth: diff,
+          last_portal_visit: lastPortalVisit,
+          mentions: totalFeed,
         },
       };
 
