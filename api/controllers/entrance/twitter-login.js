@@ -30,8 +30,7 @@ module.exports = {
   fn: async function(inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      // const returnUrl = `${appBase}/twitter-callback`;
-      const returnUrl = `http://localhost:4000/twitter-callback`;
+      const returnUrl = `${appBase}/twitter-callback`;
 
       const consumerKey =
         sails.config.custom.twitterApiKey || sails.config.twitterApiKey;
