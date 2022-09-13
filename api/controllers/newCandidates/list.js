@@ -179,9 +179,27 @@ module.exports = {
         .populate('topIssue')
         .sort([{ name: 'ASC' }]);
 
-      const filteredPositions = positions.filter(
-        position => position.candidates.length > 0,
-      );
+      const candidatesHash = {};
+      activeCandidates.forEach(candidate => {
+        candidatesHash[candidate.id] = true;
+      });
+      const filteredPositions = [];
+      positions.forEach(position => {
+        if (position.candidates.length > 0) {
+          for (let i = 0; i < position.candidates.length; i++) {
+            const candidateId = position.candidates[i].id;
+            if (candidatesHash[candidateId]) {
+              filteredPositions.push(position);
+              break;
+            }
+          }
+        }
+      });
+
+      filteredPositions.sort((a, b) => {
+        return b.candidates.length - a.candidates.length;
+      });
+
       const states = Object.values(possibleStates);
       states.sort();
 
