@@ -12,9 +12,7 @@ module.exports = {
   description:
     'Login user with email and password. Return the user and jwt access token.',
 
-  inputs: {
-
-  },
+  inputs: {},
 
   exits: {
     success: {
