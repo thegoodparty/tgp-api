@@ -27,7 +27,7 @@ module.exports = {
       const perPage = 10;
       const from = perPage * (page - 1);
 
-      const candidates = await Candidate.find();
+      const candidates = await Candidate.find({ isActive: true });
       const until = Math.min(from + perPage, candidates.length);
       let updated = 0;
       for (let i = from; i < until; i++) {
