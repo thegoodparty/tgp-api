@@ -41,9 +41,13 @@ module.exports = {
           }
         }
       }
+      const hash = {};
+      supports.forEach(support => {
+        hash[support.candidate] = true;
+      });
 
       return exits.success({
-        supports,
+        supports: hash,
       });
     } catch (e) {
       console.log(e);
