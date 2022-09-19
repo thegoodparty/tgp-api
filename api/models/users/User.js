@@ -186,7 +186,10 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-
+    supports: {
+      collection: 'support',
+      via: 'user',
+    },
 
     applications: {
       collection: 'application',
