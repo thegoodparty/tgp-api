@@ -17,7 +17,7 @@ module.exports = {
       const today = moment().format('YYYY-MM-DD');
       const name = `${candidateData.firstName} ${candidateData.lastName}`;
       const brand = await SocialBrand.findOne({ name });
-      let followers = {};
+      let followers = { thisWeek: 0, lastWeek: 0 };
       if (brand) {
         const currentFollowers = await SocialStat.find({
           socialBrand: brand.id,
