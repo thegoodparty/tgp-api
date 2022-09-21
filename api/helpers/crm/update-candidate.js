@@ -94,6 +94,7 @@ module.exports = {
         heroVideo,
         isClaimed,
         lastPortalVisit,
+        votesNeeded,
       } = data;
       const companyObj = {
         properties: {
@@ -124,6 +125,7 @@ module.exports = {
           follower_growth: diff,
           last_portal_visit: lastPortalVisit,
           mentions: totalFeed,
+          votes_needed: votesNeeded,
         },
       };
 
