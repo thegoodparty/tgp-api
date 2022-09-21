@@ -48,6 +48,20 @@ module.exports = {
       const cacheKey = `candidates-${position || 'none'}-${state || 'none'}`;
       const response = await sails.helpers.cacheHelper('get', cacheKey);
       if (response) {
+        // adding support to the cached results
+        let totalSupport = 0;
+        let totalSupportFromLastWeek = 0;
+        for (let i = 0; i < response.candidates; i++) {
+          const candidate = response.candidates[i];
+          const support = await sails.helpers.support.supportByCandidate(
+            candidate.id,
+          );
+
+          totalSupport += support.thisWeek;
+          totalSupport += support.lastWeek;
+        }
+        response.totalSupport = totalSupport;
+        response.totalSupportFromLastWeek = totalSupportFromLastWeek;
         return exits.success(response);
       }
 
@@ -55,6 +69,10 @@ module.exports = {
 
       let totalFollowers = 0;
       let totalFromLastWeek = 0;
+
+      let totalSupport = 0;
+      let totalSupportFromLastWeek = 0;
+
       const activeCandidates = [];
       const possibleStates = {};
       const currentYear = new Date().getFullYear();
@@ -112,6 +130,10 @@ module.exports = {
         if (followers.lastWeek) {
           totalFromLastWeek += followers.lastWeek;
         }
+        const support = await sails.helpers.support.supportByCandidate(id);
+
+        totalSupport += support.thisWeek;
+        totalSupport += support.lastWeek;
 
         activeCandidates.push({
           firstName,
@@ -133,6 +155,7 @@ module.exports = {
           twitter,
           instagram,
           tiktok,
+          support,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
@@ -209,6 +232,8 @@ module.exports = {
         states,
         totalFollowers,
         totalFromLastWeek: totalFollowers - totalFromLastWeek,
+        totalSupport,
+        totalSupportFromLastWeek: totalSupport - totalSupportFromLastWeek,
       };
       await sails.helpers.cacheHelper('set', cacheKey, finalResponse);
       return exits.success(finalResponse);

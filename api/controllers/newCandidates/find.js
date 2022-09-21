@@ -81,18 +81,10 @@ module.exports = {
         followers = await sails.helpers.socialListening.candidateFollowersHelper(
           candidate,
         );
-        const support = await Support.count({ candidate: id });
-        const lastWeek = moment()
-          .subtract(1, 'weeks');
-        const lastWeekSupport = await Support.count({
-          candidate: id,
-          createdAt: { '<': new Date(lastWeek) },
-        });
+        const support = await sails.helpers.support.supportByCandidate(id);
 
-        console.log('last wekk', lastWeekSupport)
-        followers.thisWeek += support;
-        followers.lastWeek += lastWeekSupport;
-        console.log('su', support, followers);
+        followers.thisWeek += support.thisWeek;
+        followers.lastWeek += support.lastWeek;
 
         if (candidateData.pulsarSearchId) {
           feed = await sails.helpers.socialListening.searchResultsHelper(
