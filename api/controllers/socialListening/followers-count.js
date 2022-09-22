@@ -100,10 +100,10 @@ module.exports = {
         }
       }
 
-      await sails.helpers.errorLoggerHelper(
-        'Used fallback followers on socialListening/follower-count',
-        {},
-      );
+      // await sails.helpers.errorLoggerHelper(
+      //   'Used fallback followers on socialListening/follower-count',
+      //   {},
+      // );
       return exits.success({
         total: fallbackTotal,
       });
