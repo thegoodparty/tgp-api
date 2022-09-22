@@ -51,8 +51,6 @@ module.exports = {
           candidate,
         );
         const support = await sails.helpers.support.supportByCandidate(id);
-        followers.thisWeek += support.thisWeek;
-        followers.lastWeek += support.lastWeek;
 
         homepageCandidates.push({
           id,
@@ -66,6 +64,7 @@ module.exports = {
           raceDate,
           votesNeeded,
           isClaimed,
+          support,
         });
       }
 
