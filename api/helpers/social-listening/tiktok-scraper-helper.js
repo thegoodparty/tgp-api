@@ -28,8 +28,11 @@ module.exports = {
 
       const followers = html.substring(
         html.indexOf('Likes. ') + 7,
-        html.indexOf('Fans.') - 1,
+        html.indexOf('Followers.') - 1,
       );
+
+      console.log('followers', followers);
+      console.log('getval', getVal(followers));
 
       return exits.success({
         followers: getVal(followers),
