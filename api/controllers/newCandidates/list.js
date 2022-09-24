@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 module.exports = {
   friendlyName: 'All Candidates',
 
@@ -73,6 +75,11 @@ module.exports = {
       let totalSupport = 0;
       let totalSupportFromLastWeek = 0;
 
+      let env = 'dev';
+      if (appBase === 'https://goodparty.org') {
+        env = 'prod';
+      }
+
       const activeCandidates = [];
       const possibleStates = {};
       const currentYear = new Date().getFullYear();
@@ -130,6 +137,16 @@ module.exports = {
         if (followers.lastWeek) {
           totalFromLastWeek += followers.lastWeek;
         }
+
+        // for sanity check that the diff between this week and last week is not smaller than -100
+        const diff = followers.thisWeek - followers.lastWeek;
+        if (diff < -100) {
+          await sails.helpers.errorLoggerHelper('Large negative diff', {
+            diff,
+            candidate: `${firstName} ${lastName}`,
+          });
+        }
+
         const support = await sails.helpers.support.supportByCandidate(id);
 
         totalSupport += support.thisWeek;
