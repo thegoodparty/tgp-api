@@ -244,6 +244,14 @@ module.exports = {
         }
       }
 
+      // if the zip code belongs to Maine, follow all maine candidates
+      if (zip) {
+        const isMaine = await sails.helpers.zip.isMaineZip(zip);
+        if (isMaine) {
+          await sails.helpers.zip.followAllStateCandidates('ME', user.id);
+        }
+      }
+
       return exits.success({
         user,
         token,
