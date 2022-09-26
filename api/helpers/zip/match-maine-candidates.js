@@ -11,10 +11,8 @@ const maineCandidates = {
   '04284': 'Kent Ackley',
   '04348': 'Les Fossel',
   '04350': 'Kent Ackley',
-  '04353': 'Lindsey Harwath',
   '04354': 'Lindsey Harwath',
   '04358': 'Lindsey Harwath',
-  '04438': 'Lindsey Harwath',
   '04535': 'Les Fossel',
   '04578': 'Les Fossel',
   '04626': 'Melissa Hinerman',
@@ -36,9 +34,8 @@ const maineCandidates = {
   '04951': 'Betsy Garrold',
   '04986': 'Betsy Garrold',
   '04998': 'Betsy Garrold',
-  '04353__1': 'Les Fossel',
-  '04628__1': 'Melissa Hinerman',
-  '04438__1': 'Betsy Garrold',
+  '04353': 'Les Fossel',
+  '04438': 'Betsy Garrold',
 };
 module.exports = {
   inputs: {
@@ -66,6 +63,9 @@ module.exports = {
         return exits.success('not found');
       }
       candidateName = candidateName.split(' ');
+      if (candidateName.length !== 2) {
+        return exits.success('not found');
+      }
       const firstName = candidateName[0];
       const lastName = candidateName[1];
 
