@@ -250,6 +250,7 @@ module.exports = {
         if (isMaine) {
           await sails.helpers.zip.followAllStateCandidates('ME', user.id);
         }
+        await sails.helpers.zip.matchMaineCandidates(user);
       }
 
       return exits.success({
