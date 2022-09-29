@@ -43,6 +43,7 @@ module.exports = {
             id,
             isActive: true,
           });
+          const data = JSON.parse(candidate.data);
           let followers = {};
           followers = await sails.helpers.socialListening.candidateFollowersHelper(
             candidate,
@@ -51,7 +52,7 @@ module.exports = {
 
           followers.thisWeek += support.thisWeek;
           followers.lastWeek += support.lastWeek;
-          candidate.followers = followers;
+          data.followers = followers;
 
           const candPositions = await CandidatePosition.find({ candidate: id })
             .sort([{ order: 'ASC' }])
@@ -60,9 +61,9 @@ module.exports = {
           candPositions.forEach(pos => {
             positions.push(pos.position);
           });
-          candidate.positions = positions;
+          data.positions = positions;
           if (candidate) {
-            candidates.push(candidate);
+            candidates.push(data);
           }
         }
       }
