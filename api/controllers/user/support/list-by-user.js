@@ -25,29 +25,50 @@ module.exports = {
       const supports = await Support.find({
         user: reqUser.id,
       });
+      if (!withCandidates) {
+        const hash = {};
+        supports.forEach(support => {
+          hash[support.candidate] = true;
+        });
 
+        return exits.success({
+          supports: hash,
+        });
+      }
+      const candidates = [];
       if (withCandidates) {
         for (let i = 0; i < supports.length; i++) {
+          const id = supports[i].candidate;
           const candidate = await Candidate.findOne({
-            id: supports[i].candidate,
+            id,
+            isActive: true,
           });
-          supports[i].candidate = candidate;
-          if (candidate) {
-            const supporters = await Support.count({
-              candidate: candidate.id,
-            });
+          let followers = {};
+          followers = await sails.helpers.socialListening.candidateFollowersHelper(
+            candidate,
+          );
+          const support = await sails.helpers.support.supportByCandidate(id);
 
-            supports[i].candidate.supporters = supporters;
+          followers.thisWeek += support.thisWeek;
+          followers.lastWeek += support.lastWeek;
+          candidate.followers = followers;
+
+          const candPositions = await CandidatePosition.find({ candidate: id })
+            .sort([{ order: 'ASC' }])
+            .populate('position');
+          let positions = [];
+          candPositions.forEach(pos => {
+            positions.push(pos.position);
+          });
+          candidate.positions = positions;
+          if (candidate) {
+            candidates.push(candidate);
           }
         }
       }
-      const hash = {};
-      supports.forEach(support => {
-        hash[support.candidate] = true;
-      });
 
       return exits.success({
-        supports: hash,
+        candidates,
       });
     } catch (e) {
       console.log(e);
