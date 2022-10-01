@@ -112,7 +112,7 @@ module.exports = {
           facebook_url: facebook,
           instagram_url: instagram,
           video_added: heroVideo ? 'yes' : 'no',
-          // claimed_active: isClaimed ? 'Yes' : 'No',
+          claimed_active: !!isClaimed,
           type: 'CAMPAIGN',
           candidate_email: candidate.contact.contactEmail,
           phone: candidate.contact.contactPhone,
