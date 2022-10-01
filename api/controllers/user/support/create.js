@@ -54,7 +54,7 @@ module.exports = {
       }
 
       try {
-        await sails.helpers.triggerCandidateUpdate(candidateId);
+        await sails.helpers.crm.updateCandidate(candidate);
       } catch (e) {
         console.log('error trigger candidate update');
       }
