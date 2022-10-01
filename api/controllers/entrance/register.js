@@ -220,9 +220,6 @@ module.exports = {
       //   }
       // } catch (e) {}
 
-      //  add user to our CRM.
-      await sails.helpers.crm.updateUser(user);
-
       const token = await sails.helpers.jwtSign({
         id: user.id,
         email: lowerCaseEmail,
@@ -252,6 +249,8 @@ module.exports = {
         }
         await sails.helpers.zip.matchMaineCandidates(user);
       }
+      //  add user to our CRM.
+      await sails.helpers.crm.updateUser(user);
 
       return exits.success({
         user,
