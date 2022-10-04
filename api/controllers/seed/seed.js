@@ -12,17 +12,29 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const candidates = await Candidate.find({ isActive: true });
-      for (let i = 0; i < candidates.length; i++) {
-        const data = JSON.parse(candidates[i].data);
-        data.isClaimed = true;
-        await Candidate.updateOne({ id: candidates[i].id }).set({
-          data: JSON.stringify(data),
-        });
+      let count = 0;
+      console.log('ma kore');
+      const users = await User.find();
+      for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        const { zip, id } = user;
+        try {
+          if (zip) {
+            const isMaine = await sails.helpers.zip.isMaineZip(zip);
+            if (isMaine) {
+              await sails.helpers.zip.followAllStateCandidates('ME', id);
+            }
+            await sails.helpers.zip.matchMaineCandidates(user);
+            count++;
+          }
+        } catch (e) {
+          console.log('error on user ', user);
+          console.log(e);
+        }
       }
 
       return exits.success({
-        message: `Updated ${candidates.length} candidates`,
+        message: `Updated ${count} users`,
       });
     } catch (e) {
       console.log('Error in seed', e);

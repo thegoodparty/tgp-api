@@ -77,7 +77,7 @@ module.exports = {
 
       return exits.success('ok');
     } catch (e) {
-      console.log('error in match-main-candidates helper');
+      console.log('error in match-main-candidates helper', e);
       return exits.success('ok');
     }
   },

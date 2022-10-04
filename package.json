@@ -43,6 +43,7 @@
     "sails-postgresql": "^2.0.0",
     "skipper-s3": "^0.6.0",
     "slugify": "^1.6.1",
+    "sqs-consumer": "^5.7.0",
     "time-ago": "^0.2.1",
     "twilio": "^3.75.0",
     "twitter-lite": "^0.14.0"
