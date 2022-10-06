@@ -31,7 +31,6 @@ module.exports = {
       const videos = $('video');
       if (videos.length > 0) {
         const poster = $('img[class*="-ImgPoster "]');
-        console.log('poster', poster);
 
         const video = {
           src: videos[0].attribs.src,
@@ -51,16 +50,3 @@ module.exports = {
   },
 };
 
-// converts 30.6 to 36000
-function getVal(val) {
-  const multiplier = val.substr(-1).toLowerCase();
-  console.log(multiplier);
-  if (multiplier === 'k') {
-    return parseFloat(val) * 1000;
-  }
-  if (multiplier === 'm') {
-    return parseFloat(val) * 1000000;
-  }
-
-  return parseFloat(val);
-}

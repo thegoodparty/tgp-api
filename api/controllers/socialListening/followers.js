@@ -93,7 +93,8 @@ module.exports = {
               }
             }
           } catch (e) {
-            await sails.helpers.errorLoggerHelper('Error in followers loop', e);
+            o
+            // await sails.helpers.errorLoggerHelper('Error in followers loop', e);
           }
         }
         if (profiles.length > 0 && brands[i].candidate) {

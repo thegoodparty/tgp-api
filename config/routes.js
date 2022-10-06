@@ -174,4 +174,13 @@ module.exports.routes = {
     'socialListening/candidates-tiktok-scrape',
   'GET   /api/v1/listening/search-results': 'socialListening/search-results',
   'GET   /api/v1/listening/searches': 'socialListening/searches',
+
+  // socialListening crons
+  'GET   /api/v1/listening/cron/searches': 'socialListening/cron/searches',
+  'GET   /api/v1/listening/cron/followers': 'socialListening/cron/followers',
+  'GET   /api/v1/listening/cron/brands': 'socialListening/cron/brands',
+  'GET   /api/v1/listening/cron/candidates-tiktok-scrape':
+    'socialListening/cron/candidates-tiktok-scrape',
+  'GET   /api/v1/listening/cron/update-candidates-feed':
+    'socialListening/cron/update-candidates-feed',
 };
