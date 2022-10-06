@@ -164,16 +164,11 @@ module.exports.routes = {
   'PUT   /api/v1/applications/reject': 'newCandidates/application/reject', //admin
 
   // socialListening
-  'GET   /api/v1/listening/followers': 'socialListening/followers',
   'GET   /api/v1/listening/followers-filler':
     'socialListening/followers-filler',
   'GET   /api/v1/listening/followers-count': 'socialListening/followers-count',
-  'GET   /api/v1/listening/brands': 'socialListening/brands',
   'GET   /api/v1/listening/tiktok-scrape': 'socialListening/tiktok-scrape',
-  'GET   /api/v1/listening/candidates-tiktok-scrape':
-    'socialListening/candidates-tiktok-scrape',
   'GET   /api/v1/listening/search-results': 'socialListening/search-results',
-  'GET   /api/v1/listening/searches': 'socialListening/searches',
 
   // socialListening crons
   'GET   /api/v1/listening/cron/searches': 'socialListening/cron/searches',
