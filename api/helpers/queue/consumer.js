@@ -311,6 +311,7 @@ async function handleCandidateTikTokScrape(message) {
           count: followers,
         });
       }
+      await sails.helpers.cacheHelper('clear', 'all');
     }
   } catch (e) {
     console.log('error at handleCandidateTikTokScrape', e);
