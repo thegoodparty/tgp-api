@@ -264,6 +264,7 @@ async function handlePulsarBrands(message) {
         });
       }
     }
+    await sails.helpers.cacheHelper('clear', 'all');
   } catch (e) {
     console.log('Error at handlePulsarBrands', e);
   }
@@ -328,6 +329,7 @@ async function handlePulsarCandidateFeed(message) {
       false,
       false,
     );
+    await sails.helpers.cacheHelper('clear', 'all');
   } catch (e) {
     console.log('error at handlePulsarCandidateFeed', e);
   }
