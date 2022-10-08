@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+const axios = require('axios');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
@@ -145,6 +146,15 @@ module.exports = {
             diff,
             candidate: `${firstName} ${lastName}`,
           });
+          if (appBase === 'https://qa.goodparty.org') {
+            await axios.get(
+              'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
+            );
+          } else if (appBase === 'https://goodparty.org') {
+            await axios.get(
+              'https://api.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
+            );
+          }
         }
 
         const support = await sails.helpers.support.supportByCandidate(id);
