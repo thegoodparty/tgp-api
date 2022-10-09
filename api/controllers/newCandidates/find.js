@@ -87,14 +87,18 @@ module.exports = {
         followers.lastWeek += support.lastWeek;
 
         if (candidateData.pulsarSearchId) {
-          feed = await sails.helpers.socialListening.searchResultsHelper(
-            candidateData.pulsarSearchId,
-            30,
-            true,
-            true,
-            false,
-            true,
-          );
+          try {
+            feed = await sails.helpers.socialListening.searchResultsHelper(
+              candidateData.pulsarSearchId,
+              30,
+              true,
+              true,
+              false,
+              true,
+            );
+          } catch (e) {
+            console.log('error generating feed', e);
+          }
         }
       }
 
