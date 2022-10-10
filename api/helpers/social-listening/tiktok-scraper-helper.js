@@ -20,10 +20,10 @@ module.exports = {
     try {
       const { url } = inputs;
 
-      // const res = await axios.get(
-      //   `https://scrape.abstractapi.com/v1/?api_key=${scrapeApi}&url=${url}`,
-      // );
-      const res = await axios.get(url);
+      const res = await axios.get(
+        `https://scrape.abstractapi.com/v1/?api_key=${scrapeApi}&url=${url}`,
+      );
+      // const res = await axios.get(url);
 
       const html = res.data;
 
