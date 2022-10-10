@@ -80,7 +80,7 @@ module.exports = {
       if (appBase === 'https://goodparty.org') {
         env = 'prod';
       }
-
+      let largeDiff = false;
       const activeCandidates = [];
       const possibleStates = {};
       const currentYear = new Date().getFullYear();
@@ -142,19 +142,7 @@ module.exports = {
         // for sanity check that the diff between this week and last week is not smaller than -100
         const diff = followers.thisWeek - followers.lastWeek;
         if (diff < -100) {
-          await sails.helpers.errorLoggerHelper('Large negative diff', {
-            diff,
-            candidate: `${firstName} ${lastName}`,
-          });
-          if (appBase === 'https://qa.goodparty.org') {
-            await axios.get(
-              'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
-            );
-          } else if (appBase === 'https://goodparty.org') {
-            await axios.get(
-              'https://api.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
-            );
-          }
+          largeDiff = true;
         }
 
         const support = await sails.helpers.support.supportByCandidate(id);
@@ -252,6 +240,19 @@ module.exports = {
 
       const states = Object.values(possibleStates);
       states.sort();
+
+      if (largeDiff) {
+        await sails.helpers.errorLoggerHelper('Large negative diff', {appBase});
+        if (appBase === 'https://qa.goodparty.org') {
+          await axios.get(
+            'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
+          );
+        } else if (appBase === 'https://goodparty.org') {
+          await axios.get(
+            'https://api.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
+          );
+        }
+      }
 
       const finalResponse = {
         candidates: activeCandidates,
