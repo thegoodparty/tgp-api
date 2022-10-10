@@ -16,6 +16,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      let added = 0;
       const candidates = await Candidate.find({ isActive: true });
       for (let i = 0; i < candidates.length; i++) {
         try {
@@ -35,6 +36,7 @@ module.exports = {
             };
 
             await sails.helpers.queue.enqueue(queueMessage);
+            added++;
           }
         } catch (e) {
           console.log('error in tiktok scrape loop', e);
@@ -45,6 +47,7 @@ module.exports = {
 
       return exits.success({
         message: 'ok',
+        added,
       });
     } catch (e) {
       console.log('error at socialListening/brands');
