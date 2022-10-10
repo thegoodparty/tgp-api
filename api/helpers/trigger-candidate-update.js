@@ -13,7 +13,7 @@ module.exports = {
     const { candidateId } = inputs;
     const appBase = sails.config.custom.appBase || sails.config.appBase;
     try {
-      await axios.get(`${appBase}/share-image/${candidateId}`);
+      // await axios.get(`${appBase}/share-image/${candidateId}`);
     } catch (e) {
       console.log('error triggering candidate update');
     }

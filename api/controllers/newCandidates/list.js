@@ -243,15 +243,15 @@ module.exports = {
 
       if (largeDiff) {
         await sails.helpers.errorLoggerHelper('Large negative diff', {appBase});
-        if (appBase === 'https://qa.goodparty.org') {
-          await axios.get(
-            'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
-          );
-        } else if (appBase === 'https://goodparty.org') {
-          await axios.get(
-            'https://api.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
-          );
-        }
+        // if (appBase === 'https://qa.goodparty.org') {
+        //   await axios.get(
+        //     'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
+        //   );
+        // } else if (appBase === 'https://goodparty.org') {
+        //   await axios.get(
+        //     'https://api.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
+        //   );
+        // }
       }
 
       const finalResponse = {
