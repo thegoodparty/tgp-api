@@ -40,7 +40,9 @@ module.exports = {
       });
     } catch (e) {
       console.log('error at helpers/socialListening/tiktok-scraper');
-      throw e;
+      return exits.success({
+        followers: 0,
+      });
     }
   },
 };
