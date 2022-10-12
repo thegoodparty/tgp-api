@@ -58,21 +58,21 @@ module.exports = {
           }
         });
         // if tiktok is not found, try tiktok from yesterday
-        if (!tiktokFound) {
-          const yesterday = moment()
-            .subtract(1, 'days')
-            .format('YYYY-MM-DD');
-
-          const stat = await SocialStat.findOne({
-            socialBrand: brandId,
-            date: yesterday,
-            action: 'followers',
-            channel: 'tiktok',
-          });
-          if (stat) {
-            total += stat.count;
-          }
-        }
+        // if (!tiktokFound) {
+        //   const yesterday = moment()
+        //     .subtract(1, 'days')
+        //     .format('YYYY-MM-DD');
+        //
+        //   const stat = await SocialStat.findOne({
+        //     socialBrand: brandId,
+        //     date: yesterday,
+        //     action: 'followers',
+        //     channel: 'tiktok',
+        //   });
+        //   if (stat) {
+        //     total += stat.count;
+        //   }
+        // }
 
         return exits.success({
           total,

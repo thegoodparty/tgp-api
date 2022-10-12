@@ -23,6 +23,9 @@ module.exports = {
       type: 'boolean',
       defaultsTo: true,
     },
+    onlyTotal: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -38,13 +41,22 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { searchId, limit, save, useCache, filterApproved } = inputs;
+      const {
+        searchId,
+        limit,
+        save,
+        useCache,
+        filterApproved,
+        onlyTotal,
+      } = inputs;
       const results = await sails.helpers.socialListening.searchResultsHelper(
         searchId,
         limit,
         save,
         useCache,
         filterApproved,
+        false,
+        onlyTotal,
       );
 
       return exits.success(results);

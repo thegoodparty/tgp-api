@@ -26,6 +26,9 @@ module.exports = {
     refreshCacheDaily: {
       type: 'boolean',
     },
+    onlyTotal: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -42,6 +45,7 @@ module.exports = {
       useCache,
       filterApproved,
       refreshCacheDaily,
+      onlyTotal,
     } = inputs;
     const cacheKey = `${searchId}-${limit}`;
     if (useCache) {
@@ -64,7 +68,7 @@ module.exports = {
       }
     }
     try {
-      const query = `
+      let query = `
         query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
           results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
             total
@@ -85,6 +89,16 @@ module.exports = {
           }
         }
       `;
+
+      if (onlyTotal) {
+        query = `
+        query SearchPosts($stat: Stat, $dimension: Dimension, $options: Option, $filter: Filter!) {
+          results(stat: $stat, dimension: $dimension, options: $options, filter: $filter) {
+            total
+          }
+        }
+      `;
+      }
 
       const today = moment().format('YYYY-MM-DD');
       const lastMonth = moment()
@@ -128,23 +142,25 @@ module.exports = {
         );
         results.total = dataTotal ? dataTotal.results.total : 100;
       }
-      for (let i = 0; i < results.results.length; i++) {
-        try {
-          const post = results.results[i];
-          if (
-            post.source === 'TIKTOK' &&
-            post.url &&
-            post.videos.length === 0
-          ) {
-            const video = await sails.helpers.socialListening.tiktokVideoScraperHelper(
-              post.url,
-            );
-            if (video) {
-              post.video = video;
+      if (!onlyTotal) {
+        for (let i = 0; i < results.results.length; i++) {
+          try {
+            const post = results.results[i];
+            if (
+              post.source === 'TIKTOK' &&
+              post.url &&
+              post.videos.length === 0
+            ) {
+              const video = await sails.helpers.socialListening.tiktokVideoScraperHelper(
+                post.url,
+              );
+              if (video) {
+                post.video = video;
+              }
             }
+          } catch (e) {
+            console.log('error getting tiktok video', e);
           }
-        } catch (e) {
-          console.log('error getting tiktok video', e);
         }
       }
 

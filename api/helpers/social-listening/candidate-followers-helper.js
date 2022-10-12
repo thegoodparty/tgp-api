@@ -42,9 +42,11 @@ module.exports = {
           totalLastWeek += item.count;
         });
         let offset = candidateData.followersOffset || 0;
+        //temporary tiktok fix
+        let tiktokFollowers = candidateData.tiktokFollowers || 0;
 
-        followers.thisWeek = totalFollowers + offset;
-        followers.lastWeek = totalLastWeek + offset;
+        followers.thisWeek = tiktokFollowers + totalFollowers + offset;
+        followers.lastWeek = tiktokFollowers + totalLastWeek + offset;
       }
 
       return exits.success(followers);
