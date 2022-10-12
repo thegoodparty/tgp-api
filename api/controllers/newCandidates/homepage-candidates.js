@@ -28,7 +28,9 @@ module.exports = {
       const candidates = await Candidate.find({
         isActive: true,
         isOnHomepage: true,
-      }).limit(6).populate('positions');
+      })
+        .limit(6)
+        .populate('positions');
 
       const homepageCandidates = [];
       for (let i = 0; i < candidates.length; i++) {
