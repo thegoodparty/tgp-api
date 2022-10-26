@@ -47,6 +47,9 @@ module.exports = {
           raceDate,
           votesNeeded,
           isClaimed,
+          office,
+          state,
+          district,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -67,6 +70,9 @@ module.exports = {
           votesNeeded,
           isClaimed,
           support,
+          office,
+          state,
+          district,
           positions: candidate.positions,
         });
       }

@@ -127,6 +127,8 @@ module.exports = {
           twitter,
           instagram,
           tiktok,
+          office,
+          district,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -171,6 +173,8 @@ module.exports = {
           instagram,
           tiktok,
           support,
+          office,
+          district,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
@@ -242,7 +246,9 @@ module.exports = {
       states.sort();
 
       if (largeDiff) {
-        await sails.helpers.errorLoggerHelper('Large negative diff', {appBase});
+        await sails.helpers.errorLoggerHelper('Large negative diff', {
+          appBase,
+        });
         // if (appBase === 'https://qa.goodparty.org') {
         //   await axios.get(
         //     'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
