@@ -51,35 +51,11 @@ module.exports = {
       const cacheKey = `candidates-${position || 'none'}-${state || 'none'}`;
       const response = await sails.helpers.cacheHelper('get', cacheKey);
       if (response) {
-        // adding support to the cached results
-        let totalSupport = 0;
-        let totalSupportFromLastWeek = 0;
-        for (let i = 0; i < response.candidates; i++) {
-          const candidate = response.candidates[i];
-          const support = await sails.helpers.support.supportByCandidate(
-            candidate.id,
-          );
-
-          totalSupport += support.thisWeek;
-          totalSupport += support.lastWeek;
-        }
-        response.totalSupport = totalSupport;
-        response.totalSupportFromLastWeek = totalSupportFromLastWeek;
         return exits.success(response);
       }
 
       const candidates = await Candidate.find(criteria).populate('positions');
 
-      let totalFollowers = 0;
-      let totalFromLastWeek = 0;
-
-      let totalSupport = 0;
-      let totalSupportFromLastWeek = 0;
-
-      let env = 'dev';
-      if (appBase === 'https://goodparty.org') {
-        env = 'prod';
-      }
       let largeDiff = false;
       const activeCandidates = [];
       const possibleStates = {};
@@ -135,12 +111,6 @@ module.exports = {
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
           candidate,
         );
-        if (followers.thisWeek) {
-          totalFollowers += followers.thisWeek;
-        }
-        if (followers.lastWeek) {
-          totalFromLastWeek += followers.lastWeek;
-        }
 
         // for sanity check that the diff between this week and last week is not smaller than -100
         const diff = followers.thisWeek - followers.lastWeek;
@@ -149,9 +119,6 @@ module.exports = {
         }
 
         const support = await sails.helpers.support.supportByCandidate(id);
-
-        totalSupport += support.thisWeek;
-        totalSupport += support.lastWeek;
 
         activeCandidates.push({
           firstName,
@@ -266,10 +233,6 @@ module.exports = {
         candidates: activeCandidates,
         positions: filteredPositions || [],
         states,
-        totalFollowers,
-        totalFromLastWeek: totalFollowers - totalFromLastWeek,
-        totalSupport,
-        totalSupportFromLastWeek: totalSupport - totalSupportFromLastWeek,
       };
       await sails.helpers.cacheHelper('set', cacheKey, finalResponse);
       return exits.success(finalResponse);
