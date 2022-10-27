@@ -7,7 +7,6 @@ const { grpc } = require('google-gax');
 
 const googleRecaptchaKey =
   sails.config.custom.googleRecaptchaKey || sails.config.googleRecaptchaKey;
-console.log('googleRecaptchaKey', googleRecaptchaKey);
 
 module.exports = {
   friendlyName: 'Update password and login',
@@ -39,6 +38,11 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
+      if (!googleRecaptchaKey) {
+        return exits.success({
+          score: 'ok',
+        });
+      }
       const { token } = inputs;
       const projectID = 'thegoodparty-1562658240463';
       const recaptchaSiteKey = '6LefrpgiAAAAAKay43dREi6vvU3afzdoyEBQgZeN';

@@ -50,6 +50,7 @@ module.exports = {
           office,
           state,
           district,
+          counties,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -73,6 +74,7 @@ module.exports = {
           office,
           state,
           district,
+          counties,
           positions: candidate.positions,
         });
       }

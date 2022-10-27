@@ -129,6 +129,7 @@ module.exports = {
           tiktok,
           office,
           district,
+          counties,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -175,6 +176,7 @@ module.exports = {
           support,
           office,
           district,
+          counties,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
