@@ -56,7 +56,6 @@ module.exports = {
 
       const candidates = await Candidate.find(criteria).populate('positions');
 
-      let largeDiff = false;
       const activeCandidates = [];
       const possibleStates = {};
       const currentYear = new Date().getFullYear();
@@ -97,12 +96,11 @@ module.exports = {
           state,
           zip,
           color,
-          votesNeeded,
           isClaimed,
-          facebook,
-          twitter,
-          instagram,
-          tiktok,
+          // facebook,
+          // twitter,
+          // instagram,
+          // tiktok,
           office,
           district,
           counties,
@@ -111,14 +109,6 @@ module.exports = {
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
           candidate,
         );
-
-        // for sanity check that the diff between this week and last week is not smaller than -100
-        const diff = followers.thisWeek - followers.lastWeek;
-        if (diff < -100) {
-          largeDiff = true;
-        }
-
-        const support = await sails.helpers.support.supportByCandidate(id);
 
         activeCandidates.push({
           firstName,
@@ -132,58 +122,55 @@ module.exports = {
           zip,
           color,
           positions: candidate.positions,
-          raceDate,
-          votesNeeded,
-          followers,
           isClaimed,
-          facebook,
-          twitter,
-          instagram,
-          tiktok,
-          support,
+          // facebook,
+          // twitter,
+          // instagram,
+          // tiktok,
           office,
           district,
           counties,
+          followers,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
         }
       }
 
-      activeCandidates.sort((a, b) => {
-        if (
-          a.followers &&
-          b.followers &&
-          Object.keys(a.followers).length !== 0 &&
-          Object.keys(b.followers).length !== 0
-        ) {
-          return b.followers.thisWeek - a.followers.thisWeek;
-        }
-        if (
-          (!a.followers && !b.followers) ||
-          (Object.keys(a.followers).length === 0 &&
-            Object.keys(b.followers).length === 0)
-        ) {
-          return 0;
-        }
-        if (
-          a.followers &&
-          Object.keys(a.followers).length !== 0 &&
-          a.followers.thisWeek !== 0
-        ) {
-          return -1;
-        }
-
-        if (
-          b.followers &&
-          Object.keys(b.followers).length !== 0 &&
-          b.followers.thisWeek !== 0
-        ) {
-          return 1;
-        }
-
-        return 0;
-      });
+      // activeCandidates.sort((a, b) => {
+      //   if (
+      //     a.followers &&
+      //     b.followers &&
+      //     Object.keys(a.followers).length !== 0 &&
+      //     Object.keys(b.followers).length !== 0
+      //   ) {
+      //     return b.followers.thisWeek - a.followers.thisWeek;
+      //   }
+      //   if (
+      //     (!a.followers && !b.followers) ||
+      //     (Object.keys(a.followers).length === 0 &&
+      //       Object.keys(b.followers).length === 0)
+      //   ) {
+      //     return 0;
+      //   }
+      //   if (
+      //     a.followers &&
+      //     Object.keys(a.followers).length !== 0 &&
+      //     a.followers.thisWeek !== 0
+      //   ) {
+      //     return -1;
+      //   }
+      //
+      //   if (
+      //     b.followers &&
+      //     Object.keys(b.followers).length !== 0 &&
+      //     b.followers.thisWeek !== 0
+      //   ) {
+      //     return 1;
+      //   }
+      //
+      //   return 0;
+      // });
 
       const positions = await Position.find()
         .populate('candidates')
@@ -213,21 +200,6 @@ module.exports = {
 
       const states = Object.values(possibleStates);
       states.sort();
-
-      if (largeDiff) {
-        await sails.helpers.errorLoggerHelper('Large negative diff', {
-          appBase,
-        });
-        // if (appBase === 'https://qa.goodparty.org') {
-        //   await axios.get(
-        //     'https://api-qa.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
-        //   );
-        // } else if (appBase === 'https://goodparty.org') {
-        //   await axios.get(
-        //     'https://api.goodparty.org/api/v1/listening/cron/candidates-tiktok-scrape',
-        //   );
-        // }
-      }
 
       const finalResponse = {
         candidates: activeCandidates,
