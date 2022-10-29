@@ -97,10 +97,12 @@ module.exports = {
           zip,
           color,
           isClaimed,
-          // facebook,
-          // twitter,
-          // instagram,
-          // tiktok,
+          whyRunning,
+          whyIndependent,
+          experience,
+          hometown,
+          occupation,
+          funFact,
           office,
           district,
           counties,
@@ -123,10 +125,12 @@ module.exports = {
           color,
           positions: candidate.positions,
           isClaimed,
-          // facebook,
-          // twitter,
-          // instagram,
-          // tiktok,
+          whyRunning,
+          whyIndependent,
+          experience,
+          hometown,
+          occupation,
+          funFact,
           office,
           district,
           counties,
@@ -137,40 +141,40 @@ module.exports = {
         }
       }
 
-      // activeCandidates.sort((a, b) => {
-      //   if (
-      //     a.followers &&
-      //     b.followers &&
-      //     Object.keys(a.followers).length !== 0 &&
-      //     Object.keys(b.followers).length !== 0
-      //   ) {
-      //     return b.followers.thisWeek - a.followers.thisWeek;
-      //   }
-      //   if (
-      //     (!a.followers && !b.followers) ||
-      //     (Object.keys(a.followers).length === 0 &&
-      //       Object.keys(b.followers).length === 0)
-      //   ) {
-      //     return 0;
-      //   }
-      //   if (
-      //     a.followers &&
-      //     Object.keys(a.followers).length !== 0 &&
-      //     a.followers.thisWeek !== 0
-      //   ) {
-      //     return -1;
-      //   }
-      //
-      //   if (
-      //     b.followers &&
-      //     Object.keys(b.followers).length !== 0 &&
-      //     b.followers.thisWeek !== 0
-      //   ) {
-      //     return 1;
-      //   }
-      //
-      //   return 0;
-      // });
+      activeCandidates.sort((a, b) => {
+        if (
+          a.followers &&
+          b.followers &&
+          Object.keys(a.followers).length !== 0 &&
+          Object.keys(b.followers).length !== 0
+        ) {
+          return b.followers.thisWeek - a.followers.thisWeek;
+        }
+        if (
+          (!a.followers && !b.followers) ||
+          (Object.keys(a.followers).length === 0 &&
+            Object.keys(b.followers).length === 0)
+        ) {
+          return 0;
+        }
+        if (
+          a.followers &&
+          Object.keys(a.followers).length !== 0 &&
+          a.followers.thisWeek !== 0
+        ) {
+          return -1;
+        }
+
+        if (
+          b.followers &&
+          Object.keys(b.followers).length !== 0 &&
+          b.followers.thisWeek !== 0
+        ) {
+          return 1;
+        }
+
+        return 0;
+      });
 
       const positions = await Position.find()
         .populate('candidates')
