@@ -51,6 +51,22 @@ const mapResponse = items => {
           };
         }
         mappedResponse.faqArticles.push(article);
+      } else if (itemId === 'blogArticle') {
+        if (!mappedResponse.blogArticles) {
+          mappedResponse.blogArticles = [];
+        }
+        const article = {
+          ...item.fields,
+          id: elementId,
+          mainImage: extractMediaFile(item.fields.mainImage),
+        };
+        if (article.section) {
+          article.section = {
+            id: article.section.sys.id,
+            fields: article.section.fields,
+          };
+        }
+        mappedResponse.blogArticles.push(article);
       } else if (itemId === 'faqOrder') {
         const faqOrder = item.fields.faqArticle;
         faqOrder.forEach(article => {
@@ -64,36 +80,16 @@ const mapResponse = items => {
           fields: item.fields,
           id: elementId,
         });
-      } else if (itemId === 'partyPage') {
-        mappedResponse.partyPage = item.fields;
-      } else if (itemId === 'portalEmbed') {
-        mappedResponse.portalEmbed = item.fields;
-      }  else if (itemId === 'teamPage') {
-        mappedResponse.teamPage = item.fields;
-      } else if (itemId === 'landingPage') {
-        if (!mappedResponse.landingPages) {
-          mappedResponse.landingPages = {};
+      } else if (itemId === 'blogSection') {
+        if (!mappedResponse.blogSections) {
+          mappedResponse.blogSections = [];
         }
-        const page = {
-          ...item.fields,
+        mappedResponse.blogSections.push({
+          fields: item.fields,
           id: elementId,
-        };
-
-        mappedResponse.landingPages[item.fields.slug] = page;
+        });
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
-      } else if (itemId === 'goodPracticesPage') {
-        mappedResponse.goodPracticesPage = item.fields;
-        mappedResponse.goodPracticesPage.videoImage = extractMediaFile(
-          item.fields.videoImage,
-        );
-      } else if (itemId === 'meetTheCandidates') {
-        mappedResponse.meetTheCandidates = item.fields;
-        mappedResponse.meetTheCandidates.videoPlaceholder = extractMediaFile(
-          item.fields.videoPlaceholder,
-        );
-      } else if (itemId === 'researchPage') {
-        mappedResponse.researchPage = item.fields;
       }
     }
   });
@@ -105,84 +101,13 @@ const mapResponse = items => {
     faqsOrderHash[id] = index + 1;
   });
   mappedResponse.faqArticles.sort(compareArticles);
+  mappedResponse.blogArticles.sort(compareBlogArticles);
   addArticlesToCategories(mappedResponse);
+  addBlogArticlesToSections(mappedResponse);
   mappedResponse.articleCategories.sort(compareArticleCategories);
 
   return mappedResponse;
 };
-
-const mapEvent = (fields, id) => {
-  const flatResponse = {};
-  const {
-    title,
-    dateAndTime,
-    description,
-    timeZone,
-    displayDate,
-    eventDuration,
-    presenter,
-    location,
-    video,
-  } = fields;
-  if (presenter) {
-  }
-  flatResponse.id = id;
-  flatResponse.title = title;
-  flatResponse.dateAndTime = dateAndTime;
-  flatResponse.description = description;
-  flatResponse.timeZone = timeZone;
-  flatResponse.displayDate = displayDate;
-  flatResponse.eventDuration = eventDuration;
-  flatResponse.location = location;
-  if (presenter) {
-    const { name, title, avatarPhoto } = presenter.fields;
-    flatResponse.presenter = name;
-    flatResponse.presenterTitle = title;
-    flatResponse.avatarPhoto = extractMediaFile(avatarPhoto);
-  }
-  if (video) {
-    flatResponse.video = extractMediaFile(video);
-  }
-  return flatResponse;
-};
-//
-// const splitPastEvents = response => {
-//   // at this point the events are already sorted from past to future.
-//
-//   const allEvents = response.events;
-//   const events = [];
-//   const pastEvents = [];
-//
-//   allEvents.map(event => {
-//     const today = new Date();
-//     const serverHoursOffset = today.getTimezoneOffset() / 60;
-//
-//     const timeZoneHours = timeZoneToHours(event.timeZone);
-//     today.setHours(today.getHours() + timeZoneHours + serverHoursOffset);
-//     const eventDate = new Date(event.dateAndTime);
-//     event.utcTime = eventDate.getTime();
-//
-//     if (eventDate < today) {
-//       pastEvents.push(event);
-//     } else {
-//       events.push(event);
-//     }
-//   });
-//   response.events = events;
-//   response.pastEvents = pastEvents;
-// };
-//
-// const compareEvents = (a, b) => {
-//   const dateA = new Date(a.dateAndTime);
-//   const dateB = new Date(b.dateAndTime);
-//   if (dateA > dateB) {
-//     return -1;
-//   }
-//   if (dateA < dateB) {
-//     return 1;
-//   }
-//   return 0;
-// };
 
 const compareArticles = (a, b) => {
   const orderA = faqsOrderHash[a.id] || 9999;
@@ -194,6 +119,10 @@ const compareArticles = (a, b) => {
     return -1;
   }
   return 0;
+};
+
+const compareBlogArticles = (a, b) => {
+  return new Date(b.publishDate) - new Date(a.publishDate);
 };
 
 const compareArticleCategories = (a, b) => {
@@ -208,23 +137,9 @@ const compareArticleCategories = (a, b) => {
   return 0;
 };
 
-const timeZoneToHours = timezone => {
-  if (!timezone) {
-    return 0;
-  }
-  if (timezone === 'PST') {
-    return -8;
-  } else if (timezone === 'EST') {
-    return -5;
-  } else if (timezone == 'CST') {
-    return -6;
-  }
-  return 0;
-};
-
 const extractMediaFile = img => {
   if (img && img.fields && img.fields.file) {
-    return img.fields.file.url;
+    return { url: img.fields.file.url, alt: img.fields.title || '' };
   }
   return null;
 };
@@ -244,4 +159,23 @@ const addArticlesToCategories = mapped => {
     }
   });
   mapped.articleCategories = Object.values(categoriesById);
+};
+
+const addBlogArticlesToSections = mapped => {
+  const { blogSections, blogArticles } = mapped;
+  const sectionsById = {};
+  blogSections.forEach(section => {
+    sectionsById[section.id] = { ...section, articles: [] };
+  });
+  blogArticles.forEach(article => {
+    if (article.section) {
+      sectionsById[article.section.id].articles.push({
+        title: article.title,
+        id: article.id,
+        mainImage: article.mainImage,
+        publishDate: article.publishDate,
+      });
+    }
+  });
+  mapped.blogSections = Object.values(sectionsById);
 };
