@@ -19,6 +19,9 @@ module.exports = {
     subValue: {
       type: 'string',
     },
+    limit: {
+      type: 'number',
+    },
   },
 
   exits: {
@@ -34,7 +37,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { key, subKey, subValue } = inputs;
+      const { key, subKey, subValue, limit } = inputs;
       let content = await sails.helpers.cacheHelper('get', 'content');
       if (!content) {
         const contents = await CmsContent.find();
@@ -53,9 +56,15 @@ module.exports = {
             }
           }
         } else {
-          return exits.success({
-            content: keyContent,
-          });
+          if (limit && Array.isArray(keyContent) && limit < keyContent.length) {
+            return exits.success({
+              content: keyContent.splice(limit),
+            });
+          } else {
+            return exits.success({
+              content: keyContent,
+            });
+          }
         }
       } else {
         return exits.badRequest({

@@ -1,4 +1,8 @@
 const contentful = require('contentful');
+const documentToPlainTextString = require('@contentful/rich-text-plain-text-renderer')
+  .documentToPlainTextString;
+
+const readingTime = require('reading-time');
 
 module.exports = {
   friendlyName: 'helper for fetching content from contentful cms',
@@ -55,16 +59,32 @@ const mapResponse = items => {
         if (!mappedResponse.blogArticles) {
           mappedResponse.blogArticles = [];
         }
+        const text = documentToPlainTextString(item.fields.body);
+        const time = readingTime(text);
         const article = {
           ...item.fields,
           id: elementId,
           mainImage: extractMediaFile(item.fields.mainImage),
+          readingTime: time,
         };
         if (article.section) {
           article.section = {
             id: article.section.sys.id,
             fields: article.section.fields,
           };
+        }
+        if (article.author) {
+          article.author = {
+            fields: article.author.fields,
+          };
+          if (
+            article.author.fields.image &&
+            article.author.fields.image.fields
+          ) {
+            article.author.fields.image = extractMediaFile(
+              article.author.fields.image,
+            );
+          }
         }
         mappedResponse.blogArticles.push(article);
       } else if (itemId === 'faqOrder') {
