@@ -194,6 +194,8 @@ const addBlogArticlesToSections = mapped => {
         id: article.id,
         mainImage: article.mainImage,
         publishDate: article.publishDate,
+        slug: article.slug,
+        summary: article.summary,
       });
     }
   });

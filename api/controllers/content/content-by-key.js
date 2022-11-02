@@ -22,6 +22,9 @@ module.exports = {
     limit: {
       type: 'number',
     },
+    deleteKey: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -37,7 +40,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { key, subKey, subValue, limit } = inputs;
+      const { key, subKey, subValue, limit, deleteKey } = inputs;
       let content = await sails.helpers.cacheHelper('get', 'content');
       if (!content) {
         const contents = await CmsContent.find();
@@ -56,15 +59,20 @@ module.exports = {
             }
           }
         } else {
+          let contentWithLimit;
           if (limit && Array.isArray(keyContent) && limit < keyContent.length) {
-            return exits.success({
-              content: keyContent.splice(limit),
-            });
+            contentWithLimit = keyContent.splice(limit);
           } else {
-            return exits.success({
-              content: keyContent,
+            contentWithLimit = keyContent;
+          }
+          if (deleteKey) {
+            contentWithLimit.forEach(item => {
+              delete item[deleteKey];
             });
           }
+          return exits.success({
+            content: contentWithLimit,
+          });
         }
       } else {
         return exits.badRequest({
