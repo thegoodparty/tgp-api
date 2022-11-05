@@ -51,6 +51,7 @@ module.exports = {
           state,
           district,
           counties,
+          overrideFollowers,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -75,6 +76,7 @@ module.exports = {
           state,
           district,
           counties,
+          overrideFollowers,
           positions: candidate.positions,
         });
       }
