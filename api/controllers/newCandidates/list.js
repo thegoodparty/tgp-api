@@ -106,6 +106,8 @@ module.exports = {
           office,
           district,
           counties,
+          didWin,
+          term,
         } = data;
 
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
@@ -135,6 +137,9 @@ module.exports = {
           district,
           counties,
           followers,
+          didWin,
+          term,
+          raceDate,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
