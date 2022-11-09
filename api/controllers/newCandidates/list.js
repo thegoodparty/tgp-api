@@ -117,6 +117,7 @@ module.exports = {
         const followers = await sails.helpers.socialListening.candidateFollowersHelper(
           candidate,
         );
+        const support = await sails.helpers.support.supportByCandidate(id);
 
         activeCandidates.push({
           firstName,
@@ -148,6 +149,7 @@ module.exports = {
           votesReceived,
           overrideFollowers,
           votesNeeded,
+          support,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
