@@ -60,6 +60,13 @@ module.exports = {
       type: 'string',
       required: false,
     },
+    password: {
+      description: 'The new, unencrypted password.',
+      example: 'abc123v2',
+      type: 'string',
+      required: true,
+      minLength: 8,
+    },
   },
 
   exits: {
@@ -89,6 +96,7 @@ module.exports = {
         guestUuid,
         source,
         uri,
+        password,
       } = inputs;
 
       if (!phone && !email) {
@@ -178,6 +186,10 @@ module.exports = {
       }
       if (socialPic) {
         userAttr.avatar = socialPic;
+      }
+
+      if (password) {
+        userAttr.password = password;
       }
 
       if (socialPic || socialProvider || socialId) {
