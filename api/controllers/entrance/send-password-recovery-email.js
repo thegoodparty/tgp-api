@@ -73,12 +73,12 @@ module.exports = {
       if (email) {
         const lowerCaseEmail = email.toLowerCase();
         const link = encodeURI(
-          `${appBase}/login/reset-password?email=${lowerCaseEmail}&token=${token}`,
+          `${appBase}/reset-password?email=${lowerCaseEmail}&token=${token}`,
         );
         await sentEmail(user, link);
       } else {
         const link = encodeURI(
-          `${appBase}/login/reset-password?phone=${phone}&token=${token}`,
+          `${appBase}/reset-password?phone=${phone}&token=${token}`,
         );
         await sails.helpers.sms.sendSms(
           phone,
