@@ -64,7 +64,6 @@ module.exports = {
       description: 'The new, unencrypted password.',
       example: 'abc123v2',
       type: 'string',
-      required: true,
       minLength: 8,
     },
   },
@@ -110,6 +109,11 @@ module.exports = {
       if (!socialPic && !socialProvider && !socialId && !zip) {
         return exits.badRequest({
           message: 'Zip code is required.',
+        });
+      }
+      if (!socialPic && !socialProvider && !socialId && !password) {
+        return exits.badRequest({
+          message: 'Password is required.',
         });
       }
       if (email) {
