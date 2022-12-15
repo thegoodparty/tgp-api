@@ -90,7 +90,7 @@ module.exports = {
           try {
             feed = await sails.helpers.socialListening.searchResultsHelper(
               candidateData.pulsarSearchId,
-              30,
+              4,
               true,
               true,
               false,

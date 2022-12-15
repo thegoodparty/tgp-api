@@ -1,6 +1,6 @@
 # THE GOOD PARTY - API
 
-[Sails v1](https://sailsjs.com) based node.js api for [The Good Party](https://thegoodparty.org/).
+[Sails v1](https://sailsjs.com) based node.js api for [The Good Party](https://goodparty.org/).
 
 <img src="https://assets.goodparty.org/share.jpg" align="center"
      title="The Good Party" width="100%">
@@ -34,7 +34,6 @@ install dependencies
 npm i
 ```
 
-
 You will need to add a local file: config/local.js file (which is git-ignored):
 
 ```javascript
@@ -50,21 +49,17 @@ And now you are ready to start:
 npm start
 ```
 
-
 For Dev Environment install Nodemon
 
 ```javascript
 npm install -g nodemon
 ```
 
-
-
 and run:
 
 ```
 npm run dev
 ```
-
 
 ### Running the tests
 

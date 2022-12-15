@@ -73,12 +73,12 @@ module.exports = {
       if (email) {
         const lowerCaseEmail = email.toLowerCase();
         const link = encodeURI(
-          `${appBase}/login/reset-password?email=${lowerCaseEmail}&token=${token}`,
+          `${appBase}/reset-password?email=${lowerCaseEmail}&token=${token}`,
         );
         await sentEmail(user, link);
       } else {
         const link = encodeURI(
-          `${appBase}/login/reset-password?phone=${phone}&token=${token}`,
+          `${appBase}/reset-password?phone=${phone}&token=${token}`,
         );
         await sails.helpers.sms.sendSms(
           phone,
@@ -135,17 +135,7 @@ const sentEmail = async (user, link) => {
                   href="${link}"
                   style="
                     padding: 16px 32px;
-                    background: linear-gradient(
-                        103.63deg,
-                        rgba(255, 15, 19, 0.15) -3.51%,
-                        rgba(191, 0, 32, 0) 94.72%
-                      ),
-                      linear-gradient(
-                        257.82deg,
-                        rgba(67, 0, 211, 0.25) -11.17%,
-                        rgba(67, 0, 211, 0) 96.34%
-                      ),
-                      #5c00c7;
+                    background: black;
                     color: #fff;
                     font-size: 16px;
                     border-radius: 8px;
