@@ -3,6 +3,7 @@ const documentToPlainTextString = require('@contentful/rich-text-plain-text-rend
   .documentToPlainTextString;
 
 const readingTime = require('reading-time');
+const slugify = require('slugify');
 
 module.exports = {
   friendlyName: 'helper for fetching content from contentful cms',
@@ -87,6 +88,20 @@ const mapResponse = items => {
           }
         }
         mappedResponse.blogArticles.push(article);
+      } else if (itemId === 'glossaryItem') {
+        if (!mappedResponse.glossaryItemsByTitle) {
+          mappedResponse.glossaryItemsByLetter = {};
+          mappedResponse.glossaryItemsByTitle = {};
+        }
+
+        const { title } = item.fields;
+        const slug = slugify(title, { lower: true });
+        const letter = title.charAt(0).toUpperCase();
+        if (!mappedResponse.glossaryItemsByLetter[letter]) {
+          mappedResponse.glossaryItemsByLetter[letter] = [];
+        }
+        mappedResponse.glossaryItemsByLetter[letter].push(item.fields);
+        mappedResponse.glossaryItemsByTitle[slug] = item.fields;
       } else if (itemId === 'faqOrder') {
         const faqOrder = item.fields.faqArticle;
         faqOrder.forEach(article => {
@@ -122,6 +137,15 @@ const mapResponse = items => {
   });
   mappedResponse.faqArticles.sort(compareArticles);
   mappedResponse.blogArticles.sort(compareBlogArticles);
+  // sort each letter
+  Object.keys(mappedResponse.glossaryItemsByLetter).forEach(letter => {
+    mappedResponse.glossaryItemsByLetter[letter].sort(compareGlossaryItems);
+  });
+
+  console.log(
+    'appedResponse.glossaryItemsByLer',
+    mappedResponse.glossaryItemsByTitle,
+  );
   addArticlesToCategories(mappedResponse);
   addBlogArticlesToSections(mappedResponse);
   mappedResponse.articleCategories.sort(compareArticleCategories);
@@ -143,6 +167,10 @@ const compareArticles = (a, b) => {
 
 const compareBlogArticles = (a, b) => {
   return new Date(b.publishDate) - new Date(a.publishDate);
+};
+
+const compareGlossaryItems = (a, b) => {
+  return a.title.toLowerCase().localeCompare(b.title.toLowerCase());
 };
 
 const compareArticleCategories = (a, b) => {

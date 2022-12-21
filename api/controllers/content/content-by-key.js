@@ -53,11 +53,17 @@ module.exports = {
       const keyContent = content[key];
       if (keyContent) {
         if (subKey) {
-          for (let i = 0; i < keyContent.length; i++) {
-            if (keyContent[i][subKey] === subValue) {
-              return exits.success({ content: keyContent[i] });
+          if (Array.isArray(keyContent)) {
+            for (let i = 0; i < keyContent.length; i++) {
+              if (keyContent[i][subKey] === subValue) {
+                return exits.success({ content: keyContent[i] });
+              }
             }
           }
+          if (keyContent[subKey]) {
+            return exits.success({ content: keyContent[subKey] });
+          }
+          return exits.success({ content: false });
         } else {
           let contentWithLimit;
           if (limit && Array.isArray(keyContent) && limit < keyContent.length) {
