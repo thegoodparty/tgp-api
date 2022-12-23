@@ -58,8 +58,8 @@ module.exports = {
 
       const activeCandidates = [];
       const possibleStates = {};
-      const currentYear = new Date().getFullYear();
-      const janFirst = new Date(`01-01-${currentYear}`);
+      // const currentYear = new Date().getFullYear();
+      // const janFirst = new Date(`01-01-${currentYear}`);
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
         if (positionId) {
@@ -78,12 +78,12 @@ module.exports = {
         const data = candidate.data ? JSON.parse(candidate.data) : {};
         const { raceDate } = data;
         // skip candidates with a race date before this calendar year.
-        if (raceDate) {
-          const date = new Date(raceDate);
-          if (date < janFirst) {
-            continue;
-          }
-        }
+        // if (raceDate) {
+        //   const date = new Date(raceDate);
+        //   if (date < janFirst) {
+        //     continue;
+        //   }
+        // }
 
         const {
           firstName,
