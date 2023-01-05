@@ -37,6 +37,7 @@ module.exports = {
         const candidate = candidates[i];
         const data = JSON.parse(candidate.data);
         const {
+          slug,
           id,
           firstName,
           lastName,
@@ -63,6 +64,7 @@ module.exports = {
         const support = await sails.helpers.support.supportByCandidate(id);
 
         homepageCandidates.push({
+          slug,
           id,
           firstName,
           lastName,

@@ -8,12 +8,12 @@ const request = require('request-promise');
 const moment = require('moment');
 
 module.exports = {
-  friendlyName: 'Find by id one Candidate',
+  friendlyName: 'Find by slug one Candidate',
 
-  description: 'Find by id one Candidate ',
+  description: 'Find by slug one Candidate ',
 
   inputs: {
-    id: {
+    slug: {
       type: 'string',
       required: true,
     },
@@ -38,16 +38,16 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     try {
-      const { id, allFields, withImage } = inputs;
+      const { slug, allFields, withImage } = inputs;
       let candidate;
       if (allFields) {
         candidate = await Candidate.findOne({
-          id,
+          slug,
           isActive: true,
         }).populate('endorsements');
       } else {
         candidate = await Candidate.findOne({
-          id,
+          slug,
           isActive: true,
         });
       }
@@ -67,7 +67,7 @@ module.exports = {
       let candidatePositions = [];
 
       if (allFields) {
-        candidatePositions = await candidatePositionFinder(id);
+        candidatePositions = await candidatePositionFinder(candidate.id);
         candidateData.endorsements = candidate.endorsements;
       }
       if (!candidateData.certifiedDate) {
@@ -81,7 +81,9 @@ module.exports = {
         followers = await sails.helpers.socialListening.candidateFollowersHelper(
           candidate,
         );
-        const support = await sails.helpers.support.supportByCandidate(id);
+        const support = await sails.helpers.support.supportByCandidate(
+          candidate.id,
+        );
 
         followers.thisWeek += support.thisWeek;
         followers.lastWeek += support.lastWeek;

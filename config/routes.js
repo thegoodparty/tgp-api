@@ -79,8 +79,6 @@ module.exports.routes = {
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
   'POST   /api/v1/admin/upload-image': 'admin/upload-image',
 
-  'GET    /api/v1/candidates/find': 'candidates/find',
-
   // New Candidates
   'POST   /api/v1/new-candidate': 'newCandidates/create',
   'GET    /api/v1/new-candidate': 'newCandidates/find',

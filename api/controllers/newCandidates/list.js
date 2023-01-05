@@ -86,6 +86,7 @@ module.exports = {
         // }
 
         const {
+          slug,
           firstName,
           lastName,
           id,
@@ -120,6 +121,7 @@ module.exports = {
         const support = await sails.helpers.support.supportByCandidate(id);
 
         activeCandidates.push({
+          slug,
           firstName,
           lastName,
           id,

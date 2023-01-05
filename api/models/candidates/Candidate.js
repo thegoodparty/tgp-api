@@ -12,7 +12,9 @@ module.exports = {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
-
+    slug: {
+      type: 'string', // should be required and unique after all is populated
+    },
     firstName: {
       type: 'string',
       required: true,
@@ -46,8 +48,6 @@ module.exports = {
       type: 'json',
       description: 'contact info',
     },
-
-
 
     // one to many relationship to endorsements
     endorsements: {
