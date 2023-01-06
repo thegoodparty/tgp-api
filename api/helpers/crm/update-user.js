@@ -30,21 +30,21 @@ module.exports = {
     const { user } = inputs;
     const { id, name, email, phone, uuid, zip } = user;
     try {
-      const userCrew = await User.findOne({ id }).populate('crew');
-      const crew = userCrew.crew;
-      crew.sort((a, b) => b.id - a.id);
-      const applicationApproved = await Application.count({
-        user: id,
-        status: 'approved',
-      });
-      const applicationDeclined = await Application.count({
-        user: id,
-        status: 'rejected',
-      });
-      const applicationSubmitted = await Application.find({
-        user: id,
-        status: 'in review',
-      });
+      // const userCrew = await User.findOne({ id }).populate('crew');
+      // const crew = userCrew.crew;
+      // crew.sort((a, b) => b.id - a.id);
+      // const applicationApproved = await Application.count({
+      //   user: id,
+      //   status: 'approved',
+      // });
+      // const applicationDeclined = await Application.count({
+      //   user: id,
+      //   status: 'rejected',
+      // });
+      // const applicationSubmitted = await Application.find({
+      //   user: id,
+      //   status: 'in review',
+      // });
 
       const supports = await Support.find({
         user: id,
@@ -71,7 +71,8 @@ module.exports = {
             .join(' '),
           email,
           phone,
-          type: applicationApproved > 0 ? 'Campaign' : 'User',
+          // type: applicationApproved > 0 ? 'Campaign' : 'User',
+          type: 'User',
           source: 'Good Party Site',
           all_endorsements: allEndorsements,
           recent_endorsement:
@@ -81,18 +82,18 @@ module.exports = {
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
           referrals: crew.length,
-          last_referral:
-            crew.length > 0 ? formatDate(crew[crew.length - 1].createdAt) : '',
-          application_approved: applicationApproved,
-          application_declined: applicationDeclined,
-          application_submitted: applicationSubmitted.length,
-          application_submitted_date:
-            applicationSubmitted.length > 0
-              ? formatDate(
-                  applicationSubmitted[applicationSubmitted.length - 1]
-                    .updatedAt,
-                )
-              : '',
+          // last_referral:
+          //   crew.length > 0 ? formatDate(crew[crew.length - 1].createdAt) : '',
+          // application_approved: applicationApproved,
+          // application_declined: applicationDeclined,
+          // application_submitted: applicationSubmitted.length,
+          // application_submitted_date:
+          //   applicationSubmitted.length > 0
+          //     ? formatDate(
+          //         applicationSubmitted[applicationSubmitted.length - 1]
+          //           .updatedAt,
+          //       )
+          //     : '',
         },
       };
 
