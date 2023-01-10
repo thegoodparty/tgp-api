@@ -51,7 +51,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find campaign/onboarding', e);
-      return exits.badRequest();
+      return exits.badRequest(e);
     }
   },
 };
