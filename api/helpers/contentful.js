@@ -1,6 +1,6 @@
 const contentful = require('contentful');
-const documentToPlainTextString = require('@contentful/rich-text-plain-text-renderer')
-  .documentToPlainTextString;
+const documentToPlainTextString =
+  require('@contentful/rich-text-plain-text-renderer').documentToPlainTextString;
 
 const readingTime = require('reading-time');
 const slugify = require('slugify');
@@ -12,7 +12,7 @@ module.exports = {
 
   inputs: {},
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const contentfulSpaceId =
       sails.config.custom.contentfulSpaceId || sails.config.contentfulSpaceId;
 
@@ -34,10 +34,10 @@ module.exports = {
 
 const faqsOrder = [];
 const faqsOrderHash = {};
-const mapResponse = items => {
+const mapResponse = (items) => {
   const mappedResponse = {};
   // console.log(JSON.stringify(items));
-  items.map(item => {
+  items.map((item) => {
     if (item && item.sys && item.sys.contentType && item.sys.contentType.sys) {
       const itemId = item.sys.contentType.sys.id;
       const elementId = item.sys.id;
@@ -104,7 +104,7 @@ const mapResponse = items => {
         mappedResponse.glossaryItemsByTitle[slug] = item.fields;
       } else if (itemId === 'faqOrder') {
         const faqOrder = item.fields.faqArticle;
-        faqOrder.forEach(article => {
+        faqOrder.forEach((article) => {
           faqsOrder.push(article.sys.id);
         });
       } else if (itemId === 'articleCategory') {
@@ -138,7 +138,7 @@ const mapResponse = items => {
   mappedResponse.faqArticles.sort(compareArticles);
   mappedResponse.blogArticles.sort(compareBlogArticles);
   // sort each letter
-  Object.keys(mappedResponse.glossaryItemsByLetter).forEach(letter => {
+  Object.keys(mappedResponse.glossaryItemsByLetter).forEach((letter) => {
     mappedResponse.glossaryItemsByLetter[letter].sort(compareGlossaryItems);
   });
 
@@ -185,20 +185,20 @@ const compareArticleCategories = (a, b) => {
   return 0;
 };
 
-const extractMediaFile = img => {
+const extractMediaFile = (img) => {
   if (img && img.fields && img.fields.file) {
     return { url: img.fields.file.url, alt: img.fields.title || '' };
   }
   return null;
 };
 
-const addArticlesToCategories = mapped => {
+const addArticlesToCategories = (mapped) => {
   const { articleCategories, faqArticles } = mapped;
   const categoriesById = {};
-  articleCategories.forEach(category => {
+  articleCategories.forEach((category) => {
     categoriesById[category.id] = { ...category, articles: [] };
   });
-  faqArticles.forEach(article => {
+  faqArticles.forEach((article) => {
     if (article.category) {
       categoriesById[article.category.id].articles.push({
         title: article.title,
@@ -209,13 +209,13 @@ const addArticlesToCategories = mapped => {
   mapped.articleCategories = Object.values(categoriesById);
 };
 
-const addBlogArticlesToSections = mapped => {
+const addBlogArticlesToSections = (mapped) => {
   const { blogSections, blogArticles } = mapped;
   const sectionsById = {};
-  blogSections.forEach(section => {
+  blogSections.forEach((section) => {
     sectionsById[section.id] = { ...section, articles: [] };
   });
-  blogArticles.forEach(article => {
+  blogArticles.forEach((article) => {
     if (article.section) {
       sectionsById[article.section.id].articles.push({
         title: article.title,

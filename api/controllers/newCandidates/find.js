@@ -39,7 +39,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { slug, allFields, withImage } = inputs;
-      console.log('slug', slug);
       let candidate;
       if (allFields) {
         candidate = await Candidate.findOne({
@@ -51,14 +50,10 @@ module.exports = {
           slug,
           isActive: true,
         });
-        console.log('2', candidate);
-        const all = await Candidate.find();
-        console.log('all', all);
       }
       if (!candidate) {
         return exits.notFound();
       }
-
       let candidateData = JSON.parse(candidate.data);
 
       let imageAsBase64;
