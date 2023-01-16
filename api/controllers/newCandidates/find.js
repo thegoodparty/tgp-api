@@ -36,9 +36,10 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { slug, allFields, withImage } = inputs;
+      console.log('slug', slug);
       let candidate;
       if (allFields) {
         candidate = await Candidate.findOne({
@@ -50,6 +51,9 @@ module.exports = {
           slug,
           isActive: true,
         });
+        console.log('2', candidate);
+        const all = await Candidate.find();
+        console.log('all', all);
       }
       if (!candidate) {
         return exits.notFound();
@@ -78,9 +82,10 @@ module.exports = {
       let followers = {};
       let feed = {};
       if (allFields) {
-        followers = await sails.helpers.socialListening.candidateFollowersHelper(
-          candidate,
-        );
+        followers =
+          await sails.helpers.socialListening.candidateFollowersHelper(
+            candidate,
+          );
         const support = await sails.helpers.support.supportByCandidate(
           candidate.id,
         );
@@ -118,7 +123,7 @@ module.exports = {
   },
 };
 
-const candidatePositionFinder = async id => {
+const candidatePositionFinder = async (id) => {
   return await CandidatePosition.find({ candidate: id })
     .sort([{ order: 'ASC' }])
     .populate('topIssue')
