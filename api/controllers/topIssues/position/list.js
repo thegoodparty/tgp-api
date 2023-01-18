@@ -16,9 +16,12 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const topics = await Position.find().sort([{ id: 'ASC' }]);
+      const positions = await Position.find()
+        .populate('topIssue')
+        .sort([{ name: 'ASC' }]);
+
       return exits.success({
-        topics,
+        positions,
       });
     } catch (e) {
       console.log('error at issue Position/list', e);
