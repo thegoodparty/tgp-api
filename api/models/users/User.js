@@ -207,6 +207,11 @@ module.exports = {
       via: 'user',
     },
 
+    campaigns: {
+      collection: 'campaign',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',
@@ -218,7 +223,7 @@ module.exports = {
     },
   },
 
-  customToJSON: function() {
+  customToJSON: function () {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, [
       'password',
@@ -231,7 +236,7 @@ module.exports = {
     ]);
   },
 
-  beforeCreate: async function(values, next) {
+  beforeCreate: async function (values, next) {
     try {
       // hash password and save it in password.
       // using hashPassword helper from sails-hook-organics
