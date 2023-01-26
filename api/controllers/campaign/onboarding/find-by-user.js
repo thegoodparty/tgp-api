@@ -30,7 +30,7 @@ module.exports = {
       });
 
       return exits.success({
-        campaigns,
+        campaign: campaigns.length > 0 ? campaigns[0].data : false,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

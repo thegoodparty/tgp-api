@@ -76,6 +76,7 @@ module.exports.routes = {
 
   'GET   /api/v1/campaign/onboarding/test': 'campaign/onboarding/test',
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
+  'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
   'GET   /api/v1/campaign/onboarding/by-user':
     'campaign/onboarding/find-by-user',
 
