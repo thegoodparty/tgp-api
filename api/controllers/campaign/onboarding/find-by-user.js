@@ -28,9 +28,13 @@ module.exports = {
       const campaigns = await Campaign.find({
         user: user.id,
       });
+      let campaign = false;
+      if (campaigns && campaigns.length > 0) {
+        campaign = campaigns[0].data;
+      }
 
       return exits.success({
-        campaign: campaigns.length > 0 ? campaigns[0].data : false,
+        campaign,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
