@@ -107,6 +107,8 @@ const mapResponse = (items) => {
         faqOrder.forEach((article) => {
           faqsOrder.push(article.sys.id);
         });
+      } else if (itemId === 'pledge') {
+        mappedResponse.pledge = item.fields;
       } else if (itemId === 'articleCategory') {
         if (!mappedResponse.articleCategories) {
           mappedResponse.articleCategories = [];
@@ -142,10 +144,6 @@ const mapResponse = (items) => {
     mappedResponse.glossaryItemsByLetter[letter].sort(compareGlossaryItems);
   });
 
-  console.log(
-    'appedResponse.glossaryItemsByLer',
-    mappedResponse.glossaryItemsByTitle,
-  );
   addArticlesToCategories(mappedResponse);
   addBlogArticlesToSections(mappedResponse);
   mappedResponse.articleCategories.sort(compareArticleCategories);
