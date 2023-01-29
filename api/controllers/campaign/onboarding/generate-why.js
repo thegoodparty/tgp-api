@@ -41,6 +41,7 @@ module.exports = {
         whyPrompt = whyPrompt.replace(/\[\[lastName\]\]/g, campaign.lastName);
         whyPrompt = whyPrompt.replace(/\[\[zip\]\]/g, campaign.zip);
         whyPrompt = whyPrompt.replace(/\[\[party\]\]/g, campaign.party);
+        whyPrompt = whyPrompt.replace(/\[\[office\]\]/g, campaign.office);
         whyPrompt = whyPrompt.replace(
           /\[\[positions\]\]/g,
           positionsStr(campaign.positions),
@@ -56,10 +57,10 @@ module.exports = {
           max_tokens: 256,
         });
 
-        console.log('result ai', completion100.data.choices[0].text);
+        const why100 = completion100.data.choices[0].text.replace('/n', '');
 
         campaign.whyGoals = {
-          why100: completion100.data.choices[0].text,
+          why100,
         };
         await Campaign.updateOne({
           slug: campaign.slug,
