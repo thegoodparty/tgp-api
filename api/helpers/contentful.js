@@ -127,6 +127,8 @@ const mapResponse = (items) => {
         });
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
+      } else if (itemId === 'onboardingPrompts') {
+        mappedResponse.onboardingPrompts = item.fields;
       }
     }
   });
