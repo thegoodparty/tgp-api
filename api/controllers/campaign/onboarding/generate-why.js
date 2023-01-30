@@ -34,21 +34,9 @@ module.exports = {
         campaign = campaigns[0].data;
       }
       if (!campaign.whyGoals) {
-        const prompt = await cmsPropmt();
+        const prompt = await sails.helpers.ai.getPrompts();
         let whyPrompt = prompt.whyPrompt;
-
-        whyPrompt = whyPrompt.replace(/\[\[firstName\]\]/g, campaign.firstName);
-        whyPrompt = whyPrompt.replace(/\[\[lastName\]\]/g, campaign.lastName);
-        whyPrompt = whyPrompt.replace(/\[\[zip\]\]/g, campaign.zip);
-        whyPrompt = whyPrompt.replace(/\[\[party\]\]/g, campaign.party);
-        whyPrompt = whyPrompt.replace(/\[\[office\]\]/g, campaign.office);
-        whyPrompt = whyPrompt.replace(
-          /\[\[positions\]\]/g,
-          positionsStr(campaign.positions),
-        );
-        whyPrompt += `
-        
-        `;
+        whyPrompt = await sails.helpers.ai.promptReplace(whyPrompt, campaign);
 
         const completion100 = await openai.createCompletion({
           model: 'text-davinci-003',
@@ -76,25 +64,4 @@ module.exports = {
       return exits.notFound();
     }
   },
-};
-
-const cmsPropmt = async () => {
-  let content = await sails.helpers.cacheHelper('get', 'content');
-  if (!content) {
-    const contents = await CmsContent.find();
-
-    if (contents.length === 1) {
-      content = { ...JSON.parse(contents[0].content) };
-      await sails.helpers.cacheHelper('set', 'content', content);
-    }
-  }
-  return content.onboardingPrompts;
-};
-
-const positionsStr = (positions) => {
-  let str = '';
-  positions.forEach((position) => {
-    str += `${position.name} (${position.topIssue.name}), `;
-  });
-  return str;
 };
