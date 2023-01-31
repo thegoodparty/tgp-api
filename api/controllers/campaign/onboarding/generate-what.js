@@ -1,19 +1,24 @@
 module.exports = {
-  inputs: {},
+  inputs: {
+    adminForce: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
       description: 'Campaign Found',
       responseType: 'ok',
     },
-    forbidden: {
-      description: 'Unauthorized',
-      responseType: 'forbidden',
+    badRequest: {
+      description: 'Bad Request',
+      responseType: 'badRequest',
     },
   },
 
   fn: async function (inputs, exits) {
     try {
+      const { adminForce } = inputs;
       const user = this.req.user;
 
       const campaigns = await Campaign.find({
@@ -23,7 +28,7 @@ module.exports = {
       if (campaigns && campaigns.length > 0) {
         campaign = campaigns[0].data;
       }
-      if (!campaign.whatGoals) {
+      if (!campaign.whatGoals || (user.isAdmin && adminForce)) {
         const prompt = await sails.helpers.ai.getPrompts();
 
         const whyRunningPrompt = prompt.whyRunning;
@@ -79,7 +84,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find candidate', e);
-      return exits.notFound();
+      return exits.badRequest();
     }
   },
 };

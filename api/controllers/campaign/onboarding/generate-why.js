@@ -9,22 +9,27 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 module.exports = {
-  inputs: {},
+  inputs: {
+    adminForce: {
+      type: 'boolean',
+    },
+  },
 
   exits: {
     success: {
       description: 'Campaign Found',
       responseType: 'ok',
     },
-    forbidden: {
-      description: 'Unauthorized',
-      responseType: 'forbidden',
+    badRequest: {
+      description: 'Bad Request',
+      responseType: 'badRequest',
     },
   },
 
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
+      const { adminForce } = inputs;
 
       const campaigns = await Campaign.find({
         user: user.id,
@@ -33,7 +38,7 @@ module.exports = {
       if (campaigns && campaigns.length > 0) {
         campaign = campaigns[0].data;
       }
-      if (!campaign.whyGoals) {
+      if (!campaign.whyGoals || (user.isAdmin && adminForce)) {
         const prompt = await sails.helpers.ai.getPrompts();
         let whyPrompt = prompt.whyPrompt;
         whyPrompt = await sails.helpers.ai.promptReplace(whyPrompt, campaign);
@@ -61,7 +66,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find candidate', e);
-      return exits.notFound();
+      return exits.badRequest();
     }
   },
 };
