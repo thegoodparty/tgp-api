@@ -29,6 +29,14 @@ module.exports = {
       newPrompt = newPrompt.replace(/\[\[office\]\]/g, campaign.office);
       const positionsStr = positionsToStr(campaign.positions);
       newPrompt = newPrompt.replace(/\[\[positions\]\]/g, positionsStr);
+      newPrompt = newPrompt.replace(
+        /\[\[opponent\]\]/g,
+        campaign.moreInfo ? campaign.moreInfo.opponent : '',
+      );
+      newPrompt = newPrompt.replace(
+        /\[\[committee\]\]/g,
+        campaign.moreInfo ? campaign.moreInfo.committee : '',
+      );
       newPrompt += `\n
         
       `;
