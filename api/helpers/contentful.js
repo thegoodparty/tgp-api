@@ -25,8 +25,12 @@ module.exports = {
       accessToken: contentfulAccessToken,
     });
 
-    const entries = await client.getEntries();
+    const entries = await client.getEntries({
+      limit: 1000,
+    });
     const items = client.parseEntries(entries).items;
+    console.log('items', items);
+
     const flatResponse = mapResponse(items);
     return exits.success(flatResponse);
   },
@@ -194,6 +198,7 @@ const extractMediaFile = (img) => {
 
 const addArticlesToCategories = (mapped) => {
   const { articleCategories, faqArticles } = mapped;
+
   const categoriesById = {};
   articleCategories.forEach((category) => {
     categoriesById[category.id] = { ...category, articles: [] };
