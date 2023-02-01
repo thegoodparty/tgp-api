@@ -29,7 +29,6 @@ module.exports = {
       limit: 1000,
     });
     const items = client.parseEntries(entries).items;
-    console.log('items', items);
 
     const flatResponse = mapResponse(items);
     return exits.success(flatResponse);
