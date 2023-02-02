@@ -84,6 +84,10 @@ module.exports.routes = {
     'campaign/onboarding/generate-what',
   'POST   /api/v1/campaign/onboarding/generate-opponent':
     'campaign/onboarding/generate-opponent',
+  'POST   /api/v1/campaign/onboarding/generate-about-opponent':
+    'campaign/onboarding/generate-about-opponent',
+  'POST   /api/v1/campaign/onboarding/generate-opponent-self':
+    'campaign/onboarding/generate-opponent-self',
   'GET   /api/v1/campaign/onboarding/by-user':
     'campaign/onboarding/find-by-user',
 
