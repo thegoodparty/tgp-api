@@ -38,7 +38,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { key, subKey, subValue, limit, deleteKey } = inputs;
       let content = await sails.helpers.cacheHelper('get', 'content');
@@ -51,18 +51,34 @@ module.exports = {
         }
       }
       const keyContent = content[key];
+      console.log('test1 key', key);
+      console.log('test1 subKey', subKey);
+      console.log('test1 subValue', subValue);
       if (keyContent) {
+        console.log('test2');
         if (subKey) {
+          console.log('test3');
           if (Array.isArray(keyContent)) {
+            console.log('test4');
             for (let i = 0; i < keyContent.length; i++) {
-              if (keyContent[i][subKey] === subValue) {
+              console.log(
+                'keyContent[i][subKey]',
+                keyContent[i][subKey].toLowerCase(),
+                subValue.toLowerCase(),
+              );
+              if (
+                keyContent[i][subKey].toLowerCase() === subValue.toLowerCase()
+              ) {
+                console.log('success');
                 return exits.success({ content: keyContent[i] });
               }
             }
           }
+          console.log('test5');
           if (keyContent[subKey]) {
             return exits.success({ content: keyContent[subKey] });
           }
+          console.log('test6');
           return exits.success({ content: false });
         } else {
           let contentWithLimit;
@@ -72,7 +88,7 @@ module.exports = {
             contentWithLimit = keyContent;
           }
           if (deleteKey) {
-            contentWithLimit.forEach(item => {
+            contentWithLimit.forEach((item) => {
               delete item[deleteKey];
             });
           }
