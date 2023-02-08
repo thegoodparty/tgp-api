@@ -96,7 +96,6 @@ const mapResponse = (items) => {
             largeImage: extractMediaFile(article.banner.fields.largeImage),
             smallImage: extractMediaFile(article.banner.fields.smallImage),
           };
-          console.log('banner', article.banner);
         }
         mappedResponse.blogArticles.push(article);
       } else if (itemId === 'glossaryItem') {
