@@ -104,14 +104,20 @@ const mapResponse = (items) => {
           mappedResponse.glossaryItemsByTitle = {};
         }
 
+        // console.log('item', item);
+
         const { title } = item.fields;
+        const { updatedAt } = item.sys;
         const slug = slugify(title, { lower: true });
         const letter = title.charAt(0).toUpperCase();
         if (!mappedResponse.glossaryItemsByLetter[letter]) {
           mappedResponse.glossaryItemsByLetter[letter] = [];
         }
         mappedResponse.glossaryItemsByLetter[letter].push(item.fields);
-        mappedResponse.glossaryItemsByTitle[slug] = item.fields;
+        mappedResponse.glossaryItemsByTitle[slug] = {
+          ...item.fields,
+          updatedAt,
+        };
       } else if (itemId === 'faqOrder') {
         const faqOrder = item.fields.faqArticle;
         faqOrder.forEach((article) => {
@@ -142,6 +148,9 @@ const mapResponse = (items) => {
       }
     }
   });
+
+  mappedResponse.recentGlossaryItems = getRecentGlossaryItems(mappedResponse);
+
   // need to order the event chronologically and separate the past events.
   // mappedResponse.events.sort(compareEvents);
   // splitPastEvents(mappedResponse);
@@ -161,6 +170,16 @@ const mapResponse = (items) => {
   mappedResponse.articleCategories.sort(compareArticleCategories);
 
   return mappedResponse;
+};
+
+const getRecentGlossaryItems = (mappedResponse) => {
+  const sorted = Object.keys(mappedResponse.glossaryItemsByTitle);
+  sorted.sort((a, b) => {
+    return new Date(b.updatedAt) - new Date(b.updatedAt);
+  });
+  return sorted.slice(0, 3).map((key) => {
+    return mappedResponse.glossaryItemsByTitle[key].title;
+  });
 };
 
 const compareArticles = (a, b) => {
