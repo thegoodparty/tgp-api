@@ -24,7 +24,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const campaigns = await Campaign.find().populate('user');
-      console.log('ca', campaigns);
 
       return exits.success({
         campaigns,
