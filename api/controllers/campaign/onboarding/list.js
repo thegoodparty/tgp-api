@@ -6,13 +6,13 @@
  */
 
 module.exports = {
-  friendlyName: 'Find Campaign associated with user',
+  friendlyName: 'List of onboarding (Admin)',
 
   inputs: {},
 
   exits: {
     success: {
-      description: 'Campaign Found',
+      description: 'Onboardings Found',
       responseType: 'ok',
     },
     forbidden: {
@@ -23,21 +23,14 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const user = this.req.user;
-
-      const campaigns = await Campaign.find({
-        user: user.id,
-      });
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
-      }
+      const campaigns = await Campaign.find().populate('user');
+      console.log('ca', campaigns);
 
       return exits.success({
-        campaign,
+        campaigns,
       });
     } catch (e) {
-      console.log('Error in find candidate', e);
+      console.log('Error in onboarding list', e);
       return exits.forbidden();
     }
   },

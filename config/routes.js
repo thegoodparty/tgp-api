@@ -90,6 +90,7 @@ module.exports.routes = {
     'campaign/onboarding/generate-opponent-self',
   'GET   /api/v1/campaign/onboarding/by-user':
     'campaign/onboarding/find-by-user',
+  'GET   /api/v1/campaign/onboardings': 'campaign/onboarding/list',
 
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
