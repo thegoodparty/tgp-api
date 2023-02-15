@@ -30,10 +30,17 @@ module.exports = {
       const { campaign } = inputs;
       const { user } = this.req;
 
-      await Campaign.updateOne({
-        slug: campaign.slug,
-        user: user.id,
-      }).set({ data: campaign });
+      // update can be done by an admin or a user.
+      if (user.isAdmin) {
+        await Campaign.updateOne({
+          slug: campaign.slug,
+        }).set({ data: campaign });
+      } else {
+        await Campaign.updateOne({
+          slug: campaign.slug,
+          user: user.id,
+        }).set({ data: campaign });
+      }
 
       return exits.success({
         message: 'updated',
