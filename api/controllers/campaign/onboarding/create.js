@@ -10,12 +10,7 @@ const slugify = require('slugify');
 module.exports = {
   friendlyName: 'Create Campaign',
 
-  inputs: {
-    data: {
-      type: 'json',
-      required: true,
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -29,17 +24,10 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { data } = inputs;
       const { user } = this.req;
-      // const exists = await Campaign.findOne({ user: user.id });
-      // if (exists) {
-      //   return inputs.badRequest({
-      //     message: 'campaign already exists for this user',
-      //   });
-      // }
 
-      const slug = await findSlug(data);
-      data.slug = slug;
+      const slug = await findSlug(user.name);
+      const data = { slug };
       await Campaign.create({
         slug,
         data,
@@ -57,15 +45,14 @@ module.exports = {
   },
 };
 
-async function findSlug(campaign) {
-  const { firstName, lastName } = campaign;
-  const slug = slugify(`${firstName}-${lastName}`, { lower: true });
+async function findSlug(name) {
+  const slug = slugify(`${name}`, { lower: true });
   const exists = await Campaign.findOne({ slug });
   if (!exists) {
     return slug;
   }
   for (let i = 1; i < 100; i++) {
-    let slug = slugify(`${firstName}-${lastName}${i}`, { lower: true });
+    let slug = slugify(`${name}${i}`, { lower: true });
     let exists = await Campaign.findOne({ slug });
     if (!exists) {
       return slug;
