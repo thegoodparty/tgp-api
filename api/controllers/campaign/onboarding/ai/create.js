@@ -19,6 +19,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    regenerate: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -35,7 +38,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey } = inputs;
+      const { key, subSectionKey, regenerate } = inputs;
 
       const campaigns = await Campaign.find({
         user: user.id,
@@ -50,7 +53,7 @@ module.exports = {
 
       campaign.details.name = user.name;
       let chatResponse = campaign[subSectionKey][key];
-      if (!campaign[subSectionKey][key]) {
+      if (!campaign[subSectionKey][key] || regenerate) {
         const cmsPrompts = await sails.helpers.ai.getPrompts();
         let prompt = cmsPrompts[key];
         prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
@@ -69,7 +72,7 @@ module.exports = {
         console.log('completion.data.choices', completion.data.choices);
         chatResponse = completion.data.choices[0].message.content.replace(
           '/n',
-          '<br/>',
+          '<br/><br/>',
         );
 
         campaign.goals.whyRunning = chatResponse;
