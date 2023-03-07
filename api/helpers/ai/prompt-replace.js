@@ -22,21 +22,11 @@ module.exports = {
       const { prompt, campaign } = inputs;
       let newPrompt = prompt;
 
-      newPrompt = newPrompt.replace(/\[\[firstName\]\]/g, campaign.firstName);
-      newPrompt = newPrompt.replace(/\[\[lastName\]\]/g, campaign.lastName);
-      newPrompt = newPrompt.replace(/\[\[zip\]\]/g, campaign.zip);
-      newPrompt = newPrompt.replace(/\[\[party\]\]/g, campaign.party);
-      newPrompt = newPrompt.replace(/\[\[office\]\]/g, campaign.office);
-      const positionsStr = positionsToStr(campaign.positions);
-      newPrompt = newPrompt.replace(/\[\[positions\]\]/g, positionsStr);
-      newPrompt = newPrompt.replace(
-        /\[\[opponent\]\]/g,
-        campaign.moreInfo ? campaign.moreInfo.opponent : '',
-      );
-      newPrompt = newPrompt.replace(
-        /\[\[committee\]\]/g,
-        campaign.moreInfo ? campaign.moreInfo.committee : '',
-      );
+      newPrompt = newPrompt.replace(/\[\[name\]\]/g, campaign.details.name);
+      newPrompt = newPrompt.replace(/\[\[zip\]\]/g, campaign.details.zip);
+      newPrompt = newPrompt.replace(/\[\[party\]\]/g, campaign.details.party);
+      newPrompt = newPrompt.replace(/\[\[office\]\]/g, campaign.details.office);
+
       newPrompt += `\n
         
       `;

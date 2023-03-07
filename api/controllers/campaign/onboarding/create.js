@@ -8,8 +8,6 @@
 const slugify = require('slugify');
 
 module.exports = {
-  friendlyName: 'Create Campaign',
-
   inputs: {},
 
   exits: {
