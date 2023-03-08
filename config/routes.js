@@ -94,6 +94,7 @@ module.exports.routes = {
 
   // onboarding AI
   'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',
+  'PUT   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/edit',
 
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',

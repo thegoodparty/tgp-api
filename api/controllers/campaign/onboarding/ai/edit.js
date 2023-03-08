@@ -19,8 +19,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    regenerate: {
-      type: 'boolean',
+    chat: {
+      type: 'ref',
+      required: true,
     },
   },
 
@@ -38,7 +39,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey, regenerate } = inputs;
+      const { key, subSectionKey, chat } = inputs;
 
       const campaigns = await Campaign.find({
         user: user.id,
@@ -53,34 +54,34 @@ module.exports = {
 
       campaign.details.name = user.name;
       let chatResponse = campaign[subSectionKey][key];
-      if (!campaign[subSectionKey][key] || regenerate) {
-        const cmsPrompts = await sails.helpers.ai.getPrompts();
-        let prompt = cmsPrompts[key];
-        prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      const cmsPrompts = await sails.helpers.ai.getPrompts();
+      let prompt = cmsPrompts[key];
+      prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
 
-        const completion = await openai.createChatCompletion({
-          model: 'gpt-3.5-turbo',
-          max_tokens: 1024,
-          messages: [
-            {
-              role: 'system',
-              content: 'You are a helpful political assistant.',
-            },
-            { role: 'user', content: prompt },
-          ],
-        });
-        chatResponse = completion.data.choices[0].message.content.replace(
-          '/n',
-          '<br/><br/>',
-        );
+      const completion = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        max_tokens: 1024,
+        messages: [
+          {
+            role: 'system',
+            content: 'You are a helpful political assistant.',
+          },
+          { role: 'user', content: prompt },
+          ...chat,
+        ],
+      });
+      console.log('completion.data.choices', completion.data.choices);
+      chatResponse = completion.data.choices[0].message.content.replace(
+        '/n',
+        '<br/><br/>',
+      );
 
-        campaign.goals.whyRunning = chatResponse;
-        await Campaign.updateOne({
-          slug: campaign.slug,
-        }).set({
-          data: campaign,
-        });
-      }
+      campaign.goals.whyRunning = chatResponse;
+      await Campaign.updateOne({
+        slug: campaign.slug,
+      }).set({
+        data: campaign,
+      });
       return exits.success({
         chatResponse,
       });

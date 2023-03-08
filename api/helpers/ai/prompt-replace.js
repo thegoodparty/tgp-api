@@ -22,10 +22,28 @@ module.exports = {
       const { prompt, campaign } = inputs;
       let newPrompt = prompt;
 
+      const positionsStr = positionsToStr(campaign.details.topIssues);
+
       newPrompt = newPrompt.replace(/\[\[name\]\]/g, campaign.details.name);
       newPrompt = newPrompt.replace(/\[\[zip\]\]/g, campaign.details.zip);
       newPrompt = newPrompt.replace(/\[\[party\]\]/g, campaign.details.party);
       newPrompt = newPrompt.replace(/\[\[office\]\]/g, campaign.details.office);
+      newPrompt = newPrompt.replace(
+        /\[\[pastExperience\]\]/g,
+        campaign.details.pastExperience,
+      );
+      newPrompt = newPrompt.replace(
+        /\[\[occupation\]\]/g,
+        campaign.details.occupation,
+      );
+      newPrompt = newPrompt.replace(
+        /\[\[funFact\]\]/g,
+        campaign.details.funFact,
+      );
+      newPrompt = newPrompt.replace(
+        /\[\[positions\]\]/g,
+        campaign.details.positionsStr,
+      );
 
       newPrompt += `\n
         
@@ -38,10 +56,19 @@ module.exports = {
   },
 };
 
-function positionsToStr(positions) {
+function positionsToStr(topIssues) {
+  if (!topIssues) {
+    return '';
+  }
+  const { positions } = topIssues;
+  if (!positions) {
+    return '';
+  }
   let str = '';
-  positions.forEach((position) => {
-    str += `${position.name} (${position.topIssue.name}), `;
+  positions.forEach((position, index) => {
+    str += `${position.name} (${position.topIssue.name}) ${
+      topIssues[`position-${index + 1}`]
+    }, `;
   });
   return str;
 }
