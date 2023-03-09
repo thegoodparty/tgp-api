@@ -42,8 +42,13 @@ module.exports = {
         }).set({ data: campaign });
       }
 
+      const updated = await Campaign.findOne({
+        slug: campaign.slug,
+      });
+
       return exits.success({
         message: 'updated',
+        updated,
       });
     } catch (e) {
       console.log(e);

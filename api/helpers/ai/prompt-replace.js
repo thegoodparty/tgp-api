@@ -24,10 +24,14 @@ module.exports = {
 
       const positionsStr = positionsToStr(campaign.details.topIssues);
 
-      newPrompt = newPrompt.replace(/\[\[name\]\]/g, campaign.details.name);
+      newPrompt = newPrompt.replace(
+        /\[\[name\]\]/g,
+        `${campaign.details.firstName} ${campaign.details.lastName}`,
+      );
       newPrompt = newPrompt.replace(/\[\[zip\]\]/g, campaign.details.zip);
       newPrompt = newPrompt.replace(/\[\[party\]\]/g, campaign.details.party);
       newPrompt = newPrompt.replace(/\[\[office\]\]/g, campaign.details.office);
+      newPrompt = newPrompt.replace(/\[\[positions\]\]/g, positionsStr);
       newPrompt = newPrompt.replace(
         /\[\[pastExperience\]\]/g,
         campaign.details.pastExperience,
@@ -44,6 +48,27 @@ module.exports = {
         /\[\[positions\]\]/g,
         campaign.details.positionsStr,
       );
+      if (campaign.goals) {
+        newPrompt = newPrompt.replace(
+          /\[\[runningAgainstName\]\]/g,
+          campaign.goals.runningAgainstName,
+        );
+
+        newPrompt = newPrompt.replace(
+          /\[\[runningAgainstDescription\]\]/g,
+          campaign.goals.runningAgainstDescription,
+        );
+
+        newPrompt = newPrompt.replace(
+          /\[\[runningAgainstName\]\]/g,
+          campaign.goals.runningAgainstName,
+        );
+
+        newPrompt = newPrompt.replace(
+          /\[\[whyRunning\]\]/g,
+          campaign.goals.whyRunning,
+        );
+      }
 
       newPrompt += `\n
         

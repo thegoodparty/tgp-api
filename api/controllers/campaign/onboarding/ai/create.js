@@ -51,7 +51,6 @@ module.exports = {
         campaign[subSectionKey] = {};
       }
 
-      campaign.details.name = user.name;
       let chatResponse = campaign[subSectionKey][key];
       if (!campaign[subSectionKey][key] || regenerate) {
         const cmsPrompts = await sails.helpers.ai.getPrompts();
