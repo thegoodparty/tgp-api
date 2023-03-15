@@ -59,7 +59,7 @@ module.exports = {
 
         const completion = await openai.createChatCompletion({
           model: 'gpt-3.5-turbo',
-          max_tokens: 1024,
+          // max_tokens: 10240,
           messages: [
             {
               role: 'system',
@@ -73,7 +73,7 @@ module.exports = {
           '<br/><br/>',
         );
 
-        campaign.goals.whyRunning = chatResponse;
+        campaign[subSectionKey][key] = chatResponse;
         await Campaign.updateOne({
           slug: campaign.slug,
         }).set({

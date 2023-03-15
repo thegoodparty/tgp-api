@@ -16,7 +16,6 @@ module.exports = {
       responseType: 'ok',
     },
   },
-
   fn: async function (inputs, exits) {
     try {
       const { prompt, campaign } = inputs;
@@ -48,6 +47,7 @@ module.exports = {
         /\[\[positions\]\]/g,
         campaign.details.positionsStr,
       );
+
       if (campaign.goals) {
         newPrompt = newPrompt.replace(
           /\[\[runningAgainstName\]\]/g,
@@ -67,6 +67,16 @@ module.exports = {
         newPrompt = newPrompt.replace(
           /\[\[whyRunning\]\]/g,
           campaign.goals.whyRunning,
+        );
+
+        newPrompt = newPrompt.replace(
+          /\[\[campaignCommittee\]\]/g,
+          campaign.goals.campaignCommittee,
+        );
+
+        newPrompt = newPrompt.replace(
+          /\[\[statementName\]\]/g,
+          campaign.goals.statementName,
         );
       }
 
