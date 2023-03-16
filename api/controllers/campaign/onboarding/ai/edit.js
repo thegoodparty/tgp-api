@@ -76,7 +76,7 @@ module.exports = {
         '<br/><br/>',
       );
 
-      campaign.goals.whyRunning = chatResponse;
+      campaign[subSectionKey][key] = chatResponse;
       await Campaign.updateOne({
         slug: campaign.slug,
       }).set({
