@@ -1,3 +1,5 @@
+const { forEach } = require('lodash');
+
 module.exports = {
   inputs: {
     prompt: {
@@ -22,67 +24,77 @@ module.exports = {
       let newPrompt = prompt;
 
       const positionsStr = positionsToStr(campaign.details.topIssues);
-
-      newPrompt = newPrompt.replace(
-        /\[\[name\]\]/g,
-        `${campaign.details.firstName} ${campaign.details.lastName}`,
-      );
-      newPrompt = newPrompt.replace(/\[\[zip\]\]/g, campaign.details.zip);
-      newPrompt = newPrompt.replace(/\[\[party\]\]/g, campaign.details.party);
-      newPrompt = newPrompt.replace(/\[\[office\]\]/g, campaign.details.office);
-      newPrompt = newPrompt.replace(/\[\[positions\]\]/g, positionsStr);
-      newPrompt = newPrompt.replace(
-        /\[\[pastExperience\]\]/g,
-        campaign.details.pastExperience,
-      );
-      newPrompt = newPrompt.replace(
-        /\[\[occupation\]\]/g,
-        campaign.details.occupation,
-      );
-      newPrompt = newPrompt.replace(
-        /\[\[funFact\]\]/g,
-        campaign.details.funFact,
-      );
-      newPrompt = newPrompt.replace(
-        /\[\[positions\]\]/g,
-        campaign.details.positionsStr,
-      );
-
+      const replaceArr = [
+        {
+          find: 'name',
+          replace: `${campaign.details.firstName} ${campaign.details.lastName}`,
+        },
+        {
+          find: 'zip',
+          replace: campaign.details.zip,
+        },
+        {
+          find: 'party',
+          replace: campaign.details.party,
+        },
+        {
+          find: 'office',
+          replace: campaign.details.office,
+        },
+        {
+          find: 'positions',
+          replace: positionsStr,
+        },
+        {
+          find: 'pastExperience',
+          replace: campaign.details.pastExperience,
+        },
+        {
+          find: 'occupation',
+          replace: campaign.details.occupation,
+        },
+        {
+          find: 'funFact',
+          replace: campaign.details.funFact,
+        },
+      ];
       if (campaign.goals) {
-        newPrompt = newPrompt.replace(
-          /\[\[runningAgainstName\]\]/g,
-          campaign.goals.runningAgainstName,
-        );
-
-        newPrompt = newPrompt.replace(
-          /\[\[runningAgainstDescription\]\]/g,
-          campaign.goals.runningAgainstDescription,
-        );
-
-        newPrompt = newPrompt.replace(
-          /\[\[runningAgainstName\]\]/g,
-          campaign.goals.runningAgainstName,
-        );
-
-        newPrompt = newPrompt.replace(
-          /\[\[whyRunning\]\]/g,
-          campaign.goals.whyRunning,
-        );
-
-        newPrompt = newPrompt.replace(
-          /\[\[campaignCommittee\]\]/g,
-          campaign.goals.campaignCommittee,
-        );
-
-        newPrompt = newPrompt.replace(
-          /\[\[statementName\]\]/g,
-          campaign.goals.statementName,
+        replaceArr.push(
+          {
+            find: 'runningAgainstName',
+            replace: campaign.goals.runningAgainstName,
+          },
+          {
+            find: 'electionDate',
+            replace: campaign.goals.electionDate,
+          },
+          {
+            find: 'runningAgainstDescription',
+            replace: campaign.goals.runningAgainstDescription,
+          },
+          {
+            find: 'whyRunning',
+            replace: campaign.goals.whyRunning,
+          },
+          {
+            find: 'campaignCommittee',
+            replace: campaign.goals.campaignCommittee,
+          },
+          {
+            find: 'statementName',
+            replace: campaign.goals.statementName,
+          },
         );
       }
+
+      replaceArr.forEach((item) => {
+        newPrompt = replaceAll(newPrompt, item.find, item.replace);
+      });
 
       newPrompt += `\n
         
       `;
+
       return exits.success(newPrompt);
     } catch (e) {
       console.log('Error in helpers/ai/promptReplace', e);
@@ -106,4 +118,9 @@ function positionsToStr(topIssues) {
     }, `;
   });
   return str;
+}
+
+function replaceAll(string, search, replace) {
+  const replaceStr = replace || 'unknown';
+  return string.split(`[[${search}]]`).join(replaceStr);
 }
