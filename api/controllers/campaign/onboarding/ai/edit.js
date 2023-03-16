@@ -70,7 +70,6 @@ module.exports = {
           ...chat,
         ],
       });
-      console.log('completion.data.choices', completion.data.choices);
       chatResponse = completion.data.choices[0].message.content.replace(
         '/n',
         '<br/><br/>',
