@@ -26,6 +26,15 @@ module.exports = {
 
       const slug = await findSlug(user.name);
       const data = { slug };
+
+      // see if the user already have campaign
+      const existing = await Campaign.findOne({ user: user.id });
+      if (existing) {
+        return exits.success({
+          slug: existing.slug,
+        });
+      }
+
       await Campaign.create({
         slug,
         data,
