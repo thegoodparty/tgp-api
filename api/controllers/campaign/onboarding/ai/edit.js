@@ -60,7 +60,7 @@ module.exports = {
 
       const completion = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
-        max_tokens: 1024,
+        max_tokens: 4096,
         messages: [
           {
             role: 'system',
