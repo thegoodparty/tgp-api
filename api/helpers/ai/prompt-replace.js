@@ -35,7 +35,7 @@ module.exports = {
         },
         {
           find: 'party',
-          replace: campaign.details.party,
+          replace: campaign.details.party || campaign.details.otherParty,
         },
         {
           find: 'office',
