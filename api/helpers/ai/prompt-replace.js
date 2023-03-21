@@ -24,6 +24,7 @@ module.exports = {
       let newPrompt = prompt;
 
       const positionsStr = positionsToStr(campaign.details.topIssues);
+
       const replaceArr = [
         {
           find: 'name',
@@ -59,18 +60,15 @@ module.exports = {
         },
       ];
       if (campaign.goals) {
+        const againstStr = againstToStr(campaign.goals.runningAgainst);
         replaceArr.push(
           {
-            find: 'runningAgainstName',
-            replace: campaign.goals.runningAgainstName,
+            find: 'runningAgainst',
+            replace: campaign.goals.againstStr,
           },
           {
             find: 'electionDate',
             replace: campaign.goals.electionDate,
-          },
-          {
-            find: 'runningAgainstDescription',
-            replace: campaign.goals.runningAgainstDescription,
           },
           {
             find: 'whyRunning',
@@ -123,4 +121,15 @@ function positionsToStr(topIssues) {
 function replaceAll(string, search, replace) {
   const replaceStr = replace || 'unknown';
   return string.split(`[[${search}]]`).join(replaceStr);
+}
+
+function againstToStr(runningAgainst) {
+  if (!runningAgainst) {
+    return '';
+  }
+  let str = '';
+  runningAgainst.forEach((opponent) => {
+    str += `name: ${opponent.name}, description: ${opponent.description}. `;
+  });
+  return str;
 }
