@@ -64,7 +64,7 @@ module.exports = {
         replaceArr.push(
           {
             find: 'runningAgainst',
-            replace: campaign.goals.againstStr,
+            replace: againstStr,
           },
           {
             find: 'electionDate',
