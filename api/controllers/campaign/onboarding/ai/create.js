@@ -85,6 +85,9 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error generating AI response', e);
+      if (e.data && e.data.error) {
+        console.log('*** error*** :', e.data.error);
+      }
       return exits.badRequest();
     }
   },
