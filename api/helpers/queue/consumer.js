@@ -124,8 +124,6 @@ async function handleGenerateCampaignPlan(message) {
       '<br/><br/>',
     );
 
-    console.log('chatResponse', chatResponse);
-
     const campaign = await Campaign.findOne({ slug });
     const { data } = campaign;
     data[subSectionKey][key] = chatResponse;
@@ -135,8 +133,6 @@ async function handleGenerateCampaignPlan(message) {
     }).set({
       data,
     });
-
-    console.log('updated', data);
   } catch (e) {
     console.log('error at consumer', e);
     if (e.data) {

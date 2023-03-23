@@ -45,25 +45,6 @@ module.exports = {
         campaign = campaigns[0].data;
       }
 
-      console.log('here', campaign.campaignPlan);
-      // console.log('here', campaign);
-      // if (campaign.campaignPlan) {
-      //   if (Object.keys(campaign.campaignPlan).length === 0) {
-      //     const updated = { ...campaign };
-      //     updated.campaignPlan = false;
-      //     updated.campaignPlanStatus = false;
-      //     await Campaign.updateOne({
-      //       slug: campaign.slug,
-      //     }).set({
-      //       data: updated,
-      //     });
-      //     return exits.success({
-      //       status: 'deleted',
-      //       campaign: updated,
-      //     });
-      //   }
-      // }
-
       if (campaign.campaignPlanStatus === 'processing') {
         await sails.helpers.queue.consumer();
         return exits.success({
