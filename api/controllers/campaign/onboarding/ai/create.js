@@ -22,6 +22,13 @@ module.exports = {
     regenerate: {
       type: 'boolean',
     },
+    editMode: {
+      type: 'boolean',
+    },
+    chat: {
+      type: 'ref',
+      required: true,
+    },
   },
 
   exits: {
@@ -38,7 +45,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey, regenerate } = inputs;
+      const { key, subSectionKey, regenerate, editMode, chat } = inputs;
       await sails.helpers.queue.consumer();
 
       const campaigns = await Campaign.find({
@@ -57,7 +64,11 @@ module.exports = {
       }
       const existing = campaign[subSectionKey] && campaign[subSectionKey][key];
 
-      if (campaign.campaignPlanStatus === 'completed' && existing) {
+      if (
+        !editMode &&
+        campaign.campaignPlanStatus === 'completed' &&
+        existing
+      ) {
         return exits.success({
           status: 'completed',
           chatResponse: campaign[subSectionKey][key],
@@ -79,6 +90,7 @@ module.exports = {
           prompt,
           subSectionKey,
           key,
+          existingChat: chat || {},
         },
       };
 

@@ -106,8 +106,9 @@ async function handleMessage(message) {
 
 async function handleGenerateCampaignPlan(message) {
   try {
-    console.log('handeling campaign', message);
-    const { prompt, slug, subSectionKey, key } = message;
+    console.log('handling campaign', message);
+    const { prompt, slug, subSectionKey, key, existingChat } = message;
+    let chat = existingChat || {};
     const completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       max_tokens: 3000,
@@ -117,6 +118,7 @@ async function handleGenerateCampaignPlan(message) {
           content: 'You are a helpful political assistant.',
         },
         { role: 'user', content: prompt },
+        ...chat,
       ],
     });
     chatResponse = completion.data.choices[0].message.content.replace(
