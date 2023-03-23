@@ -19,6 +19,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    regenerate: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -35,7 +38,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey } = inputs;
+      const { key, subSectionKey, regenerate } = inputs;
       await sails.helpers.queue.consumer();
 
       const campaigns = await Campaign.find({
@@ -46,7 +49,7 @@ module.exports = {
         campaign = campaigns[0].data;
       }
 
-      if (campaign.campaignPlanStatus === 'processing') {
+      if (!regenerate && campaign.campaignPlanStatus === 'processing') {
         return exits.success({
           status: 'processing',
           step: 'waiting',
