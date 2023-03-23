@@ -23,6 +23,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
+      await sails.helpers.queue.consumer();
 
       const slug = await findSlug(user.name);
       const data = { slug };

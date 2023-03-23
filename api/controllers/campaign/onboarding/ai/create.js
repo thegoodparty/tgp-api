@@ -47,7 +47,6 @@ module.exports = {
       }
 
       if (campaign.campaignPlanStatus === 'processing') {
-        await sails.helpers.queue.consumer();
         return exits.success({
           status: 'processing',
           step: 'waiting',
