@@ -29,7 +29,7 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       if (!queueUrl) {
         return exits.success('not ok');
@@ -37,9 +37,7 @@ module.exports = {
       const { message } = inputs;
       const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
 
-      const uuid = Math.random()
-        .toString(36)
-        .substring(2, 12);
+      const uuid = Math.random().toString(36).substring(2, 12);
 
       const params = {
         MessageBody: JSON.stringify(message),
@@ -48,7 +46,7 @@ module.exports = {
         QueueUrl: queueUrl,
       };
 
-      sqs.sendMessage(params, function(err, data) {
+      sqs.sendMessage(params, function (err, data) {
         if (err) {
           console.log('error at enqueue', err);
           return exits.success('not ok');
@@ -59,7 +57,7 @@ module.exports = {
         }
       });
     } catch (e) {
-      return exits.success('not ok');
+      return exits.success('not ok', e);
     }
   },
 };

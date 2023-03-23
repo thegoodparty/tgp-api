@@ -2,6 +2,14 @@ const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
 
+const { Configuration, OpenAIApi } = require('openai');
+const openAiKey = sails.config.custom.openAi || sails.config.openAi;
+
+const AiConfiguration = new Configuration({
+  apiKey: openAiKey,
+});
+const openai = new OpenAIApi(AiConfiguration);
+
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
@@ -26,7 +34,7 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       if (!queueUrl) {
         return exits.success('not ok');
@@ -35,7 +43,7 @@ module.exports = {
         console.log('no queue instance, creating a new one');
         queue = Consumer.create({
           queueUrl,
-          handleMessage: async message => {
+          handleMessage: async (message) => {
             await handleMessage(message);
           },
           sqs: new AWS.SQS({
@@ -46,11 +54,11 @@ module.exports = {
             },
           }),
         });
-        queue.on('error', err => {
+        queue.on('error', (err) => {
           console.error(err.message);
         });
 
-        queue.on('processing_error', err => {
+        queue.on('processing_error', (err) => {
           console.error(err.message);
         });
 
@@ -75,24 +83,67 @@ async function handleMessage(message) {
   const { type, data } = action;
   console.log('processing queue message type ', type);
   switch (type) {
-    case 'pulsarSearches':
-      await handlePulsarSearches(data);
-      break;
-    case 'pulsarFollowers':
-      await handlePulsarFollowers(data);
-      break;
-    case 'pulsarBrands':
-      await handlePulsarBrands(data);
-      break;
-    case 'candidateTikTokScrape':
-      await handleCandidateTikTokScrape(data);
-      break;
-    case 'pulsarCandidateFeed':
-      await handlePulsarCandidateFeed(data);
+    // case 'pulsarSearches':
+    //   await handlePulsarSearches(data);
+    //   break;
+    // case 'pulsarFollowers':
+    //   await handlePulsarFollowers(data);
+    //   break;
+    // case 'pulsarBrands':
+    //   await handlePulsarBrands(data);
+    //   break;
+    // case 'candidateTikTokScrape':
+    //   await handleCandidateTikTokScrape(data);
+    //   break;
+    // case 'pulsarCandidateFeed':
+    //   await handlePulsarCandidateFeed(data);
+    //   break;
+    case 'generateCampaignPlan':
+      await handleGenerateCampaignPlan(data);
       break;
   }
 }
 
+async function handleGenerateCampaignPlan(message) {
+  try {
+    console.log('handeling campaign', message);
+    const { prompt, slug, subSectionKey, key } = message;
+    const completion = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      max_tokens: 3000,
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful political assistant.',
+        },
+        { role: 'user', content: prompt },
+      ],
+    });
+    chatResponse = completion.data.choices[0].message.content.replace(
+      '/n',
+      '<br/><br/>',
+    );
+
+    console.log('chatResponse', chatResponse);
+
+    const campaign = await Campaign.findOne({ slug });
+    const { data } = campaign;
+    data[subSectionKey][key] = chatResponse;
+    data.campaignPlanStatus = 'completed';
+    await Campaign.updateOne({
+      slug,
+    }).set({
+      data,
+    });
+
+    console.log('updated', data);
+  } catch (e) {
+    console.log('error at consumer', e);
+    if (e.data) {
+      console.log('error', e.data.error);
+    }
+  }
+}
 async function handlePulsarSearches(message) {
   try {
     const { page } = message;
