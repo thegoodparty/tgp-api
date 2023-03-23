@@ -36,6 +36,7 @@ module.exports = {
     try {
       const user = this.req.user;
       const { key, subSectionKey } = inputs;
+      await sails.helpers.queue.consumer();
 
       const campaigns = await Campaign.find({
         user: user.id,
