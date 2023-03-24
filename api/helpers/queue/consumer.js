@@ -108,7 +108,7 @@ async function handleGenerateCampaignPlan(message) {
   try {
     console.log('handling campaign', message);
     const { prompt, slug, subSectionKey, key, existingChat } = message;
-    let chat = existingChat || {};
+    let chat = existingChat || [];
     const completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       max_tokens: 3000,

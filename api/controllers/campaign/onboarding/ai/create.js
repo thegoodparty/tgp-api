@@ -89,7 +89,7 @@ module.exports = {
           prompt,
           subSectionKey,
           key,
-          existingChat: chat || {},
+          existingChat: chat || [],
         },
       };
 
