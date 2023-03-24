@@ -111,7 +111,7 @@ async function handleGenerateCampaignPlan(message) {
     let chat = existingChat || [];
     const completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
-      max_tokens: 3000,
+      max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
       messages: [
         {
           role: 'system',
