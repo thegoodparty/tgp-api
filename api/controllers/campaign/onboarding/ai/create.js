@@ -27,7 +27,6 @@ module.exports = {
     },
     chat: {
       type: 'ref',
-      required: true,
     },
   },
 
