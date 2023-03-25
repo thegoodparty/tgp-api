@@ -129,7 +129,7 @@ function againstToStr(runningAgainst) {
   }
   let str = '';
   runningAgainst.forEach((opponent) => {
-    str += `name: ${opponent.name}, description: ${opponent.description}. `;
+    str += `name: ${opponent.name}, party: ${opponent.party} ,description: ${opponent.description}. `;
   });
   return str;
 }
