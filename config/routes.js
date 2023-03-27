@@ -78,16 +78,6 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
   'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
-  // 'POST   /api/v1/campaign/onboarding/generate-why':
-  //   'campaign/onboarding/generate-why',
-  // 'POST   /api/v1/campaign/onboarding/generate-what':
-  //   'campaign/onboarding/generate-what',
-  // 'POST   /api/v1/campaign/onboarding/generate-opponent':
-  //   'campaign/onboarding/generate-opponent',
-  // 'POST   /api/v1/campaign/onboarding/generate-about-opponent':
-  //   'campaign/onboarding/generate-about-opponent',
-  // 'POST   /api/v1/campaign/onboarding/generate-opponent-self':
-  //   'campaign/onboarding/generate-opponent-self',
   'GET   /api/v1/campaign/onboarding/by-user':
     'campaign/onboarding/find-by-user',
   'GET   /api/v1/campaign/onboardings': 'campaign/onboarding/list',
@@ -95,6 +85,8 @@ module.exports.routes = {
   // onboarding AI
   'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',
   'PUT   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/edit',
+  'POST   /api/v1/campaign/onboarding/fast-ai':
+    'campaign/onboarding/ai/create-no-queue',
 
   'GET   /api/v1/top-issues': 'topIssues/topIssue/list',
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
