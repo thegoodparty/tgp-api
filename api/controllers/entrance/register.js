@@ -227,7 +227,7 @@ module.exports = {
         if (phone) {
           await sails.helpers.sms.smsVerify(phone);
         } else {
-          await sendWVerifyEmail(user);
+          // await sendWVerifyEmail(user);
         }
       }
       // try {

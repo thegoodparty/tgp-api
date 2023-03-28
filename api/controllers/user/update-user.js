@@ -64,18 +64,11 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const {
-        name,
-        email,
-        feedback,
-        phone,
-        zip,
-        displayName,
-        pronouns,
-      } = inputs;
+      const { name, email, feedback, phone, zip, displayName, pronouns } =
+        inputs;
 
       const updateFields = {};
       if (name) {
@@ -86,7 +79,7 @@ module.exports = {
       }
       if (email && reqUser.email !== email) {
         updateFields.email = email;
-        await sendEmail(reqUser.email, email);
+        // await sendEmail(reqUser.email, email);
         // try {
         //   await sails.helpers.subscribeUser(email);
         // } catch (e) {}
@@ -149,8 +142,9 @@ const sendEmail = async (reqEmail, email) => {
   });
 
   const appBase = sails.config.custom.appBase || sails.config.appBase;
-  const subject = `${user.firstName ||
-    user.name}, please verify your email address`;
+  const subject = `${
+    user.firstName || user.name
+  }, please verify your email address`;
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
     <tbody>
       <tr>
