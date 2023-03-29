@@ -75,7 +75,6 @@ module.exports = {
       }
 
       // generating a new campaign here
-      console.log('creating new queue campaign message');
       if (!campaign[subSectionKey]) {
         campaign[subSectionKey] = {};
       }

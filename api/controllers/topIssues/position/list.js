@@ -16,7 +16,6 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      console.log('at positions');
       positions = await Position.find()
         .populate('topIssue')
         .sort([{ name: 'ASC' }]);
