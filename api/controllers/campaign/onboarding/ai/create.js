@@ -54,18 +54,25 @@ module.exports = {
       if (campaigns && campaigns.length > 0) {
         campaign = campaigns[0].data;
       }
+      if (
+        !campaign.campaignPlanStatus ||
+        typeof campaign.campaignPlanStatus === 'string'
+      ) {
+        campaign.campaignPlanStatus = {};
+      }
 
-      if (!regenerate && campaign.campaignPlanStatus === 'processing') {
+      if (!regenerate && campaign.campaignPlanStatus[key] === 'processing') {
         return exits.success({
           status: 'processing',
           step: 'waiting',
+          key,
         });
       }
       const existing = campaign[subSectionKey] && campaign[subSectionKey][key];
 
       if (
         !editMode &&
-        campaign.campaignPlanStatus === 'completed' &&
+        campaign.campaignPlanStatus[key] === 'completed' &&
         existing
       ) {
         return exits.success({
@@ -73,6 +80,13 @@ module.exports = {
           chatResponse: campaign[subSectionKey][key],
         });
       }
+
+      // return exits.success({
+      //   status: 'fucked',
+      //   campaign,
+      //   key,
+      //   subSectionKey,
+      // });
 
       // generating a new campaign here
       if (!campaign[subSectionKey]) {
@@ -94,7 +108,7 @@ module.exports = {
 
       await sails.helpers.queue.enqueue(queueMessage);
 
-      campaign.campaignPlanStatus = 'processing';
+      campaign.campaignPlanStatus[key] = 'processing';
       await Campaign.updateOne({
         slug: campaign.slug,
       }).set({
@@ -105,6 +119,7 @@ module.exports = {
       return exits.success({
         status: 'processing',
         step: 'created',
+        key,
       });
     } catch (e) {
       console.log('Error generating AI response', e);

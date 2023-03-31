@@ -129,7 +129,13 @@ async function handleGenerateCampaignPlan(message) {
     const campaign = await Campaign.findOne({ slug });
     const { data } = campaign;
     data[subSectionKey][key] = chatResponse;
-    data.campaignPlanStatus = 'completed';
+    if (
+      !data.campaignPlanStatus ||
+      typeof campaign.campaignPlanStatus === 'string'
+    ) {
+      data.campaignPlanStatus = {};
+    }
+    data.campaignPlanStatus[key] = 'completed';
     await Campaign.updateOne({
       slug,
     }).set({
