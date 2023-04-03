@@ -107,6 +107,10 @@ async function handleMessage(message) {
 async function handleGenerateCampaignPlan(message) {
   try {
     console.log('handling campaign', message);
+    await sails.helpers.errorLoggerHelper(
+      'handling campaign from queue',
+      message,
+    );
     const { prompt, slug, subSectionKey, key, existingChat } = message;
     let chat = existingChat || [];
     const completion = await openai.createChatCompletion({
@@ -141,10 +145,20 @@ async function handleGenerateCampaignPlan(message) {
     }).set({
       data,
     });
+    await sails.helpers.errorLoggerHelper(
+      'updated campaign with ai. chatResponse: ',
+      chatResponse,
+    );
   } catch (e) {
     console.log('error at consumer', e);
     if (e.data) {
+      await sails.helpers.errorLoggerHelper(
+        'error at AI queue consumer (with msg): ',
+        e.data.error,
+      );
       console.log('error', e.data.error);
+    } else {
+      await sails.helpers.errorLoggerHelper('error at AI queue consumer: ', e);
     }
   }
 }

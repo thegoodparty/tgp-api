@@ -46,18 +46,19 @@ module.exports = {
         QueueUrl: queueUrl,
       };
 
-      sqs.sendMessage(params, function (err, data) {
+      sqs.sendMessage(params, async (err, data) => {
         if (err) {
           console.log('error at enqueue', err);
-          return exits.success('not ok');
+          await sails.helpers.errorLoggerHelper('error at enqueue', err);
+          return exits.success({ message: 'not ok', e: err });
         } else {
           console.log('Success', data.MessageId);
 
-          return exits.success('ok', data.MessageId);
+          return exits.success({ message: 'ok', id: data.MessageId });
         }
       });
     } catch (e) {
-      return exits.success('not ok', e);
+      return exits.success({ message: 'not ok', e });
     }
   },
 };

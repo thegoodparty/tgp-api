@@ -107,6 +107,7 @@ module.exports = {
       };
 
       await sails.helpers.queue.enqueue(queueMessage);
+      await sails.helpers.errorLoggerHelper('Enqueued AI prompt', queueMessage);
 
       campaign.campaignPlanStatus[key] = 'processing';
       await Campaign.updateOne({
