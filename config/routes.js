@@ -117,11 +117,11 @@ module.exports.routes = {
   // 'GET   /api/v1/listening/search-results': 'socialListening/search-results',
 
   // socialListening crons
-  'GET   /api/v1/listening/cron/searches': 'socialListening/cron/searches',
-  'GET   /api/v1/listening/cron/followers': 'socialListening/cron/followers',
-  'GET   /api/v1/listening/cron/brands': 'socialListening/cron/brands',
-  'GET   /api/v1/listening/cron/candidates-tiktok-scrape':
-    'socialListening/cron/candidates-tiktok-scrape',
-  'GET   /api/v1/listening/cron/update-candidates-feed':
-    'socialListening/cron/update-candidates-feed',
+  // 'GET   /api/v1/listening/cron/searches': 'socialListening/cron/searches',
+  // 'GET   /api/v1/listening/cron/followers': 'socialListening/cron/followers',
+  // 'GET   /api/v1/listening/cron/brands': 'socialListening/cron/brands',
+  // 'GET   /api/v1/listening/cron/candidates-tiktok-scrape':
+  //   'socialListening/cron/candidates-tiktok-scrape',
+  // 'GET   /api/v1/listening/cron/update-candidates-feed':
+  //   'socialListening/cron/update-candidates-feed',
 };
