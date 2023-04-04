@@ -18,8 +18,7 @@ module.exports = {
     },
   },
 
-
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { message, error } = inputs;
       const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -30,7 +29,7 @@ module.exports = {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `__________________________________ \n *Error caught on server* \n ${appBase}`,
+              text: `__________________________________ \n *Message from server* \n ${appBase}`,
             },
           },
           {
