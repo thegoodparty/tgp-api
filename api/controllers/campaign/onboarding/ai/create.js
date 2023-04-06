@@ -95,6 +95,14 @@ module.exports = {
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      if (!prompt || prompt === '') {
+        await sails.helpers.errorLoggerHelper('Error - getting empty prompt', {
+          cmsPrompt: cmsPrompts[key],
+          promptAfterReplace: prompt,
+          campaign,
+        });
+      }
+
       const queueMessage = {
         type: 'generateCampaignPlan',
         data: {
