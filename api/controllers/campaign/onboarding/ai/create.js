@@ -98,7 +98,6 @@ module.exports = {
       await sails.helpers.errorLoggerHelper('prompt', {
         cmsPrompt: cmsPrompts[key],
         promptAfterReplace: prompt,
-        campaign,
       });
 
       const queueMessage = {
