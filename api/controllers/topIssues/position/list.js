@@ -16,9 +16,13 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      positions = await Position.find()
+      let positions = await Position.find()
         .populate('topIssue')
         .sort([{ name: 'ASC' }]);
+
+      positions = positions.filter((pos) => !!pos.topIssue);
+
+      console.log('pp', positions);
 
       return exits.success({
         positions,
