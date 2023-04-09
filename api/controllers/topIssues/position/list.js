@@ -22,8 +22,6 @@ module.exports = {
 
       positions = positions.filter((pos) => !!pos.topIssue);
 
-      console.log('pp', positions);
-
       return exits.success({
         positions,
       });
