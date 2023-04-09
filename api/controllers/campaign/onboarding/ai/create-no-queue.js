@@ -44,13 +44,7 @@ module.exports = {
       const completion = await openai.createChatCompletion({
         model: 'gpt-3.5-turbo',
         max_tokens: 500,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful political assistant.',
-          },
-          { role: 'user', content: prompt },
-        ],
+        messages: [{ role: 'user', content: prompt }],
       });
       aiResponse = completion.data.choices[0].message.content.replace(
         '/n',
