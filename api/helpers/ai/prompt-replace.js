@@ -39,6 +39,14 @@ module.exports = {
           replace: campaign.details.party || campaign.details.otherParty,
         },
         {
+          find: 'state',
+          replace: campaign.details.state,
+        },
+        {
+          find: 'district',
+          replace: campaign.details.district,
+        },
+        {
           find: 'office',
           replace: campaign.details.office,
         },
@@ -86,7 +94,11 @@ module.exports = {
       }
 
       replaceArr.forEach((item) => {
-        newPrompt = replaceAll(newPrompt, item.find, item.replace);
+        try {
+          newPrompt = replaceAll(newPrompt, item.find, item.replace);
+        } catch (e) {
+          console.log('error at prompt replace', e);
+        }
       });
 
       newPrompt += `\n
@@ -111,9 +123,11 @@ function positionsToStr(topIssues) {
   }
   let str = '';
   positions.forEach((position, index) => {
-    str += `${position.name} (${position.topIssue.name}) ${
-      topIssues[`position-${index + 1}`]
-    }, `;
+    if (position && position.name) {
+      str += `${position.name} (${
+        position.topIssue ? position.topIssue.name : ''
+      }) ${topIssues[`position-${index + 1}`]}, `;
+    }
   });
   return str;
 }
