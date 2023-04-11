@@ -92,6 +92,92 @@ module.exports = {
           },
         );
       }
+      if (campaign.pathToVictory) {
+        const {
+          projectedTurnout,
+          winNumber,
+          republicans,
+          democrats,
+          indies,
+          averageTurnout,
+          ageMin,
+          ageMax,
+          women,
+          men,
+          africanAmerican,
+          white,
+          asian,
+          hispanic,
+          voteGoal,
+          voterProjection,
+        } = campaign.pathToVictory;
+        replaceArr.push(
+          {
+            find: 'projectedTurnout',
+            replace: projectedTurnout,
+          },
+          {
+            find: 'winNumber',
+            replace: winNumber,
+          },
+          {
+            find: 'republicans',
+            replace: republicans,
+          },
+          {
+            find: 'democrats',
+            replace: democrats,
+          },
+          {
+            find: 'indies',
+            replace: indies,
+          },
+          {
+            find: 'averageTurnout',
+            replace: averageTurnout,
+          },
+          {
+            find: 'ageMin',
+            replace: ageMin,
+          },
+          {
+            find: 'ageMax',
+            replace: ageMax,
+          },
+          {
+            find: 'women',
+            replace: women,
+          },
+          {
+            find: 'men',
+            replace: men,
+          },
+          {
+            find: 'africanAmerican',
+            replace: africanAmerican,
+          },
+          {
+            find: 'white',
+            replace: white,
+          },
+          {
+            find: 'asian',
+            replace: asian,
+          },
+          {
+            find: 'hispanic',
+            replace: hispanic,
+          },
+          {
+            find: 'voteGoal',
+            replace: voteGoal,
+          },
+          {
+            find: 'voterProjection',
+            replace: voterProjection,
+          },
+        );
+      }
 
       replaceArr.forEach((item) => {
         try {
