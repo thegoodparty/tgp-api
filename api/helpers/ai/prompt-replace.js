@@ -110,11 +110,16 @@ module.exports = {
           hispanic,
           voteGoal,
           voterProjection,
+          totalRegisteredVoters,
         } = campaign.pathToVictory;
         replaceArr.push(
           {
             find: 'projectedTurnout',
             replace: projectedTurnout,
+          },
+          {
+            find: 'totalRegisteredVoters',
+            replace: totalRegisteredVoters,
           },
           {
             find: 'winNumber',
