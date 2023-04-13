@@ -101,14 +101,7 @@ async function handleGenerateCampaignPlan(message) {
     const completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
-      messages: [
-        {
-          role: 'system',
-          content: 'You are a helpful political assistant.',
-        },
-        { role: 'user', content: prompt },
-        ...chat,
-      ],
+      messages: [{ role: 'user', content: prompt }, ...chat],
     });
     chatResponse = completion.data.choices[0].message.content.replace(
       '/n',
