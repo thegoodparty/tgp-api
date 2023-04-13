@@ -111,6 +111,8 @@ module.exports = {
           voteGoal,
           voterProjection,
           totalRegisteredVoters,
+          budgetLow,
+          budgetHigh,
         } = campaign.pathToVictory;
         replaceArr.push(
           {
@@ -180,6 +182,14 @@ module.exports = {
           {
             find: 'voterProjection',
             replace: voterProjection,
+          },
+          {
+            find: 'budgetLow',
+            replace: budgetLow,
+          },
+          {
+            find: 'budgetHigh',
+            replace: budgetHigh,
           },
         );
       }
