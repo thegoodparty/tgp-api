@@ -56,13 +56,6 @@ module.exports = {
       }
       let candidateData = JSON.parse(candidate.data);
 
-      let imageAsBase64;
-      if (withImage && candidateData.image) {
-        const imageData = await request.get(candidateData.image, {
-          encoding: null,
-        });
-        imageAsBase64 = Buffer.from(imageData).toString('base64');
-      }
       let candidatePositions = [];
 
       if (allFields) {
