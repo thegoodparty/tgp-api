@@ -4,7 +4,6 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const request = require('request-promise');
 const moment = require('moment');
 
 module.exports = {
@@ -16,9 +15,6 @@ module.exports = {
     slug: {
       type: 'string',
       required: true,
-    },
-    withImage: {
-      type: 'boolean',
     },
     allFields: {
       type: 'boolean',
@@ -38,78 +34,30 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { slug, allFields, withImage } = inputs;
-      let candidate;
-      if (allFields) {
-        candidate = await Candidate.findOne({
-          slug,
-          isActive: true,
-        }).populate('endorsements');
-      } else {
-        candidate = await Candidate.findOne({
-          slug,
-          isActive: true,
-        });
-      }
+      const { slug, allFields } = inputs;
+      let candidate = await Candidate.findOne({
+        slug,
+        isActive: true,
+      });
+
       if (!candidate) {
         return exits.notFound();
       }
       let candidateData = JSON.parse(candidate.data);
 
-      let imageAsBase64;
-      if (withImage && candidateData.image) {
-        const imageData = await request.get(candidateData.image, {
-          encoding: null,
-        });
-        imageAsBase64 = Buffer.from(imageData).toString('base64');
-      }
       let candidatePositions = [];
+
+      let support;
 
       if (allFields) {
         candidatePositions = await candidatePositionFinder(candidate.id);
-        candidateData.endorsements = candidate.endorsements;
-      }
-      if (!candidateData.certifiedDate) {
-        // we can remove this after all candidates were updated.
-        const certifiedDate = moment(candidate.createdAt).format('MM/DD/YYYY');
-        candidateData.certifiedDate = certifiedDate;
-      }
-      let followers = {};
-      let feed = {};
-      if (allFields) {
-        followers =
-          await sails.helpers.socialListening.candidateFollowersHelper(
-            candidate,
-          );
-        const support = await sails.helpers.support.supportByCandidate(
-          candidate.id,
-        );
-
-        followers.thisWeek += support.thisWeek;
-        followers.lastWeek += support.lastWeek;
-
-        if (candidateData.pulsarSearchId) {
-          try {
-            feed = await sails.helpers.socialListening.searchResultsHelper(
-              candidateData.pulsarSearchId,
-              4,
-              true,
-              true,
-              false,
-              true,
-            );
-          } catch (e) {
-            console.log('error generating feed', e);
-          }
-        }
+        support = await sails.helpers.support.supportByCandidate(candidate.id);
       }
 
       return exits.success({
         candidate: candidateData,
         candidatePositions,
-        imageAsBase64,
-        followers,
-        feed,
+        support,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
@@ -118,9 +66,9 @@ module.exports = {
   },
 };
 
-const candidatePositionFinder = async (id) => {
+async function candidatePositionFinder(id) {
   return await CandidatePosition.find({ candidate: id })
     .sort([{ order: 'ASC' }])
     .populate('topIssue')
     .populate('position');
-};
+}

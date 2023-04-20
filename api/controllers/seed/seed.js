@@ -12,6 +12,7 @@ module.exports = {
       for (let i = 0; i < candidates.length; i++) {
         const candidate = candidates[i];
         let slug = candidate.slug;
+        console.log('slug before', slug);
         if (!slug || slug === '') {
           slug = await findSlug(candidate);
         }
