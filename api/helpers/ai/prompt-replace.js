@@ -227,7 +227,7 @@ function positionsToStr(topIssues) {
     if (position && position.name) {
       str += `${position.name} (${
         position.topIssue ? position.topIssue.name : ''
-      }) ${topIssues[`position-${index + 1}`]}, `;
+      }) ${topIssues[`position-${position.id + 1}`]}, `;
     }
   });
   return str;

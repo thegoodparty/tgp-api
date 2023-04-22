@@ -1,13 +1,6 @@
 /* eslint-disable object-shorthand */
-const { Configuration, OpenAIApi } = require('openai');
 
-const openAiKey = sails.config.custom.openAi || sails.config.openAi;
-
-const configuration = new Configuration({
-  apiKey: openAiKey,
-});
-
-const openai = new OpenAIApi(configuration);
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
@@ -81,17 +74,16 @@ module.exports = {
         });
       }
 
-      // return exits.success({
-      //   status: 'fucked',
-      //   campaign,
-      //   key,
-      //   subSectionKey,
-      // });
-
       // generating a new campaign here
       if (!campaign[subSectionKey]) {
         campaign[subSectionKey] = {};
       }
+
+      // checking if this is the first time the campaign plan is visited. If so - send a slack message.
+      if (key === 'slogan' && !regenerate && !campaign[subSectionKey][key]) {
+        await sendSlackMessage(campaign, user);
+      }
+
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
@@ -137,3 +129,34 @@ module.exports = {
     }
   },
 };
+
+async function sendSlackMessage(campaign, user) {
+  const { slug, details } = campaign;
+  const { firstName, lastName } = details;
+  const slackMessage = {
+    text: `Onboarding Alert!`,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `__________________________________ \n *Candidate completed details section * \n ${appBase}`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*We need to add their admin Path to victory*\n
+          \nName:${firstName} ${lastName}\n
+          \nemail:${user.email}\n
+          \nslug:${slug}\n
+          \nadmin link: ${appBase}/admin/victory-path
+          `,
+        },
+      },
+    ],
+  };
+
+  await sails.helpers.slackHelper(slackMessage, 'victory');
+}

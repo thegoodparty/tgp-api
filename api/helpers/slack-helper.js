@@ -27,7 +27,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { message, channel } = inputs;
       let slackChannelId;
@@ -43,6 +43,14 @@ module.exports = {
         slackChannelId =
           sails.config.custom.slackDevChannelId ||
           sails.config.slackDevChannelId;
+      } else if (channel === 'victory') {
+        token =
+          sails.config.custom.slackVictoryChannelToken ||
+          sails.config.slackVictoryChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackVictoryChannelId ||
+          sails.config.slackVictoryChannelId;
       } else {
         token =
           sails.config.custom.slackContentChannelToken ||
