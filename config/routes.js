@@ -44,6 +44,8 @@ module.exports.routes = {
   'DELETE    /api/v1/admin/user': 'admin/delete-user',
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
   'POST   /api/v1/admin/upload-image': 'admin/upload-image',
+  // for campaign
+  'POST    /api/v1/admin/victory-mail': 'admin/victory-mail',
 
   // New Candidates
   'POST   /api/v1/new-candidate': 'newCandidates/create',
