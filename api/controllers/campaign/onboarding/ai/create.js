@@ -148,12 +148,12 @@ async function sendSlackMessage(campaign, user) {
         text: {
           type: 'mrkdwn',
           text: `*We need to add their admin Path to victory*\n
-          \nName:${firstName} ${lastName}\n
-          \nOffice:${office}\n
-          \nState:${state}\n
-          \nDistrict:${district}\n
-          \nemail:${user.email}\n
-          \nslug:${slug}\n
+          \nName: ${firstName} ${lastName}
+          \nOffice: ${office}
+          \nState: ${state}
+          \nDistrict: ${district}
+          \nemail: ${user.email}
+          \nslug: ${slug}\n
           \nadmin link: ${appBase}/admin/victory-path
           `,
         },
