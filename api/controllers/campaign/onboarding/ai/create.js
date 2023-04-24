@@ -132,7 +132,7 @@ module.exports = {
 
 async function sendSlackMessage(campaign, user) {
   const { slug, details } = campaign;
-  const { firstName, lastName } = details;
+  const { firstName, lastName, office, state, district } = details;
   const slackMessage = {
     text: `Onboarding Alert!`,
     blocks: [
@@ -149,6 +149,9 @@ async function sendSlackMessage(campaign, user) {
           type: 'mrkdwn',
           text: `*We need to add their admin Path to victory*\n
           \nName:${firstName} ${lastName}\n
+          \nOffice:${office}\n
+          \nState:${state}\n
+          \nDistrict:${district}\n
           \nemail:${user.email}\n
           \nslug:${slug}\n
           \nadmin link: ${appBase}/admin/victory-path
