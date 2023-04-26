@@ -36,9 +36,9 @@ module.exports = {
         slug: campaign.slug,
       });
 
-      if (versionKey) {
+      if (versionKey && existing) {
         await sails.helpers.ai.saveCampaignVersion(
-          campaign,
+          existing.data,
           'campaignPlan',
           versionKey,
           existing.id,

@@ -43,7 +43,10 @@ module.exports = {
       if (!versions[key]) {
         versions[key] = [];
       }
-      versions[key].push(previousVersion);
+      const length = versions[key].unshift(previousVersion);
+      if (length > 10) {
+        versions[key].length = 10;
+      }
       if (existingVersions) {
         await CampaignPlanVersion.updateOne({
           campaign: campaignId,
