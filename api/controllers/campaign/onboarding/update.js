@@ -13,6 +13,9 @@ module.exports = {
       type: 'json',
       required: true,
     },
+    versionKey: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -27,8 +30,20 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { campaign } = inputs;
+      const { campaign, versionKey } = inputs;
       const { user } = this.req;
+      const existing = await Campaign.findOne({
+        slug: campaign.slug,
+      });
+
+      if (versionKey) {
+        await sails.helpers.ai.saveCampaignVersion(
+          campaign,
+          'campaignPlan',
+          versionKey,
+          existing.id,
+        );
+      }
 
       // update can be done by an admin or a user.
       if (user.isAdmin) {
@@ -42,13 +57,13 @@ module.exports = {
         }).set({ data: campaign });
       }
 
-      const updated = await Campaign.findOne({
-        slug: campaign.slug,
-      });
+      // const updated = await Campaign.findOne({
+      //   slug: campaign.slug,
+      // });
 
       return exits.success({
         message: 'updated',
-        updated,
+        // updated,
       });
     } catch (e) {
       console.log(e);

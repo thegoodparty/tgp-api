@@ -110,7 +110,12 @@ async function handleGenerateCampaignPlan(message) {
 
     const campaign = await Campaign.findOne({ slug });
     const { data } = campaign;
-    await saveVersion(data, subSectionKey, key, campaign.id);
+    await sails.helpers.ai.saveCampaignVersion(
+      data,
+      subSectionKey,
+      key,
+      campaign.id,
+    );
 
     data[subSectionKey][key] = chatResponse;
     if (
