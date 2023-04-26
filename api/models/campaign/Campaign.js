@@ -18,6 +18,11 @@ module.exports = {
     user: {
       model: 'user',
     },
+
+    campaignPlanVersions: {
+      collection: 'campaignPlanVersion',
+      via: 'campaign',
+    },
   },
 
   customToJSON: function () {

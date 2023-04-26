@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 const https = require('https');
 
 const { Configuration, OpenAIApi } = require('openai');
+const CampaignPlanVersion = require('../../models/campaign/CampaignPlanVersion');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
 const AiConfiguration = new Configuration({
@@ -91,7 +92,6 @@ async function handleMessage(message) {
 
 async function handleGenerateCampaignPlan(message) {
   try {
-    console.log('handling campaign', message);
     await sails.helpers.errorLoggerHelper(
       'handling campaign from queue',
       message,
@@ -110,6 +110,8 @@ async function handleGenerateCampaignPlan(message) {
 
     const campaign = await Campaign.findOne({ slug });
     const { data } = campaign;
+    await saveVersion(data, subSectionKey, key, campaign.id);
+
     data[subSectionKey][key] = chatResponse;
     if (
       !data.campaignPlanStatus ||
@@ -138,5 +140,39 @@ async function handleGenerateCampaignPlan(message) {
     } else {
       await sails.helpers.errorLoggerHelper('error at AI queue consumer: ', e);
     }
+  }
+}
+
+async function saveVersion(data, subSectionKey, key, campaignId) {
+  const previousVersion = {
+    date: new Date().toString(),
+    aiResponse: data[subSectionKey][key],
+  };
+  if (!previousVersion) {
+    return;
+  }
+  const existingVersions = await CampaignPlanVersion.findOne({
+    campaign: campaignId,
+  });
+  let versions = {};
+  if (existingVersions) {
+    versions = existingVersions.data;
+  }
+
+  if (!versions[key]) {
+    versions[key] = [];
+  }
+  versions[key].push(previousVersion);
+  if (existingVersions) {
+    await CampaignPlanVersion.updateOne({
+      campaign: campaignId,
+    }).set({
+      data: versions,
+    });
+  } else {
+    await CampaignPlanVersion.create({
+      campaign: campaignId,
+      data: versions,
+    });
   }
 }
