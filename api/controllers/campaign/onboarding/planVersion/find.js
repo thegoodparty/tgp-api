@@ -41,7 +41,7 @@ module.exports = {
       });
 
       return exits.success({
-        versions: versions && versions.length > 0 ? versions[0].data : [],
+        versions: versions && versions.length > 0 ? versions[0].data : {},
       });
     } catch (e) {
       console.log('Error in find candidate', e);
