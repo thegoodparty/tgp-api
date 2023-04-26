@@ -30,15 +30,18 @@ module.exports = {
       });
       let campaign = false;
       if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
+        campaign = campaigns[0];
+      }
+      if (!campaign) {
+        return [];
       }
 
       const versions = await CampaignPlanVersion.find({
         campaign: campaign.id,
-      }).limit(1);
+      });
 
       return exits.success({
-        versions: versions.length > 0 ? versions[0].data : [],
+        versions: versions && versions.length > 0 ? versions[0].data : [],
       });
     } catch (e) {
       console.log('Error in find candidate', e);
