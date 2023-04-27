@@ -100,8 +100,8 @@ module.exports = {
           democrats,
           indies,
           averageTurnout,
-          ageMin,
-          ageMax,
+          allAvailVoters,
+          availVotersTo35,
           women,
           men,
           africanAmerican,
@@ -144,12 +144,12 @@ module.exports = {
             replace: averageTurnout,
           },
           {
-            find: 'ageMin',
-            replace: ageMin,
+            find: 'allAvailVoters',
+            replace: allAvailVoters,
           },
           {
-            find: 'ageMax',
-            replace: ageMax,
+            find: 'availVotersTo35',
+            replace: availVotersTo35,
           },
           {
             find: 'women',
