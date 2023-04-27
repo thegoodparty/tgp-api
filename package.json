@@ -7,7 +7,7 @@
   "dependencies": {
     "@contentful/rich-text-plain-text-renderer": "^15.12.1",
     "@google-cloud/recaptcha-enterprise": "^3.1.0",
-    "@hubspot/api-client": "^6.0.1-beta4",
+    "@hubspot/api-client": "^8.9.0",
     "@mailchimp/mailchimp_marketing": "^3.0.15",
     "@sailshq/lodash": "^3.10.3",
     "@tyriar/binary-heap": "^1.0.5",

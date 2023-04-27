@@ -1,7 +1,8 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
 const hubspot = require('@hubspot/api-client');
 
-const hubSpotKey = sails.config.custom.hubSpotKey || sails.config.hubSpotKey;
+const hubSpotToken =
+  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
 module.exports = {
   inputs: {
@@ -26,13 +27,13 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
-    if (!hubSpotKey) {
+  fn: async function (inputs, exits) {
+    if (!hubSpotToken) {
       // for non production env.
       return exits.success('no api key');
     }
 
-    const hubspotClient = new hubspot.Client({ apiKey: hubSpotKey });
+    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
     const { user, candidate, remove } = inputs;
     try {

@@ -2,7 +2,8 @@
 const hubspot = require('@hubspot/api-client');
 const moment = require('moment');
 
-const hubSpotKey = sails.config.custom.hubSpotKey || sails.config.hubSpotKey;
+const hubSpotToken =
+  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
 module.exports = {
   inputs: {
@@ -20,12 +21,12 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
-    if (!hubSpotKey) {
+  fn: async function (inputs, exits) {
+    if (!hubSpotToken) {
       // for non production env.
       return exits.success('no api key');
     }
-    const hubspotClient = new hubspot.Client({ apiKey: hubSpotKey });
+    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
     const { user } = inputs;
     const { id, name, email, phone, uuid, zip } = user;
@@ -61,14 +62,8 @@ module.exports = {
 
       const contactObj = {
         properties: {
-          firstname: name
-            .split(' ')
-            .slice(0, -1)
-            .join(' '),
-          lastname: name
-            .split(' ')
-            .slice(-1)
-            .join(' '),
+          firstname: name.split(' ').slice(0, -1).join(' '),
+          lastname: name.split(' ').slice(-1).join(' '),
           email,
           phone,
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
@@ -108,9 +103,8 @@ module.exports = {
       if (contactId) {
         await hubspotClient.crm.contacts.basicApi.update(contactId, contactObj);
       } else {
-        const createContactResponse = await hubspotClient.crm.contacts.basicApi.create(
-          contactObj,
-        );
+        const createContactResponse =
+          await hubspotClient.crm.contacts.basicApi.create(contactObj);
         // update user record with the id from the crm
         const hubspotId = createContactResponse.id;
         await updateMeta(user, hubspotId);
@@ -157,4 +151,4 @@ const updateMeta = async (user, hubspotId) => {
   });
 };
 
-const formatDate = date => moment(date).format('YYYY-MM-DD');
+const formatDate = (date) => moment(date).format('YYYY-MM-DD');
