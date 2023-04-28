@@ -31,7 +31,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { email, phone } = inputs;
       if (!email && !phone) {
@@ -71,7 +71,7 @@ module.exports = {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
 
       if (email) {
-        const lowerCaseEmail = email.toLowerCase();
+        const lowerCaseEmail = email.toLowerCase().replace('+', '%2b');
         const link = encodeURI(
           `${appBase}/reset-password?email=${lowerCaseEmail}&token=${token}`,
         );
@@ -96,7 +96,7 @@ module.exports = {
   },
 };
 
-const sentEmail = async (user, link) => {
+async function sentEmail(user, link) {
   const subject = 'Reset your password - The Good Party';
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
           <tbody>
@@ -157,4 +157,4 @@ const sentEmail = async (user, link) => {
     messageHeader,
     message,
   );
-};
+}
