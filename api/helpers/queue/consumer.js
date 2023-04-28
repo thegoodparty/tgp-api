@@ -145,12 +145,12 @@ async function handleGenerateCampaignPlan(message) {
       console.log('error', e.data.error);
     } else {
       await sails.helpers.errorLoggerHelper(
-        'error at AI queue consumer debug: ',
-        e,
-      );
-      await sails.helpers.errorLoggerHelper(
         'error at AI queue consumer. Queue Message: ',
         message,
+      );
+      await sails.helpers.errorLoggerHelper(
+        'error at AI queue consumer debug: ',
+        e,
       );
     }
   }
