@@ -136,6 +136,10 @@ async function handleGenerateCampaignPlan(message) {
     );
   } catch (e) {
     console.log('error at consumer', e);
+    await sails.helpers.errorLoggerHelper(
+      'error at AI queue consumer. Queue Message: ',
+      message,
+    );
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
         'error at AI queue consumer (with msg): ',
@@ -145,39 +149,5 @@ async function handleGenerateCampaignPlan(message) {
     } else {
       await sails.helpers.errorLoggerHelper('error at AI queue consumer: ', e);
     }
-  }
-}
-
-async function saveVersion(data, subSectionKey, key, campaignId) {
-  const previousVersion = {
-    date: new Date().toString(),
-    aiResponse: data[subSectionKey][key],
-  };
-  if (!previousVersion) {
-    return;
-  }
-  const existingVersions = await CampaignPlanVersion.findOne({
-    campaign: campaignId,
-  });
-  let versions = {};
-  if (existingVersions) {
-    versions = existingVersions.data;
-  }
-
-  if (!versions[key]) {
-    versions[key] = [];
-  }
-  versions[key].push(previousVersion);
-  if (existingVersions) {
-    await CampaignPlanVersion.updateOne({
-      campaign: campaignId,
-    }).set({
-      data: versions,
-    });
-  } else {
-    await CampaignPlanVersion.create({
-      campaign: campaignId,
-      data: versions,
-    });
   }
 }
