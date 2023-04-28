@@ -38,7 +38,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { email, phone, password } = inputs;
       if (!email && !phone) {
@@ -67,6 +67,14 @@ module.exports = {
         id: user.id,
         email: user.email,
       });
+
+      try {
+        await sails.helpers.crm.updateUser(user, true);
+      } catch (e) {
+        console.log('error updating user in crm', e);
+        await sails.helpers.errorLoggerHelper('Error at entrance/login.js', e);
+      }
+
       return exits.success({ user, token });
     } catch (err) {
       await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
