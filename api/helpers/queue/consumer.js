@@ -136,10 +136,7 @@ async function handleGenerateCampaignPlan(message) {
     );
   } catch (e) {
     console.log('error at consumer', e);
-    await sails.helpers.errorLoggerHelper(
-      'error at AI queue consumer. Queue Message: ',
-      message,
-    );
+
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
         'error at AI queue consumer (with msg): ',
@@ -148,6 +145,10 @@ async function handleGenerateCampaignPlan(message) {
       console.log('error', e.data.error);
     } else {
       await sails.helpers.errorLoggerHelper('error at AI queue consumer: ', e);
+      await sails.helpers.errorLoggerHelper(
+        'error at AI queue consumer. Queue Message: ',
+        message,
+      );
     }
   }
 }
