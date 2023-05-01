@@ -61,6 +61,8 @@ module.exports = {
       //   slug: campaign.slug,
       // });
 
+      await sails.helpers.crm.updateCampaign(updated);
+
       return exits.success({
         message: 'updated',
         // updated,

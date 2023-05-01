@@ -2,13 +2,17 @@
 const hubspot = require('@hubspot/api-client');
 const moment = require('moment');
 
-const hubSpotKey = sails.config.custom.hubSpotKey || sails.config.hubSpotKey;
+const hubSpotToken =
+  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
 module.exports = {
   inputs: {
     user: {
       type: 'json',
       required: true,
+    },
+    loginEvent: {
+      type: 'boolean',
     },
   },
   exits: {
@@ -20,14 +24,14 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
-    if (!hubSpotKey) {
+  fn: async function (inputs, exits) {
+    if (!hubSpotToken) {
       // for non production env.
       return exits.success('no api key');
     }
-    const hubspotClient = new hubspot.Client({ apiKey: hubSpotKey });
+    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
-    const { user } = inputs;
+    const { user, loginEvent } = inputs;
     const { id, name, email, phone, uuid, zip } = user;
     try {
       // const userCrew = await User.findOne({ id }).populate('crew');
@@ -61,14 +65,8 @@ module.exports = {
 
       const contactObj = {
         properties: {
-          firstname: name
-            .split(' ')
-            .slice(0, -1)
-            .join(' '),
-          lastname: name
-            .split(' ')
-            .slice(-1)
-            .join(' '),
+          firstname: name.split(' ').slice(0, -1).join(' '),
+          lastname: name.split(' ').slice(-1).join(' '),
           email,
           phone,
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
@@ -81,7 +79,7 @@ module.exports = {
               : '',
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
-          referrals: crew.length,
+          // referrals: crew != undefined && crew?.length > 0 ? crew.length : 0,
           // last_referral:
           //   crew.length > 0 ? formatDate(crew[crew.length - 1].createdAt) : '',
           // application_approved: applicationApproved,
@@ -96,6 +94,14 @@ module.exports = {
           //     : '',
         },
       };
+      if (loginEvent) {
+        const now = new Date();
+        // this is undocumented, but they want the date in UTC at midnight.
+        const todayMidnightUTC = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        );
+        contactObj.properties.last_login = todayMidnightUTC;
+      }
 
       let contactId;
       if (user.metaData) {
@@ -105,15 +111,56 @@ module.exports = {
         }
       }
 
+      if (!contactId) {
+        console.log('getting hubspotId for user', email);
+        try {
+          const contact = await hubspotClient.crm.contacts.basicApi.getById(
+            email,
+            ['id', 'email'],
+            undefined,
+            undefined,
+            undefined,
+            'email',
+          );
+          contactId = contact.id;
+        } catch (e) {
+          // todo: it might be normal for this to fail on first login.
+          // so we may want to supress these errors in slack.
+          console.log('error getting contact', e);
+          await sails.helpers.errorLoggerHelper(
+            'Error getting hubspot contact',
+            e,
+          );
+        }
+      }
+
       if (contactId) {
-        await hubspotClient.crm.contacts.basicApi.update(contactId, contactObj);
+        try {
+          await hubspotClient.crm.contacts.basicApi.update(
+            contactId,
+            contactObj,
+          );
+        } catch (e) {
+          console.log('error updating contact', e);
+          await sails.helpers.errorLoggerHelper(
+            'Error updating hubspot contact',
+            e,
+          );
+        }
       } else {
-        const createContactResponse = await hubspotClient.crm.contacts.basicApi.create(
-          contactObj,
-        );
-        // update user record with the id from the crm
-        const hubspotId = createContactResponse.id;
-        await updateMeta(user, hubspotId);
+        try {
+          const createContactResponse =
+            await hubspotClient.crm.contacts.basicApi.create(contactObj);
+          // update user record with the id from the crm
+          const hubspotId = createContactResponse.id;
+          await updateMeta(user, hubspotId);
+        } catch (e) {
+          console.log('error creating contact', e);
+          await sails.helpers.errorLoggerHelper(
+            'Error creating hubspot contact',
+            e,
+          );
+        }
       }
       return exits.success('ok');
     } catch (e) {
@@ -157,4 +204,4 @@ const updateMeta = async (user, hubspotId) => {
   });
 };
 
-const formatDate = date => moment(date).format('YYYY-MM-DD');
+const formatDate = (date) => moment(date).format('YYYY-MM-DD');

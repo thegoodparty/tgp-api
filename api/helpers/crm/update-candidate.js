@@ -3,7 +3,8 @@ const hubspot = require('@hubspot/api-client');
 const slugify = require('slugify');
 const moment = require('moment');
 
-const hubSpotKey = sails.config.custom.hubSpotKey || sails.config.hubSpotKey;
+const hubSpotToken =
+  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
@@ -22,12 +23,12 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
-    if (!hubSpotKey) {
+  fn: async function (inputs, exits) {
+    if (!hubSpotToken) {
       // for non production env.
       return exits.success('no api key');
     }
-    const hubspotClient = new hubspot.Client({ apiKey: hubSpotKey });
+    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
     const { candidate } = inputs;
     const data = JSON.parse(candidate.data);
@@ -49,13 +50,12 @@ module.exports = {
         .populate('position');
 
       let topIssues = '';
-      candidatePositions.forEach(candPosition => {
+      candidatePositions.forEach((candPosition) => {
         topIssues += `Top Issue: ${candPosition.topIssue.name} | Position: ${candPosition.position.name} | Candidate Position: ${candPosition.description} \n`;
       });
 
-      const followers = await sails.helpers.socialListening.candidateFollowersHelper(
-        candidate,
-      );
+      const followers =
+        await sails.helpers.socialListening.candidateFollowersHelper(candidate);
       let totalFeed = 0;
       if (data.pulsarSearchId) {
         const feed = await sails.helpers.socialListening.searchResultsHelper(
@@ -138,9 +138,8 @@ module.exports = {
         return exits.success(existingId);
       } else {
         // update user record with the id from the crm
-        const createCompanyResponse = await hubspotClient.crm.companies.basicApi.create(
-          companyObj,
-        );
+        const createCompanyResponse =
+          await hubspotClient.crm.companies.basicApi.create(companyObj);
 
         const hubspotId = createCompanyResponse.id;
         await Candidate.updateOne({ id: candidate.id }).set({
