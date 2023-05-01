@@ -34,8 +34,8 @@ module.exports = {
     const { campaign } = inputs;
     // console.log('campaign', campaign);
 
-    const data = campaign.data;
-    const dataDetails = campaign.data.details;
+    const { data } = campaign;
+    const dataDetails = campaign?.data?.details;
     // console.log('dataDetails', dataDetails);
     try {
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
@@ -61,7 +61,7 @@ module.exports = {
 
       const existingId = data.hubspotId;
       if (existingId) {
-        let apiResp = await hubspotClient.crm.companies.basicApi.update(
+        await hubspotClient.crm.companies.basicApi.update(
           existingId,
           companyObj,
         );
@@ -74,7 +74,7 @@ module.exports = {
 
         const hubspotId = createCompanyResponse.id;
         data.hubspotId = hubspotId;
-        let apiResp = await Campaign.updateOne({ id: campaign.id }).set({
+        await Campaign.updateOne({ id: campaign.id }).set({
           data,
         });
         // console.log('apiResp', apiResp);

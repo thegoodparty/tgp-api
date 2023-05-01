@@ -47,7 +47,6 @@ module.exports = {
       });
 
       await sails.helpers.crm.updateCampaign(updated);
-      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'updated',

@@ -49,7 +49,7 @@ module.exports = {
           Accept: 'application/json',
         },
       });
-      console.log('formResp', formResp);
+      // console.log('formResp', formResp);
 
       return exits.success('ok');
     } catch (e) {
