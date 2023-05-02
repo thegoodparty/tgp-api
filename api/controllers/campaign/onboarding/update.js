@@ -57,9 +57,9 @@ module.exports = {
         }).set({ data: campaign });
       }
 
-      // const updated = await Campaign.findOne({
-      //   slug: campaign.slug,
-      // });
+      const updated = await Campaign.findOne({
+        slug: campaign.slug,
+      });
 
       await sails.helpers.crm.updateCampaign(updated);
 
