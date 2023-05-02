@@ -24,20 +24,19 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    if (!hubSpotToken) {
-      // for non production env.
-      console.log('Error: no hubSpotToken!');
-      return exits.success('no api key');
-    }
-    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
-    const { campaign } = inputs;
-    // console.log('campaign', campaign);
-
-    const { data } = campaign;
-    const dataDetails = campaign?.data?.details;
-    // console.log('dataDetails', dataDetails);
     try {
+      if (!hubSpotToken) {
+        // for non production env.
+        console.log('Error: no hubSpotToken!');
+        return exits.success('no api key');
+      }
+      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
+
+      const { campaign } = inputs;
+      // console.log('campaign', campaign);
+      const { data } = campaign;
+      const dataDetails = campaign?.data?.details;
+      // console.log('dataDetails', dataDetails);
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
         dataDetails;
       const companyObj = {
