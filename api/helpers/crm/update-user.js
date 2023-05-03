@@ -123,6 +123,9 @@ module.exports = {
             'email',
           );
           contactId = contact.id;
+          const hubspotId = contactId;
+          console.log('updating meta.hubspotId');
+          await updateMeta(user, hubspotId);
         } catch (e) {
           // todo: it might be normal for this to fail on first login.
           // so we may want to supress these errors in slack.
