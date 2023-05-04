@@ -55,7 +55,7 @@ module.exports = {
       }
 
       return exits.success({
-        success: signatures,
+        data: signatures,
       });
     } catch (e) {
       console.log('error at declare list');
