@@ -112,7 +112,7 @@ module.exports = {
       }
 
       if (!contactId) {
-        console.log('getting hubspotId for user', email);
+        // console.log('getting hubspotId for user', email);
         try {
           const contact = await hubspotClient.crm.contacts.basicApi.getById(
             email,
@@ -124,7 +124,7 @@ module.exports = {
           );
           contactId = contact.id;
           const hubspotId = contactId;
-          console.log('updating meta.hubspotId');
+          // console.log('updating meta.hubspotId');
           await updateMeta(user, hubspotId);
         } catch (e) {
           // todo: it might be normal for this to fail on first login.

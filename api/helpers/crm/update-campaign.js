@@ -63,7 +63,7 @@ module.exports = {
 
       const existingId = data.hubspotId;
       if (existingId) {
-        console.log('updating existing company in hubspot', existingId);
+        // console.log('updating existing company in hubspot', existingId);
         await hubspotClient.crm.companies.basicApi.update(
           existingId,
           companyObj,
@@ -72,12 +72,12 @@ module.exports = {
         return exits.success(existingId);
       } else {
         // update user record with the id from the crm
-        console.log('creating new company in hubspot');
+        // console.log('creating new company in hubspot');
         const createCompanyResponse =
           await hubspotClient.crm.companies.basicApi.create(companyObj);
 
         const userId = campaign.user;
-        console.log('userId', userId);
+        // console.log('userId', userId);
         const user = await User.findOne({ id: userId });
         const hubspotId = createCompanyResponse.id;
         data.hubspotId = hubspotId;
@@ -88,7 +88,7 @@ module.exports = {
         const campaignObj = await Campaign.findOne({ id: campaign.id });
 
         // associate the Contact with the Company in Hubspot
-        console.log('associating user with company in hubspot');
+        // console.log('associating user with company in hubspot');
         try {
           await sails.helpers.crm.associateUserCampaign(
             user,

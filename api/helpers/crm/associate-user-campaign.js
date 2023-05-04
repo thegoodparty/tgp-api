@@ -49,14 +49,14 @@ module.exports = {
         // it would be smart if this returned an id instead of a success message.
         await sails.helpers.crm.updateUser(user);
         // make sure we pull the latest user object with the hubspotId.
-        console.log('refreshing user', user.id);
+        // console.log('refreshing user', user.id);
         user = await User.findOne({ id: user.id });
         contactId = user.metaData.hubspotId;
       }
-      console.log('contactId', contactId);
+      //   console.log('contactId', contactId);
 
       let companyId = campaign.data ? campaign.data.hubspotId : false;
-      console.log('companyId', companyId);
+      //   console.log('companyId', companyId);
       if (!companyId) {
         // this should not happen since its only called by update-campaign.
         await sails.helpers.errorLoggerHelper(
@@ -97,6 +97,10 @@ module.exports = {
       return exits.success('ok');
     } catch (e) {
       console.log('hubspot error', e);
+      await sails.helpers.errorLoggerHelper(
+        'error in associateUserCampaign',
+        e,
+      );
       return exits.success('not ok');
     }
   },
