@@ -38,8 +38,8 @@ module.exports = {
       });
 
       let signatures = '';
-      const data = response?.data?.results;
-      if (data != undefined && data.length > 0) {
+      const data = response.data.results;
+      if (data && data.length > 0) {
         for (const submission of data) {
           if (submission.values.length > 0) {
             signatures +=
@@ -55,7 +55,7 @@ module.exports = {
       }
 
       return exits.success({
-        data: signatures,
+        signatures,
       });
     } catch (e) {
       console.log('error at declare list');
