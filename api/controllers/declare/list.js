@@ -27,9 +27,7 @@ module.exports = {
       // @hubspot/api-client does not appear to support the formaApi anymore.
       // so we make the request using axios.
       const formId = 'f51c1352-c778-40a8-b589-b911c31e64b1';
-      const url =
-        'https://api.hubapi.com/form-integrations/v1/submissions/forms/' +
-        formId;
+      const url = `https://api.hubapi.com/form-integrations/v1/submissions/forms/${formId}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -42,11 +40,7 @@ module.exports = {
       if (data && data.length > 0) {
         for (const submission of data) {
           if (submission.values.length > 0) {
-            signatures +=
-              submission.values[0].value +
-              ' ' +
-              submission.values[1].value +
-              ', ';
+            signatures += `${submission.values[0].value} ${submission.values[1].value}, `;
           }
         }
       }
