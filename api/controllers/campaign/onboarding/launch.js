@@ -74,6 +74,7 @@ module.exports = {
         data: {
           ...campaign,
           launched: true,
+          candidateSlug: slug,
         },
       });
 
