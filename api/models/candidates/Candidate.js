@@ -13,7 +13,9 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
     slug: {
-      type: 'string', // should be required and unique after all is populated
+      type: 'string',
+      unique: true,
+      required: true,
     },
     firstName: {
       type: 'string',
@@ -101,7 +103,7 @@ module.exports = {
     },
   },
 
-  customToJSON: function() {
+  customToJSON: function () {
     // Return a shallow copy of this record with the password removed.
     return _.omit(this, ['createdAt', 'updatedAt']);
   },

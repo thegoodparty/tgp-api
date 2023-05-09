@@ -76,13 +76,13 @@ module.exports.routes = {
   'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
-  'GET   /api/v1/campaign/onboarding/test': 'campaign/onboarding/test',
   'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
   'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
   'GET   /api/v1/campaign/onboarding/by-user':
     'campaign/onboarding/find-by-user',
   'GET   /api/v1/campaign/onboardings': 'campaign/onboarding/list',
+  'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch',
 
   // onboarding AI
   'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',

@@ -30,7 +30,6 @@ module.exports = {
     try {
       if (!hubSpotToken) {
         // for non production env.
-        console.log('Error: no hubSpotToken!');
         return exits.success('no api key');
       }
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
