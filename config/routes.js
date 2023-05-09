@@ -120,6 +120,8 @@ module.exports.routes = {
   // 'GET   /api/v1/listening/tiktok-scrape': 'socialListening/tiktok-scrape',
   // 'GET   /api/v1/listening/search-results': 'socialListening/search-results',
 
+  'GET   /api/v1/declares': 'declare/list',
+
   // socialListening crons
   // 'GET   /api/v1/listening/cron/searches': 'socialListening/cron/searches',
   // 'GET   /api/v1/listening/cron/followers': 'socialListening/cron/followers',
