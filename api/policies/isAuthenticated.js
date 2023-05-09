@@ -3,7 +3,7 @@
  *
  * @description :: policy that checks the headers for Bearer {JWT TOKEN} format
  */
-module.exports = async function(req, res, next) {
+module.exports = async function (req, res, next) {
   let token;
   //Check if authorization header is present
   if (req.headers && req.headers.authorization) {
@@ -33,12 +33,13 @@ module.exports = async function(req, res, next) {
     // if (!userRecord.isEmailVerified) {
     //   return res.status(401).json({ err: 'Phone is not verified' });
     // }
-    if(!userRecord){
+    if (!userRecord) {
       return res.status(401).json({ err: 'Invalid token' });
     }
     req.user = userRecord;
     return next();
   } catch (err) {
+    console.log('auth error', err);
     return res.status(401).json({ err: 'Invalid token' });
   }
 };

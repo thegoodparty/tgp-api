@@ -38,6 +38,8 @@ module.exports = {
       // console.log('campaign', campaign);
       const { data } = campaign;
       const dataDetails = campaign?.data?.details;
+      const currentStep = campaign?.data?.currentStep || '';
+
       // console.log('dataDetails', dataDetails);
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
         dataDetails;
@@ -50,6 +52,7 @@ module.exports = {
           candidate_state: state,
           lifecyclestage: 'customer',
           type: 'CANDIDATE',
+          last_step: currentStep,
           zip,
           pledge_status: pledged ? 'yes' : 'no',
           // todo: this will need to be reworked if/when we add in Rob/Colton
