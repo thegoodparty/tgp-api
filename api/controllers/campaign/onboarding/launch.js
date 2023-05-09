@@ -58,7 +58,6 @@ module.exports = {
         contact: {},
         data: JSON.stringify(candidate),
       };
-      // console.log('db', dbFields);
 
       const created = await Candidate.create(dbFields).fetch();
       await Candidate.updateOne({
