@@ -5,6 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+const { create } = require('lodash');
 const slugify = require('slugify');
 
 module.exports = {
@@ -60,6 +61,15 @@ module.exports = {
       // console.log('db', dbFields);
 
       const created = await Candidate.create(dbFields).fetch();
+      await Candidate.updateOne({
+        id: created.id,
+      }).set({
+        data: JSON.stringify({
+          ...candidate,
+          id: created.id,
+        }),
+      });
+
       await Campaign.updateOne({ slug: campaign.slug }).set({
         data: {
           ...campaign,
@@ -72,6 +82,9 @@ module.exports = {
       // topIssues;
 
       await createCandidatePositions(topIssues, created);
+
+      await sails.helpers.crm.updateCandidate(candidate);
+      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'created',
@@ -149,6 +162,7 @@ function mapCampaignToCandidate(campaign) {
     twitch,
     hashtag,
     website,
+    isActive: true,
   };
 }
 
@@ -186,6 +200,7 @@ async function createCandidatePositions(topIssues, candidate) {
         candidate: candidate.id,
         position: position.id,
         topIssue: position.topIssue.id,
+        order: i,
       });
       await Candidate.addToCollection(candidate.id, 'positions', position.id);
       await Candidate.addToCollection(
