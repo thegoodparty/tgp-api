@@ -41,8 +41,9 @@ module.exports = {
         return exits.forbidden();
       }
       if (campaign.launched) {
-        console.log('campaign launched');
-        return exits.forbidden();
+        return exits.success({
+          slug: campaign.candidateSlug || campaign.slug,
+        });
       }
 
       const candidate = mapCampaignToCandidate(campaign);
