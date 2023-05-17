@@ -240,7 +240,7 @@ async function sendMail(slug) {
     const { user } = campaign;
     const variables = JSON.stringify({
       name: `${user.name}`,
-      link: `${appBase}/onboarding/${slug}/campaign-plan`,
+      link: `${appBase}/${slug}`,
     });
     await sails.helpers.mailgun.mailgunTemplateSender(
       user.email,
@@ -248,12 +248,7 @@ async function sendMail(slug) {
       'campagin-launch',
       variables,
     );
-
-    return exits.success({
-      message: 'sent',
-    });
   } catch (e) {
     console.log(e);
-    return exits.badRequest({ message: 'Error registering candidate.' });
   }
 }

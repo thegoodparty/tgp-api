@@ -51,7 +51,7 @@ module.exports = {
 
       let topIssues = '';
       candidatePositions.forEach((candPosition) => {
-        topIssues += `Top Issue: ${candPosition.topIssue.name} | Position: ${candPosition.position.name} | Candidate Position: ${candPosition.description} \n`;
+        topIssues += `Top Issue: ${candPosition.topIssue?.name} | Position: ${candPosition.position?.name} | Candidate Position: ${candPosition.description} \n`;
       });
 
       const followers =
