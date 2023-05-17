@@ -35,15 +35,31 @@ module.exports = {
         },
       });
 
+      let signaturesObj = {};
       let signatures = '';
       const data = response.data.results;
       if (data && data.length > 0) {
         for (const submission of data) {
           if (submission.values.length > 0) {
-            signatures += `${submission.values[0].value} ${submission.values[1].value}, `;
+            let fn = submission.values[0].value;
+            let ln = submission.values[1].value;
+            // format the names to look nice and prevent duplicates.
+            if (fn && fn.length >= 2) {
+              fn = fn.charAt(0).toUpperCase() + fn.slice(1);
+            }
+            if (ln && ln.length >= 2) {
+              ln = ln.charAt(0).toUpperCase() + ln.slice(1);
+            }
+            const name = `${fn} ${ln}`;
+            signaturesObj[name] = true;
           }
         }
       }
+
+      for (const signature of Object.keys(signaturesObj)) {
+        signatures += `${signature}, `;
+      }
+
       if (signatures.length > 2) {
         signatures = signatures.slice(0, -2);
       }
