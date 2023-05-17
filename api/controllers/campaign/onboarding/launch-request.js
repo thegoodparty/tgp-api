@@ -92,7 +92,6 @@ async function sendSlackMessage(campaign, user) {
           \nDistrict: ${district}
           \nemail: ${user.email}
           \nslug: ${slug}\n
-          \nadmin link: ${appBase}/admin/launch-review
           \ncandidate page: ${appBase}/candidate/${slug}/review
           `,
         },
