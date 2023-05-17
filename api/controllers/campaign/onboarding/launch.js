@@ -1,17 +1,18 @@
-/**
- * incumbents/find.js
- *
- * @description :: Find all Presidential Campaigns.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
+// Admin endpoint
 
 const { create } = require('lodash');
 const slugify = require('slugify');
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
-  friendlyName: 'Find Campaign associated with user',
+  friendlyName: 'Admin launch Campaign',
 
-  inputs: {},
+  inputs: {
+    slug: {
+      required: true,
+      type: 'string',
+    },
+  },
 
   exits: {
     success: {
@@ -26,21 +27,20 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const user = this.req.user;
+      const inputSlug = inputs.slug;
 
-      const campaigns = await Campaign.find({
-        user: user.id,
+      const campaignRecord = await Campaign.findOne({
+        slug: inputSlug,
       });
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
-      }
 
-      if (!campaign) {
+      if (!campaignRecord) {
         console.log('no campaign');
         return exits.forbidden();
       }
-      if (campaign.launched) {
+
+      const campaign = campaignRecord.data;
+
+      if (campaign.launchStatus === 'launched') {
         return exits.success({
           slug: campaign.candidateSlug || campaign.slug,
         });
@@ -73,7 +73,7 @@ module.exports = {
       await Campaign.updateOne({ slug: campaign.slug }).set({
         data: {
           ...campaign,
-          launched: true,
+          launchStatus: 'launched',
           candidateSlug: slug,
         },
       });
@@ -84,8 +84,10 @@ module.exports = {
 
       await createCandidatePositions(topIssues, created);
 
-      await sails.helpers.crm.updateCandidate(candidate);
+      await sails.helpers.crm.updateCandidate(created);
       await sails.helpers.cacheHelper('clear', 'all');
+
+      await sendMail(slug);
 
       return exits.success({
         message: 'created',
@@ -227,5 +229,31 @@ async function createCandidatePositions(topIssues, candidate) {
         data: JSON.stringify(data),
       });
     }
+  }
+}
+
+//campagin-launch
+
+async function sendMail(slug) {
+  try {
+    const campaign = await Campaign.findOne({ slug }).populate('user');
+    const { user } = campaign;
+    const variables = JSON.stringify({
+      name: `${user.name}`,
+      link: `${appBase}/onboarding/${slug}/campaign-plan`,
+    });
+    await sails.helpers.mailgun.mailgunTemplateSender(
+      user.email,
+      'Your Good Party Campaign is live!',
+      'campagin-launch',
+      variables,
+    );
+
+    return exits.success({
+      message: 'sent',
+    });
+  } catch (e) {
+    console.log(e);
+    return exits.badRequest({ message: 'Error registering candidate.' });
   }
 }

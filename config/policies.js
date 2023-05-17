@@ -25,6 +25,8 @@ module.exports.policies = {
   'campaign/onboarding/test': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/list': ['isAuthenticated', 'isAdmin'],
+  'campaign/onboarding/launch': ['isAuthenticated', 'isAdmin'],
+  'campaign/onboarding/by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access

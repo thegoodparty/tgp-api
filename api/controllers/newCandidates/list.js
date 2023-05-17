@@ -33,7 +33,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { position, state } = inputs;
       const criteria = { isActive: true };
@@ -115,10 +115,14 @@ module.exports = {
           votesNeeded,
         } = data;
 
-        const followers = await sails.helpers.socialListening.candidateFollowersHelper(
-          candidate,
-        );
-        const support = await sails.helpers.support.supportByCandidate(id);
+        const followers =
+          await sails.helpers.socialListening.candidateFollowersHelper(
+            candidate,
+          );
+        let support;
+        if (id) {
+          await sails.helpers.support.supportByCandidate(id);
+        }
 
         activeCandidates.push({
           slug,
@@ -199,11 +203,11 @@ module.exports = {
         .sort([{ name: 'ASC' }]);
 
       const candidatesHash = {};
-      activeCandidates.forEach(candidate => {
+      activeCandidates.forEach((candidate) => {
         candidatesHash[candidate.id] = true;
       });
       const filteredPositions = [];
-      positions.forEach(position => {
+      positions.forEach((position) => {
         if (position.candidates.length > 0) {
           for (let i = 0; i < position.candidates.length; i++) {
             const candidateId = position.candidates[i].id;
