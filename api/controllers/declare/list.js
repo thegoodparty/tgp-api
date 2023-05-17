@@ -35,7 +35,7 @@ module.exports = {
         },
       });
 
-      let signaturesArray = [];
+      let signaturesObj = {};
       let signatures = '';
       const data = response.data.results;
       if (data && data.length > 0) {
@@ -51,15 +51,12 @@ module.exports = {
               ln = ln.charAt(0).toUpperCase() + ln.slice(1);
             }
             const name = `${fn} ${ln}`;
-            // dont show duplicate names
-            if (!signaturesArray.includes(name)) {
-              signaturesArray.push(name);
-            }
+            signaturesObj[name] = true;
           }
         }
       }
 
-      for (const signature of signaturesArray) {
+      for (const signature of Object.keys(signaturesObj)) {
         signatures += `${signature}, `;
       }
 
