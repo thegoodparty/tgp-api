@@ -85,7 +85,11 @@ async function sendSlackMessage(campaign, user) {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Hi <@U01AY0VQFPE> and <@U03RY5HHYQ5> *\n
+          text: `*Hi ${
+            appBase === 'https://goodparty.org'
+              ? '<@U01AY0VQFPE> and <@U03RY5HHYQ5>'
+              : ''
+          } *\n
           \nName: ${firstName} ${lastName}
           \nOffice: ${office}
           \nState: ${state}

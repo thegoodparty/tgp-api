@@ -156,7 +156,11 @@ async function sendSlackMessage(campaign, user) {
           \nslug: ${slug}\n
           \nadmin link: ${appBase}/admin/victory-path
           \n
-          \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
+          \n${
+            appBase === 'https://goodparty.org'
+              ? '<@U01AY0VQFPE> and <@U03RY5HHYQ5>'
+              : ''
+          }
           `,
         },
       },
