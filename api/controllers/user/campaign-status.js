@@ -40,7 +40,6 @@ module.exports = {
       if (campaign.candidateSlug) {
         return exits.success({
           status: 'candidate',
-          slug: campaign.candidateSlug,
         });
       }
       return exits.success({
