@@ -33,6 +33,7 @@ module.exports.routes = {
   // 'POST    /api/v1/user/avatar': 'user/upload-avatar',
   'POST    /api/v1/user/avatar': 'user/upload-image',
   'PUT   /api/v1/user/password': 'user/password/update',
+  'GET   /api/v1/user/campaign-status': 'user/campaign-status',
 
   'POST   /api/v1/support': 'user/support/create',
   'DELETE   /api/v1/support': 'user/support/delete',

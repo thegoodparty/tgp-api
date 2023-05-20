@@ -78,6 +78,12 @@ module.exports = {
         },
       });
 
+      await Staff.create({
+        role: 'owner',
+        user: campaignRecord.user,
+        candidate: created.id,
+      });
+
       // console.log('cand', created);
       const { topIssues } = campaign.details;
       // topIssues;
