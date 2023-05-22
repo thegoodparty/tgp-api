@@ -29,7 +29,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const { email, socialToken, socialProvider } = inputs;
 
     let tokenEmail;
@@ -38,12 +38,11 @@ module.exports = {
       const CLIENT_ID =
         sails.config.custom.googleClientId || sails.config.googleClientId;
       const client = new OAuth2Client(CLIENT_ID);
-      const ticket = await client.verifyIdToken({
-        idToken: socialToken,
-        audience: CLIENT_ID,
-      });
-      const payload = ticket.getPayload();
-      tokenEmail = payload.email;
+      const tokenInfo = await client.getTokenInfo(socialToken);
+      // console.log('tokenInfo', tokenInfo);
+
+      tokenEmail = tokenInfo.email;
+      // console.log('tokenEmail', tokenEmail);
       if (tokenEmail !== email) {
         throw 'badRequest';
       }
