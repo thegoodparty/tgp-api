@@ -25,7 +25,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       // @hubspot/api-client does not appear to support the formaApi anymore.
-      // so we make the request using axios.
+      // https://legacydocs.hubspot.com/docs/methods/forms/get-submissions-for-a-form
       const formId = 'f51c1352-c778-40a8-b589-b911c31e64b1';
       const url = `https://api.hubapi.com/form-integrations/v1/submissions/forms/${formId}`;
 
@@ -45,19 +45,20 @@ module.exports = {
             let ln = submission.values[1].value;
             // format the names to look nice and prevent duplicates.
             if (fn && fn.length >= 2) {
-              fn = fn.charAt(0).toUpperCase() + fn.slice(1);
+              fn =
+                fn.charAt(0).toUpperCase() + fn.slice(1).toLowerCase().trim();
             }
             if (ln && ln.length >= 2) {
-              ln = ln.charAt(0).toUpperCase() + ln.slice(1);
+              ln =
+                ln.charAt(0).toUpperCase() + ln.slice(1).toLowerCase().trim();
             }
             const name = `${fn} ${ln}`;
-            signaturesObj[name] = true;
+            if (!signaturesObj[name]) {
+              signatures += `${name}, `;
+              signaturesObj[name] = true;
+            }
           }
         }
-      }
-
-      for (const signature of Object.keys(signaturesObj)) {
-        signatures += `${signature}, `;
       }
 
       if (signatures.length > 2) {
