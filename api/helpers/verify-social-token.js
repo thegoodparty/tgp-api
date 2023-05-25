@@ -60,6 +60,7 @@ module.exports = {
       };
 
       const inspectTokenResponse = await request(options);
+      console.log('inspectTokenResponse', inspectTokenResponse);
       if (!inspectTokenResponse.data.is_valid) {
         throw 'badRequest';
       }
@@ -70,6 +71,7 @@ module.exports = {
       };
 
       const tokenEmail = await request(emailOptions);
+      console.log('tokenEmail', tokenEmail);
       if (tokenEmail.email !== email) {
         throw 'badRequest';
       }
