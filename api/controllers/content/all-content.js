@@ -5,7 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-
 module.exports = {
   friendlyName: 'All Content',
 
@@ -24,20 +23,26 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const cached = await sails.helpers.cacheHelper('get', 'content');
-      if (cached) {
-        return exits.success(cached);
+      const cachedBlog = await sails.helpers.cacheHelper('get', 'contentBlog');
+      if ((cached, cachedBlog)) {
+        return exits.success({
+          ...cached,
+          ...cachedBlog,
+        });
       }
       const contents = await CmsContent.find();
-      if (contents.length === 1) {
-        await sails.helpers.cacheHelper('set', 'content', {
-          ...JSON.parse(contents[0].content),
-        });
+      if (contents.length === 2) {
+        const content1 = JSON.parse(contents[0].content);
+        const content2 = JSON.parse(contents[1].content);
+        await sails.helpers.cacheHelper('set', 'content', content1);
+        await sails.helpers.cacheHelper('set', 'contentBlog', content2);
 
         return exits.success({
-          ...JSON.parse(contents[0].content),
+          ...content1,
+          ...content2,
         });
       } else {
         return exits.badRequest({
@@ -47,7 +52,10 @@ module.exports = {
     } catch (err) {
       console.log('content error');
       console.log(err);
-      await sails.helpers.errorLoggerHelper('Error at content/all-content', err);
+      await sails.helpers.errorLoggerHelper(
+        'Error at content/all-content',
+        err,
+      );
       return exits.badRequest({
         message: 'Content fetch failed. Please load again.',
       });

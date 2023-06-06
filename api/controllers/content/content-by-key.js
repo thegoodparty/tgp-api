@@ -42,12 +42,20 @@ module.exports = {
     try {
       const { key, subKey, subValue, limit, deleteKey } = inputs;
       let content = await sails.helpers.cacheHelper('get', 'content');
+      if (key === 'blogArticles') {
+        content = await sails.helpers.cacheHelper('get', 'contentBlog');
+      }
       if (!content) {
         const contents = await CmsContent.find();
 
-        if (contents.length === 1) {
-          content = { ...JSON.parse(contents[0].content) };
-          await sails.helpers.cacheHelper('set', 'content', content);
+        if (contents.length === 2) {
+          if (key === 'blogArticles') {
+            content = JSON.parse(contents[1].content);
+            await sails.helpers.cacheHelper('set', 'contentBlog', content);
+          } else {
+            content = JSON.parse(contents[0].content);
+            await sails.helpers.cacheHelper('set', 'content', content);
+          }
         }
       }
       const keyContent = content[key];
