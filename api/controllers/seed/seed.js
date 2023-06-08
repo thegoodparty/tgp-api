@@ -65,6 +65,7 @@ module.exports = {
       console.log('Error in seed', e);
       return exits.success({
         message: 'Error in seed',
+        e,
         error: JSON.stringify(e),
         log,
       });
