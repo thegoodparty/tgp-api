@@ -204,6 +204,9 @@ async function createCandidatePositions(topIssues, candidate) {
     const position = topIssues.positions[i];
 
     if (position.id !== 'custom-id') {
+      if (!position.topIssue) {
+        continue;
+      }
       await CandidatePosition.create({
         description: topIssues[`position-${position.id}`],
         candidate: candidate.id,
