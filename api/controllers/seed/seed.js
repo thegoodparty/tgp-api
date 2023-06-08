@@ -42,6 +42,7 @@ const topIssues = {
     "it can be an effective tool to address income inequality and provide additional funding for essential public services. However, it's crucial to implement it in a balanced and thoughtful manner to avoid discouraging entrepreneurship and innovation. When considering a wealth tax, we need to take into account its potential impact on economic growth, job creation, and the overall business environment. My primary focus is on ensuring that our community thrives, and I believe that any tax policy should be evaluated based on its ability to promote fairness, support social programs, and contribute to a healthy economy.",
 };
 
+let log = 'starting. ';
 module.exports = {
   inputs: {},
 
@@ -51,16 +52,21 @@ module.exports = {
     try {
       // fix missing candidate positions for mateo
       const candidate = await Candidate.findOne({ slug: 'matthew-wardenaar' });
+      log += `candidate: ${JSON.stringify(candidate)}
+      
+      `;
       await createCandidatePositions(topIssues, candidate);
 
       return exits.success({
         message: 'Done',
+        log,
       });
     } catch (e) {
       console.log('Error in seed', e);
       return exits.success({
         message: 'Error in seed',
         error: JSON.stringify(e),
+        log,
       });
     }
   },
@@ -68,9 +74,19 @@ module.exports = {
 
 async function createCandidatePositions(topIssues, candidate) {
   for (let i = 0; i < topIssues.positions.length; i++) {
+    log += `in loop ${i}
+    `;
     const position = topIssues.positions[i];
+    log += `position: ${JSON.stringify(position)}`;
 
     if (position.id !== 'custom-id') {
+      log += `creating candidate posistion with 
+        description: ${topIssues[`position-${position.id}`]},
+        candidate: ${candidate.id},
+        position: ${position.id},
+        topIssue: ${position.topIssue.id},
+        order: ${i},
+      `;
       await CandidatePosition.create({
         description: topIssues[`position-${position.id}`],
         candidate: candidate.id,
@@ -78,12 +94,16 @@ async function createCandidatePositions(topIssues, candidate) {
         topIssue: position.topIssue.id,
         order: i,
       });
+      log += `after create
+      `;
       await Candidate.addToCollection(candidate.id, 'positions', position.id);
       await Candidate.addToCollection(
         candidate.id,
         'topIssues',
         position.topIssue.id,
       );
+      log += `after collection
+      `;
     } else {
       const data = JSON.parse(candidate.data);
 
