@@ -50,7 +50,7 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       // fix missing candidate positions for mateo
-      const candidate = await Candidate.find({ slug: 'matthew-wardenaar' });
+      const candidate = await Candidate.findOne({ slug: 'matthew-wardenaar' });
       await createCandidatePositions(topIssues, candidate);
 
       return exits.success({
