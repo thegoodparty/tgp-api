@@ -78,6 +78,9 @@ async function createCandidatePositions(topIssues, candidate) {
     log += `in loop ${i}
     `;
     const position = topIssues.positions[i];
+    if (!position.topIssue) {
+      continue;
+    }
     log += `position: ${JSON.stringify(position)}`;
 
     if (position.id !== 'custom-id') {
