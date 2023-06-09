@@ -145,6 +145,11 @@ const mapResponse = (items) => {
         mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'onboardingPrompts') {
         mappedResponse.onboardingPrompts = item.fields;
+      } else if (itemId === 'redirect') {
+        if (!mappedResponse.redirects) {
+          mappedResponse.redirects = [];
+        }
+        mappedResponse.redirects.push(item.fields);
       }
     }
   });
