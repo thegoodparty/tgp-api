@@ -146,10 +146,12 @@ const mapResponse = (items) => {
       } else if (itemId === 'onboardingPrompts') {
         mappedResponse.onboardingPrompts = item.fields;
       } else if (itemId === 'redirect') {
-        if (!mappedResponse.redirects) {
-          mappedResponse.redirects = [];
+        if (!mappedResponse?.redirects) {
+          mappedResponse.redirects = {};
         }
-        mappedResponse.redirects.push(item.fields);
+        if (!mappedResponse.redirects.hasOwnProperty(item.fields.fromPath)) {
+          mappedResponse.redirects[item.fields.fromPath] = item.fields.toPath;
+        }
       }
     }
   });
