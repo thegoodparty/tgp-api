@@ -56,6 +56,7 @@ module.exports.routes = {
   'GET    /api/v1/homepage-candidates': 'newCandidates/homepage-candidates',
   'GET    /api/v1/new-candidates': 'newCandidates/list',
   'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
+  'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
