@@ -114,6 +114,8 @@ module.exports.routes = {
   'POST   /api/v1/candidate-position': 'topIssues/candidatePosition/create',
   'PUT   /api/v1/candidate-position': 'topIssues/candidatePosition/update',
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
+  'GET  /api/v1/candidate-position':
+    'topIssues/candidatePosition/find-by-candidate',
 
   // application
 

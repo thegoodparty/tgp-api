@@ -40,36 +40,31 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const {
-        description,
-        candidateId,
-        positionId,
-        topIssueId,
-        order,
-      } = inputs;
+      const { description, candidateId, positionId, topIssueId, order } =
+        inputs;
       const candidate = await Candidate.findOne({ id: candidateId });
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
       if (!canAccess || canAccess === 'staff') {
         return exits.forbidden();
       }
 
-      const existing = await CandidatePosition.findOne({
-        topIssue: topIssueId,
-        candidate: candidateId,
-      });
-      if (existing) {
-        return exits.badRequest({
-          message: 'This top issue already exists for this candidate',
-        });
-      }
+      // const existing = await CandidatePosition.findOne({
+      //   topIssue: topIssueId,
+      //   candidate: candidateId,
+      // });
+      // if (existing) {
+      //   return exits.badRequest({
+      //     message: 'This top issue already exists for this candidate',
+      //   });
+      // }
 
-      await CandidatePosition.create({
+      const newPosition = await CandidatePosition.create({
         description,
         candidate: candidateId,
         position: positionId,
         topIssue: topIssueId,
         order,
-      });
+      }).fetch();
       // update the many to many relationships
       await Candidate.addToCollection(candidateId, 'positions', positionId);
       await Candidate.addToCollection(candidateId, 'topIssues', topIssueId);
@@ -79,7 +74,7 @@ module.exports = {
       await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
-        message: 'created',
+        newPosition,
       });
     } catch (e) {
       console.log('error at issue position/create', e);

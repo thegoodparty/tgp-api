@@ -15,28 +15,41 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { candidate, user } = inputs;
       if (user.isAdmin) {
-        return exits.success('admin');
+        return exits.success(true);
       }
-      const staff = await Staff.findOne({
-        candidate: candidate.id,
-        user: user.id,
-      });
-      if (staff) {
-        const now = moment().format('YYYY-MM-DD');
-        const data = JSON.parse(candidate.data);
-        await Candidate.updateOne({ id: candidate.id }).set({
-          data: JSON.stringify({
-            ...data,
-            lastPortalVisit: now,
-          }),
-        });
 
-        return exits.success(staff.role);
+      let slug;
+      if (user.isAdmin) {
+        slug = candidate.slug;
+      } else {
+        const campaigns = await Campaign.find({
+          user: user.id,
+        });
+        let campaign = false;
+        if (campaigns && campaigns.length > 0) {
+          campaign = campaigns[0].data;
+        }
+
+        slug = campaign.candidateSlug;
+
+        if (slug !== candidate.slug) {
+          return exits.success(true);
+        }
       }
+
+      let candidateRecord = await Candidate.findOne({
+        slug,
+        isActive: true,
+      });
+
+      if (!candidateRecord) {
+        return exits.success(true);
+      }
+
       return exits.success(false);
     } catch (e) {
       return exits.success(false);

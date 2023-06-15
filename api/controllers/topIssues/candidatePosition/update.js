@@ -8,14 +8,6 @@ module.exports = {
       type: 'number',
       required: true,
     },
-    positionId: {
-      type: 'number',
-      required: true,
-    },
-    topIssueId: {
-      type: 'number',
-      required: true,
-    },
   },
 
   exits: {
@@ -36,20 +28,18 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { id, topIssueId, positionId, description } = inputs;
+      const { id, description } = inputs;
       const candidatePosition = await CandidatePosition.findOne({ id });
       const candidate = await Candidate.findOne({
         id: candidatePosition.candidate,
       });
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
-      if (!canAccess || canAccess === 'staff') {
+      if (!canAccess) {
         return exits.forbidden();
       }
 
       await CandidatePosition.updateOne({ id }).set({
         description,
-        position: positionId,
-        topIssue: topIssueId,
       });
 
       await sails.helpers.crm.updateCandidate(candidate);
