@@ -48,7 +48,9 @@ module.exports = {
         },
         {
           find: 'office',
-          replace: campaign.details.office,
+          replace: `${campaign.details.office}${
+            campaign.details.district ? ` in ${campaign.details.district}` : ''
+          }`,
         },
         {
           find: 'positions',
