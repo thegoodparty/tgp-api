@@ -69,6 +69,9 @@ module.exports = {
 };
 
 async function sendSlackMessage(campaign, user) {
+  if (appBase !== 'https://goodparty.org') {
+    return;
+  }
   const { slug, details } = campaign;
   const { firstName, lastName, office, state, district } = details;
   const slackMessage = {
@@ -85,11 +88,7 @@ async function sendSlackMessage(campaign, user) {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*Hi ${
-            appBase === 'https://goodparty.org'
-              ? '<@U01AY0VQFPE> and <@U03RY5HHYQ5>'
-              : ''
-          } *\n
+          text: `*Hi <@U01AY0VQFPE> and <@U03RY5HHYQ5> *\n
           \nName: ${firstName} ${lastName}
           \nOffice: ${office}
           \nState: ${state}
