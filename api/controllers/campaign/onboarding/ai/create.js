@@ -131,6 +131,9 @@ module.exports = {
 };
 
 async function sendSlackMessage(campaign, user) {
+  if (appBase !== 'https://goodparty.org') {
+    return;
+  }
   const { slug, details } = campaign;
   const { firstName, lastName, office, state, district } = details;
   const slackMessage = {
@@ -156,11 +159,7 @@ async function sendSlackMessage(campaign, user) {
           \nslug: ${slug}\n
           \nadmin link: ${appBase}/admin/victory-path
           \n
-          \n${
-            appBase === 'https://goodparty.org'
-              ? '<@U01AY0VQFPE> and <@U03RY5HHYQ5>'
-              : ''
-          }
+          \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
           `,
         },
       },
