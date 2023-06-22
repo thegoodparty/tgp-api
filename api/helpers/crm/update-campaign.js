@@ -37,6 +37,7 @@ module.exports = {
       const { campaign } = inputs;
       // console.log('campaign', campaign);
       const { data } = campaign;
+      const { launchStatus, lastStepDate } = data;
       const dataDetails = campaign?.data?.details;
       const currentStep = campaign?.data?.currentStep || '';
 
@@ -53,13 +54,13 @@ module.exports = {
           lifecyclestage: 'customer',
           type: 'CANDIDATE',
           last_step: currentStep,
+          last_step_date: lastStepDate || undefined,
           zip,
           pledge_status: pledged ? 'yes' : 'no',
+          is_active: launchStatus === 'launched',
           // todo: this will need to be reworked if/when we add in Rob/Colton
-          unlock_expert:
-            data?.goals?.runningAgainst && data.goals.runningAgainst.length > 0
-              ? 'Jared'
-              : '',
+          unlock_expert: data?.profile && data.profile.completed,
+          unlock_jared: data?.profile && data.profile.completed ? 'yes' : 'no',
         },
       };
 

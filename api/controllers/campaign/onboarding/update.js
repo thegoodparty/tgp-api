@@ -5,6 +5,8 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+const moment = require('moment');
+
 module.exports = {
   friendlyName: 'Update Campaign',
 
@@ -35,6 +37,12 @@ module.exports = {
       const existing = await Campaign.findOne({
         slug: campaign.slug,
       });
+
+      // setting last_step_date for the crm
+      // moment().format('YYYY-MM-DD'),
+      if (campaign.currentStep !== existing?.data?.currentStep) {
+        campaign.lastStepDate = moment().format('YYYY-MM-DD');
+      }
 
       if (versionKey && existing) {
         await sails.helpers.ai.saveCampaignVersion(
