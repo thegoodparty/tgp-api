@@ -63,6 +63,14 @@ module.exports = {
         supports[i].candidate = candidate;
       }
 
+      const campaigns = await Campaign.find({
+        user: id,
+      });
+      let campaign = false;
+      if (campaigns && campaigns.length > 0) {
+        campaign = campaigns[0].data;
+      }
+
       const contactObj = {
         properties: {
           firstname: name.split(' ').slice(0, -1).join(' '),
@@ -70,7 +78,9 @@ module.exports = {
           email,
           phone,
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
-          type: 'User',
+          type: campaign ? 'Campaign' : 'User',
+          lifecycle_stage: campaign ? 'Customer' : undefined,
+          active_candidate: campaign ? 'yes' : 'no',
           source: 'Good Party Site',
           all_endorsements: allEndorsements,
           recent_endorsement:
