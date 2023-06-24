@@ -145,6 +145,8 @@ const mapResponse = (items) => {
         mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'onboardingPrompts') {
         mappedResponse.onboardingPrompts = item.fields;
+      } else if (itemId === 'candidateContentPrompts') {
+        mappedResponse.candidateContentPrompts = item.fields;
       }
     }
   });

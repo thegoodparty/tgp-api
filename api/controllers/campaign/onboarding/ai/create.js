@@ -85,7 +85,9 @@ module.exports = {
       }
 
       const cmsPrompts = await sails.helpers.ai.getPrompts();
+      console.log('cmsPrompts', cmsPrompts);
       let prompt = cmsPrompts[key];
+      console.log('prompt', prompt);
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
       await sails.helpers.errorLoggerHelper('prompt', {
         cmsPrompt: cmsPrompts[key],
