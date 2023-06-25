@@ -80,7 +80,7 @@ module.exports = {
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
           type: campaign ? 'Campaign' : 'User',
           lifecycle_stage: campaign ? 'Customer' : undefined,
-          active_candidate: campaign ? 'yes' : 'no',
+          active_candidate: campaign ? 'Yes' : 'No',
           source: 'Good Party Site',
           all_endorsements: allEndorsements,
           recent_endorsement:
