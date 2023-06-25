@@ -85,10 +85,11 @@ module.exports = {
       }
 
       const cmsPrompts = await sails.helpers.ai.getPrompts();
-      let prompt = cmsPrompts[key];
+      const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
+      let prompt = cmsPrompts[keyNoDigits];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
       await sails.helpers.errorLoggerHelper('prompt', {
-        cmsPrompt: cmsPrompts[key],
+        cmsPrompt: cmsPrompts[keyNoDigits],
         promptAfterReplace: prompt,
       });
 
