@@ -131,7 +131,7 @@ async function handleGenerateCampaignPlan(message) {
       data,
     });
     await sails.helpers.errorLoggerHelper(
-      'updated campaign with ai. chatResponse: ',
+      `updated campaign with ai. chatResponse: subSectionKey: ${subSectionKey}. key: ${key}`,
       chatResponse,
     );
   } catch (e) {

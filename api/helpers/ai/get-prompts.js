@@ -14,12 +14,17 @@ module.exports = {
       if (!content) {
         const contents = await CmsContent.find();
 
-        if (contents.length === 1) {
+        if (contents.length > 0) {
           content = { ...JSON.parse(contents[0].content) };
           await sails.helpers.cacheHelper('set', 'content', content);
         }
       }
-      return exits.success(content.onboardingPrompts);
+      const combined = {
+        ...content.onboardingPrompts,
+        ...content.candidateContentPrompts,
+      };
+
+      return exits.success(combined);
     } catch (e) {
       console.log('Error in helpers/ai.getPrompt', e);
       return exits.success(false);
