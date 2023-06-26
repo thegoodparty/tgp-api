@@ -114,6 +114,7 @@ function mapCampaignToCandidate(campaign) {
   const {
     slug,
     details,
+    goals,
     campaignPlan,
     pathToVictory,
     color,
@@ -128,6 +129,7 @@ function mapCampaignToCandidate(campaign) {
     hashtag,
     website,
   } = campaign;
+
   const {
     firstName,
     lastName,
@@ -140,6 +142,8 @@ function mapCampaignToCandidate(campaign) {
     district,
   } = details;
   const { slogan, aboutMe, why } = campaignPlan;
+
+  const { electionDate } = goals;
 
   let voteGoal;
   let voterProjection;
@@ -174,6 +178,7 @@ function mapCampaignToCandidate(campaign) {
     hashtag,
     website,
     isActive: true,
+    electionDate,
   };
 }
 
