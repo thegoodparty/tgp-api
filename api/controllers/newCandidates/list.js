@@ -78,14 +78,14 @@ module.exports = {
         const data = candidate.data ? JSON.parse(candidate.data) : {};
         const { electionDate } = data;
         // skip candidates with a race date before this calendar year.
-        if (electionDate) {
-          const electionDate = new Date(raceDate);
-          if (electionDate < janFirst) {
-            continue;
-          }
-        } else {
-          continue; // old candidates
-        }
+        // if (electionDate) {
+        //   const electionDate = new Date(raceDate);
+        //   if (electionDate < janFirst) {
+        //     continue;
+        //   }
+        // } else {
+        //   continue; // old candidates
+        // }
 
         const {
           slug,
