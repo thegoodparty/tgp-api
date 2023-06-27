@@ -147,6 +147,29 @@ const mapResponse = (items) => {
         mappedResponse.onboardingPrompts = item.fields;
       } else if (itemId === 'candidateContentPrompts') {
         mappedResponse.candidateContentPrompts = item.fields;
+      } else if (itemId === 'election') {
+        if (!mappedResponse.elections) {
+          mappedResponse.elections = [];
+        }
+        const election = {
+          ...item.fields,
+          id: elementId,
+          heroImage: extractMediaFile(item.fields.heroImage),
+          skylineImage: extractMediaFile(item.fields.skylineImage),
+        };
+        if (election.articles) {
+          election.articles = election.articles.map((article) => {
+            return {
+              id: article.sys.id,
+              // fields: article.fields,
+              mainImage: extractMediaFile(article.fields.mainImage),
+              title: article.fields.title,
+              slug: article.fields.slug,
+              summary: article.fields.summary,
+            };
+          });
+        }
+        mappedResponse.elections.push(election);
       }
     }
   });
