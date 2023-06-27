@@ -40,7 +40,6 @@ module.exports = {
         return exits.forbidden();
       }
 
-      await sendSlackMessage(campaign, user);
       if (
         campaign.launchStatus === 'pending' ||
         campaign.launchStatus === 'launched'
@@ -56,6 +55,8 @@ module.exports = {
           launchStatus: 'pending',
         },
       });
+
+      await sendSlackMessage(campaign, user);
 
       return exits.success({
         message: 'created',
