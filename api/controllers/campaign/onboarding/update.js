@@ -18,6 +18,9 @@ module.exports = {
     versionKey: {
       type: 'string',
     },
+    updateCandidate: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -32,7 +35,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { campaign, versionKey } = inputs;
+      const { campaign, versionKey, updateCandidate } = inputs;
       const { user } = this.req;
       const existing = await Campaign.findOne({
         slug: campaign.slug,
@@ -68,6 +71,25 @@ module.exports = {
       const updated = await Campaign.findOne({
         slug: campaign.slug,
       });
+
+      if (user.isAdmin && updateCandidate) {
+        // the campaign might be associated with public candidate, and we need to update it too. specifically - admin path to victory: voteGoal, voterProjection
+        // find associate candidate first
+        const { candidateSlug, pathToVictory } = campaign;
+        if (candidateSlug && pathToVictory) {
+          const candidate = await Candidate.findOne({ slug: candidateSlug });
+          if (candidate) {
+            const data = JSON.parse(candidate.data);
+            await Candidate.updateOne({ slug: candidateSlug }).set({
+              data: JSON.stringify({
+                ...data,
+                voteGoal: parseInt(pathToVictory.voteGoal) || 0,
+                voterProjection: parseInt(pathToVictory.voterProjection) || 0,
+              }),
+            });
+          }
+        }
+      }
 
       await sails.helpers.crm.updateCampaign(updated);
 
