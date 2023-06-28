@@ -99,6 +99,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper(
+        'Error updating hubspot company',
+        e,
+      );
       return exits.badRequest({ message: 'Error updating campaign.' });
     }
   },
