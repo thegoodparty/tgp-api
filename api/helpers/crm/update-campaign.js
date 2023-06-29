@@ -42,6 +42,7 @@ module.exports = {
       const currentStep = campaign?.data?.currentStep || '';
 
       // console.log('dataDetails', dataDetails);
+      // console.log('lastStepDate', lastStepDate);
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
         dataDetails;
       const companyObj = {
@@ -59,8 +60,8 @@ module.exports = {
           pledge_status: pledged ? 'yes' : 'no',
           is_active: launchStatus === 'launched',
           // todo: this will need to be reworked if/when we add in Rob/Colton
-          unlock_expert: data?.profile && data.profile.completed,
-          unlock_jared: data?.profile && data.profile.completed ? 'yes' : 'no',
+          unlock_expert: data?.profile && data.profile.completed ? 'Jared' : '',
+          unlock_jared: data?.profile && data.profile.completed ? 'Yes' : 'No',
         },
       };
 
