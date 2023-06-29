@@ -79,7 +79,7 @@ module.exports = {
           phone,
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
           type: campaign ? 'Campaign' : 'User',
-          lifecycle_stage: campaign ? 'Customer' : undefined,
+          lifecyclestage: campaign ? 'customer' : 'opportunity',
           active_candidate: campaign ? 'Yes' : 'No',
           source: 'Good Party Site',
           all_endorsements: allEndorsements,
