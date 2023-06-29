@@ -35,7 +35,7 @@ module.exports = {
 
     const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
-    const { user, campaign, remove } = inputs;
+    let { user, campaign, remove } = inputs;
     try {
       let contactId;
       if (user.metaData) {
