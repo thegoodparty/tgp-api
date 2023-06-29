@@ -79,7 +79,7 @@ module.exports = {
           phone,
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
           type: campaign ? 'Campaign' : 'User',
-          lifecyclestage: campaign ? 'Customer' : undefined,
+          lifecyclestage: campaign ? 'customer' : 'opportunity',
           active_candidate: campaign ? 'Yes' : 'No',
           source: 'Good Party Site',
           all_endorsements: allEndorsements,
@@ -137,13 +137,15 @@ module.exports = {
           // console.log('updating meta.hubspotId');
           await updateMeta(user, hubspotId);
         } catch (e) {
-          // todo: it might be normal for this to fail on first login.
-          // so we may want to supress these errors in slack.
-          console.log('error getting contact', e);
-          await sails.helpers.errorLoggerHelper(
-            'Error getting hubspot contact',
+          // this is not really an error, it just indicates that the user has never filled a form.
+          console.log(
+            'could not find contact by email. user has never filled a form!',
             e,
           );
+          // await sails.helpers.errorLoggerHelper(
+          //   'Error getting hubspot contact',
+          //   e,
+          // );
         }
       }
 

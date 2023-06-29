@@ -42,6 +42,7 @@ module.exports = {
       const currentStep = campaign?.data?.currentStep || '';
 
       // console.log('dataDetails', dataDetails);
+      // console.log('lastStepDate', lastStepDate);
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
         dataDetails;
       const companyObj = {
@@ -59,8 +60,8 @@ module.exports = {
           pledge_status: pledged ? 'yes' : 'no',
           is_active: launchStatus === 'launched',
           // todo: this will need to be reworked if/when we add in Rob/Colton
-          unlock_expert: data?.profile && data.profile.completed,
-          unlock_jared: data?.profile && data.profile.completed ? 'yes' : 'no',
+          unlock_expert: data?.profile && data.profile.completed ? 'Jared' : '',
+          unlock_jared: data?.profile && data.profile.completed ? 'Yes' : 'No',
         },
       };
 
@@ -71,6 +72,11 @@ module.exports = {
           existingId,
           companyObj,
         );
+
+        const userId = campaign.user;
+        const user = await User.findOne({ id: userId });
+        await sails.helpers.crm.updateUser(user);
+
         // console.log('apiResp', apiResp);
         return exits.success(existingId);
       } else {
@@ -102,8 +108,8 @@ module.exports = {
           console.log('error updating crm', e);
           await sails.helpers.errorLoggerHelper('Error updating hubspot', e);
         }
-
         // console.log('apiResp', apiResp);
+        await sails.helpers.crm.updateUser(user);
         return exits.success(hubspotId);
       }
     } catch (e) {
