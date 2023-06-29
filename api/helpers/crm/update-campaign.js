@@ -72,6 +72,11 @@ module.exports = {
           existingId,
           companyObj,
         );
+
+        const userId = campaign.user;
+        const user = await User.findOne({ id: userId });
+        await sails.helpers.crm.updateUser(user);
+
         // console.log('apiResp', apiResp);
         return exits.success(existingId);
       } else {
@@ -103,8 +108,8 @@ module.exports = {
           console.log('error updating crm', e);
           await sails.helpers.errorLoggerHelper('Error updating hubspot', e);
         }
-
         // console.log('apiResp', apiResp);
+        await sails.helpers.crm.updateUser(user);
         return exits.success(hubspotId);
       }
     } catch (e) {
