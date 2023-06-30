@@ -76,9 +76,10 @@ module.exports = {
           }
           return exits.success({ content: false });
         } else {
+          console.log('here');
           let contentWithLimit;
           if (limit && Array.isArray(keyContent) && limit < keyContent.length) {
-            contentWithLimit = keyContent.splice(limit);
+            contentWithLimit = keyContent.splice(0, limit);
           } else {
             contentWithLimit = keyContent;
           }
