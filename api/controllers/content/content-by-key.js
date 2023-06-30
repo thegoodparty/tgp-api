@@ -78,7 +78,7 @@ module.exports = {
         } else {
           let contentWithLimit;
           if (limit && Array.isArray(keyContent) && limit < keyContent.length) {
-            contentWithLimit = keyContent.splice(limit);
+            contentWithLimit = keyContent.splice(0, limit);
           } else {
             contentWithLimit = keyContent;
           }
