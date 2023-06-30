@@ -28,6 +28,9 @@ module.exports = {
       const candidate = await Candidate.findOne({
         slug,
       });
+      if (!candidate) {
+        return exits.success(false);
+      }
       const canAccess = await sails.helpers.staff.canAccess(candidate, user);
 
       return exits.success(canAccess);
