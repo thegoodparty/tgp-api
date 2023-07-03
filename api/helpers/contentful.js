@@ -156,6 +156,7 @@ const mapResponse = (items) => {
           id: elementId,
           heroImage: extractMediaFile(item.fields.heroImage),
           skylineImage: extractMediaFile(item.fields.skylineImage),
+          districtImage: extractMediaFile(item.fields.districtImage),
         };
         if (election.articles) {
           election.articles = election.articles.map((article) => {
