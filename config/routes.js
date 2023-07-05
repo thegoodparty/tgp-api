@@ -80,6 +80,7 @@ module.exports.routes = {
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
   'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
+  'DELETE   /api/v1/campaign': 'campaign/onboarding/admin-delete',
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
   'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
   'GET   /api/v1/campaign/onboarding/by-user':
@@ -89,6 +90,8 @@ module.exports.routes = {
   'GET   /api/v1/campaign/onboardings': 'campaign/onboarding/list',
   'POST   /api/v1/campaign/onboarding/launch-request':
     'campaign/onboarding/launch-request',
+  'DELETE   /api/v1/campaign/onboarding/launch-request':
+    'campaign/onboarding/cancel-launch-request',
   'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch', // admin
 
   // onboarding AI
