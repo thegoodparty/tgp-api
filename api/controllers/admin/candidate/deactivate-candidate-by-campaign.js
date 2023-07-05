@@ -3,40 +3,58 @@ module.exports = {
 
   description: 'admin call for getting all candidates',
 
-  inputs: {},
+  inputs: {
+    slug: {
+      type: 'string',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
-      description: 'AllCandidates',
+      description: 'success',
     },
 
     badRequest: {
-      description: 'Error getting candidates',
+      description: 'Error hiding candidate',
       responseType: 'badRequest',
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      let candidates;
+      const campaign = await Campaign.findOne({ slug });
+      if (!campaign || !campaign.data?.candidateSlug) {
+        return exits.badRequest({
+          message: 'No campaign',
+        });
+      }
 
-      candidates = await Candidate.find().sort([{ updatedAt: 'DESC' }]);
-      candidates = candidates.map(candidate => {
-        try {
-          return JSON.parse(candidate.data);
-        } catch (e) {
-          console.log('error', candidate);
-          return {};
-        }
+      const candidate = await Candidate.findOne({
+        slug: campaign.data.candidateSlug,
       });
+
+      if (!candidate) {
+        return exits.badRequest({
+          message: 'No candidate',
+        });
+      }
+
+      await Candidate.updateOne({ slug }).set({
+        isActive: false,
+      });
+
       return exits.success({
-        candidates,
+        message: `updated candidate with slug ${campaign.data.candidateSlug}`,
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at admin/candidates', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at admin/deactivate-candidate-by-campaign',
+        e,
+      );
       return exits.badRequest({
-        message: 'Error getting candidates',
+        message: 'Error deactivate-candidate-by-campaign',
       });
     }
   },
