@@ -24,6 +24,8 @@ module.exports.policies = {
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/test': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/delete': ['isAuthenticated', 'isAdmin'],
+  'campaign/onboarding/admin-delete': ['isAuthenticated', 'isAdmin'],
+  'campaign/onboarding/cancel-launch-request': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/list': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/launch': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/by-slug': ['isAuthenticated', 'isAdmin'],
