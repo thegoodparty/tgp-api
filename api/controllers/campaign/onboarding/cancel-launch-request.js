@@ -36,12 +36,12 @@ module.exports = {
         slug,
       });
 
-      if (!campaign) {
+      if (!campaign || !campaign.data) {
         console.log('no campaign');
         return exits.badRequest({ message: 'no campaign', slug });
       }
 
-      if (campaign.launchStatus === 'pending') {
+      if (campaign.data.launchStatus === 'pending') {
         const updated = campaign.data;
         delete updated.launchStatus;
         await Campaign.updateOne({ slug }).set({
