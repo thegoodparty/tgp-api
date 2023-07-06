@@ -38,7 +38,7 @@ module.exports = {
 
       if (!campaign) {
         console.log('no campaign');
-        return exits.badRequest();
+        return exits.badRequest({ message: 'no campaign', slug });
       }
 
       if (campaign.launchStatus === 'pending') {
@@ -51,14 +51,17 @@ module.exports = {
           message: 'Cancelled',
         });
       }
-      return exits.badRequest();
+      return exits.badRequest({
+        message: 'wrong status',
+        status: campaign.launchStatus,
+      });
     } catch (e) {
       console.log('Error cancelling launch request', e);
       await sails.helpers.errorLoggerHelper(
         'Error cancelling launch request',
         e,
       );
-      return exits.badRequest();
+      return exits.badRequest('error', e);
     }
   },
 };
