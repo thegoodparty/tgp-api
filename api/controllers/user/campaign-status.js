@@ -37,6 +37,10 @@ module.exports = {
           status: false,
         });
       }
+      const now = new Date();
+      await Campaign.updateOne({ slug: campaign.slug }).set({
+        data: { ...campaign, lastVisited: now.getTime() },
+      });
       if (campaign.candidateSlug) {
         return exits.success({
           status: 'candidate',
