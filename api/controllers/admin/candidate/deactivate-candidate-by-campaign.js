@@ -23,6 +23,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const { slug } = inputs;
       const campaign = await Campaign.findOne({ slug });
       if (!campaign || !campaign.data?.candidateSlug) {
         return exits.badRequest({
