@@ -5,8 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const slugify = require('slugify');
-
 module.exports = {
   inputs: {},
 
@@ -23,6 +21,18 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
+      const { metaData } = user;
+      const now = new Date();
+      const timestamp = now.getTime();
+      let updated = metaData ? JSON.parse(metaData) : {};
+      updated = {
+        ...updated,
+        lastVisited: timestamp,
+      };
+
+      await User.updateOne({ id: user.id }).set({
+        metaData: JSON.stringify(updated),
+      });
 
       // see if the user already have campaign
       const campaigns = await Campaign.find({
@@ -37,9 +47,8 @@ module.exports = {
           status: false,
         });
       }
-      const now = new Date();
       await Campaign.updateOne({ slug: campaign.slug }).set({
-        data: { ...campaign, lastVisited: now.getTime() },
+        data: { ...campaign, lastVisited: timestamp },
       });
       if (campaign.candidateSlug) {
         return exits.success({
