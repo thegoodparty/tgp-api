@@ -79,19 +79,19 @@ module.exports = {
         const { raceDate, electionDate } = data;
 
         // skip candidates with a race date before this calendar year.
-        // if (raceDate) {
-        //   const electionDateObj = new Date(raceDate);
-        //   if (electionDateObj < janFirst) {
-        //     continue;
-        //   }
-        // } else if (electionDate) {
-        //   const electionDateObj = new Date(electionDate);
-        //   if (electionDateObj < janFirst) {
-        //     continue;
-        //   }
-        // } else {
-        //   continue; // old candidates
-        // }
+        if (raceDate) {
+          const electionDateObj = new Date(raceDate);
+          if (electionDateObj < janFirst) {
+            continue;
+          }
+        } else if (electionDate) {
+          const electionDateObj = new Date(electionDate);
+          if (electionDateObj < janFirst) {
+            continue;
+          }
+        } else {
+          continue; // old candidates
+        }
 
         const {
           slug,
