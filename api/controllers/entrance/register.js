@@ -230,11 +230,6 @@ module.exports = {
           // await sendWVerifyEmail(user);
         }
       }
-      // try {
-      //   if (lowerCaseEmail) {
-      //     await sails.helpers.subscribeUser(lowerCaseEmail);
-      //   }
-      // } catch (e) {}
 
       const token = await sails.helpers.jwtSign({
         id: user.id,
