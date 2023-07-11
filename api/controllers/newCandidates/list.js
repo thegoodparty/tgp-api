@@ -76,22 +76,17 @@ module.exports = {
           }
         }
         const data = candidate.data ? JSON.parse(candidate.data) : {};
-        const { raceDate, electionDate } = data;
+        const { electionDate } = data;
 
         // skip candidates with a race date before this calendar year.
-        // if (raceDate) {
-        //   const electionDateObj = new Date(raceDate);
-        //   if (electionDateObj < janFirst) {
-        //     continue;
-        //   }
-        // } else if (electionDate) {
-        //   const electionDateObj = new Date(electionDate);
-        //   if (electionDateObj < janFirst) {
-        //     continue;
-        //   }
-        // } else {
-        //   continue; // old candidates
-        // }
+        if (electionDate) {
+          const electionDateObj = new Date(electionDate);
+          if (electionDateObj < janFirst) {
+            continue;
+          }
+        } else {
+          continue; // old candidates
+        }
 
         const {
           slug,
@@ -158,7 +153,6 @@ module.exports = {
           followers,
           didWin,
           term,
-          raceDate,
           likelyVoters,
           votesReceived,
           overrideFollowers,
