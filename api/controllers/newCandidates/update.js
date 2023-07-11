@@ -65,6 +65,9 @@ module.exports = {
         data: JSON.stringify(candidate),
       });
 
+      let userObj = await User.findOne({ id: user.id });
+      await sails.helpers.crm.updateUser(userObj, false, true);
+
       return exits.success({
         message: 'ok',
       });
