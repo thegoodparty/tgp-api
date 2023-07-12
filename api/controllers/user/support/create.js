@@ -47,7 +47,6 @@ module.exports = {
       await sails.helpers.cacheHelper('clear', 'all');
 
       try {
-        // await sails.helpers.updateTag(reqUser.email, candidateId, 'active');
         await sails.helpers.crm.associateUserCandidate(reqUser, candidate);
       } catch (e) {
         console.log('error updating crm', e);
