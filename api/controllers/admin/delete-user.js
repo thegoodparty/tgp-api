@@ -16,28 +16,14 @@ module.exports = {
     success: {
       description: 'User Deleted',
     },
-
     badRequest: {
       description: 'Error Deleting User',
       responseType: 'badRequest',
     },
-    forbidden: {
-      description: 'This action is allowed only on dev.',
-      responseType: 'forbidden',
-    },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      if (
-        !appBase.includes('localhost:4000') &&
-        !appBase.includes('dev.goodparty.org')
-      ) {
-        return exits.forbidden({
-          message: 'This action is allowed only on dev.',
-        });
-      }
       const { id } = inputs;
       const user = await User.findOne({
         id,
