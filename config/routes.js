@@ -13,6 +13,7 @@ module.exports.routes = {
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
   'GET    /': 'general/health',
+  'POST   /api/v1/log-error': 'general/error-logger',
   'GET    /api/v1/seed': 'seed/seed',
   'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
