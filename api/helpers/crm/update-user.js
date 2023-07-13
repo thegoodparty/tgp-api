@@ -14,6 +14,9 @@ module.exports = {
     loginEvent: {
       type: 'boolean',
     },
+    updateEvent: {
+      type: 'boolean',
+    },
   },
   exits: {
     success: {
@@ -31,8 +34,9 @@ module.exports = {
     }
     const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
-    const { user, loginEvent } = inputs;
+    const { user, loginEvent, updateEvent } = inputs;
     const { id, name, email, phone, uuid, zip } = user;
+
     try {
       // const userCrew = await User.findOne({ id }).populate('crew');
       // const crew = userCrew.crew;
@@ -115,11 +119,29 @@ module.exports = {
       }
 
       let contactId;
+      let profile_updated_count = 0;
       if (user.metaData) {
         const metaData = JSON.parse(user.metaData);
         if (metaData.hubspotId) {
           contactId = metaData.hubspotId;
         }
+        if (metaData.profile_updated_count) {
+          profile_updated_count = metaData.profile_updated_count;
+        }
+      }
+
+      if (updateEvent) {
+        profile_updated_count += 1;
+        const now = new Date();
+        // this is undocumented, but they want the date in UTC at midnight.
+        const todayMidnightUTC = new Date(
+          Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()),
+        );
+        contactObj.properties.profile_updated_date = todayMidnightUTC;
+        contactObj.properties.profile_updated_count = profile_updated_count;
+        // update profile_updated_count on user
+        let hubspotId = contactId;
+        await updateMeta(user, hubspotId, profile_updated_count);
       }
 
       if (!contactId) {
@@ -136,7 +158,7 @@ module.exports = {
           contactId = contact.id;
           const hubspotId = contactId;
           // console.log('updating meta.hubspotId');
-          await updateMeta(user, hubspotId);
+          await updateMeta(user, hubspotId, profile_updated_count);
         } catch (e) {
           // this is not really an error, it just indicates that the user has never filled a form.
           console.log(
@@ -169,7 +191,7 @@ module.exports = {
             await hubspotClient.crm.contacts.basicApi.create(contactObj);
           // update user record with the id from the crm
           const hubspotId = createContactResponse.id;
-          await updateMeta(user, hubspotId);
+          await updateMeta(user, hubspotId, profile_updated_count);
         } catch (e) {
           console.log('error creating contact', e);
           await sails.helpers.errorLoggerHelper(
@@ -191,7 +213,7 @@ module.exports = {
           const id = e.body.message.substring(
             'Contact already exists. Existing ID: '.length,
           );
-          await updateMeta(user, id);
+          await updateMeta(user, id, profile_updated_count);
         }
       } catch (err) {
         console.log('error updating meta', err);
@@ -202,7 +224,7 @@ module.exports = {
   },
 };
 
-const updateMeta = async (user, hubspotId) => {
+const updateMeta = async (user, hubspotId, profile_updated_count) => {
   let metaData;
 
   if (user.metaData && user.metaData !== '') {
@@ -210,6 +232,7 @@ const updateMeta = async (user, hubspotId) => {
     metaData = {
       ...parsedMeta,
       hubspotId,
+      profile_updated_count,
     };
   } else {
     metaData = { hubspotId };
