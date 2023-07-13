@@ -59,6 +59,7 @@ module.exports = {
           zip,
           pledge_status: pledged ? 'yes' : 'no',
           is_active: launchStatus === 'launched',
+          live_candidate: launchStatus === 'launched',
           // todo: this will need to be reworked if/when we add in Rob/Colton
           unlock_expert: data?.profile && data.profile.completed ? 'Jared' : '',
           unlock_jared: data?.profile && data.profile.completed ? 'Yes' : 'No',
