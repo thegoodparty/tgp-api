@@ -44,6 +44,13 @@ module.exports = {
         isActive: false,
       });
 
+      await Campaign.updateOne({ slug }).set({
+        data: {
+          ...campaign.data,
+          launchStatus: false,
+        },
+      });
+
       return exits.success({
         message: `updated candidate with slug ${campaign.data.candidateSlug}`,
       });
