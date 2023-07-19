@@ -57,7 +57,6 @@ module.exports.routes = {
   'GET    /api/v1/new-candidate': 'newCandidates/find',
   'PUT    /api/v1/new-candidate': 'newCandidates/update',
 
-  'GET    /api/v1/homepage-candidates': 'newCandidates/homepage-candidates',
   'GET    /api/v1/new-candidates': 'newCandidates/list',
   'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
   'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
@@ -71,7 +70,6 @@ module.exports.routes = {
   // campaign
   'GET    /api/v1/campaign': 'campaign/find',
   'PUT    /api/v1/campaign': 'campaign/update',
-  'GET    /api/v1/campaign/stats': 'campaign/stats',
 
   'GET    /api/v1/campaign/staff-role': 'campaign/staff/find',
 
@@ -129,20 +127,5 @@ module.exports.routes = {
   'POST   /api/v1/application/upload-image':
     'newCandidates/application/upload-image',
 
-  // socialListening
-
-  'GET   /api/v1/listening/followers-count': 'socialListening/followers-count',
-  // 'GET   /api/v1/listening/tiktok-scrape': 'socialListening/tiktok-scrape',
-  // 'GET   /api/v1/listening/search-results': 'socialListening/search-results',
-
   'GET   /api/v1/declares': 'declare/list',
-
-  // socialListening crons
-  // 'GET   /api/v1/listening/cron/searches': 'socialListening/cron/searches',
-  // 'GET   /api/v1/listening/cron/followers': 'socialListening/cron/followers',
-  // 'GET   /api/v1/listening/cron/brands': 'socialListening/cron/brands',
-  // 'GET   /api/v1/listening/cron/candidates-tiktok-scrape':
-  //   'socialListening/cron/candidates-tiktok-scrape',
-  // 'GET   /api/v1/listening/cron/update-candidates-feed':
-  //   'socialListening/cron/update-candidates-feed',
 };

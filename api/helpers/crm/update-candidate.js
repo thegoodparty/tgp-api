@@ -54,30 +54,6 @@ module.exports = {
         topIssues += `Top Issue: ${candPosition.topIssue?.name} | Position: ${candPosition.position?.name} | Candidate Position: ${candPosition.description} \n`;
       });
 
-      const followers =
-        await sails.helpers.socialListening.candidateFollowersHelper(candidate);
-      let totalFeed = 0;
-      if (data.pulsarSearchId) {
-        const feed = await sails.helpers.socialListening.searchResultsHelper(
-          data.pulsarSearchId,
-          2,
-          true,
-          true,
-          false,
-          true,
-        );
-
-        totalFeed = feed.total;
-      }
-
-      let thisWeek = 0;
-      let lastWeek = 0;
-      if (followers) {
-        thisWeek = followers.thisWeek;
-        lastWeek = followers.lastWeek;
-      }
-      const diff = thisWeek - lastWeek;
-
       const {
         firstName,
         lastName,
@@ -121,8 +97,6 @@ module.exports = {
           featured_endorsements: endorsementsCount,
           top_issues: topIssues,
           modify_page: moment().format('YYYY-MM-DD'),
-          follower_count: thisWeek,
-          follower_growth: diff,
           last_portal_visit: lastPortalVisit,
           mentions: totalFeed,
           votes_needed: votesNeeded,

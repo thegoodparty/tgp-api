@@ -18,7 +18,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { withCandidates } = inputs;
       let reqUser = this.req.user;
@@ -27,7 +27,7 @@ module.exports = {
       });
       if (!withCandidates) {
         const hash = {};
-        supports.forEach(support => {
+        supports.forEach((support) => {
           hash[support.candidate] = true;
         });
 
@@ -44,21 +44,12 @@ module.exports = {
             isActive: true,
           });
           const data = JSON.parse(candidate.data);
-          let followers = {};
-          followers = await sails.helpers.socialListening.candidateFollowersHelper(
-            candidate,
-          );
-          const support = await sails.helpers.support.supportByCandidate(id);
-
-          followers.thisWeek += support.thisWeek;
-          followers.lastWeek += support.lastWeek;
-          data.followers = followers;
 
           const candPositions = await CandidatePosition.find({ candidate: id })
             .sort([{ order: 'ASC' }])
             .populate('position');
           let positions = [];
-          candPositions.forEach(pos => {
+          candPositions.forEach((pos) => {
             positions.push(pos.position);
           });
           data.positions = positions;
