@@ -79,7 +79,6 @@ module.exports.routes = {
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
   'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
-  'POST   /api/v1/campaign/image': 'campaign/image/create',
   'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
