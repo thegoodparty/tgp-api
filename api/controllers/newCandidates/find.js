@@ -4,7 +4,6 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const moment = require('moment');
 
 module.exports = {
   friendlyName: 'Find by slug one Candidate',
@@ -47,17 +46,13 @@ module.exports = {
 
       let candidatePositions = [];
 
-      let support;
-
       if (allFields) {
         candidatePositions = await candidatePositionFinder(candidate.id);
-        support = await sails.helpers.support.supportByCandidate(candidate.id);
       }
 
       return exits.success({
         candidate: candidateData,
         candidatePositions,
-        support,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

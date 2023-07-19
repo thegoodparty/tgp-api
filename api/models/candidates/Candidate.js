@@ -90,17 +90,6 @@ module.exports = {
       collection: 'buttonImpression',
       via: 'candidate',
     },
-
-    // one to many relationship to socialStats
-    socialStats: {
-      collection: 'socialStat',
-      via: 'candidate',
-    },
-
-    socialBrand: {
-      collection: 'socialBrand',
-      via: 'candidate',
-    },
   },
 
   customToJSON: function () {

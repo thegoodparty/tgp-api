@@ -114,18 +114,8 @@ module.exports = {
           term,
           likelyVoters,
           votesReceived,
-          overrideFollowers,
           votesNeeded,
         } = data;
-
-        const followers =
-          await sails.helpers.socialListening.candidateFollowersHelper(
-            candidate,
-          );
-        let support;
-        if (id) {
-          await sails.helpers.support.supportByCandidate(id);
-        }
 
         activeCandidates.push({
           slug,
@@ -150,55 +140,17 @@ module.exports = {
           office,
           district,
           counties,
-          followers,
           didWin,
           term,
           likelyVoters,
           votesReceived,
-          overrideFollowers,
           votesNeeded,
-          support,
           electionDate,
         });
         if (candidate.state && candidate.state !== '') {
           possibleStates[candidate.state] = candidate.state;
         }
       }
-
-      activeCandidates.sort((a, b) => {
-        if (
-          a.followers &&
-          b.followers &&
-          Object.keys(a.followers).length !== 0 &&
-          Object.keys(b.followers).length !== 0
-        ) {
-          return b.followers.thisWeek - a.followers.thisWeek;
-        }
-        if (
-          (!a.followers && !b.followers) ||
-          (Object.keys(a.followers).length === 0 &&
-            Object.keys(b.followers).length === 0)
-        ) {
-          return 0;
-        }
-        if (
-          a.followers &&
-          Object.keys(a.followers).length !== 0 &&
-          a.followers.thisWeek !== 0
-        ) {
-          return -1;
-        }
-
-        if (
-          b.followers &&
-          Object.keys(b.followers).length !== 0 &&
-          b.followers.thisWeek !== 0
-        ) {
-          return 1;
-        }
-
-        return 0;
-      });
 
       const positions = await Position.find()
         .populate('candidates')
