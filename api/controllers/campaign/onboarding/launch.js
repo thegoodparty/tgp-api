@@ -136,6 +136,7 @@ function mapCampaignToCandidate(campaign) {
     firstName,
     lastName,
     party,
+    otherParty,
     state,
     office,
     pastExperience,
@@ -147,6 +148,8 @@ function mapCampaignToCandidate(campaign) {
 
   const { electionDate } = goals;
 
+  const partyWithOther = party === 'Other' ? otherParty : party;
+
   let voteGoal;
   let voterProjection;
   if (pathToVictory) {
@@ -156,7 +159,7 @@ function mapCampaignToCandidate(campaign) {
     campaignOnboardingSlug: slug,
     firstName: firstName.trim(),
     lastName: lastName.trim(),
-    party,
+    party: partyWithOther,
     district,
     state,
     office,

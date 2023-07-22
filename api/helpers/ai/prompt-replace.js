@@ -24,6 +24,10 @@ module.exports = {
       let newPrompt = prompt;
 
       const positionsStr = positionsToStr(campaign.details.topIssues);
+      const party =
+        campaign.details?.party === 'Other'
+          ? campaign.details.otherParty
+          : campaign.details?.party;
 
       const replaceArr = [
         {
@@ -36,7 +40,7 @@ module.exports = {
         },
         {
           find: 'party',
-          replace: campaign.details.party || campaign.details.otherParty,
+          replace: party,
         },
         {
           find: 'state',
