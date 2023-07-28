@@ -18,17 +18,8 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      let candidates;
+      const candidates = await Candidate.find().sort([{ updatedAt: 'DESC' }]);
 
-      candidates = await Candidate.find().sort([{ updatedAt: 'DESC' }]);
-      candidates = candidates.map((candidate) => {
-        try {
-          return JSON.parse(candidate.data);
-        } catch (e) {
-          console.log('error', candidate);
-          return {};
-        }
-      });
       return exits.success({
         candidates,
       });

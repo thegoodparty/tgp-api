@@ -50,6 +50,7 @@ module.exports.routes = {
   'POST   /api/v1/admin/upload-image': 'admin/upload-image',
   // for campaign
   'POST    /api/v1/admin/victory-mail': 'admin/victory-mail',
+  'PUT    /api/v1/admin/candidate/reactivate': 'admin/candidate/reactivate',
   'PUT    /api/v1/admin/deactivate-candidate-by-campaign':
     'admin/candidate/deactivate-candidate-by-campaign',
 
