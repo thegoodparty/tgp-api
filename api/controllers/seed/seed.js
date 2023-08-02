@@ -44,18 +44,30 @@ const topIssues = {
 
 let log = 'starting. ';
 module.exports = {
-  inputs: {},
+  inputs: {
+    email: {
+      type: 'string',
+      isEmail: true,
+      required: true,
+    },
+  },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
+      const { email } = inputs;
       // fix missing candidate positions for mateo
-      const candidate = await Candidate.findOne({ slug: 'matthew-wardenaar' });
-      log += `candidate: ${JSON.stringify(candidate)}
-      
-      `;
-      await createCandidatePositions(topIssues, candidate);
+      const variables = JSON.stringify({
+        name: 'User name',
+        link: 'https://goodparty.org',
+      });
+      await sails.helpers.mailgun.mailgunTemplateSender(
+        email,
+        'Your Good Party Campaign is live!',
+        'campagin-launch',
+        variables,
+      );
 
       return exits.success({
         message: 'Done',
