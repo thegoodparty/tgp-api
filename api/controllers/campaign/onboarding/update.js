@@ -18,6 +18,9 @@ module.exports = {
     versionKey: {
       type: 'string',
     },
+    subSectionKey: {
+      type: 'string',
+    },
     updateCandidate: {
       type: 'boolean',
     },
@@ -35,7 +38,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { campaign, versionKey, updateCandidate } = inputs;
+      const { campaign, versionKey, updateCandidate, subSectionKey } = inputs;
       const { user } = this.req;
       const existing = await Campaign.findOne({
         slug: campaign.slug,
@@ -50,7 +53,7 @@ module.exports = {
       if (versionKey && existing) {
         await sails.helpers.ai.saveCampaignVersion(
           existing.data,
-          'campaignPlan',
+          subSectionKey || 'campaignPlan',
           versionKey,
           existing.id,
         );
