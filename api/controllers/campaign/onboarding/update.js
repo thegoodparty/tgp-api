@@ -88,6 +88,7 @@ module.exports = {
                 ...data,
                 voteGoal: parseInt(pathToVictory.voteGoal) || 0,
                 voterProjection: parseInt(pathToVictory.voterProjection) || 0,
+                finalVotes: parseInt(pathToVictory.finalVotes) || false,
               }),
             });
           }
