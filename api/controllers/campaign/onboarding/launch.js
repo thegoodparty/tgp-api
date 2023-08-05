@@ -143,6 +143,7 @@ function mapCampaignToCandidate(campaign) {
     occupation,
     funFact,
     district,
+    city,
   } = details;
   const { slogan, aboutMe, why } = campaignPlan;
 
@@ -162,6 +163,7 @@ function mapCampaignToCandidate(campaign) {
     party: partyWithOther,
     district,
     state,
+    city,
     office,
     slogan,
     about: aboutMe,
