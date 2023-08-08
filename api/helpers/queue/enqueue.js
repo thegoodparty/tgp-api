@@ -30,8 +30,10 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
+    // console.log('entered enqueue');
     try {
       if (!queueUrl) {
+        console.log('no queue url');
         return exits.success('not ok');
       }
       const { message } = inputs;
@@ -46,6 +48,8 @@ module.exports = {
         QueueUrl: queueUrl,
       };
 
+      // console.log('connecting to sqs');
+      // console.log('params', params);
       sqs.sendMessage(params, async (err, data) => {
         if (err) {
           console.log('error at enqueue', err);
@@ -58,6 +62,7 @@ module.exports = {
         }
       });
     } catch (e) {
+      console.log('error at enqueue', e);
       return exits.success({ message: 'not ok', e });
     }
   },

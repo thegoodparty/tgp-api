@@ -19,7 +19,7 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    chat: {
+    name: {
       type: 'ref',
       required: true,
     },
@@ -39,8 +39,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey, chat } = inputs;
-      await sails.helpers.queue.consumer();
+      const { key, subSectionKey, name } = inputs;
 
       const campaigns = await Campaign.find({
         user: user.id,
@@ -49,53 +48,25 @@ module.exports = {
       if (campaigns && campaigns.length > 0) {
         campaign = campaigns[0].data;
       }
+
       if (!campaign[subSectionKey]) {
-        campaign[subSectionKey] = {};
+        console.log('invalid subSectionKey', subSectionKey);
+        return exits.badRequest();
       }
 
-      campaign.details.name = user.name;
-
-      let chatResponse;
-      if (subSectionKey === 'aiContent') {
-        chatResponse = campaign[subSectionKey][key]['content'];
-      } else {
-        chatResponse = campaign[subSectionKey][key];
+      if (!campaign[subSectionKey][key]) {
+        console.log('invalid document key', key);
+        return exits.badRequest();
       }
-      const cmsPrompts = await sails.helpers.ai.getPrompts();
-      let prompt = cmsPrompts[key];
-      prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
 
-      const completion = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        max_tokens: 3000,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful political assistant.',
-          },
-          { role: 'user', content: prompt },
-          ...chat,
-        ],
-      });
-      chatResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
-      );
-
-      if (subSectionKey === 'aiContent') {
-        campaign[subSectionKey][key]['content'] = chatResponse;
-      } else {
-        campaign[subSectionKey][key] = chatResponse;
-      }
+      campaign[subSectionKey][key]['name'] = name;
 
       await Campaign.updateOne({
         slug: campaign.slug,
       }).set({
         data: campaign,
       });
-      return exits.success({
-        chatResponse,
-      });
+      return exits.success({ status: 'success' });
     } catch (e) {
       console.log('Error generating AI response', e);
       return exits.badRequest();

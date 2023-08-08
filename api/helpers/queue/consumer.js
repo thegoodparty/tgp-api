@@ -36,6 +36,7 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
+    // console.log('consumer initiated');
     try {
       if (!queueUrl) {
         return exits.success('not ok');
@@ -63,6 +64,7 @@ module.exports = {
           console.error(err.message);
         });
 
+        // console.log('starting queue');
         queue.start();
       }
       return exits.success('ok');
@@ -117,7 +119,15 @@ async function handleGenerateCampaignPlan(message) {
       campaign.id,
     );
 
-    data[subSectionKey][key] = chatResponse;
+    if (subSectionKey === 'aiContent') {
+      data[subSectionKey][key] = {
+        name: key,
+        updatedAt: new Date(),
+        content: chatResponse,
+      };
+    } else {
+      data[subSectionKey][key] = chatResponse;
+    }
     if (
       !data.campaignPlanStatus ||
       typeof campaign.campaignPlanStatus === 'string'

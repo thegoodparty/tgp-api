@@ -38,6 +38,8 @@ module.exports = {
     try {
       const user = this.req.user;
       const { key, subSectionKey, regenerate, editMode, chat } = inputs;
+
+      // console.log('controller onboarding/ai/create initiated');
       await sails.helpers.queue.consumer();
 
       const campaigns = await Campaign.find({
@@ -55,6 +57,7 @@ module.exports = {
       }
 
       if (!regenerate && campaign.campaignPlanStatus[key] === 'processing') {
+        // console.log('still processing... exiting');
         return exits.success({
           status: 'processing',
           step: 'waiting',
@@ -86,7 +89,10 @@ module.exports = {
 
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
+      console.log('keyNoDigits', keyNoDigits);
+      // console.log('cmsPrompts', cmsPrompts);
       let prompt = cmsPrompts[keyNoDigits];
+      // console.log('prompt', prompt);
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
       await sails.helpers.errorLoggerHelper('prompt', {
         cmsPrompt: cmsPrompts[keyNoDigits],
@@ -104,7 +110,9 @@ module.exports = {
         },
       };
 
+      // console.log('queueMessage', queueMessage);
       await sails.helpers.queue.enqueue(queueMessage);
+      // console.log('enqueueResp', enqueueResp);
       await sails.helpers.errorLoggerHelper('Enqueued AI prompt', queueMessage);
 
       campaign.campaignPlanStatus[key] = 'processing';
@@ -113,6 +121,7 @@ module.exports = {
       }).set({
         data: campaign,
       });
+      // console.log('calling consumer...');
       await sails.helpers.queue.consumer();
 
       return exits.success({
