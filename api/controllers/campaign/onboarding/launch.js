@@ -216,6 +216,9 @@ async function findSlug(candidate) {
 }
 
 async function createCandidatePositions(topIssues, candidate) {
+  if (!topIssues?.positions) {
+    return;
+  }
   for (let i = 0; i < topIssues.positions.length; i++) {
     const position = topIssues.positions[i];
 
