@@ -48,12 +48,10 @@ module.exports = {
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);
         const duration = moment.duration(end.diff(now));
-        // const weeks = Math.floor(duration.asWeeks());
-        const weeks = 12;
-        if (weeks >= 0 && weeks <= 12) {
+        const weeks = Math.floor(duration.asWeeks());
+        if (weeks >= 0 && weeks <= 12 && campaign) {
           // 12 weeks before election
           const goals = calculateGoals(campaign.data, weeks);
-          console.log('gials', goals);
           const fields = [
             {
               key: 'doorKnocking',
