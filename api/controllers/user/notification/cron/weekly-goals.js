@@ -21,15 +21,15 @@ module.exports = {
       const today = moment().format('YYYY-MM-DD');
       const key = `weeklyGoals-${today}`;
       const exists = await KeyValue.findOne({ key });
-      // if (exists) {
-      //   return exits.badRequest({
-      //     message: 'notification created today already.',
-      //   });
-      // }
-      // await KeyValue.create({
-      //   key,
-      //   value: true,
-      // });
+      if (exists) {
+        return exits.badRequest({
+          message: 'notification created today already.',
+        });
+      }
+      await KeyValue.create({
+        key,
+        value: true,
+      });
 
       const candidates = await Candidate.find();
       for (let i = 0; i < candidates.length; i++) {
