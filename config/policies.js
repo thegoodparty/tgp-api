@@ -48,4 +48,5 @@ module.exports.policies = {
   'newCandidates/application/upload-image': true, // for guest applications
   'socialListening/*': true,
   'campaign/claim/claim': true,
+  'user/notification/cron/*': true,
 };

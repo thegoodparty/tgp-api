@@ -191,6 +191,11 @@ module.exports = {
       via: 'user',
     },
 
+    notifications: {
+      collection: 'notification',
+      via: 'user',
+    },
+
     applications: {
       collection: 'application',
       via: 'user',
