@@ -74,6 +74,11 @@ module.exports = {
   },
 };
 
+const camelToSentence = (text) => {
+  const result = text.replace(/([A-Z])/g, ' $1');
+  return result.charAt(0).toUpperCase() + result.slice(1);
+};
+
 async function handleMessage(message) {
   if (!message) {
     return;
@@ -121,7 +126,7 @@ async function handleGenerateCampaignPlan(message) {
 
     if (subSectionKey === 'aiContent') {
       data[subSectionKey][key] = {
-        name: key,
+        name: camelToSentence(key),
         updatedAt: new Date(),
         content: chatResponse,
       };
