@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 const https = require('https');
 
 const { Configuration, OpenAIApi } = require('openai');
-const CampaignPlanVersion = require('../../models/campaign/CampaignPlanVersion');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
 const AiConfiguration = new Configuration({
@@ -36,7 +35,6 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    // console.log('consumer initiated');
     try {
       if (!queueUrl) {
         return exits.success('not ok');
@@ -116,6 +114,7 @@ async function handleGenerateCampaignPlan(message) {
 
     const campaign = await Campaign.findOne({ slug });
     const { data } = campaign;
+
     await sails.helpers.ai.saveCampaignVersion(
       data,
       subSectionKey,
