@@ -48,12 +48,13 @@ module.exports = {
         }
         const campaign = await Campaign.findOne({
           slug: campaignOnboardingSlug,
-        });
+        }).populate('user');
         const now = moment(new Date());
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);
         const duration = moment.duration(end.diff(now));
         const weeks = Math.floor(duration.asWeeks());
+
         if (weeks >= 0 && weeks <= 12 && campaign) {
           // 12 weeks before election
           const goals = calculateGoals(campaign.data, weeks);
@@ -93,12 +94,11 @@ module.exports = {
               await Notification.create({
                 isRead: false,
                 data: notification,
-                user: campaign.user,
+                user: campaign.user?.id,
               });
-
-              console.log('notification', notification);
             }
           }
+          await sendEmail(goals, campaign.user);
         }
       }
 
@@ -205,4 +205,29 @@ function numberFormatter(num) {
     .replace(/./g, (c, i, a) =>
       i && c !== '.' && (a.length - i) % 3 === 0 ? `,${c}` : c,
     )}`;
+}
+
+async function sendEmail(goals, user) {
+  const { calls, digital, doorKnocking } = goals;
+  if (
+    calls.total <= calls.progress &&
+    digital.total <= digital.progress &&
+    doorKnocking.total <= doorKnocking.progress
+  ) {
+    //goals already reached
+    return;
+  }
+
+  const variables = JSON.stringify({
+    name: `${user.name}`,
+    calls: numberFormatter(calls.total - calls.progress),
+    digital: numberFormatter(digital.total - digital.progress),
+    doorKnocking: numberFormatter(doorKnocking.total - doorKnocking.progress),
+  });
+  await sails.helpers.mailgun.mailgunTemplateSender(
+    user.email,
+    'Your Campaign Goals for the Week',
+    'weekly-goals',
+    variables,
+  );
 }
