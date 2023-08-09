@@ -1,13 +1,4 @@
 /* eslint-disable object-shorthand */
-const { Configuration, OpenAIApi } = require('openai');
-
-const openAiKey = sails.config.custom.openAi || sails.config.openAi;
-
-const configuration = new Configuration({
-  apiKey: openAiKey,
-});
-
-const openai = new OpenAIApi(configuration);
 
 module.exports = {
   inputs: {

@@ -64,7 +64,6 @@ module.exports = {
           console.error(err.message);
         });
 
-        // console.log('starting queue');
         queue.start();
       }
       return exits.success('ok');
