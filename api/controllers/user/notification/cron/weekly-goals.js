@@ -49,7 +49,7 @@ module.exports = {
         const campaign = await Campaign.findOne({
           slug: campaignOnboardingSlug,
         }).populate('user');
-        if (!campaign.data || !campaign.data.pathToVictory) {
+        if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
           continue; // goals not set yet.
         }
         const now = moment(new Date());
