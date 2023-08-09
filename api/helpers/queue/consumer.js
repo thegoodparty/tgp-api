@@ -36,6 +36,7 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
+    // console.log('consumer initiated');
     try {
       if (!queueUrl) {
         return exits.success('not ok');
@@ -70,6 +71,11 @@ module.exports = {
       return exits.success('not ok');
     }
   },
+};
+
+const camelToSentence = (text) => {
+  const result = text.replace(/([A-Z])/g, ' $1');
+  return result.charAt(0).toUpperCase() + result.slice(1);
 };
 
 async function handleMessage(message) {
@@ -117,7 +123,15 @@ async function handleGenerateCampaignPlan(message) {
       campaign.id,
     );
 
-    data[subSectionKey][key] = chatResponse;
+    if (subSectionKey === 'aiContent') {
+      data[subSectionKey][key] = {
+        name: camelToSentence(key),
+        updatedAt: new Date(),
+        content: chatResponse,
+      };
+    } else {
+      data[subSectionKey][key] = chatResponse;
+    }
     if (
       !data.campaignPlanStatus ||
       typeof campaign.campaignPlanStatus === 'string'
