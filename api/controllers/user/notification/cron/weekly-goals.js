@@ -56,7 +56,8 @@ module.exports = {
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);
         const duration = moment.duration(end.diff(now));
-        const weeks = Math.floor(duration.asWeeks());
+        // const weeks = Math.floor(duration.asWeeks());
+        const weeks = 11;
 
         if (weeks >= 0 && weeks <= 12 && campaign) {
           // 12 weeks before election
@@ -221,16 +222,77 @@ async function sendEmail(goals, user) {
     return;
   }
 
-  const variables = JSON.stringify({
+  /*
+  <li>
+  <strong>Door Knocking</strong>: Your goal is to knock
+                          on {{doorKnocking}} doors this week. Engage with
+                          potential voters, discuss the issues that matter, and
+                          make your message heard.</li>
+
+                          <li>
+                          <strong>Calls or SMS</strong>: We aim to reach
+                          {{calls}} people via phone calls or text messages this
+                          week. Personalized, direct communication can
+                          significantly impact a voter's decision.
+                        </li>
+                        <li>
+                          <strong>Online Impressions</strong>: Our digital goal
+                          for the week is to generate {{digital}} online
+                          impressions. This can be achieved through social media
+                          posts, email newsletters, and other online
+                          interactions. Remember, every digital interaction is
+                          an opportunity to connect with a potential voter.
+                        </li>
+  */
+
+  const variables = {
     name: `${user.name}`,
-    calls: numberFormatter(calls.total - calls.progress),
-    digital: numberFormatter(digital.total - digital.progress),
-    doorKnocking: numberFormatter(doorKnocking.total - doorKnocking.progress),
-  });
+  };
+  if (doorKnocking.total - doorKnocking.progress > 0) {
+    variables.doorKnocking = `
+      Your goal is to knock
+      on ${numberFormatter(
+        doorKnocking.total - doorKnocking.progress,
+      )} doors this week. Engage with
+      potential voters, discuss the issues that matter, and
+      make your message heard.
+    `;
+  } else {
+    variables.doorKnocking = 'up to date.';
+  }
+
+  if (calls.total - calls.progress > 0) {
+    variables.calls = `
+      We aim to reach
+      ${numberFormatter(
+        calls.total - calls.progress,
+      )} people via phone calls or text messages this
+      week. Personalized, direct communication can
+      significantly impact a voter's decision.
+    `;
+  } else {
+    variables.calls = 'up to date.';
+  }
+
+  if (digital.total - digital.progress > 0) {
+    variables.digital = `
+      Our digital goal
+      for the week is to generate ${numberFormatter(
+        digital.total - digital.progress,
+      )} online
+      impressions. This can be achieved through social media
+      posts, email newsletters, and other online
+      interactions. Remember, every digital interaction is
+      an opportunity to connect with a potential voter.
+    `;
+  } else {
+    variables.digital = 'up to date.';
+  }
+
   await sails.helpers.mailgun.mailgunTemplateSender(
     user.email,
     'Your Campaign Goals for the Week',
     'weekly-goals',
-    variables,
+    JSON.stringify(variables),
   );
 }
