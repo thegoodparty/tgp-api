@@ -1,4 +1,7 @@
 const moment = require('moment');
+
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 module.exports = {
   friendlyName: 'User notifications',
 
@@ -17,19 +20,21 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      // make sure we run this only once a day
-      const today = moment().format('YYYY-MM-DD');
-      const key = `weeklyGoals-${today}`;
-      const exists = await KeyValue.findOne({ key });
-      if (exists) {
-        return exits.badRequest({
-          message: 'notification created today already.',
+      if (appBase === 'https://goodparty.org') {
+        // make sure we run this only once a day
+        const today = moment().format('YYYY-MM-DD');
+        const key = `weeklyGoals-${today}`;
+        const exists = await KeyValue.findOne({ key });
+        if (exists) {
+          return exits.badRequest({
+            message: 'notification created today already.',
+          });
+        }
+        await KeyValue.create({
+          key,
+          value: true,
         });
       }
-      await KeyValue.create({
-        key,
-        value: true,
-      });
 
       const candidates = await Candidate.find();
       for (let i = 0; i < candidates.length; i++) {

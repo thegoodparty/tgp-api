@@ -133,6 +133,7 @@ module.exports.routes = {
 
   // notifications
   'GET   /api/v1/notifications': 'user/notification/list',
+  'PUT   /api/v1/notification': 'user/notification/update',
 
   //notification crons
   'GET   /api/v1/notification/cron/weekly-goals':
