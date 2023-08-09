@@ -49,6 +49,9 @@ module.exports = {
         const campaign = await Campaign.findOne({
           slug: campaignOnboardingSlug,
         }).populate('user');
+        if (!campaign.data || !campaign.data.pathToVictory) {
+          continue; // goals not set yet.
+        }
         const now = moment(new Date());
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);
