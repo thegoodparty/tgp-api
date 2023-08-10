@@ -125,7 +125,7 @@ async function handleGenerateCampaignPlan(message) {
     if (subSectionKey === 'aiContent') {
       data[subSectionKey][key] = {
         name: camelToSentence(key),
-        updatedAt: new Date(),
+        updatedAt: new Date().valueOf(),
         content: chatResponse,
       };
     } else {
