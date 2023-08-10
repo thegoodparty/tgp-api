@@ -222,29 +222,6 @@ async function sendEmail(goals, user) {
     return;
   }
 
-  /*
-  <li>
-  <strong>Door Knocking</strong>: Your goal is to knock
-                          on {{doorKnocking}} doors this week. Engage with
-                          potential voters, discuss the issues that matter, and
-                          make your message heard.</li>
-
-                          <li>
-                          <strong>Calls or SMS</strong>: We aim to reach
-                          {{calls}} people via phone calls or text messages this
-                          week. Personalized, direct communication can
-                          significantly impact a voter's decision.
-                        </li>
-                        <li>
-                          <strong>Online Impressions</strong>: Our digital goal
-                          for the week is to generate {{digital}} online
-                          impressions. This can be achieved through social media
-                          posts, email newsletters, and other online
-                          interactions. Remember, every digital interaction is
-                          an opportunity to connect with a potential voter.
-                        </li>
-  */
-
   const variables = {
     name: `${user.name}`,
   };
