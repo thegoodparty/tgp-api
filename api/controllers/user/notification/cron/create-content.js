@@ -3,8 +3,6 @@ const moment = require('moment');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
-  friendlyName: 'User notifications',
-
   inputs: {},
 
   exits: {
@@ -56,8 +54,8 @@ module.exports = {
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);
         const duration = moment.duration(end.diff(now));
-        // const weeks = Math.floor(duration.asWeeks());
-        const weeks = 1;
+        const weeks = Math.floor(duration.asWeeks());
+        // const weeks = 1;
 
         if (weeks > 0 && weeks <= 12 && campaign) {
           // 12 weeks before election

@@ -3,8 +3,6 @@ const moment = require('moment');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
-  friendlyName: 'User notifications',
-
   inputs: {},
 
   exits: {

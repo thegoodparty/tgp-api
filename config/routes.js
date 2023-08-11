@@ -140,4 +140,6 @@ module.exports.routes = {
     'user/notification/cron/weekly-goals',
   'GET   /api/v1/notification/cron/create-content':
     'user/notification/cron/create-content',
+  'GET   /api/v1/notification/cron/update-tracker':
+    'user/notification/cron/update-tracker',
 };
