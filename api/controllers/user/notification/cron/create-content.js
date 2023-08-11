@@ -76,7 +76,7 @@ module.exports = {
             user: campaign.user?.id,
           });
 
-          await sendEmail(weeks, campaign.user);
+          // await sendEmail(weeks, campaign.user);
         }
       }
 

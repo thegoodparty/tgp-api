@@ -71,7 +71,7 @@ module.exports = {
             data: notification,
             user: campaign.user?.id,
           });
-          await sendEmail(campaign.user);
+          // await sendEmail(campaign.user);
         }
       }
 
