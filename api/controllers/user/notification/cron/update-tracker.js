@@ -94,7 +94,7 @@ async function sendEmail(user) {
 
   await sails.helpers.mailgun.mailgunTemplateSender(
     user.email,
-    'Your Campaign Goals for the Week',
+    'Wrapping Up Your Week - Time to Update Your Campaign Tracker',
     'update-tracker',
     JSON.stringify(variables),
   );
