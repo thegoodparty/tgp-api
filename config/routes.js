@@ -130,4 +130,16 @@ module.exports.routes = {
     'newCandidates/application/upload-image',
 
   'GET   /api/v1/declares': 'declare/list',
+
+  // notifications
+  'GET   /api/v1/notifications': 'user/notification/list',
+  'PUT   /api/v1/notification': 'user/notification/update',
+
+  //notification crons
+  'GET   /api/v1/notification/cron/weekly-goals':
+    'user/notification/cron/weekly-goals',
+  'GET   /api/v1/notification/cron/create-content':
+    'user/notification/cron/create-content',
+  'GET   /api/v1/notification/cron/update-tracker':
+    'user/notification/cron/update-tracker',
 };

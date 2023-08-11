@@ -29,7 +29,6 @@ module.exports = {
       await TopIssue.updateOne({ id }).set({
         name,
       });
-      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'updated',

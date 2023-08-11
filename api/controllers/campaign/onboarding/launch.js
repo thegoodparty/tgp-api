@@ -91,7 +91,6 @@ module.exports = {
       await createCandidatePositions(topIssues, created);
 
       await sails.helpers.crm.updateCandidate(created);
-      await sails.helpers.cacheHelper('clear', 'all');
 
       await sendMail(slug);
 
@@ -143,6 +142,7 @@ function mapCampaignToCandidate(campaign) {
     occupation,
     funFact,
     district,
+    city,
   } = details;
   const { slogan, aboutMe, why } = campaignPlan;
 
@@ -162,6 +162,7 @@ function mapCampaignToCandidate(campaign) {
     party: partyWithOther,
     district,
     state,
+    city,
     office,
     slogan,
     about: aboutMe,
@@ -214,6 +215,9 @@ async function findSlug(candidate) {
 }
 
 async function createCandidatePositions(topIssues, candidate) {
+  if (!topIssues?.positions) {
+    return;
+  }
   for (let i = 0; i < topIssues.positions.length; i++) {
     const position = topIssues.positions[i];
 

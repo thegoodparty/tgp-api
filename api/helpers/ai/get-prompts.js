@@ -10,14 +10,11 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      let content = await sails.helpers.cacheHelper('get', 'content');
-      if (!content) {
-        const contents = await CmsContent.find();
+      let content;
+      const contents = await CmsContent.find();
 
-        if (contents.length > 0) {
-          content = { ...JSON.parse(contents[0].content) };
-          await sails.helpers.cacheHelper('set', 'content', content);
-        }
+      if (contents.length > 0) {
+        content = { ...JSON.parse(contents[0].content) };
       }
       const combined = {
         ...content.onboardingPrompts,

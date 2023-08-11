@@ -28,7 +28,6 @@ module.exports = {
         name,
         topIssue: topIssueId,
       });
-      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'created',
