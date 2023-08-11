@@ -78,7 +78,7 @@ module.exports = {
           });
           count++;
 
-          // await sendEmail(weeks, campaign.user);
+          await sendEmail(weeks, campaign.user);
         }
       }
 

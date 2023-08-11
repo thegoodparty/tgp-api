@@ -101,7 +101,7 @@ module.exports = {
               });
             }
           }
-          // await sendEmail(goals, campaign.user);
+          await sendEmail(goals, campaign.user);
           count++;
         }
       }
