@@ -17,6 +17,7 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    let count = 0;
     try {
       if (appBase === 'https://goodparty.org') {
         // make sure we run this only once a day
@@ -101,11 +102,12 @@ module.exports = {
             }
           }
           // await sendEmail(goals, campaign.user);
+          count++;
         }
       }
 
       return exits.success({
-        message: `notified ${candidates.length} candidates`,
+        message: `notified ${count} candidates`,
       });
     } catch (e) {
       console.log(e);

@@ -18,10 +18,11 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      let count = 0;
       if (appBase === 'https://goodparty.org') {
         // make sure we run this only once a day
         const today = moment().format('YYYY-MM-DD');
-        const key = `weeklyGoals-${today}`;
+        const key = `updateTracker-${today}`;
         const exists = await KeyValue.findOne({ key });
         if (exists) {
           return exits.badRequest({
@@ -72,11 +73,12 @@ module.exports = {
             user: campaign.user?.id,
           });
           // await sendEmail(campaign.user);
+          count++;
         }
       }
 
       return exits.success({
-        message: `notified ${candidates.length} candidates`,
+        message: `notified ${count} candidates`,
       });
     } catch (e) {
       console.log(e);
