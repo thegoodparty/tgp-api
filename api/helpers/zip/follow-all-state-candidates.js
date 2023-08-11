@@ -18,7 +18,7 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { state, userId } = inputs;
       const stateCandidates = await Candidate.find({ isActive: true, state });
@@ -35,7 +35,6 @@ module.exports = {
           });
         }
       }
-      await sails.helpers.cacheHelper('clear', 'all');
       return exits.success('ok');
     } catch (e) {
       console.log('error in follow all state candidates', e);

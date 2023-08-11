@@ -33,7 +33,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { id, candidate } = inputs;
       const user = this.req.user;
@@ -122,7 +122,6 @@ module.exports = {
 
       const finalCandidate = await Candidate.findOne({ id });
       await sails.helpers.crm.updateCandidate(finalCandidate);
-      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'updated',

@@ -25,7 +25,6 @@ module.exports = {
       await TopIssue.create({
         name,
       });
-      await sails.helpers.cacheHelper('clear', 'all');
 
       return exits.success({
         message: 'created',

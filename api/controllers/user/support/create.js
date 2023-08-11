@@ -44,7 +44,6 @@ module.exports = {
         user: reqUser.id,
         candidate: candidateId,
       });
-      await sails.helpers.cacheHelper('clear', 'all');
 
       try {
         await sails.helpers.crm.associateUserCandidate(reqUser, candidate);

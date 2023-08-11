@@ -91,7 +91,6 @@ module.exports = {
       await createCandidatePositions(topIssues, created);
 
       await sails.helpers.crm.updateCandidate(created);
-      await sails.helpers.cacheHelper('clear', 'all');
 
       await sendMail(slug);
 

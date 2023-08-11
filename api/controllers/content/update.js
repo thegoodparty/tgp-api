@@ -75,8 +75,6 @@ module.exports = {
           });
         }
       }
-      await sails.helpers.cacheHelper('delete', 'content');
-      await sails.helpers.cacheHelper('delete', 'contentBlog');
       return exits.success();
     } catch (err) {
       console.log('content error');

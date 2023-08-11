@@ -48,11 +48,6 @@ module.exports = {
       if (positionId) {
         positionCriteria.id = positionId;
       }
-      const cacheKey = `candidates-${position || 'none'}-${state || 'none'}`;
-      const response = await sails.helpers.cacheHelper('get', cacheKey);
-      if (response) {
-        return exits.success(response);
-      }
 
       const candidates = await Candidate.find(criteria).populate('positions');
 
@@ -186,7 +181,6 @@ module.exports = {
         positions: filteredPositions || [],
         states,
       };
-      await sails.helpers.cacheHelper('set', cacheKey, finalResponse);
       return exits.success(finalResponse);
     } catch (e) {
       console.log('Error in find candidate', e);

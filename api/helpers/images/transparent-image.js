@@ -1,5 +1,5 @@
-const removeBackgroundFromImageUrl = require('remove.bg')
-  .removeBackgroundFromImageUrl;
+const removeBackgroundFromImageUrl =
+  require('remove.bg').removeBackgroundFromImageUrl;
 const removeBgKey = sails.config.custom.removeBgKey || sails.config.removeBgKey;
 const fs = require('fs');
 const path = require('path');
@@ -9,11 +9,6 @@ const AWS = require('aws-sdk');
 const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
 
 module.exports = {
-  friendlyName: 'Cache helper',
-
-  description:
-    'in memoery caching using cacheman: https://github.com/cayasso/cacheman',
-
   inputs: {
     url: {
       type: 'string',
@@ -34,7 +29,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { url, candidateName } = inputs;
 
@@ -52,15 +47,17 @@ module.exports = {
       });
 
       console.log(`File saved to ${outputFile}`);
-      const uuid = Math.random()
-        .toString(36)
-        .substring(2, 8);
+      const uuid = Math.random().toString(36).substring(2, 8);
 
       const s3Url = await uploadToS3(outputFile, candidateName, uuid);
       //optimizing
       await sails.helpers.images.optimizeImage(s3Url, outputFile);
       console.log('after optimze');
-      const optimizedS3Url = await uploadToS3(outputFile, candidateName, uuid+'opt');
+      const optimizedS3Url = await uploadToS3(
+        outputFile,
+        candidateName,
+        uuid + 'opt',
+      );
 
       return exits.success(optimizedS3Url);
     } catch (e) {

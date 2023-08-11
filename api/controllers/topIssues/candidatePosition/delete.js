@@ -48,8 +48,6 @@ module.exports = {
 
       await sails.helpers.crm.updateCandidate(candidate);
 
-      await sails.helpers.cacheHelper('clear', 'all');
-
       return exits.success({
         message: 'deleted',
       });

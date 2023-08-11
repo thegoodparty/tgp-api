@@ -21,7 +21,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       let reqUser = this.req.user;
       const { candidateId } = inputs;
@@ -33,12 +33,15 @@ module.exports = {
 
       try {
         const candidate = await Candidate.findOne({ id: candidateId });
-        await sails.helpers.crm.associateUserCandidate(reqUser, candidate, true);
+        await sails.helpers.crm.associateUserCandidate(
+          reqUser,
+          candidate,
+          true,
+        );
       } catch (e) {
         console.log('error remove tag');
       }
 
-      await sails.helpers.cacheHelper('clear', 'all');
       return exits.success({
         message: 'support deleted',
       });
