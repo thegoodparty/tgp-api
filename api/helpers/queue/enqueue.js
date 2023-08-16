@@ -58,6 +58,7 @@ module.exports = {
         }
       });
     } catch (e) {
+      console.log('error at enqueue', e);
       return exits.success({ message: 'not ok', e });
     }
   },

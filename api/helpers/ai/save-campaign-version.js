@@ -25,10 +25,20 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { data, subSectionKey, key, campaignId } = inputs;
-      const previousVersion = {
-        date: new Date().toString(),
-        text: data[subSectionKey][key],
-      };
+      let previousVersion;
+
+      if (subSectionKey === 'aiContent') {
+        previousVersion = {
+          date: new Date().toString(),
+          text: data[subSectionKey][key].content,
+        };
+      } else {
+        previousVersion = {
+          date: new Date().toString(),
+          text: data[subSectionKey][key],
+        };
+      }
+
       if (!previousVersion) {
         return;
       }
@@ -47,6 +57,7 @@ module.exports = {
       if (length > 10) {
         versions[key].length = 10;
       }
+
       if (existingVersions) {
         await CampaignPlanVersion.updateOne({
           campaign: campaignId,

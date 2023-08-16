@@ -54,7 +54,13 @@ module.exports = {
       }
 
       campaign.details.name = user.name;
-      let chatResponse = campaign[subSectionKey][key];
+
+      let chatResponse;
+      if (subSectionKey === 'aiContent') {
+        chatResponse = campaign[subSectionKey][key]['content'];
+      } else {
+        chatResponse = campaign[subSectionKey][key];
+      }
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
@@ -76,7 +82,12 @@ module.exports = {
         '<br/><br/>',
       );
 
-      campaign[subSectionKey][key] = chatResponse;
+      if (subSectionKey === 'aiContent') {
+        campaign[subSectionKey][key]['content'] = chatResponse;
+      } else {
+        campaign[subSectionKey][key] = chatResponse;
+      }
+
       await Campaign.updateOne({
         slug: campaign.slug,
       }).set({

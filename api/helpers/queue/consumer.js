@@ -3,7 +3,6 @@ const AWS = require('aws-sdk');
 const https = require('https');
 
 const { Configuration, OpenAIApi } = require('openai');
-const CampaignPlanVersion = require('../../models/campaign/CampaignPlanVersion');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
 const AiConfiguration = new Configuration({
@@ -72,6 +71,11 @@ module.exports = {
   },
 };
 
+const camelToSentence = (text) => {
+  const result = text.replace(/([A-Z])/g, ' $1');
+  return result.charAt(0).toUpperCase() + result.slice(1);
+};
+
 async function handleMessage(message) {
   if (!message) {
     return;
@@ -110,6 +114,7 @@ async function handleGenerateCampaignPlan(message) {
 
     const campaign = await Campaign.findOne({ slug });
     const { data } = campaign;
+
     await sails.helpers.ai.saveCampaignVersion(
       data,
       subSectionKey,
@@ -117,7 +122,15 @@ async function handleGenerateCampaignPlan(message) {
       campaign.id,
     );
 
-    data[subSectionKey][key] = chatResponse;
+    if (subSectionKey === 'aiContent') {
+      data[subSectionKey][key] = {
+        name: camelToSentence(key),
+        updatedAt: new Date().valueOf(),
+        content: chatResponse,
+      };
+    } else {
+      data[subSectionKey][key] = chatResponse;
+    }
     if (
       !data.campaignPlanStatus ||
       typeof campaign.campaignPlanStatus === 'string'
