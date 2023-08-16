@@ -101,7 +101,10 @@ module.exports = {
               });
             }
           }
-          // await sendEmail(goals, campaign.user);
+          const canEmail = sails.helpers.notification.canEmail(campaign.user);
+          if (canEmail) {
+            await sendEmail(goals, campaign.user);
+          }
           count++;
         }
       }

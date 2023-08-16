@@ -56,7 +56,7 @@ module.exports = {
         const end = moment(electionDate);
         const duration = moment.duration(end.diff(now));
         const weeks = Math.floor(duration.asWeeks());
-        // const weeks = 1;
+        // const weeks = 11;
 
         if (weeks > 0 && weeks <= 12 && campaign) {
           // 12 weeks before election
@@ -77,8 +77,12 @@ module.exports = {
             user: campaign.user?.id,
           });
           count++;
-
-          // await sendEmail(weeks, campaign.user);
+          const canEmail = await sails.helpers.notification.canEmail(
+            campaign.user,
+          );
+          if (canEmail) {
+            await sendEmail(weeks, campaign.user);
+          }
         }
       }
 

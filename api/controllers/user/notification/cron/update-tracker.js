@@ -72,7 +72,10 @@ module.exports = {
             data: notification,
             user: campaign.user?.id,
           });
-          // await sendEmail(campaign.user);
+          const canEmail = sails.helpers.notification.canEmail(campaign.user);
+          if (canEmail) {
+            await sendEmail(campaign.user);
+          }
           count++;
         }
       }

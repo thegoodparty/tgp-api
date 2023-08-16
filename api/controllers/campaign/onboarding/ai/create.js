@@ -38,6 +38,7 @@ module.exports = {
     try {
       const user = this.req.user;
       const { key, subSectionKey, regenerate, editMode, chat } = inputs;
+
       await sails.helpers.queue.consumer();
 
       const campaigns = await Campaign.find({

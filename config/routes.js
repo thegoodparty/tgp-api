@@ -100,6 +100,10 @@ module.exports.routes = {
   // onboarding AI
   'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',
   'PUT   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/edit',
+  'POST   /api/v1/campaign/onboarding/ai/rename':
+    'campaign/onboarding/ai/rename',
+  'DELETE   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/delete',
+
   'POST   /api/v1/campaign/onboarding/fast-ai':
     'campaign/onboarding/ai/create-no-queue',
   'GET   /api/v1/campaign/onboarding/planVersion':
@@ -134,6 +138,8 @@ module.exports.routes = {
   // notifications
   'GET   /api/v1/notifications': 'user/notification/list',
   'PUT   /api/v1/notification': 'user/notification/update',
+  'PUT   /api/v1/notification-preferences':
+    'user/notification/update-preferences',
 
   //notification crons
   'GET   /api/v1/notification/cron/weekly-goals':
