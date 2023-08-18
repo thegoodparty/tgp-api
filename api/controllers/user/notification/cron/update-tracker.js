@@ -48,7 +48,12 @@ module.exports = {
         const campaign = await Campaign.findOne({
           slug: campaignOnboardingSlug,
         }).populate('user');
-        if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
+        if (
+          !campaign ||
+          !campaign.data ||
+          !campaign.data.pathToVictory ||
+          !campaign.user
+        ) {
           continue; // goals not set yet.
         }
         const now = moment(new Date());
@@ -93,6 +98,9 @@ module.exports = {
 };
 
 async function sendEmail(user) {
+  if (!user) {
+    return;
+  }
   const variables = {
     name: `${user.name}`,
   };
