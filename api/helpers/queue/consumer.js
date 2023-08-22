@@ -1,6 +1,7 @@
 const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
+const { isWithinTokenLimit } = require('gpt-tokenizer');
 
 const { Configuration, OpenAIApi } = require('openai');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
@@ -103,10 +104,37 @@ async function handleGenerateCampaignPlan(message) {
     );
     const { prompt, slug, subSectionKey, key, existingChat } = message;
     let chat = existingChat || [];
+    let messages = [{ role: 'user', content: prompt }, ...chat];
+
+    let totalTokens = 0;
+    for (const message of messages) {
+      const tokens = isWithinTokenLimit(message.content, 16000);
+      totalTokens += tokens;
+    }
+
+    if (totalTokens > 16000) {
+      // todo: fail the request here? capture the error on the frontend?
+      console.log('Error! token limit over 16000');
+    }
+
+    try {
+      var messagesJson = JSON.stringify(messages);
+    } catch (error) {
+      console.error('Invalid JSON:', error);
+      await sails.helpers.errorLoggerHelper('messages - invalid JSON!', error);
+    }
+
+    await sails.helpers.errorLoggerHelper(
+      'Sending AI Request! messages:',
+      messages,
+    );
+
+    await sails.helpers.errorLoggerHelper('AI Total Tokens:', totalTokens);
+
     completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+      model: totalTokens < 4000 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
-      messages: [{ role: 'user', content: prompt }, ...chat],
+      messages: messages,
     });
     chatResponse = completion.data.choices[0].message.content.replace(
       '/n',
