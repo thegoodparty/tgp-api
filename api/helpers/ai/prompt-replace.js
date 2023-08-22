@@ -29,6 +29,11 @@ module.exports = {
           ? campaign.details.otherParty
           : campaign.details?.party;
 
+      const office =
+        campaign.details?.office === 'Other'
+          ? campaign.details.otherOffice
+          : campaign.details?.office;
+
       const replaceArr = [
         {
           find: 'name',
@@ -52,7 +57,7 @@ module.exports = {
         },
         {
           find: 'office',
-          replace: `${campaign.details.office}${
+          replace: `${office}${
             campaign.details.district ? ` in ${campaign.details.district}` : ''
           }`,
         },
