@@ -95,6 +95,7 @@ async function handleMessage(message) {
 }
 
 async function handleGenerateCampaignPlan(message) {
+  let completion;
   try {
     await sails.helpers.errorLoggerHelper(
       'handling campaign from queue',
@@ -102,7 +103,7 @@ async function handleGenerateCampaignPlan(message) {
     );
     const { prompt, slug, subSectionKey, key, existingChat } = message;
     let chat = existingChat || [];
-    const completion = await openai.createChatCompletion({
+    completion = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
       messages: [{ role: 'user', content: prompt }, ...chat],
@@ -149,6 +150,8 @@ async function handleGenerateCampaignPlan(message) {
     );
   } catch (e) {
     console.log('error at consumer', e);
+
+    await sails.helpers.errorLoggerHelper('error. completion: ', completion);
 
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
