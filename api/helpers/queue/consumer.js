@@ -117,22 +117,26 @@ async function handleGenerateCampaignPlan(message) {
       console.log('Error! token limit over 16000');
     }
 
+    let messagesJson;
     try {
-      var messagesJson = JSON.stringify(messages);
+      messagesJson = JSON.stringify(messages);
     } catch (error) {
       console.error('Invalid JSON:', error);
       await sails.helpers.errorLoggerHelper('messages - invalid JSON!', error);
     }
 
+    console.log('messagesJson', messagesJson);
+
     await sails.helpers.errorLoggerHelper(
       'Sending AI Request! messages:',
-      messages,
+      messagesJson,
     );
 
     await sails.helpers.errorLoggerHelper('AI Total Tokens:', totalTokens);
 
     completion = await openai.createChatCompletion({
-      model: totalTokens < 4000 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
+      // model: totalTokens < 4000 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
+      model: 'gpt-3.5-turbo-16k',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
       messages: messages,
     });
