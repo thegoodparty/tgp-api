@@ -1,6 +1,7 @@
 const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
+const { isWithinTokenLimit } = require('gpt-tokenizer');
 
 const { Configuration, OpenAIApi } = require('openai');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
@@ -95,6 +96,7 @@ async function handleMessage(message) {
 }
 
 async function handleGenerateCampaignPlan(message) {
+  let completion;
   try {
     await sails.helpers.errorLoggerHelper(
       'handling campaign from queue',
@@ -102,14 +104,52 @@ async function handleGenerateCampaignPlan(message) {
     );
     const { prompt, slug, subSectionKey, key, existingChat } = message;
     let chat = existingChat || [];
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
+    let messages = [{ role: 'user', content: prompt }, ...chat];
+
+    let promptTokens = 0;
+    for (const message of messages) {
+      const tokens = isWithinTokenLimit(message.content, 13000) || 13000;
+      promptTokens += tokens;
+    }
+
+    if (promptTokens >= 13000) {
+      // todo: fail the request here? capture the error on the frontend?
+      console.log('Error! Exceeded the token limit!');
+    }
+
+    // let messagesJson;
+    // try {
+    //   messagesJson = JSON.stringify(messages);
+    //   console.log('messagesJson', messagesJson);
+    // } catch (error) {
+    //   console.error('Invalid JSON:', error);
+    //   await sails.helpers.errorLoggerHelper('messages - invalid JSON!', error);
+    // }
+
+    // await sails.helpers.errorLoggerHelper(
+    //   'Sending AI Request! messages:',
+    //   messagesJson,
+    // );
+
+    await sails.helpers.errorLoggerHelper(
+      'Prompt Size Estimate (Tokens):',
+      promptTokens,
+    );
+
+    completion = await openai.createChatCompletion({
+      model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
-      messages: [{ role: 'user', content: prompt }, ...chat],
+      messages: messages,
     });
     chatResponse = completion.data.choices[0].message.content.replace(
       '/n',
       '<br/><br/>',
+    );
+    const totalTokens = completion.data.usage.total_tokens;
+
+    await sails.helpers.errorLoggerHelper(
+      'Generation Complete. Actual Tokens Used:',
+      totalTokens,
     );
 
     const campaign = await Campaign.findOne({ slug });
@@ -149,6 +189,8 @@ async function handleGenerateCampaignPlan(message) {
     );
   } catch (e) {
     console.log('error at consumer', e);
+    console.log('messages', messages);
+    await sails.helpers.errorLoggerHelper('error. completion: ', completion);
 
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
