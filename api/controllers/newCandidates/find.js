@@ -44,15 +44,23 @@ module.exports = {
       }
       let candidateData = JSON.parse(candidate.data);
 
+      let reportedVoterGoals;
       let candidatePositions = [];
 
       if (allFields) {
         candidatePositions = await candidatePositionFinder(candidate.id);
+        if (candidateData.campaignOnboardingSlug) {
+          const campaign = await Campaign.findOne({
+            slug: candidateData.campaignOnboardingSlug,
+          });
+          reportedVoterGoals = campaign?.data?.reportedVoterGoals;
+        }
       }
 
       return exits.success({
         candidate: candidateData,
         candidatePositions,
+        reportedVoterGoals,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
