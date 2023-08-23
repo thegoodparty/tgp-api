@@ -159,7 +159,7 @@ async function sendSlackMessage(campaign, user) {
           \nDistrict: ${district}
           \nemail: ${user.email}
           \nslug: ${slug}\n
-          \nadmin link: ${appBase}/admin/victory-path
+          \nadmin link: ${appBase}/admin/victory-path/${slug}
           \n
           \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
           `,
