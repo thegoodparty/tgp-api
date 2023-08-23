@@ -2,6 +2,7 @@ const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
+const slugify = require('slugify');
 
 const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
 const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
@@ -10,10 +11,6 @@ module.exports = {
   friendlyName: 'Upload Avatar',
   inputs: {
     image: {
-      type: 'string',
-      required: true,
-    },
-    entity: {
       type: 'string',
       required: true,
     },
@@ -31,32 +28,28 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { image, entity } = inputs;
-      if (entity !== 'user' && entity !== 'candidate') {
-        return exits.badRequest({
-          message: 'entity should be user or candidate.',
-        });
-      }
-      const candidateName = 'tomer-almog';
+      const { image } = inputs;
+      const uuid = Math.random().toString(36).substring(2, 16);
 
       const buffer = Buffer.from(
         image.replace(/^data:image\/.*;base64,/, ''),
         'base64',
       );
       console.log('buffer', buffer);
-      const tempFileName = `base64Upload-${candidateName}.png`;
+      const fileName = `${uuid}.png`;
 
       const outputFile = path.join(
         __dirname,
-        `../../../tempImages/${tempFileName}`,
+        `../../../tempImages/${fileName}`,
       );
 
       fs.writeFileSync(outputFile, buffer);
-      const uuid = Math.random().toString(36).substring(2, 8);
-      const s3Url = await uploadToS3(outputFile, candidateName, uuid);
+      const s3Url = await uploadToS3(outputFile, fileName);
       console.log('s3Url', s3Url);
+      await sails.helpers.images.optimizeImage(s3Url, outputFile);
+      const optimizedS3Url = await uploadToS3(outputFile, fileName);
       fs.unlinkSync(outputFile);
-      return exits.success({ url: s3Url });
+      return exits.success({ url: optimizedS3Url });
 
       // const { user } = this.req;
       // const bucket = `${assetsBase}/uploads`;
@@ -74,12 +67,10 @@ module.exports = {
   },
 };
 
-async function uploadToS3(localFile, candidateName, uuid) {
+async function uploadToS3(localFile, fileName) {
   const bucketName = `${assetsBase}/candidate-info`;
 
   const content = fs.readFileSync(localFile);
-
-  const fileName = `${candidateName}-${uuid}.png`;
 
   let params = {
     Bucket: bucketName,

@@ -29,7 +29,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { imgPath, outputFile } = inputs;
       const url = `${baseUrl}500,scale-down,quality=low,format=png/${imgPath}`;
@@ -38,7 +38,7 @@ module.exports = {
         method: 'POST',
         responseType: 'arraybuffer',
       });
-      await fs.writeFileSync(outputFile, data);
+      fs.writeFileSync(outputFile, data);
       return exits.success('ok');
     } catch (e) {
       console.log('error at transparent image helper', e);
