@@ -106,43 +106,50 @@ async function handleGenerateCampaignPlan(message) {
     let chat = existingChat || [];
     let messages = [{ role: 'user', content: prompt }, ...chat];
 
-    let totalTokens = 0;
+    let promptTokens = 0;
     for (const message of messages) {
-      const tokens = isWithinTokenLimit(message.content, 16000);
-      totalTokens += tokens;
+      const tokens = isWithinTokenLimit(message.content, 13000) || 13000;
+      promptTokens += tokens;
     }
 
-    if (totalTokens > 16000) {
+    if (promptTokens >= 13000) {
       // todo: fail the request here? capture the error on the frontend?
-      console.log('Error! token limit over 16000');
+      console.log('Error! Exceeded the token limit!');
     }
 
-    let messagesJson;
-    try {
-      messagesJson = JSON.stringify(messages);
-    } catch (error) {
-      console.error('Invalid JSON:', error);
-      await sails.helpers.errorLoggerHelper('messages - invalid JSON!', error);
-    }
+    // let messagesJson;
+    // try {
+    //   messagesJson = JSON.stringify(messages);
+    //   console.log('messagesJson', messagesJson);
+    // } catch (error) {
+    //   console.error('Invalid JSON:', error);
+    //   await sails.helpers.errorLoggerHelper('messages - invalid JSON!', error);
+    // }
 
-    console.log('messagesJson', messagesJson);
+    // await sails.helpers.errorLoggerHelper(
+    //   'Sending AI Request! messages:',
+    //   messagesJson,
+    // );
 
     await sails.helpers.errorLoggerHelper(
-      'Sending AI Request! messages:',
-      messagesJson,
+      'Prompt Size Estimate (Tokens):',
+      promptTokens,
     );
 
-    await sails.helpers.errorLoggerHelper('AI Total Tokens:', totalTokens);
-
     completion = await openai.createChatCompletion({
-      // model: totalTokens < 4000 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
-      model: 'gpt-3.5-turbo-16k',
+      model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
       messages: messages,
     });
     chatResponse = completion.data.choices[0].message.content.replace(
       '/n',
       '<br/><br/>',
+    );
+    const totalTokens = completion.data.usage.total_tokens;
+
+    await sails.helpers.errorLoggerHelper(
+      'Generation Complete. Actual Tokens Used:',
+      totalTokens,
     );
 
     const campaign = await Campaign.findOne({ slug });
@@ -182,7 +189,7 @@ async function handleGenerateCampaignPlan(message) {
     );
   } catch (e) {
     console.log('error at consumer', e);
-
+    console.log('messages', messages);
     await sails.helpers.errorLoggerHelper('error. completion: ', completion);
 
     if (e.data) {
