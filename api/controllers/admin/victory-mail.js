@@ -35,6 +35,14 @@ module.exports = {
         'jared@goodparty.org',
       );
 
+      await Campaign.updateOne({ slug }).set({
+        data: {
+          ...campaign.data,
+          p2vCompleteDate: moment().format('YYYY-MM-DD'),
+          p2vStatus: 'complete',
+        },
+      });
+
       return exits.success({
         message: 'sent',
       });
