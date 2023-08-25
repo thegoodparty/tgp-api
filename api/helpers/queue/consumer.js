@@ -104,7 +104,14 @@ async function handleGenerateCampaignPlan(message) {
     );
     const { prompt, slug, subSectionKey, key, existingChat } = message;
     let chat = existingChat || [];
+
     let messages = [{ role: 'user', content: prompt }, ...chat];
+
+    // replace invalid characters
+    for (let i = 0; i < messages.length; i++) {
+      messages[i].content = messages[i].content.replace(/\–/g, '-');
+      messages[i].content = messages[i].content.replace(/\`/g, "'");
+    }
 
     let promptTokens = 0;
     for (const message of messages) {
@@ -117,22 +124,8 @@ async function handleGenerateCampaignPlan(message) {
       console.log('Error! Exceeded the token limit!');
     }
 
-    // let messagesJson;
-    // try {
-    //   messagesJson = JSON.stringify(messages);
-    //   console.log('messagesJson', messagesJson);
-    // } catch (error) {
-    //   console.error('Invalid JSON:', error);
-    //   await sails.helpers.errorLoggerHelper('messages - invalid JSON!', error);
-    // }
-
-    // await sails.helpers.errorLoggerHelper(
-    //   'Sending AI Request! messages:',
-    //   messagesJson,
-    // );
-
     await sails.helpers.errorLoggerHelper(
-      'Prompt Size Estimate (Tokens):',
+      `[ ${slug} - ${key} ] Prompt Size (Tokens):`,
       promptTokens,
     );
 
@@ -148,7 +141,7 @@ async function handleGenerateCampaignPlan(message) {
     const totalTokens = completion.data.usage.total_tokens;
 
     await sails.helpers.errorLoggerHelper(
-      'Generation Complete. Actual Tokens Used:',
+      `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
       totalTokens,
     );
 
