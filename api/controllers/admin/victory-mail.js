@@ -32,6 +32,7 @@ module.exports = {
         'Exciting News: Your Customized Campaign Plan is Updated!',
         'candidate-victory-ready',
         variables,
+        'jared@goodparty.org',
       );
 
       return exits.success({
