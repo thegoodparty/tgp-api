@@ -83,6 +83,7 @@ module.exports = {
       // checking if this is the first time the campaign plan is visited. If so - send a slack message.
       if (key === 'slogan' && !regenerate && !campaign[subSectionKey][key]) {
         await sendSlackMessage(campaign, user);
+        campaign.p2vStatus = 'waiting';
       }
 
       const cmsPrompts = await sails.helpers.ai.getPrompts();
