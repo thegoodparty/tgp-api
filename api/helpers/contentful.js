@@ -147,6 +147,8 @@ const mapResponse = (items) => {
         mappedResponse.onboardingPrompts = item.fields;
       } else if (itemId === 'candidateContentPrompts') {
         mappedResponse.candidateContentPrompts = item.fields;
+      } else if (itemId === 'candidateContentInputs') {
+        mappedResponse.candidateContentInputs = item.fields;
       } else if (itemId === 'election') {
         if (!mappedResponse.elections) {
           mappedResponse.elections = [];
