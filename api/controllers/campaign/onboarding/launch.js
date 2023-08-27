@@ -70,7 +70,7 @@ module.exports = {
         }),
       });
 
-      await Campaign.updateOne({ slug: campaign.slug }).set({
+      const updated = await Campaign.updateOne({ slug: campaign.slug }).set({
         data: {
           ...campaign,
           launchStatus: 'launched',
@@ -90,7 +90,8 @@ module.exports = {
 
       await createCandidatePositions(topIssues, created);
 
-      await sails.helpers.crm.updateCandidate(created);
+      // await sails.helpers.crm.updateCandidate(created);
+      await sails.helpers.crm.updateCampaign(updated);
 
       await sendMail(slug);
 
