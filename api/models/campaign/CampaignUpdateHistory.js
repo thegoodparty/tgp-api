@@ -3,30 +3,25 @@ module.exports = {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
-    slug: {
+
+    type: {
       type: 'string',
+      isIn: ['doorKnocking', 'calls', 'digital'],
       required: true,
-      unique: true,
     },
-    isActive: {
-      type: 'boolean',
-    },
-    data: {
-      type: 'json',
+    quantity: {
+      type: 'number',
+      required: true,
     },
 
     user: {
       model: 'user',
+      required: true,
     },
 
-    campaignsUpdateHistories: {
-      collection: 'campaignUpdateHistory',
-      via: 'campaign',
-    },
-
-    campaignPlanVersions: {
-      collection: 'campaignPlanVersion',
-      via: 'campaign',
+    campaign: {
+      model: 'campaign',
+      required: true,
     },
   },
 };

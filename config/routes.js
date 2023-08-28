@@ -84,6 +84,15 @@ module.exports.routes = {
   'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
   'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
+  // campaignUpdateHistory
+
+  'POST   /api/v1/campaign/update-history':
+    'campaign/campaignUpdateHistory/create',
+  'GET   /api/v1/campaign/update-histories':
+    'campaign/campaignUpdateHistory/list',
+
+  // onboarding
+
   'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
   'DELETE   /api/v1/campaign': 'campaign/onboarding/admin-delete',
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
