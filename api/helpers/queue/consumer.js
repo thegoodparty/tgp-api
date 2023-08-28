@@ -124,13 +124,20 @@ async function handleGenerateCampaignPlan(message) {
       console.log('Error! Exceeded the token limit!');
     }
 
+    let model = 'gpt-3.5-turbo';
+    if (promptTokens < 5000) {
+      model = 'gpt-4';
+    } else if (promptTokens >= 5000) {
+      model = 'gpt-3.5-turbo-16k';
+    }
+
     await sails.helpers.errorLoggerHelper(
-      `[ ${slug} - ${key} ] Prompt Size (Tokens):`,
+      `[ ${slug} - ${key} ] Model: ${model}. Prompt Size (Tokens):`,
       promptTokens,
     );
 
     completion = await openai.createChatCompletion({
-      model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
+      model: model,
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
       messages: messages,
     });
@@ -141,7 +148,7 @@ async function handleGenerateCampaignPlan(message) {
     const totalTokens = completion.data.usage.total_tokens;
 
     await sails.helpers.errorLoggerHelper(
-      `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
+      `[ ${slug} - ${key} ] Generation Complete. Model: ${model}. Tokens Used:`,
       totalTokens,
     );
 
