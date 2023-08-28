@@ -124,7 +124,18 @@ async function handleGenerateCampaignPlan(message) {
       console.log('Error! Exceeded the token limit!');
     }
 
-    const model = promptTokens < 5000 ? 'gpt-4' : 'gpt-3.5-turbo-16k';
+    let model;
+    if (promptTokens < 5000) {
+      model = 'gpt-4';
+    } else if (promptTokens >= 5000 && promptTokens < 12000) {
+      model = 'gpt-3.5-turbo-16k';
+    } else if (promptTokens >= 12000) {
+      await sails.helpers.errorLoggerHelper(
+        'Error: Maximum Prompt Size Exceeded. Prompt Size (Tokens):',
+        promptTokens,
+      );
+      return;
+    }
 
     await sails.helpers.errorLoggerHelper(
       `[ ${slug} - ${key} ] Model: ${model}. Prompt Size (Tokens):`,
