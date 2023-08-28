@@ -72,6 +72,7 @@ module.exports = {
         lastPortalVisit,
         votesNeeded,
       } = data;
+      const longState = await sails.helpers.zip.shortToLongState(state);
       const companyObj = {
         properties: {
           name: `${firstName} ${lastName} for ${race}`,
@@ -81,7 +82,7 @@ module.exports = {
           candidate_office: race,
           about_us: about,
           candidate_party: partyResolver(party),
-          candidate_state: state,
+          state: longState,
           zip,
           twitter_url: twitter,
           tiktok_url: tiktok,

@@ -94,19 +94,6 @@ module.exports = {
               : '',
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
-          // referrals: crew != undefined && crew?.length > 0 ? crew.length : 0,
-          // last_referral:
-          //   crew.length > 0 ? formatDate(crew[crew.length - 1].createdAt) : '',
-          // application_approved: applicationApproved,
-          // application_declined: applicationDeclined,
-          // application_submitted: applicationSubmitted.length,
-          // application_submitted_date:
-          //   applicationSubmitted.length > 0
-          //     ? formatDate(
-          //         applicationSubmitted[applicationSubmitted.length - 1]
-          //           .updatedAt,
-          //       )
-          //     : '',
         },
       };
       if (loginEvent) {
