@@ -47,13 +47,6 @@ module.exports = {
         });
       }
 
-      console.log('creating', {
-        type,
-        quantity,
-        campaign: campaign.id,
-        user: user.id,
-      });
-
       await CampaignUpdateHistory.create({
         type,
         quantity,
