@@ -143,6 +143,36 @@ const mapResponse = (items) => {
         });
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
+      } else if (itemId === 'promptInputFields') {
+        if (!mappedResponse.promptInputFields) {
+          mappedResponse.promptInputFields = {};
+        }
+
+        const entry = [];
+
+        if (item.fields.date) {
+          entry.push({
+            title: 'Date',
+            helperText: item.fields.dateHelperText,
+            isDate: true,
+          });
+        }
+
+        const key = item.fields.fieldId;
+
+        if (item.fields.contentInput) {
+          item.fields.contentInput.forEach((item) => {
+            const { title, helperText } = item.fields;
+            entry.push({
+              title,
+              helperText,
+            });
+          });
+        }
+
+        mappedResponse.promptInputFields[key] = entry;
+
+        // mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'onboardingPrompts') {
         mappedResponse.onboardingPrompts = item.fields;
       } else if (itemId === 'candidateContentPrompts') {
