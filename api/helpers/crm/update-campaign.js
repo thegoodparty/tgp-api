@@ -65,7 +65,7 @@ module.exports = {
           unlock_expert: data?.profile && data.profile.completed ? 'Jared' : '',
           unlock_jared: data?.profile && data.profile.completed ? 'Yes' : 'No',
           p2v_complete_date: data?.p2vCompleteDate || undefined,
-          p2v_status: data?.p2vStatus || 'locked',
+          p2v_status: data?.p2vStatus || 'Locked',
         },
       };
 
