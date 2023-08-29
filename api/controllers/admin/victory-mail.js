@@ -1,4 +1,5 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const moment = require('moment');
 
 module.exports = {
   inputs: {
@@ -39,7 +40,7 @@ module.exports = {
         data: {
           ...campaign.data,
           p2vCompleteDate: moment().format('YYYY-MM-DD'),
-          p2vStatus: 'complete',
+          p2vStatus: 'Complete',
         },
       });
 

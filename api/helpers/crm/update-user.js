@@ -63,6 +63,9 @@ module.exports = {
         const candidate = await Candidate.findOne({
           id: supports[i].candidate,
         });
+        if (!candidate) {
+          continue;
+        }
         allEndorsements += `${candidate.firstName} ${candidate.lastName} \n`;
         supports[i].candidate = candidate;
       }
