@@ -1,14 +1,8 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
 const hubspot = require('@hubspot/api-client');
-const slugify = require('slugify');
-const moment = require('moment');
-const {
-  UserAccountsApi,
-} = require('@hubspot/api-client/lib/codegen/crm/extensions/accounting');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
-const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
@@ -45,7 +39,9 @@ module.exports = {
       // console.log('lastStepDate', lastStepDate);
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
         dataDetails;
-      const longState = await sails.helpers.zip.shortToLongState(state);
+      const longState = state
+        ? await sails.helpers.zip.shortToLongState(state)
+        : undefined;
       const companyObj = {
         properties: {
           name: `${firstName} ${lastName}`,
@@ -117,8 +113,11 @@ module.exports = {
         return exits.success(hubspotId);
       }
     } catch (e) {
-      console.log('hubspot error', e);
-      await sails.helpers.errorLoggerHelper('Error updating hubspot', e);
+      console.log('hubspot error - update-campaign', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error updating hubspot- update-campaign',
+        e,
+      );
       return exits.success('not ok');
     }
   },
