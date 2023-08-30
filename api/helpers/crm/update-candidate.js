@@ -24,15 +24,15 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    if (!hubSpotToken) {
-      // for non production env.
-      return exits.success('no api key');
-    }
-    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
-    const { candidate } = inputs;
-    const data = JSON.parse(candidate.data);
     try {
+      if (!hubSpotToken) {
+        // for non production env.
+        return exits.success('no api key');
+      }
+      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
+
+      const { candidate } = inputs;
+      const data = JSON.parse(candidate.data);
       const slug = slugify(`${data.firstName} ${data.lastName}`);
       const totalImpressions = await ButtonImpression.count({
         candidate: candidate.id,
@@ -126,7 +126,11 @@ module.exports = {
         return exits.success(hubspotId);
       }
     } catch (e) {
-      console.log('hubspot error', e);
+      console.log('hubspot error - update candidate', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error updating hubspot- update-candidate',
+        e,
+      );
       return exits.success('not ok');
     }
   },

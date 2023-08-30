@@ -28,16 +28,16 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    if (!hubSpotToken) {
-      // for non production env.
-      return exits.success('no api key');
-    }
-    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
-    const { user, loginEvent, updateEvent } = inputs;
-    const { id, name, email, phone, uuid, zip } = user;
-
     try {
+      if (!hubSpotToken) {
+        // for non production env.
+        return exits.success('no api key');
+      }
+      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
+
+      const { user, loginEvent, updateEvent } = inputs;
+      const { id, name, email, phone, uuid, zip } = user;
+
       // const userCrew = await User.findOne({ id }).populate('crew');
       // const crew = userCrew.crew;
       // crew.sort((a, b) => b.id - a.id);
