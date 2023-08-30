@@ -44,8 +44,8 @@ module.exports = {
 
       fs.writeFileSync(outputFile, buffer);
       const s3Url = await uploadToS3(outputFile, fileName);
-      await sails.helpers.images.optimizeImage(s3Url, outputFile);
-      const optimizedS3Url = await uploadToS3(outputFile, fileName);
+      // await sails.helpers.images.optimizeImage(s3Url, outputFile);
+      // const optimizedS3Url = await uploadToS3(outputFile, fileName);
       fs.unlinkSync(outputFile);
       return exits.success({ url: optimizedS3Url });
 
