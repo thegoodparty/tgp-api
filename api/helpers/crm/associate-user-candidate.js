@@ -28,15 +28,15 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    if (!hubSpotToken) {
-      // for non production env.
-      return exits.success('no api key');
-    }
-
-    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
-    const { user, candidate, remove } = inputs;
     try {
+      if (!hubSpotToken) {
+        // for non production env.
+        return exits.success('no api key');
+      }
+
+      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
+
+      const { user, candidate, remove } = inputs;
       let contactId;
       if (user.metaData) {
         const metaData = JSON.parse(user.metaData);
@@ -74,7 +74,11 @@ module.exports = {
 
       return exits.success('ok');
     } catch (e) {
-      console.log('hubspot error', e);
+      console.log('hubspot error associate-user-candidate', e);
+      await sails.helpers.errorLoggerHelper(
+        'error in associateUserCandidate',
+        e,
+      );
       return exits.success('not ok');
     }
   },
