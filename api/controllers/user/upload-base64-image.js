@@ -68,8 +68,11 @@ module.exports = {
 
 async function uploadToS3(localFile, fileName) {
   const bucketName = `${assetsBase}/candidate-info`;
+  console.log('base64 uploadToS3 localFile', localFile);
 
   const content = fs.readFileSync(localFile);
+
+  console.log('content base64', content);
 
   let params = {
     Bucket: bucketName,
