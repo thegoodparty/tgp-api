@@ -39,7 +39,9 @@ module.exports = {
       // console.log('lastStepDate', lastStepDate);
       const { zip, firstName, lastName, party, office, state, pledged, goals } =
         dataDetails;
-      const longState = await sails.helpers.zip.shortToLongState(state);
+      const longState = state
+        ? await sails.helpers.zip.shortToLongState(state)
+        : undefined;
       const companyObj = {
         properties: {
           name: `${firstName} ${lastName}`,

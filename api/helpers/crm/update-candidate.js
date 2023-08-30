@@ -72,7 +72,9 @@ module.exports = {
         lastPortalVisit,
         votesNeeded,
       } = data;
-      const longState = await sails.helpers.zip.shortToLongState(state);
+      const longState = state
+        ? await sails.helpers.zip.shortToLongState(state)
+        : undefined;
       const companyObj = {
         properties: {
           name: `${firstName} ${lastName} for ${race}`,
