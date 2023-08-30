@@ -44,11 +44,10 @@ module.exports = {
 
       fs.writeFileSync(outputFile, buffer);
       const s3Url = await uploadToS3(outputFile, fileName);
-      // await sails.helpers.images.optimizeImage(s3Url, outputFile);
-      // const optimizedS3Url = await uploadToS3(outputFile, fileName);
+      await sails.helpers.images.optimizeImage(s3Url, outputFile);
+      const optimizedS3Url = await uploadToS3(outputFile, fileName);
       fs.unlinkSync(outputFile);
-      // return exits.success({ url: optimizedS3Url });
-      return exits.success({ url: s3Url });
+      return exits.success({ url: optimizedS3Url });
 
       // const { user } = this.req;
       // const bucket = `${assetsBase}/uploads`;
@@ -68,11 +67,8 @@ module.exports = {
 
 async function uploadToS3(localFile, fileName) {
   const bucketName = `${assetsBase}/candidate-info`;
-  console.log('base64 uploadToS3 localFile', localFile);
 
   const content = fs.readFileSync(localFile);
-
-  console.log('content base64', content);
 
   let params = {
     Bucket: bucketName,
