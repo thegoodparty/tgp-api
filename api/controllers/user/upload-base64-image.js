@@ -47,7 +47,8 @@ module.exports = {
       // await sails.helpers.images.optimizeImage(s3Url, outputFile);
       // const optimizedS3Url = await uploadToS3(outputFile, fileName);
       fs.unlinkSync(outputFile);
-      return exits.success({ url: optimizedS3Url });
+      // return exits.success({ url: optimizedS3Url });
+      return exits.success({ url: s3Url });
 
       // const { user } = this.req;
       // const bucket = `${assetsBase}/uploads`;
