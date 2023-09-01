@@ -96,16 +96,18 @@ async function handleMessage(message) {
 }
 
 async function handleGenerateCampaignPlan(message) {
-  let completion;
+  const { prompt, slug, subSectionKey, key, existingChat } = message;
+  let chat = existingChat || [];
+  let messages = [{ role: 'user', content: prompt }, ...chat];
+  let campaign;
+  let data;
+  let chatResponse;
+
   try {
     await sails.helpers.errorLoggerHelper(
       'handling campaign from queue',
       message,
     );
-    const { prompt, slug, subSectionKey, key, existingChat } = message;
-    let chat = existingChat || [];
-
-    let messages = [{ role: 'user', content: prompt }, ...chat];
 
     // replace invalid characters
     for (let i = 0; i < messages.length; i++) {
@@ -125,11 +127,14 @@ async function handleGenerateCampaignPlan(message) {
     }
 
     await sails.helpers.errorLoggerHelper(
-      `[ ${slug} - ${key} ] Model: ${model}. Prompt Size (Tokens):`,
+      `[ ${slug} - ${key} ] Prompt Size (Tokens):`,
       promptTokens,
     );
 
-    completion = await openai.createChatCompletion({
+    campaign = await Campaign.findOne({ slug });
+    data = campaign.data;
+
+    let completion = await openai.createChatCompletion({
       model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
       max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
       messages: messages,
@@ -145,45 +150,43 @@ async function handleGenerateCampaignPlan(message) {
       totalTokens,
     );
 
-    const campaign = await Campaign.findOne({ slug });
-    const { data } = campaign;
+    if (chatResponse && chatResponse !== '') {
+      await sails.helpers.ai.saveCampaignVersion(
+        data,
+        subSectionKey,
+        key,
+        campaign.id,
+      );
 
-    await sails.helpers.ai.saveCampaignVersion(
-      data,
-      subSectionKey,
-      key,
-      campaign.id,
-    );
-
-    if (subSectionKey === 'aiContent') {
-      data[subSectionKey][key] = {
-        name: camelToSentence(key),
-        updatedAt: new Date().valueOf(),
-        content: chatResponse,
-      };
-    } else {
-      data[subSectionKey][key] = chatResponse;
+      if (subSectionKey === 'aiContent') {
+        data[subSectionKey][key] = {
+          name: camelToSentence(key),
+          updatedAt: new Date().valueOf(),
+          content: chatResponse,
+        };
+      } else {
+        data[subSectionKey][key] = chatResponse;
+      }
+      if (
+        !data.campaignPlanStatus ||
+        typeof campaign.campaignPlanStatus === 'string'
+      ) {
+        data.campaignPlanStatus = {};
+      }
+      data.campaignPlanStatus[key] = 'completed';
+      await Campaign.updateOne({
+        slug,
+      }).set({
+        data,
+      });
+      await sails.helpers.errorLoggerHelper(
+        `updated campaign with ai. chatResponse: subSectionKey: ${subSectionKey}. key: ${key}`,
+        chatResponse,
+      );
     }
-    if (
-      !data.campaignPlanStatus ||
-      typeof campaign.campaignPlanStatus === 'string'
-    ) {
-      data.campaignPlanStatus = {};
-    }
-    data.campaignPlanStatus[key] = 'completed';
-    await Campaign.updateOne({
-      slug,
-    }).set({
-      data,
-    });
-    await sails.helpers.errorLoggerHelper(
-      `updated campaign with ai. chatResponse: subSectionKey: ${subSectionKey}. key: ${key}`,
-      chatResponse,
-    );
   } catch (e) {
     console.log('error at consumer', e);
     console.log('messages', messages);
-    await sails.helpers.errorLoggerHelper('error. completion: ', completion);
 
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
@@ -201,5 +204,43 @@ async function handleGenerateCampaignPlan(message) {
         e,
       );
     }
+  }
+
+  // Failed to generate content.
+  if (!chatResponse || chatResponse === '') {
+    try {
+      // Track our failed attempts.
+      if (!data.campaignPlanAttempts) {
+        data.campaignPlanAttempts = {};
+      }
+      data.campaignPlanAttempts[key] = data.campaignPlanAttempts[key]
+        ? data.campaignPlanAttempts[key] + 1
+        : 1;
+
+      await sails.helpers.errorLoggerHelper(
+        'Current Attempts:',
+        data.campaignPlanAttempts[key],
+      );
+
+      // After 3 attempts, we give up.
+      if (data.campaignPlanStatus[key] !== 'completed') {
+        if (data.campaignPlanAttempts[key] >= 3) {
+          await sails.helpers.errorLoggerHelper(
+            'Deleting campaignPlanStatus for key',
+            key,
+          );
+          delete data.campaignPlanStatus[key];
+        }
+      }
+      await Campaign.updateOne({
+        slug,
+      }).set({
+        data,
+      });
+    } catch (e) {
+      console.log('error at consumer', e);
+    }
+    // throw an Error so that the message goes back to the queue or the DLQ.
+    throw new Error('error generating ai content');
   }
 }
