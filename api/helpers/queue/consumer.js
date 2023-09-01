@@ -146,7 +146,7 @@ async function handleGenerateCampaignPlan(message) {
     const totalTokens = completion.data.usage.total_tokens;
 
     await sails.helpers.errorLoggerHelper(
-      `[ ${slug} - ${key} ] Generation Complete. Model: ${model}. Tokens Used:`,
+      `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
       totalTokens,
     );
 
