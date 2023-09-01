@@ -1,4 +1,5 @@
 const contentful = require('contentful');
+const { isInteger } = require('lodash');
 const documentToPlainTextString =
   require('@contentful/rich-text-plain-text-renderer').documentToPlainTextString;
 
@@ -225,6 +226,8 @@ const mapResponse = (items) => {
   addBlogArticlesToSections(mappedResponse);
   mappedResponse.articleCategories.sort(compareArticleCategories);
 
+  mappedResponse.blogSections.sort(compareBlogSections);
+
   return mappedResponse;
 };
 
@@ -259,6 +262,18 @@ const compareGlossaryItems = (a, b) => {
 };
 
 const compareArticleCategories = (a, b) => {
+  const orderA = a.fields.order || 9999;
+  const orderB = b.fields.order || 9999;
+  if (orderA > orderB) {
+    return 1;
+  }
+  if (orderA < orderB) {
+    return -1;
+  }
+  return 0;
+};
+
+const compareBlogSections = (a, b) => {
   const orderA = a.fields.order || 9999;
   const orderB = b.fields.order || 9999;
   if (orderA > orderB) {
