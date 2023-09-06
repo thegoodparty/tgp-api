@@ -150,6 +150,8 @@ async function handleGenerateCampaignPlan(message) {
       totalTokens,
     );
 
+    campaign = await Campaign.findOne({ slug });
+    data = campaign.data;
     if (chatResponse && chatResponse !== '') {
       await sails.helpers.ai.saveCampaignVersion(
         data,
