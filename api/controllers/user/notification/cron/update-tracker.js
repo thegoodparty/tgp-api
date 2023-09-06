@@ -81,6 +81,18 @@ module.exports = {
           if (canEmail) {
             await sendEmail(campaign.user);
           }
+          const canText = await sails.helpers.notification.canText(
+            campaign.user,
+          );
+
+          if (canText) {
+            console.log('can text');
+            // await sails.helpers.sms.sendSms(
+            //   user.phone,
+            //   `Time to update your Campaign Tracker!
+            //   How many doors did you or your team knock on this week?`,
+            // );
+          }
           count++;
         }
       }

@@ -8,25 +8,26 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = inputs;
-      if (!user.metaData || user.metaData === '') {
-        return exits.success(true);
+
+      if (!user.phone) {
+        return exits.success(false);
       }
-      const metaData = JSON.parse(user.metaData);
-      if (
-        typeof metaData.notificationEmails === 'undefined' ||
-        metaData.notificationEmails
-      ) {
+      if (!user.metaData || user.metaData === '') {
+        // not set yet, default is true
         return exits.success(true);
       }
 
+      const metaData = JSON.parse(user.metaData);
+      if (
+        typeof metaData.textNotification === 'undefined' ||
+        metaData.textNotification
+      ) {
+        return exits.success(true);
+      }
       return exits.success(false);
     } catch (e) {
-      console.log('error at can email helper', e);
+      console.log('error at can text helper', e);
       return exits.success(false);
-      //
-      // return exits.badRequest({
-      //   message: 'Error evaluating goodness',
-      // });
     }
   },
 };

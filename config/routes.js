@@ -31,6 +31,7 @@ module.exports.routes = {
   'PUT   /api/v1/entrance/reset-password': 'entrance/reset-password',
 
   'PUT    /api/v1/user/update-user': 'user/update-user',
+  'PUT    /api/v1/user/refresh': 'user/refresh',
   'DELETE    /api/v1/user': 'user/delete',
   // 'POST    /api/v1/user/avatar': 'user/upload-avatar',
   'POST    /api/v1/user/avatar': 'user/upload-image',

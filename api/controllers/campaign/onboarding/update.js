@@ -75,6 +75,8 @@ module.exports = {
         slug: campaign.slug,
       });
 
+      await updateUserPhone(updated.data, user);
+
       if (user.isAdmin && updateCandidate) {
         // the campaign might be associated with public candidate, and we need to update it too. specifically - admin path to victory: voteGoal, voterProjection
         // find associate candidate first
@@ -111,3 +113,20 @@ module.exports = {
     }
   },
 };
+
+async function updateUserPhone(campaign, user) {
+  try {
+    if (
+      campaign?.details?.campaignPhone &&
+      campaign?.details?.campaignPhone !== '' &&
+      !user.phone
+    ) {
+      console.log('updating user with ', campaign.details.campaignPhone);
+      await User.updateOne({ id: user.id }).set({
+        phone: campaign.details.campaignPhone,
+      });
+    }
+  } catch (e) {
+    console.log('error at updateUserPhone', e);
+  }
+}
