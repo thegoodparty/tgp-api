@@ -47,6 +47,14 @@ module.exports = {
 
       if (!contactId) {
         await sails.helpers.crm.updateUser(user);
+        // updateUser doesn't return the hubspot id so we fetch it.
+        const updatedUser = await User.findOne({ id: user.id });
+        if (updatedUser.metaData) {
+          const metaData = JSON.parse(updatedUser.metaData);
+          if (metaData.hubspotId) {
+            contactId = metaData.hubspotId;
+          }
+        }
       }
 
       let companyId = candidate.contact ? candidate.contact.hubspotId : false;
