@@ -17,7 +17,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
       const twilioAuthToken =
@@ -27,7 +27,7 @@ module.exports = {
         twilioClient = require('twilio')(twilioSID, twilioAuthToken);
       }
 
-      let cleanPhone = inputs.phone;
+      let cleanPhone = inputs.phone.replace(/\D+/g, '');
       if (cleanPhone.charAt(0) !== 1) {
         cleanPhone = `1${cleanPhone}`;
       }
