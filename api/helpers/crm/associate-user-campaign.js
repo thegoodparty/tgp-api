@@ -51,7 +51,12 @@ module.exports = {
         // make sure we pull the latest user object with the hubspotId.
         // console.log('refreshing user', user.id);
         user = await User.findOne({ id: user.id });
-        contactId = user.metaData.hubspotId;
+        if (user.metaData) {
+          const metaData = JSON.parse(user.metaData);
+          if (metaData.hubspotId) {
+            contactId = metaData.hubspotId;
+          }
+        }
       }
       //   console.log('contactId', contactId);
 
