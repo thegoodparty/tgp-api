@@ -36,7 +36,11 @@ module.exports = {
       twiml.message(`you responded with ${body}. digits only is ${digitsOnly}`);
       return this.res.set('text/xml').send(twiml.toString());
     } catch (e) {
-      console.log('Error creating messaging/twilio-webhook', e);
+      console.log('Error at messaging/twilio-webhook', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at messaging/twilio-webhook',
+        e,
+      );
       return exits.badRequest({ message: 'Error at messaging/twilio-webhook' });
     }
   },
