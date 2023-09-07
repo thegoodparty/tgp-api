@@ -40,7 +40,7 @@ module.exports = {
         const candidate = candidates[i];
 
         const data = JSON.parse(candidate.data);
-        const { electionDate, campaignOnboardingSlug } = data;
+        let { electionDate, campaignOnboardingSlug } = data;
         if (!campaignOnboardingSlug) {
           // old candidates
           continue;
@@ -56,6 +56,20 @@ module.exports = {
         ) {
           continue; // goals not set yet.
         }
+        if (!electionDate && campaign.data.goals?.electionDate) {
+          electionDate = campaign.data.goals?.electionDate;
+          await Candidate.updateOne({
+            data: JSON.stringify({
+              ...data,
+              electionDate,
+            }),
+          });
+        }
+
+        if (!electionDate) {
+          continue;
+        }
+
         const now = moment(new Date());
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);
@@ -86,12 +100,11 @@ module.exports = {
           );
 
           if (canText) {
-            console.log('can text');
-            // await sails.helpers.sms.sendSms(
-            //   user.phone,
-            //   `Time to update your Campaign Tracker!
-            //   How many doors did you or your team knock on this week?`,
-            // );
+            await sails.helpers.sms.sendSms(
+              campaign.user.phone,
+              `Time to update your Campaign Tracker!
+              How many doors did you or your team knock on this week?`,
+            );
           }
           count++;
         }

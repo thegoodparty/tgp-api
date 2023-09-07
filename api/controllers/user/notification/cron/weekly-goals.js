@@ -40,7 +40,7 @@ module.exports = {
         const candidate = candidates[i];
 
         const data = JSON.parse(candidate.data);
-        const { electionDate, campaignOnboardingSlug } = data;
+        let { electionDate, campaignOnboardingSlug } = data;
         if (!campaignOnboardingSlug) {
           // old candidates
           continue;
@@ -51,6 +51,21 @@ module.exports = {
         if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
           continue; // goals not set yet.
         }
+
+        if (!electionDate && campaign.data.goals?.electionDate) {
+          electionDate = campaign.data.goals?.electionDate;
+          await Candidate.updateOne({
+            data: JSON.stringify({
+              ...data,
+              electionDate,
+            }),
+          });
+        }
+
+        if (!electionDate) {
+          continue;
+        }
+
         const now = moment(new Date());
         const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
         const end = moment(electionDate);

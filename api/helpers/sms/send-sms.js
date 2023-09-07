@@ -40,9 +40,11 @@ module.exports = {
       if (verification) {
         return exits.success({ sid: verification.sid });
       }
-      return exits.badRequest({ message: 'failed to send sms' });
+      console.log('failed to send sms');
+      return exits.success(false);
     } catch (e) {
-      return exits.badRequest({ message: 'failed to send sms' });
+      console.log('failed to send sms', e);
+      return exits.success(false);
     }
   },
 };
