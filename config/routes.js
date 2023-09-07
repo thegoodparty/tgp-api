@@ -160,4 +160,7 @@ module.exports.routes = {
     'user/notification/cron/create-content',
   'GET   /api/v1/notification/cron/update-tracker':
     'user/notification/cron/update-tracker',
+
+  // messaging webhook
+  'POST   /api/v1/messaging/twilio': 'messaging/twilio-webhook',
 };

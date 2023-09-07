@@ -116,7 +116,9 @@ module.exports = {
               });
             }
           }
-          const canEmail = sails.helpers.notification.canEmail(campaign.user);
+          const canEmail = await sails.helpers.notification.canEmail(
+            campaign.user,
+          );
           if (canEmail) {
             await sendEmail(goals, campaign.user);
           }
