@@ -54,9 +54,10 @@ async function findUserAndCampaign(from) {
   if (!from) {
     throwError('Sorry, we can not update your campaign.');
   }
-  const users = await User.find({ phone: from });
+  const cleanPhone = from.replace('+1', '');
+  const users = await User.find({ phone: cleanPhone });
   if (users.length === 0) {
-    throwError(`Sorry, we can not update your campaign 1. phone: ${from}`);
+    throwError(`Sorry, we can not update your campaign 1`);
   }
 
   const user = users[0];
