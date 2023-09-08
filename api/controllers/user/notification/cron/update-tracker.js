@@ -58,7 +58,7 @@ module.exports = {
         }
         if (!electionDate && campaign.data.goals?.electionDate) {
           electionDate = campaign.data.goals?.electionDate;
-          await Candidate.updateOne({
+          await Candidate.updateOne({ id: candidate.id }).set({
             data: JSON.stringify({
               ...data,
               electionDate,
@@ -105,7 +105,7 @@ module.exports = {
             await sails.helpers.sms.sendSms(
               campaign.user.phone,
               `Time to update your Campaign Tracker!
-              How many doors did you or your team knock on this week?`,
+How many doors did you or your team knock on this week?`,
             );
             // save status to user meta data
             let metaData = campaign.user.metaData
@@ -125,8 +125,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error updating tracker', e);
       return exits.badRequest({
-        message: 'Error creating weekly goals',
+        message: 'Error updating tracker',
+        e,
       });
     }
   },

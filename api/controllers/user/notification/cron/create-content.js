@@ -54,7 +54,7 @@ module.exports = {
 
         if (!electionDate && campaign.data.goals?.electionDate) {
           electionDate = campaign.data.goals?.electionDate;
-          await Candidate.updateOne({
+          await Candidate.updateOne({ id: candidate.id }).set({
             data: JSON.stringify({
               ...data,
               electionDate,
@@ -106,8 +106,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error creating content', e);
       return exits.badRequest({
-        message: 'Error creating weekly goals',
+        message: 'Error creating content',
+        e,
       });
     }
   },
