@@ -11,6 +11,7 @@ const shortToLongState = {
   DC: 'District Of Columbia',
   FM: 'Federated States Of Micronesia',
   FL: 'Florida',
+  FD: 'Federal',
   GA: 'Georgia',
   GU: 'Guam',
   HI: 'Hawaii',

@@ -50,4 +50,6 @@ module.exports.policies = {
   'campaign/claim/claim': true,
   'user/notification/cron/*': true,
   'messaging/*': true,
+  // 'campaign/deadlines/refresh': true, // uncomment to run on local.
+  'campaign/deadlines/list': true,
 };
