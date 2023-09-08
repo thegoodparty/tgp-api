@@ -162,5 +162,5 @@ module.exports.routes = {
     'user/notification/cron/update-tracker',
 
   // messaging webhook
-  'GET   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
+  'POST   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
 };
