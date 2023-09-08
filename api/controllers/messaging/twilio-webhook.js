@@ -24,8 +24,12 @@ module.exports = {
   },
   async fn(inputs, exits) {
     try {
+      await sails.helpers.errorLoggerHelper(
+        'starting messaging/twilio-webhook',
+        {},
+      );
       const twiml = new MessagingResponse();
-      const body = this.req.body.Body;
+      const body = this.req.body?.Body;
       const digitsOnly = body?.replace(/\D+/g, '');
       twiml.message(`you responded with ${body}. digits only is ${digitsOnly}`);
       return this.res.set('text/xml').send(twiml.toString());
