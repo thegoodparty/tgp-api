@@ -107,6 +107,14 @@ module.exports = {
               `Time to update your Campaign Tracker!
               How many doors did you or your team knock on this week?`,
             );
+            // save status to user meta data
+            let metaData = campaign.user.metaData
+              ? JSON.parse(campaign.user.metaData)
+              : {};
+            metaData.lastSms = 'doorKnocking';
+            await User.updateOne({ id: campaign.user.id }).set({
+              metaData: JSON.stringify(metaData),
+            });
           }
           count++;
         }
