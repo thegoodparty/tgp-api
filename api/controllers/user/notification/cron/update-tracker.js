@@ -105,7 +105,7 @@ module.exports = {
             await sails.helpers.sms.sendSms(
               campaign.user.phone,
               `Time to update your Campaign Tracker!
-              How many doors did you or your team knock on this week?`,
+How many doors did you or your team knock on this week?`,
             );
             // save status to user meta data
             let metaData = campaign.user.metaData
