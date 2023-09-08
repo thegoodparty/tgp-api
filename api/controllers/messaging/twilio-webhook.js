@@ -68,32 +68,35 @@ function throwError(message) {
 
 async function findUserAndCampaign(from) {
   if (!from) {
-    throwError('Sorry, we can not update your campaign. No phone number');
+    throwError('Sorry, we can not update your campaign.');
   }
   const cleanPhone = from.replace('+1', '');
   const users = await User.find({ phone: cleanPhone });
   if (users.length === 0) {
-    throwError(`Sorry, we can not update your campaign. phone: ${from}`);
+    throwError(`Sorry, we can not update your campaign.`);
   }
 
   const user = users[0];
   if (!user.metaData) {
-    throwError('Sorry, we can not update your campaign. no meta data');
+    throwError('Sorry, we can not update your campaign.');
   }
 
   const metadata = JSON.parse(user.metaData);
   const { lastSms } = metadata;
   if (!lastSms) {
-    throwError('We are sorry, we can not update your campaign. no lastSms');
+    throwError('We are sorry, we can not update your campaign.');
   }
 
-  const campaigns = await Campaign.find({ user: user.id });
+  const campaigns = await Campaign.find({ user: user.id }).sort([
+    { updatedAt: 'DESC' },
+  ]);
+
   let campaign = false;
   if (campaigns && campaigns.length > 0) {
     campaign = campaigns[0].data;
   }
   if (!campaign) {
-    throwError('Sorry, your campaign can not be updated. no campaign');
+    throwError('Sorry, your campaign can not be updated.');
   }
 
   return { user, metadata, campaign, campaigns };
