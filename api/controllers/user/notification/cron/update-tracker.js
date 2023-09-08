@@ -125,8 +125,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error updating tracker', e);
       return exits.badRequest({
-        message: 'Error creating weekly goals',
+        message: 'Error updating tracker',
+        e,
       });
     }
   },

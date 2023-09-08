@@ -106,8 +106,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
+      await sails.helpers.errorLoggerHelper('Error creating content', e);
       return exits.badRequest({
-        message: 'Error creating weekly goals',
+        message: 'Error creating content',
+        e,
       });
     }
   },
