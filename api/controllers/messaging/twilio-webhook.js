@@ -5,9 +5,7 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
-const twilioAuthToken =
-  sails.config.custom.twilioAuthToken || sails.config.twilioAuthToken;
+const { MessagingResponse } = require('twilio').twiml;
 
 module.exports = {
   friendlyName: 'Track Visit',
@@ -26,10 +24,6 @@ module.exports = {
   },
   async fn(inputs, exits) {
     try {
-      const { MessagingResponse } = require('twilio')(
-        twilioSID,
-        twilioAuthToken,
-      ).twiml;
       const twiml = new MessagingResponse();
       const body = this.req.body.Body;
       const digitsOnly = body?.replace(/\D+/g, '');
