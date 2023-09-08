@@ -54,7 +54,7 @@ module.exports = {
 
         if (!electionDate && campaign.data.goals?.electionDate) {
           electionDate = campaign.data.goals?.electionDate;
-          await Candidate.updateOne({
+          await Candidate.updateOne({ id: candidate.id }).set({
             data: JSON.stringify({
               ...data,
               electionDate,
