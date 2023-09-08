@@ -27,6 +27,22 @@ module.exports = {
           campaigns,
           digitsOnly,
         );
+      } else if (metadata.lastSms === 'calls') {
+        message = await handleCalls(
+          user,
+          metadata,
+          campaign,
+          campaigns,
+          digitsOnly,
+        );
+      } else if (metadata.lastSms === 'digital') {
+        message = await handleDigital(
+          user,
+          metadata,
+          campaign,
+          campaigns,
+          digitsOnly,
+        );
       } else {
         message = `you responded with ${body}. digits only is ${digitsOnly}`;
       }
@@ -101,4 +117,33 @@ async function handleDoorKnocking(
   });
 
   return 'Thank you! How many calls were made this week?';
+}
+
+async function handleCalls(user, metadata, campaign, campaigns, digitsOnly) {
+  if (!campaign.reportedVoterGoals) {
+    campaign.reportedVoterGoals = { doorKnocking: 0, calls: 0, digital: 0 };
+  }
+  campaign.reportedVoterGoals.calls += parseInt(digitsOnly);
+
+  await Campaign.updateOne({ id: campaigns[0].id }).set({ data: campaign });
+  await User.updateOne({ id: user.id }).set({
+    metaData: JSON.stringify({ ...metadata, lastSms: 'digital' }),
+  });
+
+  return 'Thank you! How many online impressions were made this week?';
+}
+
+async function handleDigital(user, metadata, campaign, campaigns, digitsOnly) {
+  if (!campaign.reportedVoterGoals) {
+    campaign.reportedVoterGoals = { doorKnocking: 0, calls: 0, digital: 0 };
+  }
+  campaign.reportedVoterGoals.digital += parseInt(digitsOnly);
+
+  await Campaign.updateOne({ id: campaigns[0].id }).set({ data: campaign });
+  const updated = delete metadata.lastSms;
+  await User.updateOne({ id: user.id }).set({
+    metaData: JSON.stringify(updated),
+  });
+
+  return 'Thank you! your campaign is now updated!';
 }
