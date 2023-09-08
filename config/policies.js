@@ -49,4 +49,5 @@ module.exports.policies = {
   'socialListening/*': true,
   'campaign/claim/claim': true,
   'user/notification/cron/*': true,
+  'messaging/*': true,
 };
