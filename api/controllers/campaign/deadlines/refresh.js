@@ -4,7 +4,6 @@
  * @description :: Update the election deadlines
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const puppeteer = require('puppeteer');
 
 const stateAndFedEmail =
   sails.config.custom.stateAndFedEmail || sails.config.stateAndFedEmail;
@@ -104,6 +103,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const puppeteer = require('puppeteer'); // moved it to here so the app can deploy on aws
       console.log('initializing browser...');
       const browser = await puppeteer.launch({ headless: false });
       const page = await browser.newPage();
