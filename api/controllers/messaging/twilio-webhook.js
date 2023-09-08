@@ -116,6 +116,13 @@ async function handleDoorKnocking(
     metaData: JSON.stringify({ ...metadata, lastSms: 'calls' }),
   });
 
+  await CampaignUpdateHistory.create({
+    type: 'doorKnocking',
+    quantity: parseInt(digitsOnly),
+    campaign: campaign.id,
+    user: user.id,
+  });
+
   return 'Thank you! How many calls were made this week?';
 }
 
@@ -128,6 +135,13 @@ async function handleCalls(user, metadata, campaign, campaigns, digitsOnly) {
   await Campaign.updateOne({ id: campaigns[0].id }).set({ data: campaign });
   await User.updateOne({ id: user.id }).set({
     metaData: JSON.stringify({ ...metadata, lastSms: 'digital' }),
+  });
+
+  await CampaignUpdateHistory.create({
+    type: 'calls',
+    quantity: parseInt(digitsOnly),
+    campaign: campaign.id,
+    user: user.id,
   });
 
   return 'Thank you! How many online impressions were made this week?';
@@ -143,6 +157,13 @@ async function handleDigital(user, metadata, campaign, campaigns, digitsOnly) {
   const updated = delete metadata.lastSms;
   await User.updateOne({ id: user.id }).set({
     metaData: JSON.stringify(updated),
+  });
+
+  await CampaignUpdateHistory.create({
+    type: 'digital',
+    quantity: parseInt(digitsOnly),
+    campaign: campaign.id,
+    user: user.id,
   });
 
   return 'Thank you! your campaign is now updated!';
