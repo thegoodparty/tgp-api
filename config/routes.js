@@ -78,6 +78,7 @@ module.exports.routes = {
 
   'GET    /api/v1/campaign/staff-role': 'campaign/staff/find',
   'GET    /api/v1/campaign/deadlines/refresh': 'campaign/deadlines/refresh',
+  'GET    /api/v1/campaign/deadlines': 'campaign/deadlines/list',
 
   'POST   /api/v1/campaign/endorsement': 'campaign/endorsement/create',
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',

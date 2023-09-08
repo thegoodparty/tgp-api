@@ -51,4 +51,5 @@ module.exports.policies = {
   'user/notification/cron/*': true,
   'messaging/*': true,
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.
+  'campaign/deadlines/list': true,
 };
