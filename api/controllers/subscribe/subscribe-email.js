@@ -35,6 +35,9 @@ module.exports = {
     lastName: {
       type: 'string',
     },
+    phone: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -50,7 +53,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { email, uri, name, formId, pageName, firstName, lastName } =
+      const { email, uri, name, formId, pageName, firstName, lastName, phone } =
         inputs;
       const id = formId || '5d84452a-01df-422b-9734-580148677d2c';
 
@@ -74,7 +77,13 @@ module.exports = {
           objectTypeId: '0-1',
         });
       }
-
+      if (phone) {
+        crmFields.push({
+          name: 'phone',
+          value: phone,
+          objectTypeId: '0-1',
+        });
+      }
       const page = pageName || 'homePage';
 
       await sails.helpers.crm.submitForm(id, crmFields, page, uri);
