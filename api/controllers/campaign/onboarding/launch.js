@@ -218,13 +218,13 @@ async function findSlug(candidate) {
 }
 
 async function createCandidatePositions(topIssues, candidate) {
-  if (!topIssues?.positions) {
+  if (!topIssues?.positions || !candidate.id) {
     return;
   }
   for (let i = 0; i < topIssues.positions.length; i++) {
     const position = topIssues.positions[i];
 
-    if (!position.topIssue) {
+    if (!position || !position.topIssue) {
       continue;
     }
     await CandidatePosition.create({

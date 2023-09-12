@@ -5,8 +5,6 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-const appBase = sails.config.custom.appBase || sails.config.appBase;
-
 module.exports = {
   friendlyName: 'Find Campaign associated with user',
 
@@ -49,12 +47,17 @@ module.exports = {
         });
       }
 
-      await Campaign.updateOne({ slug: campaign.slug }).set({
+      const updated = await Campaign.updateOne({ slug: campaign.slug }).set({
         data: {
           ...campaign,
           launchStatus: 'pending',
         },
       });
+
+      await sails.helpers.errorLoggerHelper(
+        'About to send slack message to campaign',
+        updated,
+      );
 
       await sendSlackMessage(campaign, user);
 
@@ -63,13 +66,18 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error at campaign launch request', e);
-      await sails.helpers.errorLoggerHelper('Error at campaign launch', e);
+      await sails.helpers.errorLoggerHelper(
+        'Error at campaign launch-request',
+        e,
+      );
       return exits.forbidden();
     }
   },
 };
 
 async function sendSlackMessage(campaign, user) {
+  const appBase = sails.config.custom.appBase || sails.config.appBase;
+
   if (appBase !== 'https://goodparty.org') {
     return;
   }
