@@ -58,7 +58,7 @@ module.exports = {
           last_step_date: lastStepDate || undefined,
           zip,
           pledge_status: pledged ? 'yes' : 'no',
-          is_active: !!details?.firstName,
+          is_active: !!firstName,
           live_candidate: launchStatus === 'launched',
           // todo: this will need to be reworked if/when we add in Rob/Colton
           unlock_expert: profileCompleted ? 'Jared' : '',
