@@ -71,22 +71,46 @@ module.exports = {
       const existingId = data.hubspotId;
       if (existingId) {
         // console.log('updating existing company in hubspot', existingId);
-        await hubspotClient.crm.companies.basicApi.update(
-          existingId,
-          companyObj,
-        );
-
+        try {
+          await hubspotClient.crm.companies.basicApi.update(
+            existingId,
+            companyObj,
+          );
+        } catch (e) {
+          console.log('error updating crm', e);
+          await sails.helpers.errorLoggerHelper(
+            `Error updating company for ${firstName} ${lastName} with existing hubspotId: ${existingId} in hubspot`,
+            e,
+          );
+        }
         const userId = campaign.user;
         const user = await User.findOne({ id: userId });
-        await sails.helpers.crm.updateUser(user);
+        try {
+          await sails.helpers.crm.updateUser(user);
+        } catch (e) {
+          console.log('error updating crm', e);
+          await sails.helpers.errorLoggerHelper(
+            `Error updating user ${user.id} with existing hubspotId: ${existingId} in hubspot`,
+            e,
+          );
+        }
 
         // console.log('apiResp', apiResp);
         return exits.success(existingId);
       } else {
         // update user record with the id from the crm
         // console.log('creating new company in hubspot');
-        const createCompanyResponse =
-          await hubspotClient.crm.companies.basicApi.create(companyObj);
+        let createCompanyResponse;
+        try {
+          createCompanyResponse =
+            await hubspotClient.crm.companies.basicApi.create(companyObj);
+        } catch (e) {
+          console.log('error creating company', e);
+          await sails.helpers.errorLoggerHelper(
+            `Error creating company for ${firstName} ${lastName} in hubspot`,
+            e,
+          );
+        }
 
         const userId = campaign.user;
         // console.log('userId', userId);
@@ -109,16 +133,27 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating crm', e);
-          await sails.helpers.errorLoggerHelper('Error updating hubspot', e);
+          await sails.helpers.errorLoggerHelper(
+            `Error associating user ${user.id}. hubspot id: ${hubspotId} to campaign ${campaign.id} in hubspot`,
+            e,
+          );
         }
         // console.log('apiResp', apiResp);
-        await sails.helpers.crm.updateUser(user);
+        try {
+          await sails.helpers.crm.updateUser(user);
+        } catch (e) {
+          console.log('error updating crm', e);
+          await sails.helpers.errorLoggerHelper(
+            `Error updating user ${user.id}. in hubspot`,
+            e,
+          );
+        }
         return exits.success(hubspotId);
       }
     } catch (e) {
       console.log('hubspot error - update-campaign', e);
       await sails.helpers.errorLoggerHelper(
-        'Error updating hubspot- update-campaign',
+        'Uncaught error in update-campaign',
         e,
       );
       return exits.success('not ok');
