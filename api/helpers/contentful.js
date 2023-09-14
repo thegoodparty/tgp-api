@@ -1,5 +1,5 @@
 const contentful = require('contentful');
-const { isInteger } = require('lodash');
+const { isInteger, camelCase } = require('lodash');
 const documentToPlainTextString =
   require('@contentful/rich-text-plain-text-renderer').documentToPlainTextString;
 
@@ -176,8 +176,27 @@ const mapResponse = (items) => {
         // mappedResponse.privacyPage = item.fields;
       } else if (itemId === 'onboardingPrompts') {
         mappedResponse.onboardingPrompts = item.fields;
-      } else if (itemId === 'candidateContentPrompts') {
-        mappedResponse.candidateContentPrompts = item.fields;
+      } else if (itemId === 'aiContentTemplate') {
+        if (!mappedResponse.candidateContentPrompts) {
+          // legacy name. Keeping it to limit blast radius
+          mappedResponse.candidateContentPrompts = {};
+        }
+
+        if (!mappedResponse.aiContentCategories) {
+          // legacy name. Keeping it to limit blast radius
+          mappedResponse.aiContentCategories = [];
+          mappedResponse.aiContentCategoriesHash = {};
+        }
+
+        const { name, content, category } = item.fields;
+        const key = camelCase(name);
+        mappedResponse.candidateContentPrompts[key] = content;
+        const { title, order } = category.fields || {};
+        if (!mappedResponse.aiContentCategoriesHash[title]) {
+          mappedResponse.aiContentCategoriesHash[title] = [];
+          mappedResponse.aiContentCategories.push({ title, order });
+        }
+        mappedResponse.aiContentCategoriesHash[title].push({ key, name });
       } else if (itemId === 'election') {
         if (!mappedResponse.elections) {
           mappedResponse.elections = [];
@@ -227,6 +246,13 @@ const mapResponse = (items) => {
   mappedResponse.articleCategories.sort(compareArticleCategories);
 
   mappedResponse.blogSections.sort(compareBlogSections);
+
+  const combinedAi = combineAiContentAndCategories(
+    mappedResponse.aiContentCategories,
+    mappedResponse.aiContentCategoriesHash,
+  );
+  mappedResponse.aiContentCategories = combinedAi;
+  delete mappedResponse.aiContentCategoriesHash;
 
   return mappedResponse;
 };
@@ -330,3 +356,15 @@ const addBlogArticlesToSections = (mapped) => {
   });
   mapped.blogSections = Object.values(sectionsById);
 };
+
+function combineAiContentAndCategories(categories, categoriesHash) {
+  categories.sort((a, b) => a.order - b.order);
+  const combined = [];
+  categories.forEach((category) => {
+    combined.push({
+      name: category.title,
+      templates: categoriesHash[category.title],
+    });
+  });
+  return combined;
+}
