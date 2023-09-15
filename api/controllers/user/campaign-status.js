@@ -53,6 +53,7 @@ module.exports = {
       if (campaign.candidateSlug) {
         return exits.success({
           status: 'candidate',
+          profile: campaign.candidateSlug,
         });
       }
       return exits.success({
