@@ -33,15 +33,18 @@ module.exports = {
       const { data } = campaign;
       const { launchStatus, lastStepDate } = data;
       const dataDetails = campaign?.data?.details;
+      const goals = campaign?.data?.goals;
       const currentStep = campaign?.data?.currentStep || '';
+      const electionDate = goals?.electionDate || undefined;
 
       const profileCompleted =
         data?.profile &&
         (data.profile.completed || data.profilecampaignWebsite);
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
-      const { zip, firstName, lastName, party, office, state, pledged, goals } =
+      const { zip, firstName, lastName, party, office, state, pledged } =
         dataDetails;
+
       const longState = state
         ? await sails.helpers.zip.shortToLongState(state)
         : undefined;
@@ -65,6 +68,7 @@ module.exports = {
           unlock_jared: profileCompleted ? 'Yes' : 'No',
           p2v_complete_date: data?.p2vCompleteDate || undefined,
           p2v_status: data?.p2vStatus || 'Locked',
+          election_date: electionDate || undefined,
         },
       };
 
