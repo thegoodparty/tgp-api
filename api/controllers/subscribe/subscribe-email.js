@@ -38,6 +38,9 @@ module.exports = {
     phone: {
       type: 'string',
     },
+    additionalFields: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -53,8 +56,17 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { email, uri, name, formId, pageName, firstName, lastName, phone } =
-        inputs;
+      const {
+        email,
+        uri,
+        name,
+        formId,
+        pageName,
+        firstName,
+        lastName,
+        phone,
+        additionalFields,
+      } = inputs;
       const id = formId || '5d84452a-01df-422b-9734-580148677d2c';
 
       const crmFields = [
@@ -82,6 +94,12 @@ module.exports = {
           name: 'phone',
           value: phone,
           objectTypeId: '0-1',
+        });
+      }
+      if (additionalFields) {
+        const fields = JSON.parse(additionalFields);
+        fields.forEach((item) => {
+          crmFields.push(item);
         });
       }
       const page = pageName || 'homePage';
