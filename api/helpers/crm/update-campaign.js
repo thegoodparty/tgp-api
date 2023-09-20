@@ -116,6 +116,14 @@ module.exports = {
           );
         }
 
+        if (!createCompanyResponse) {
+          await sails.helpers.errorLoggerHelper(
+            `Error creating company for ${firstName} ${lastName} in hubspot. No response from hubspot.`,
+            companyObj,
+          );
+          return exits.success('not ok');
+        }
+
         const userId = campaign.user;
         // console.log('userId', userId);
         const user = await User.findOne({ id: userId });
