@@ -175,7 +175,7 @@ async function handleGenerateCampaignPlan(message) {
       ) {
         data.campaignPlanStatus = {};
       }
-      data.campaignPlanStatus[key] = 'completed';
+      data.campaignPlanStatus[key]['status'] = 'completed';
       await Campaign.updateOne({
         slug,
       }).set({
@@ -225,7 +225,7 @@ async function handleGenerateCampaignPlan(message) {
       );
 
       // After 3 attempts, we give up.
-      if (data.campaignPlanStatus[key] !== 'completed') {
+      if (data.campaignPlanStatus[key]['status'] !== 'completed') {
         if (data.campaignPlanAttempts[key] >= 3) {
           await sails.helpers.errorLoggerHelper(
             'Deleting campaignPlanStatus for key',

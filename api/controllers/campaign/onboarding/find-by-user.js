@@ -40,11 +40,27 @@ module.exports = {
         campaignId = campaigns[0].id;
       }
 
-      // fix any old style aiContent.
+      let updatedPlan;
+      // fix any old style campaignPlanStatus
+      if (campaign.campaignPlanStatus) {
+        for (const key in campaign.campaignPlanStatus) {
+          if (campaign.campaignPlanStatus.hasOwnProperty(key)) {
+            if (typeof campaign.campaignPlanStatus[key] === 'string') {
+              updatedPlan = true;
+              campaign.campaignPlanStatus[key] = {
+                status: campaign.campaignPlanStatus[key],
+                createdAt: new Date(1970, 1, 1).valueOf(),
+              };
+            }
+          }
+        }
+      }
+
       let updated = false;
       if (campaign.aiContent) {
         for (const key in campaign.aiContent) {
           if (campaign.aiContent.hasOwnProperty(key)) {
+            // reformat any old style aiContent.
             if (typeof campaign.aiContent[key] === 'string') {
               updated = true;
               campaign.aiContent[key] = {
@@ -52,11 +68,26 @@ module.exports = {
                 content: campaign.aiContent[key],
                 updatedAt: new Date().valueOf(),
               };
+            } else {
+              if (
+                !campaign.aiContent[key]['content'] &&
+                campaign.campaignPlanStatus[key] &&
+                campaign.campaignPlanStatus[key].status === 'processing'
+              ) {
+                // detect and prune failed content.
+                const now = new Date().valueOf();
+                if (now - campaign.campaignPlanStatus[key].createdAt > 3600) {
+                  campaign.campaignPlanStatus[key]['status'] = 'failed';
+                  delete campaign['aiContent'][key];
+                  updated = true;
+                }
+              }
             }
           }
         }
       }
-      if (updated === true) {
+
+      if (updated === true || updatedPlan === true) {
         await Campaign.updateOne({
           id: campaignId,
         }).set({ data: campaign });
