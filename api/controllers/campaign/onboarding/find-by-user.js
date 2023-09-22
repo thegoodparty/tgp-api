@@ -55,14 +55,17 @@ module.exports = {
 
             // detect and prune failed content.
             if (
-              (!campaign.aiContent[key] ||
-                !campaign.aiContent[key]['content']) &&
+              campaign.aiContent &&
+              (!campaign.aiContent[key] || !campaign.aiContent[key].content) &&
               campaign.campaignPlanStatus[key] &&
               campaign.campaignPlanStatus[key].status === 'processing'
             ) {
               const now = new Date().valueOf();
-              if (now - campaign.campaignPlanStatus[key].createdAt > 3600) {
-                campaign.campaignPlanStatus[key]['status'] = 'failed';
+              if (
+                campaign.campaignPlanStatus[key].createdAt &&
+                now - campaign.campaignPlanStatus[key].createdAt > 3600
+              ) {
+                campaign.campaignPlanStatus[key].status = 'failed';
                 delete campaign['aiContent'][key];
                 updatedPlan = true;
               }

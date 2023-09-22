@@ -58,8 +58,8 @@ module.exports = {
       if (
         !regenerate &&
         campaign.campaignPlanStatus[key] !== undefined &&
-        campaign.campaignPlanStatus[key]['status'] !== undefined &&
-        campaign.campaignPlanStatus[key]['status'] === 'processing'
+        campaign.campaignPlanStatus[key].status !== undefined &&
+        campaign.campaignPlanStatus[key].status === 'processing'
       ) {
         return exits.success({
           status: 'processing',
@@ -72,7 +72,7 @@ module.exports = {
       if (
         !editMode &&
         campaign.campaignPlanStatus[key] !== undefined &&
-        campaign.campaignPlanStatus[key]['status'] === 'completed' &&
+        campaign.campaignPlanStatus[key].status === 'completed' &&
         existing
       ) {
         return exits.success({
@@ -118,7 +118,7 @@ module.exports = {
       if (!campaign.campaignPlanStatus[key]) {
         campaign.campaignPlanStatus[key] = {};
       }
-      campaign.campaignPlanStatus[key]['status'] = 'processing';
+      campaign.campaignPlanStatus[key].status = 'processing';
       await Campaign.updateOne({
         slug: campaign.slug,
       }).set({
