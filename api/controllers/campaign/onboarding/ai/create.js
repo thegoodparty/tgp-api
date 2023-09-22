@@ -57,6 +57,8 @@ module.exports = {
 
       if (
         !regenerate &&
+        campaign.campaignPlanStatus[key] !== undefined &&
+        campaign.campaignPlanStatus[key]['status'] !== undefined &&
         campaign.campaignPlanStatus[key]['status'] === 'processing'
       ) {
         return exits.success({
@@ -69,6 +71,7 @@ module.exports = {
 
       if (
         !editMode &&
+        campaign.campaignPlanStatus[key] !== undefined &&
         campaign.campaignPlanStatus[key]['status'] === 'completed' &&
         existing
       ) {
@@ -112,6 +115,9 @@ module.exports = {
       await sails.helpers.queue.enqueue(queueMessage);
       await sails.helpers.errorLoggerHelper('Enqueued AI prompt', queueMessage);
 
+      if (!campaign.campaignPlanStatus[key]) {
+        campaign.campaignPlanStatus[key] = {};
+      }
       campaign.campaignPlanStatus[key]['status'] = 'processing';
       await Campaign.updateOne({
         slug: campaign.slug,
