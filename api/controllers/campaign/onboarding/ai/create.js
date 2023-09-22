@@ -119,6 +119,8 @@ module.exports = {
         campaign.campaignPlanStatus[key] = {};
       }
       campaign.campaignPlanStatus[key].status = 'processing';
+      campaign.campaignPlanStatus[key].createdAt = new Date().valueOf();
+
       await Campaign.updateOne({
         slug: campaign.slug,
       }).set({

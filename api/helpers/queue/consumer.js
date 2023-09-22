@@ -176,7 +176,6 @@ async function handleGenerateCampaignPlan(message) {
         data.campaignPlanStatus = {};
       }
       data.campaignPlanStatus[key].status = 'completed';
-      data.campaignPlanStatus[key].createdAt = new Date().valueOf();
       await Campaign.updateOne({
         slug,
       }).set({
