@@ -171,11 +171,12 @@ async function handleGenerateCampaignPlan(message) {
       }
       if (
         !data.campaignPlanStatus ||
-        typeof campaign.campaignPlanStatus === 'string'
+        typeof campaign.campaignPlanStatus !== 'object'
       ) {
         data.campaignPlanStatus = {};
       }
       data.campaignPlanStatus[key]['status'] = 'completed';
+      data.campaignPlanStatus[key]['createdAt'] = new Date().valueOf();
       await Campaign.updateOne({
         slug,
       }).set({
