@@ -60,14 +60,15 @@ module.exports = {
               campaign.campaignPlanStatus[key] &&
               campaign.campaignPlanStatus[key].status === 'processing'
             ) {
-              const now = new Date().valueOf();
-              if (
-                campaign.campaignPlanStatus[key].createdAt &&
-                now - campaign.campaignPlanStatus[key].createdAt > 3600
-              ) {
-                campaign.campaignPlanStatus[key].status = 'failed';
-                delete campaign['aiContent'][key];
-                updatedPlan = true;
+              if (campaign.campaignPlanStatus[key].createdAt) {
+                let createdAt = campaign.campaignPlanStatus[key].createdAt;
+                let now = new Date().valueOf();
+                let diff = now - createdAt;
+                if (diff > 3600 * 1000) {
+                  campaign.campaignPlanStatus[key].status = 'failed';
+                  delete campaign['aiContent'][key];
+                  updatedPlan = true;
+                }
               }
             }
           }
