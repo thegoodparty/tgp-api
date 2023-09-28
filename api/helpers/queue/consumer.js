@@ -96,7 +96,8 @@ async function handleMessage(message) {
 }
 
 async function handleGenerateCampaignPlan(message) {
-  const { prompt, slug, subSectionKey, key, existingChat } = message;
+  const { prompt, slug, subSectionKey, key, existingChat, inputValues } =
+    message;
   let chat = existingChat || [];
   let messages = [{ role: 'user', content: prompt }, ...chat];
   let campaign;
@@ -164,6 +165,7 @@ async function handleGenerateCampaignPlan(message) {
         data[subSectionKey][key] = {
           name: camelToSentence(key),
           updatedAt: new Date().valueOf(),
+          inputValues,
           content: chatResponse,
         };
       } else {

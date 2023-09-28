@@ -21,6 +21,9 @@ module.exports = {
     chat: {
       type: 'ref',
     },
+    inputValues: {
+      type: 'json',
+    },
   },
 
   exits: {
@@ -37,7 +40,8 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey, regenerate, editMode, chat } = inputs;
+      const { key, subSectionKey, regenerate, editMode, chat, inputValues } =
+        inputs;
 
       await sails.helpers.queue.consumer();
 
@@ -109,6 +113,7 @@ module.exports = {
           subSectionKey,
           key,
           existingChat: chat || [],
+          inputValues,
         },
       };
 
@@ -120,6 +125,11 @@ module.exports = {
       }
       campaign.campaignPlanStatus[key].status = 'processing';
       campaign.campaignPlanStatus[key].createdAt = new Date().valueOf();
+
+      // Uncomment this if we wanna store inputValues before the AI response is generated
+      // if (Object.keys(inputValues).length > 0) {
+      //   campaign[subSectionKey][key].inputValues = inputValues;
+      // }
 
       await Campaign.updateOne({
         slug: campaign.slug,
