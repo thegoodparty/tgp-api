@@ -159,6 +159,7 @@ async function handleGenerateCampaignPlan(message) {
         subSectionKey,
         key,
         campaign.id,
+        inputValues,
       );
 
       if (subSectionKey === 'aiContent') {
