@@ -39,7 +39,7 @@ module.exports = {
 
       const profileCompleted =
         data?.profile &&
-        (data.profile.completed || data.profilecampaignWebsite);
+        (data.profile.completed || data.profile.campaignWebsite);
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
       const { zip, firstName, lastName, party, office, state, pledged } =

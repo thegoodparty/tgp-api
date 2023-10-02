@@ -9,7 +9,6 @@ module.exports = {
 
   inputs: {
     slug: {
-      required: true,
       type: 'string',
     },
   },
@@ -28,10 +27,24 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const inputSlug = inputs.slug;
-
-      const campaignRecord = await Campaign.findOne({
-        slug: inputSlug,
-      });
+      const { user } = this.req;
+      // permissions - admin can launch by slug, but we also allow shortVersion campaign to launch without admin permissions.
+      if (inputSlug && !user.isAdmin) {
+        return exits.forbidden();
+      }
+      let campaignRecord;
+      if (inputSlug) {
+        campaignRecord = await Campaign.findOne({
+          slug: inputSlug,
+        });
+      } else {
+        const campaigns = await Campaign.find({
+          user: user.id,
+        });
+        if (campaigns && campaigns.length > 0) {
+          campaignRecord = campaigns[0];
+        }
+      }
 
       if (!campaignRecord) {
         console.log('no campaign');
@@ -148,7 +161,7 @@ function mapCampaignToCandidate(campaign) {
   } = details;
   const { slogan, aboutMe, why } = campaignPlan;
 
-  const { electionDate } = goals;
+  const { electionDate, campaignWebsite } = goals;
 
   const partyWithOther = party === 'Other' ? otherParty : party;
 
@@ -185,7 +198,7 @@ function mapCampaignToCandidate(campaign) {
     snap,
     twitch,
     hashtag,
-    website,
+    website: campaignWebsite || website,
     isActive: true,
     electionDate,
     customIssues,
