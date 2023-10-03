@@ -27,29 +27,25 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { data, subSectionKey, key, campaignId, inputValues } = inputs;
-      let previousVersion;
+      let newVersion;
 
       if (subSectionKey === 'aiContent') {
-        previousVersion = {
+        newVersion = {
           date: new Date().toString(),
           text: data[subSectionKey][key].content,
           inputValues: data[subSectionKey][key].inputValues,
         };
       } else {
-        previousVersion = {
+        newVersion = {
           date: new Date().toString(),
           text: data[subSectionKey][key],
         };
       }
 
-      if (!previousVersion) {
-        return;
-      }
-
-      // for aiContent, the versions will only get updated
-      // whenever a prompt value is changed / re-generated.
+      // for aiContent we must have inputValues to do versioning.
       if (subSectionKey === 'aiContent') {
-        if (!inputValues || !Object.keys(inputValues).length) {
+        if (!inputValues || !Object.keys(inputValues).length > 0) {
+          console.log('no input values specified. exiting...');
           return exits.success('ok');
         }
       }
@@ -65,9 +61,27 @@ module.exports = {
       if (!versions[key]) {
         versions[key] = [];
       }
-      const length = versions[key].unshift(previousVersion);
-      if (length > 10) {
-        versions[key].length = 10;
+
+      let foundVersion = false;
+      for (let i = 0; i < versions[key].length; i++) {
+        let version = versions[key][i];
+        if (
+          JSON.stringify(version.inputValues) === JSON.stringify(inputValues)
+        ) {
+          // this version already exists. lets update it.
+          versions[key][i].text = newVersion.text;
+          versions[key][i].date = new Date().toString();
+          foundVersion = true;
+          break;
+        }
+      }
+
+      if (foundVersion === false) {
+        // prior version not found. add new version to the top of the list.
+        const length = versions[key].unshift(newVersion);
+        if (length > 10) {
+          versions[key].length = 10;
+        }
       }
 
       if (existingVersions) {
@@ -85,6 +99,7 @@ module.exports = {
 
       return exits.success('ok');
     } catch (e) {
+      console.log('error!', e);
       return exits.success('not ok');
     }
   },

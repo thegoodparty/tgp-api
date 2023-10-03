@@ -50,12 +50,20 @@ module.exports = {
         campaign.lastStepDate = moment().format('YYYY-MM-DD');
       }
 
+      let inputValues = {};
+      try {
+        inputValues = existing?.data[subSectionKey][versionKey].inputValues;
+      } catch (e) {
+        console.log('error getting inputValues', e);
+      }
+
       if (versionKey && existing) {
         await sails.helpers.ai.saveCampaignVersion(
-          existing.data,
+          campaign,
           subSectionKey || 'campaignPlan',
           versionKey,
           existing.id,
+          inputValues,
         );
       }
 
