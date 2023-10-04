@@ -18,6 +18,44 @@ module.exports = {
         from,
       );
 
+      // if body contains stop words update the opt-out in hubspot and update notification preferences.
+      if (
+        body.toLowerCase().includes('stop') ||
+        body.toLowerCase().includes('end') ||
+        body.toLowerCase().includes('quit') ||
+        body.toLowerCase().includes('unsubscribe') ||
+        body.toLowerCase().includes('cancel') ||
+        body.toLowerCase().includes('remove') ||
+        body.toLowerCase().includes('optout')
+      ) {
+        if (metadata?.hubspotId) {
+          // unsubscribe sms in hubspot
+          await sails.helpers.crm.updateSmsOptin(metadata.hubspotId);
+
+          // update notification preferences
+          const userObj = await User.findOne({ id: user.id });
+          const metaData = JSON.parse(userObj.metaData);
+          if (
+            !metaData?.textNotification ||
+            metaData.textNotification !== false
+          ) {
+            metaData.textNotification = false;
+            await User.updateOne({ id: userObj.id }).set({
+              metaData: JSON.stringify(metaData),
+            });
+          }
+        } else {
+          await sails.helpers.errorLoggerHelper(
+            'Could not update hubspot with optout in twilio-webhook. No hubspot id found.',
+            from,
+          );
+        }
+      }
+
+      if (!metadata?.lastSms) {
+        throwError('We are sorry, we can not update your campaign.');
+      }
+
       let message;
       if (metadata.lastSms === 'doorKnocking') {
         message = await handleDoorKnocking(
@@ -82,10 +120,6 @@ async function findUserAndCampaign(from) {
   }
 
   const metadata = JSON.parse(user.metaData);
-  const { lastSms } = metadata;
-  if (!lastSms) {
-    throwError('We are sorry, we can not update your campaign.');
-  }
 
   const campaigns = await Campaign.find({ user: user.id }).sort([
     { updatedAt: 'DESC' },
