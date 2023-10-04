@@ -18,14 +18,32 @@ module.exports = {
         from,
       );
 
-      // if body contains STOP. update the opt-out in hubspot
+      // if body contains stop words update the opt-out in hubspot and update notification preferences.
       if (
         body.toLowerCase().includes('stop') ||
         body.toLowerCase().includes('end') ||
-        body.toLowerCase().includes('quit')
+        body.toLowerCase().includes('quit') ||
+        body.toLowerCase().includes('unsubscribe') ||
+        body.toLowerCase().includes('cancel') ||
+        body.toLowerCase().includes('remove') ||
+        body.toLowerCase().includes('optout')
       ) {
         if (metadata?.hubspotId) {
+          // unsubscribe sms in hubspot
           await sails.helpers.crm.updateSmsOptin(metadata.hubspotId);
+
+          // update notification preferences
+          const userObj = await User.findOne({ id: user.id });
+          const metaData = JSON.parse(userObj.metaData);
+          if (
+            !metaData?.textNotification ||
+            metaData.textNotification !== false
+          ) {
+            metaData.textNotification = false;
+            await User.updateOne({ id: userObj.id }).set({
+              metaData: JSON.stringify(metaData),
+            });
+          }
         } else {
           await sails.helpers.errorLoggerHelper(
             'Could not update hubspot with optout in twilio-webhook. No hubspot id found.',
