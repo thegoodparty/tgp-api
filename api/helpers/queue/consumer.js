@@ -112,8 +112,10 @@ async function handleGenerateCampaignPlan(message) {
 
     // replace invalid characters
     for (let i = 0; i < messages.length; i++) {
-      messages[i].content = messages[i].content.replace(/\–/g, '-');
-      messages[i].content = messages[i].content.replace(/\`/g, "'");
+      if (messages[i].content !== undefined && messages[i].content.length > 0) {
+        messages[i].content = messages[i].content.replace(/\–/g, '-');
+        messages[i].content = messages[i].content.replace(/\`/g, "'");
+      }
     }
 
     let promptTokens = 0;
@@ -173,7 +175,7 @@ async function handleGenerateCampaignPlan(message) {
         data[subSectionKey][key] = chatResponse;
       }
       if (
-        !data.campaignPlanStatus ||
+        !data?.campaignPlanStatus ||
         typeof data.campaignPlanStatus !== 'object'
       ) {
         data.campaignPlanStatus = {};
