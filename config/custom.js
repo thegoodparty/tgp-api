@@ -37,5 +37,5 @@ module.exports.custom = {
    ***************************************************************************/
 
   mailgunDomain: 'sandboxbcb5d5c9a3034d638e5854b64c476b8b.mailgun.org',
-  appBase: 'https://dev.goodparty.org',
+  // appBase: 'https://dev.goodparty.org',
 };

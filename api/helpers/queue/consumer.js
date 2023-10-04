@@ -156,6 +156,17 @@ async function handleGenerateCampaignPlan(message) {
     campaign = await Campaign.findOne({ slug });
     data = campaign.data;
     if (chatResponse && chatResponse !== '') {
+      if (subSectionKey === 'aiContent') {
+        data[subSectionKey][key] = {
+          name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
+          updatedAt: new Date().valueOf(),
+          inputValues,
+          content: chatResponse,
+        };
+      } else {
+        data[subSectionKey][key] = chatResponse;
+      }
+
       await sails.helpers.ai.saveCampaignVersion(
         data,
         subSectionKey,
@@ -164,16 +175,6 @@ async function handleGenerateCampaignPlan(message) {
         inputValues,
       );
 
-      if (subSectionKey === 'aiContent') {
-        data[subSectionKey][key] = {
-          name: camelToSentence(key),
-          updatedAt: new Date().valueOf(),
-          inputValues,
-          content: chatResponse,
-        };
-      } else {
-        data[subSectionKey][key] = chatResponse;
-      }
       if (
         !data?.campaignPlanStatus ||
         typeof data.campaignPlanStatus !== 'object'
@@ -216,8 +217,8 @@ async function handleGenerateCampaignPlan(message) {
   // Failed to generate content.
   if (!chatResponse || chatResponse === '') {
     try {
-      // Track our failed attempts.
-      if (!data.campaignPlanAttempts) {
+      // if data does not have key campaignPlanAttempts
+      if (!data.hasOwnProperty('campaignPlanAttempts')) {
         data.campaignPlanAttempts = {};
       }
       data.campaignPlanAttempts[key] = data.campaignPlanAttempts[key]

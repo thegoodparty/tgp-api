@@ -26,10 +26,15 @@ module.exports = {
         // for non production env.
         return exits.success('no api key');
       }
+
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      if (appBase === 'http://localhost:4000') {
+        return exits.success('crm helpers disabled on localhost');
+      }
+
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
       const { campaign } = inputs;
-      // console.log('campaign', campaign);
       const { data } = campaign;
       const { launchStatus, lastStepDate } = data;
       const dataDetails = campaign?.data?.details;
