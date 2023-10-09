@@ -111,12 +111,12 @@ async function findUserAndCampaign(from) {
   const cleanPhone = from.replace('+1', '');
   const users = await User.find({ phone: cleanPhone });
   if (users.length === 0) {
-    throwError(`Sorry, we can not update your campaign.`);
+    throwError(`Sorry, we can not update your Campaign.`);
   }
 
   const user = users[0];
   if (!user.metaData) {
-    throwError('Sorry, we can not update your campaign.');
+    throwError('Sorry, we can not update your campaign');
   }
 
   const metadata = JSON.parse(user.metaData);
