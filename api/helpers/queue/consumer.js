@@ -181,6 +181,13 @@ async function handleGenerateCampaignPlan(message) {
       ) {
         data.campaignPlanStatus = {};
       }
+      if (
+        !data?.campaignPlanStatus[key] ||
+        typeof data.campaignPlanStatus[key] !== 'object'
+      ) {
+        data.campaignPlanStatus[key] = {};
+      }
+
       data.campaignPlanStatus[key].status = 'completed';
       await Campaign.updateOne({
         slug,
