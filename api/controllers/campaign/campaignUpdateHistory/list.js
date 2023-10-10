@@ -1,7 +1,11 @@
 module.exports = {
   friendlyName: 'User supports a candidate',
 
-  inputs: {},
+  inputs: {
+    slug: {
+      type: 'string',
+    },
+  },
 
   exits: {
     success: {
@@ -21,18 +25,29 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const user = this.req.user;
+      const { slug } = inputs;
 
-      const campaigns = await Campaign.find({
-        user: user.id,
-      });
+      if (slug && !user.isAdmin) {
+        return exits.forbidden();
+      }
       let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0];
+      if (slug) {
+        campaign = await Campaign.findOne({ slug });
+      } else {
+        const campaigns = await Campaign.find({
+          user: user.id,
+        });
+
+        if (campaigns && campaigns.length > 0) {
+          campaign = campaigns[0];
+        }
       }
 
       const updateHistory = await CampaignUpdateHistory.find({
         campaign: campaign.id,
       }).populate('user');
+
+      console.log('updateHistory', updateHistory);
 
       updateHistory.forEach((update) => {
         update.user = {
