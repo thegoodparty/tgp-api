@@ -228,10 +228,13 @@ async function handleGenerateCampaignPlan(message) {
   if (!chatResponse || chatResponse === '' || generateError) {
     try {
       // if data does not have key campaignPlanAttempts
-      if (!data.hasOwnProperty('campaignPlanAttempts')) {
+      if (!data?.campaignPlanAttempts) {
         data.campaignPlanAttempts = {};
       }
-      data.campaignPlanAttempts[key] = data.campaignPlanAttempts[key]
+      if (!data?.campaignPlanAttempts[key]) {
+        data.campaignPlanAttempts[key] = 1;
+      }
+      data.campaignPlanAttempts[key] = data?.campaignPlanAttempts[key]
         ? data.campaignPlanAttempts[key] + 1
         : 1;
 
@@ -241,7 +244,10 @@ async function handleGenerateCampaignPlan(message) {
       );
 
       // After 3 attempts, we give up.
-      if (data.campaignPlanStatus[key].status !== 'completed') {
+      if (
+        data?.campaignPlanStatus[key]?.status &&
+        data.campaignPlanStatus[key].status !== 'completed'
+      ) {
         if (data.campaignPlanAttempts[key] >= 3) {
           await sails.helpers.errorLoggerHelper(
             'Deleting campaignPlanStatus for key',
