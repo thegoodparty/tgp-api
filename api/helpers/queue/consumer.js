@@ -104,6 +104,8 @@ async function handleGenerateCampaignPlan(message) {
   let data;
   let chatResponse;
 
+  let generateError = false;
+
   try {
     await sails.helpers.errorLoggerHelper(
       'handling campaign from queue',
@@ -202,6 +204,7 @@ async function handleGenerateCampaignPlan(message) {
   } catch (e) {
     console.log('error at consumer', e);
     console.log('messages', messages);
+    generateError = true;
 
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
@@ -222,7 +225,7 @@ async function handleGenerateCampaignPlan(message) {
   }
 
   // Failed to generate content.
-  if (!chatResponse || chatResponse === '') {
+  if (!chatResponse || chatResponse === '' || generateError) {
     try {
       // if data does not have key campaignPlanAttempts
       if (!data.hasOwnProperty('campaignPlanAttempts')) {
