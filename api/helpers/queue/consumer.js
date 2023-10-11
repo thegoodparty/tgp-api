@@ -104,6 +104,8 @@ async function handleGenerateCampaignPlan(message) {
   let data;
   let chatResponse;
 
+  let generateError = false;
+
   try {
     await sails.helpers.errorLoggerHelper(
       'handling campaign from queue',
@@ -181,6 +183,13 @@ async function handleGenerateCampaignPlan(message) {
       ) {
         data.campaignPlanStatus = {};
       }
+      if (
+        !data?.campaignPlanStatus[key] ||
+        typeof data.campaignPlanStatus[key] !== 'object'
+      ) {
+        data.campaignPlanStatus[key] = {};
+      }
+
       data.campaignPlanStatus[key].status = 'completed';
       await Campaign.updateOne({
         slug,
@@ -195,6 +204,7 @@ async function handleGenerateCampaignPlan(message) {
   } catch (e) {
     console.log('error at consumer', e);
     console.log('messages', messages);
+    generateError = true;
 
     if (e.data) {
       await sails.helpers.errorLoggerHelper(
@@ -215,13 +225,16 @@ async function handleGenerateCampaignPlan(message) {
   }
 
   // Failed to generate content.
-  if (!chatResponse || chatResponse === '') {
+  if (!chatResponse || chatResponse === '' || generateError) {
     try {
       // if data does not have key campaignPlanAttempts
-      if (!data.hasOwnProperty('campaignPlanAttempts')) {
+      if (!data?.campaignPlanAttempts) {
         data.campaignPlanAttempts = {};
       }
-      data.campaignPlanAttempts[key] = data.campaignPlanAttempts[key]
+      if (!data?.campaignPlanAttempts[key]) {
+        data.campaignPlanAttempts[key] = 1;
+      }
+      data.campaignPlanAttempts[key] = data?.campaignPlanAttempts[key]
         ? data.campaignPlanAttempts[key] + 1
         : 1;
 
@@ -231,7 +244,10 @@ async function handleGenerateCampaignPlan(message) {
       );
 
       // After 3 attempts, we give up.
-      if (data.campaignPlanStatus[key].status !== 'completed') {
+      if (
+        data?.campaignPlanStatus[key]?.status &&
+        data.campaignPlanStatus[key].status !== 'completed'
+      ) {
         if (data.campaignPlanAttempts[key] >= 3) {
           await sails.helpers.errorLoggerHelper(
             'Deleting campaignPlanStatus for key',

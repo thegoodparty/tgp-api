@@ -54,6 +54,7 @@ module.exports = {
         return exits.success({
           status: 'candidate',
           profile: campaign.candidateSlug,
+          pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
         });
       }
       return exits.success({

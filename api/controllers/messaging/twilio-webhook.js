@@ -57,32 +57,38 @@ module.exports = {
       }
 
       let message;
-      if (metadata.lastSms === 'doorKnocking') {
-        message = await handleDoorKnocking(
-          user,
-          metadata,
-          campaign,
-          campaigns[0].id,
-          digitsOnly,
-        );
-      } else if (metadata.lastSms === 'calls') {
-        message = await handleCalls(
-          user,
-          metadata,
-          campaign,
-          campaigns[0].id,
-          digitsOnly,
-        );
-      } else if (metadata.lastSms === 'digital') {
-        message = await handleDigital(
-          user,
-          metadata,
-          campaign,
-          campaigns[0].id,
-          digitsOnly,
-        );
+
+      if (digitsOnly === undefined) {
+        message =
+          'Please just reply with the number. If you have any questions please email jared@goodparty.org';
       } else {
-        message = `you responded with ${body}. digits only is ${digitsOnly}`;
+        if (metadata.lastSms === 'doorKnocking') {
+          message = await handleDoorKnocking(
+            user,
+            metadata,
+            campaign,
+            campaigns[0].id,
+            digitsOnly,
+          );
+        } else if (metadata.lastSms === 'calls') {
+          message = await handleCalls(
+            user,
+            metadata,
+            campaign,
+            campaigns[0].id,
+            digitsOnly,
+          );
+        } else if (metadata.lastSms === 'digital') {
+          message = await handleDigital(
+            user,
+            metadata,
+            campaign,
+            campaigns[0].id,
+            digitsOnly,
+          );
+        } else {
+          message = `you responded with ${body}. digits only is ${digitsOnly}`;
+        }
       }
 
       twiml.message(message);
