@@ -127,6 +127,7 @@ module.exports.routes = {
   'POST   /api/v1/top-issue': 'topIssues/topIssue/create',
   'PUT   /api/v1/top-issue': 'topIssues/topIssue/update',
   'DELETE   /api/v1/top-issue': 'topIssues/topIssue/delete',
+  'GET   /api/v1/top-issue/by-location': 'topIssues/byLocation/find',
 
   // position
   'GET   /api/v1/positions': 'topIssues/position/list',
