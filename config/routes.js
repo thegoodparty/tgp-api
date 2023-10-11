@@ -93,6 +93,8 @@ module.exports.routes = {
     'campaign/campaignUpdateHistory/create',
   'GET   /api/v1/campaign/update-histories':
     'campaign/campaignUpdateHistory/list',
+  'DELETE   /api/v1/campaign/update-history':
+    'campaign/campaignUpdateHistory/delete',
 
   // onboarding
 
