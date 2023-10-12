@@ -96,7 +96,11 @@ module.exports = {
             campaign.user,
           );
           if (canEmail) {
-            await sendEmail(weeks, campaign.user);
+            try {
+              await sendEmail(weeks, campaign.user);
+            } catch (e) {
+              console.log('error with email', e);
+            }
           }
         }
       }

@@ -104,10 +104,10 @@ module.exports = {
           if (canText) {
             await sails.helpers.sms.sendSms(
               campaign.user.phone,
-              `Hi, this is the Good Party Team. It's time to update your Campaign Tracker!
-How many doors did you or your team knock on this week?
-              
-Text STOP to unsubscribe`,
+              `Hey ${campaign.user.name}! This is Jared from Good Party. Hope you had a productive week of campaigning. 
+              Checking in to see how your progress has come this week. Have you knocked on any doors? 
+              If so, reply with the number and we will automatically update it into your Campaign Tracker! 
+              Let me know if you have any questions or text stop to unsubscribe`,
             );
             // save status to user meta data
             let metaData = campaign.user.metaData
