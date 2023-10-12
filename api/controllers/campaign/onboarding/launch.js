@@ -159,9 +159,9 @@ function mapCampaignToCandidate(campaign) {
     district,
     city,
   } = details;
-  const { slogan, aboutMe, why } = campaignPlan;
+  const { slogan, aboutMe, why } = campaignPlan || {};
 
-  const { electionDate, campaignWebsite } = goals;
+  const { electionDate, campaignWebsite } = goals || {};
 
   const partyWithOther = party === 'Other' ? otherParty : party;
 
