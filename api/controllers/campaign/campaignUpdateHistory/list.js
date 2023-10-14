@@ -47,8 +47,6 @@ module.exports = {
         campaign: campaign.id,
       }).populate('user');
 
-      console.log('updateHistory', updateHistory);
-
       updateHistory.forEach((update) => {
         update.user = {
           name: update.user.name,
