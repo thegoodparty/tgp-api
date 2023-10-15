@@ -55,11 +55,7 @@ module.exports = {
       type: 'string',
       required: false,
     },
-    guestUuid: {
-      description: 'uuid that was generated on the front end',
-      type: 'string',
-      required: false,
-    },
+
     password: {
       description: 'The new, unencrypted password.',
       example: 'abc123v2',
@@ -78,7 +74,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     // Look up the user whose ID was specified in the request.
     // Note that we don't have to validate that `userId` is a number;
     // the machine runner does this for us and returns `badRequest`
@@ -92,7 +88,6 @@ module.exports = {
         socialProvider,
         socialPic,
         socialToken,
-        guestUuid,
         source,
         uri,
         password,
@@ -126,20 +121,6 @@ module.exports = {
           //do nothing
         }
 
-        if (source === 'homepageModal') {
-          if (exists) {
-            // only add to hubspot form
-            const token = await sails.helpers.jwtSign({
-              id: exists.id,
-              email: lowerCaseEmail,
-              phone,
-            });
-            return exits.success({
-              user: exists,
-              token,
-            });
-          }
-        }
         if (exists) {
           return exits.badRequest({
             message: `An account for ${lowerCaseEmail} already exists. Try logging instead.`,
@@ -211,25 +192,9 @@ module.exports = {
         }
       }
 
-      const uuid =
-        guestUuid ||
-        Math.random()
-          .toString(36)
-          .substring(2, 12);
-
       const user = await User.create({
-        uuid,
         ...userAttr,
       }).fetch();
-
-      if (!socialPic && !socialProvider && !socialId) {
-        // send sms to the newly created user.
-        if (phone) {
-          await sails.helpers.sms.smsVerify(phone);
-        } else {
-          // await sendWVerifyEmail(user);
-        }
-      }
 
       const token = await sails.helpers.jwtSign({
         id: user.id,
@@ -237,29 +202,21 @@ module.exports = {
         phone,
       });
 
-      // check if the user has a pending invitation for a candidate campaign staff
-      const invitations = await StaffInvitation.find({ email: lowerCaseEmail });
-      if (invitations.length > 0) {
-        for (let i = 0; i < invitations.length; i++) {
-          const invitation = invitations[i];
-          await Staff.create({
-            role: invitation.role,
-            user: user.id,
-            candidate: invitation.candidate,
-            createdBy: invitation.createdBy,
-          });
-          await StaffInvitation.destroyOne({ id: invitation.id });
-        }
-      }
+      // // check if the user has a pending invitation for a candidate campaign staff
+      // const invitations = await StaffInvitation.find({ email: lowerCaseEmail });
+      // if (invitations.length > 0) {
+      //   for (let i = 0; i < invitations.length; i++) {
+      //     const invitation = invitations[i];
+      //     await Staff.create({
+      //       role: invitation.role,
+      //       user: user.id,
+      //       candidate: invitation.candidate,
+      //       createdBy: invitation.createdBy,
+      //     });
+      //     await StaffInvitation.destroyOne({ id: invitation.id });
+      //   }
+      // }
 
-      // if the zip code belongs to Maine, follow all maine candidates
-      if (zip) {
-        const isMaine = await sails.helpers.zip.isMaineZip(zip);
-        if (isMaine) {
-          await sails.helpers.zip.followAllStateCandidates('ME', user.id);
-        }
-        await sails.helpers.zip.matchMaineCandidates(user);
-      }
       //  add user to our CRM.
       await sails.helpers.crm.updateUser(user);
 
@@ -285,7 +242,7 @@ module.exports = {
   },
 };
 
-const submitCrmForm = async (name, email, phone, source, uri) => {
+async function submitCrmForm(name, email, phone, source, uri) {
   if (!email) {
     // candidate page doesn't require email
     return;
@@ -301,98 +258,9 @@ const submitCrmForm = async (name, email, phone, source, uri) => {
     crmFields.push({ name: 'phone', value: phone, objectTypeId: '0-1' });
   }
 
-  let formId;
-  if (source === 'homepageModal') {
-    formId = '39b42d7f-826d-435d-a41f-bd692ee1298e';
-  } else if (source === 'candidatePage') {
-    formId = '7769fe08-bd84-4be0-9e2d-d7474abb0ea1';
-  } else {
-    formId = '37d98f01-7062-405f-b0d1-c95179057db1';
-  }
+  const formId = '37d98f01-7062-405f-b0d1-c95179057db1';
 
   let resolvedSource = source || 'registerPage';
 
   await sails.helpers.crm.submitForm(formId, crmFields, resolvedSource, uri);
-};
-
-const sendWVerifyEmail = async user => {
-  if (!user.email || user.email === '') {
-    return;
-  }
-  const appBase = sails.config.custom.appBase || sails.config.appBase;
-  const lowerCaseEmail = user.email.toLowerCase();
-  const { name } = user;
-  const subject = `${user.firstName ||
-    user.name}, please verify your email address`;
-  const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-          <tbody>
-            <tr>
-              <td>
-                <p
-                  style="
-                    font-size: 16px;
-                    font-family: Arial, sans-serif;
-                    margin-top: 0;
-                    margin-bottom: 5px;
-                  "
-                >
-                  Hi ${user.firstName || user.name}!<br /><br />
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <p
-                  style="
-                    font-size: 16px;
-                    font-family: Arial, sans-serif;
-                    margin-top: 0;
-                    margin-bottom: 5px;
-                  "
-                >
-                  We need to know you’re not a bot and to be able to reach you with
-                  important campaign updates.
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <p
-                  style="
-                    font-size: 16px;
-                    font-family: Arial, sans-serif;
-                    margin-top: 0;
-                    margin-bottom: 5px;
-                  "
-                >
-                  <br/>
-                  Please use this code to verify your email address at <a href="${appBase}/register/confirm">https://goodparty.org/register/confirm</a>
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <br /><br />
-                <p style="
-                    font-size: 30px;
-                    font-family: Arial, sans-serif;
-                    background: #cccccc;
-                    padding: 20px;
-                    border-radius: 6px;
-                    text-align: center;
-                    "
-                    >${user.emailConfToken}</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        `;
-  const messageHeader = '';
-  await sails.helpers.mailgun.mailgunSender(
-    lowerCaseEmail,
-    name,
-    subject,
-    messageHeader,
-    message,
-  );
-};
+}

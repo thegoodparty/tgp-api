@@ -26,13 +26,13 @@ module.exports = {
       example: 'mary.sue@example.com',
     },
 
-    uuid: {
-      type: 'string',
-      required: true,
-      unique: true,
-      maxLength: 200,
-      example: 'random string',
-    },
+    // uuid: {
+    //   type: 'string',
+    //   required: true,
+    //   unique: true,
+    //   maxLength: 200,
+    //   example: 'random string',
+    // },
 
     name: {
       type: 'string',
