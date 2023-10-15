@@ -29,6 +29,7 @@ module.exports = {
 
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       if (appBase === 'http://localhost:4000') {
+        console.log('crm helpers disabled on localhost');
         return exits.success('crm helpers disabled on localhost');
       }
 
@@ -74,6 +75,12 @@ module.exports = {
           p2v_complete_date: data?.p2vCompleteDate || undefined,
           p2v_status: data?.p2vStatus || 'Locked',
           election_date: electionDate || undefined,
+          doors_knocked: data?.reportedVoterGoals?.doorKnocking || 0,
+          calls_made: data?.reportedVoterGoals?.calls || 0,
+          online_impressions: data?.reportedVoterGoals?.digital || 0,
+          my_content_pieces_created: data?.aiContent
+            ? Object.keys(data.aiContent).length
+            : 0,
         },
       };
 
