@@ -29,6 +29,7 @@ module.exports.policies = {
   'campaign/onboarding/list': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
+  'topIssues/byLocation/find': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,
@@ -51,5 +52,4 @@ module.exports.policies = {
   'messaging/*': true,
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.
   'campaign/deadlines/list': true,
-  // 'topIssues/byLocation/find': true,
 };
