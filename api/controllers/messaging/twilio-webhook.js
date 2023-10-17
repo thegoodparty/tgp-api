@@ -16,7 +16,7 @@ module.exports = {
 
       const { user, metadata, campaign, campaigns } = await findUserAndCampaign(
         from,
-        this.req,
+        this.req.body,
       );
 
       // if body contains stop words update the opt-out in hubspot and update notification preferences.
