@@ -4,7 +4,7 @@ branch-defaults:
   qa:
     environment: gp-qa-api
   master:
-    environment: gp-api-prod
+    environment: gp-prod-api
 environment-defaults:
   tgp-api-dev:
     branch: null
