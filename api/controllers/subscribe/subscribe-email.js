@@ -56,7 +56,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const {
+      let {
         email,
         uri,
         name,
@@ -90,6 +90,16 @@ module.exports = {
         });
       }
       if (phone) {
+        // strip phone to digits only.
+        phone = phone.replace(/\D/g, '');
+        // if length is 10 digits add +1 to the phone number
+        if (phone.length === 10) {
+          phone = `+1${phone}`;
+        } else if (phone.length === 11 && phone[0] === '1') {
+          // if length is 11 digits and the first digit is 1 add a +
+          phone = `+${phone}`;
+        }
+
         crmFields.push({
           name: 'phone',
           value: phone,
