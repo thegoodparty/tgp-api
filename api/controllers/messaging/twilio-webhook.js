@@ -16,6 +16,7 @@ module.exports = {
 
       const { user, metadata, campaign, campaigns } = await findUserAndCampaign(
         from,
+        this.req.body,
       );
 
       // if body contains stop words update the opt-out in hubspot and update notification preferences.
@@ -110,8 +111,12 @@ function throwError(message) {
   throw new Error(message);
 }
 
-async function findUserAndCampaign(from) {
+async function findUserAndCampaign(from, twilioReq) {
   if (!from) {
+    await sails.helpers.errorLoggerHelper(
+      'Error at messaging/twilio-webhook. No from number found.',
+      twilioReq,
+    );
     throwError('Sorry, we can not update your campaign.');
   }
   const cleanPhone = from.replace('+1', '');
