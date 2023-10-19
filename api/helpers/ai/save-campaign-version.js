@@ -29,11 +29,27 @@ module.exports = {
       const { data, subSectionKey, key, campaignId, inputValues } = inputs;
       let newVersion;
 
+      // we determine language by examining inputValues and tag it on the version.
+      let language = 'English';
+      if (inputValues && inputValues.length > 0) {
+        inputValues.forEach((inputValue) => {
+          if (inputValue?.language) {
+            language = inputValue.language;
+          }
+        });
+      }
+
       if (subSectionKey === 'aiContent') {
         newVersion = {
           date: new Date().toString(),
           text: data[subSectionKey][key].content,
-          inputValues: data[subSectionKey][key].inputValues,
+          // if new inputValues are specified we use those
+          // otherwise we use the inputValues from the prior generation.
+          inputValues:
+            inputValues && inputValues.length > 0
+              ? inputValues
+              : data[subSectionKey][key].inputValues,
+          language: language,
         };
       } else {
         newVersion = {
