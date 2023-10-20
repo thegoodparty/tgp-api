@@ -168,4 +168,7 @@ module.exports.routes = {
 
   // messaging webhook
   'POST   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
+
+  // ballotData
+  'GET   /api/v1/ballot': 'campaign/onboarding/ballotData/get',
 };
