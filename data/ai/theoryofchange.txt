@@ -1,0 +1,95 @@
+
+Good Party Theory of Change 
+Table of Contents: 
+Problem Statement 
+Opportunity: Technology x Community 
+Good Party Platform 
+Technology 
+Community 
+Audience: 135M+ Unrepresented Citizens 
+Sequence of Audiences 
+The Change We Seek 
+Core beliefs 
+Good Party's Activities 
+Important sub-documents:
+Problem Statement 
+Democracy in America does not proportionally represent its citizens. Nor does it represent the majority. The two-party system / political establishment is effectively a corrupt self-regulating duopoly. It designs the rules of our political system to: 
+Limit competition in elections.
+Reduce choice for voters to the 'lesser of two evils.' 
+Allow money (via political donations of special interests) to matter more than the votes of the majority of the people.  
+These factors allow concentrated power and financial interests - not the public interest - to dictate the outcomes of government policy. This disenfranchises the majority. It also guarantees that government (and technology) will serve capital and the non-living entities (corporations and other institutions) instead of humans. The result is unnecessary scarcity and dystopia for most. We are rapidly approaching multiple tipping points (AI & robotics, climate change, biodiversity, individual freedoms, privacy, civil rights, etc.) where the damage from accumulated failures becomes irreversible. Thus, humans and 
+civilized society face an existential crisis that requires a human-centric rethinking of our systems. 
+The upside is that if the rules that govern society are made by and for humanity we could create abundance and utopia for most. To that end, many independent and anti corruption individuals are willing to serve. They are eager to serve as true representatives of the people and help change the rules towards humanity. But they cannot compete with the duopoly's advantages. Specifically, Indie and 3rd party candidates: 
+Cannot compete with the political establishment’s funding advantage (i.e. big money donors) 
+Haven’t been able to overcome the "spoiler" narrative that an Indie or 3rd party vote is a wasted vote 
+Don’t have access to the same tools and resources the entrenched duopoly has monopolized 
+Empowering these individuals in the long-term will require significant structural electoral reforms. But to win those structural reforms without revolution or political violence, we have to work urgently within the existing representative democratic system to get better people elected, now. Once elected, those allies on the inside can play a pivotal role (as tie breakers or fulcrums) in winning the reforms needed to open doors for everyone else. 
+We believe that doing so is essential in order to ensure democratic government "of the people, by the people, for the people." 
+A more robust examination of problems and potential solutions is found here: Problems and Solutions 
+Opportunity: Technology x Community 
+Good Party Platform 
+Digital Natives (people born after 1984) will be the majority of voters by 2024. They disproportionately do not vote, when compared with Boomers (those born before 1964).  
+Without a social technology spreading good ideas (memes) energizing and mobilizing a large number of digital natives who are currently standing on the sidelines, we will not be able to break the duopoly’s stranglehold on elections.
+Thus, Good Party is a movement of creators using a combination of technology, storytelling and IRL organizing to mobilize the 135M+ lessor-of-two-evil, independent and eligible non-voters, to vote differently. We seek to build hope through a credible plan that honest, independent, people-powered candidates and campaigns can run and win elections, without needing to big-money donors or big-party support.  
+Technology 
+Our technology platform is not the movement, but it's a lever that can increase the capacity and the success rate of a reform movement that already exists. Our tech platform consists of: 
+Tools 
+We will build and integrate free and familiar technology and tools like crowd voting to enable digital natives and other eligible voters to engage with (endorse, support and see the viability of) indie candidates on our platform. 
+Data 
+We will build a data infrastructure to support learning, transparency and house our information for both GP and candidates. 
+This data, over time, will become longitudinal and improve. 
+Reporting 
+Systems that show how each tool is doing so that operators can iterate and improve 
+Community 
+We frame our community as 3 concentric spheres of growing influence that can ignite and mobilize a successful movement for democratic reform (Our battle cry for our community is: Creators of the World, Unite!) 
+Technologists (Product) 
+Developers and Designers 
+Data Scientists 
+Open Source Hackers 
+Influencers (online)
+Marketers and Storytellers 
+Social media influencers & podcasters 
+Artists, musicians & celebrities 
+Organizers (IRL) 
+Campaign field operations 
+Reform Orgs and Cause Based Activists 
+Community Organizers and Volunteers 
+
+Audience: 135M+ Unrepresented Citizens 
+We aim to help the 135M+ unrepresented Americans, comprising approximately 52M 'lesser of two evils' voters, 81M eligible non-voters and 2M independent and 3rd party voters, find good representation in our democracy. We believe that this necessitates creating a path for honest, independent, people-powered candidates to be elected. 
+The core audiences for an online platform like Good Party skew younger and more technically literate. There are 93 million digital natives and growing, more than half of Millennials identify as political independents, Gen Z so far are similar, and they are radically under-represented in all levels of government.
+Sequence of Audiences 
+The Change We Seek 
+Good Party's mission is to make people matter more than money through representative democracy. In contrast to the doom-loop of duopoly politics, the Good Party Platform will create a virtuous cycle of positive impact that engages and lifts humans. 
+In practice, we want to see the emergence of a functional multi-party democracy in the United States. By enabling government that proportionally represents its citizens, we will unlock a free and fair marketplace of ideas. Instead of only representing the interests of a tiny elite group, we envision a meaningful contest between ideas and viewpoints. Doing so is the off-ramp from our current binary, zero-sum system that leaves policy issues unresolved for decades. 
+Our means to get there is 'free software for free elections.' We are organized as a public benefit company which means our primary purpose is not profit, but rather the public good. Specifically, to empower eligible voters and non-voters who are not represented by the two major U.S. political parties. We will provide software and related technology and
+services to independent and third-party voters, candidates, and political organizations that cannot be serviced today by vendors that strictly serve one of the two major parties. In doing so we will enable more candidate choices, and ultimately real representation, for millions of people who are not served by the two major parties today. 
+Additionally, by tapping into the community of creators - technologists, influencers and organizers - we will create new pathways to civic engagement beyond the singular acts of voting or donating money. Neither of which have represented an attractive use of time or resources for the majority of digital natives. Instead, our platform will enable an on ramp for these disenfranchised people to more easily contribute their skills and talent toward positive social change - a gift to democracy - on behalf of candidates and causes that actually reflect their values and beliefs.  
+This new class of elected representatives will enter the leadership ranks through use of modern technology that then keeps them more connected and accountable to all their constituents during their term of service. Conversely, those constituencies will be made up of a more discerning, engaged and vigilant community who has invested their time and talent toward the cause of real representation. Rather than the current system of persistent stagnation and mindless reelection of career politicians, the combination of technology x community will create a tighter and more meaningful feedback loop that ensures iteration, improvement and results from elected officials. 
+Core beliefs 
+Embedded in the change we seek are the following beliefs: 
+1. People are Good. Given real hope through a credible plan, all kinds of good people will be energized to participate and help 
+2. Technology can be Good too - if its purpose is to serve people, and it’s created as a public good: free to use and open-source to improve 
+3. Power and money corrupt — both people and technology. We will strive to keep it all free, decentralized and working as a public benefit. 
+4. A pay-to-play political system is inherently corrupt and corrupting. As such, the existing two-party system does not accurately represent the values, needs, or desires of the vast majority. 
+5. The fact that our political system only has two viable national parties (and by definition operates as a Duopoly) is one of the main barriers to effective
+representation for the majority. Making our democracy actually representative will require expanding our political system to include a wider range of parties, inclusions of independent non-partisans, and a broader marketplace of ideas. 
+6. Representative Democracy can work! Good reps, dependent on the people, serving transparently, will create good rules centered on humanity. 
+7. Making democracy work requires motivating eligible non-voters and lesser-evil voters to engage with and support independent reform-minded candidates. 
+8. Make no waste. We can’t waste people’s time, money, enthusiasm, candidates, or VOTES if we want to elect indie reps. 
+9. It is possible to overcome the 'lesser of two evils' argument created by the First Past the Post (FPTP) electoral system and engage this disenfranchised majority by demonstrating viability for third party candidates 
+10. Our platform can create infectious hope through a clear credible plan, that can usher an exponential shift. Once we reach a tipping point where third party and independent candidates and reforms have been proven capable of winning using our tools and platform, there will be a (phase) change that forces a shift to a multipolar democracy. 
+We also have many assumptions underlying these beliefs. We want to test those assumptions and iterate as we learn: Underlying Assumptions & Assertions 
+Good Party's Activities 
+Our overall approach is to use "Technology x Community" as leverage to enable a more democratic political system through more competition and more choice for voters. We define a democratic political system as one that represents the popular will, while protecting the rights of minorities. 
+Our role within this reform movement is three-fold: 
+1. To build tools that can be used by candidates and campaigns to effectively energize and mobilize voters. 
+2. To build a community of creators (technologists, online influencers and IRL organizers) who can help independent candidates attract support and, ultimately, votes to their campaigns to win.
+
+3. To act as the connective tissue between campaigns, volunteers, and voters and create multiplier effects that drive engagement and mobilization. 
+Our strategy and tactics will continually evolve over time and will be crystalized in our Good Party Strategy and Tactics 
+�� Product Strategy 
+Important sub-documents: 
+Problems and Solutions 
+Underlying Assumptions & Assertions 
+Good Party Strategy and Tactics

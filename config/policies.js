@@ -52,4 +52,5 @@ module.exports.policies = {
   'messaging/*': true,
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.
   'campaign/deadlines/list': true,
+  // 'ai/test': true,
 };

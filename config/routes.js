@@ -168,4 +168,7 @@ module.exports.routes = {
 
   // messaging webhook
   'POST   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
+
+  // test ai
+  'POST   /api/v1/ai/test': 'ai/test',
 };
