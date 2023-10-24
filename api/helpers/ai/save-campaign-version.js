@@ -15,6 +15,9 @@ module.exports = {
     inputValues: {
       type: 'json',
     },
+    oldVersion: {
+      type: 'json',
+    },
   },
   exits: {
     success: {
@@ -26,7 +29,8 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { data, subSectionKey, key, campaignId, inputValues } = inputs;
+      const { data, subSectionKey, key, campaignId, inputValues, oldVersion } =
+        inputs;
       let newVersion;
 
       // we determine language by examining inputValues and tag it on the version.
@@ -48,7 +52,7 @@ module.exports = {
           inputValues:
             inputValues && inputValues.length > 0
               ? inputValues
-              : data[subSectionKey][key].inputValues,
+              : data[subSectionKey][key]?.inputValues,
           language: language,
         };
       } else {
@@ -58,24 +62,30 @@ module.exports = {
         };
       }
 
-      // for aiContent we must have inputValues to do versioning.
-      if (subSectionKey === 'aiContent') {
-        if (!inputValues || !Object.keys(inputValues).length > 0) {
-          console.log('no input values specified. exiting...');
-          return exits.success('ok');
-        }
-      }
-
       const existingVersions = await CampaignPlanVersion.findOne({
         campaign: campaignId,
       });
       let versions = {};
       if (existingVersions) {
-        versions = existingVersions.data;
+        versions = existingVersions?.data;
+      }
+
+      let foundKey = false;
+      // for aiContent we must have inputValues to do versioning.
+      if (subSectionKey === 'aiContent') {
+        if (!inputValues || !Object.keys(inputValues).length > 0) {
+          // however we only require it for successive versions.
+          if (versions && versions[key]) {
+            console.log('no input values specified. exiting...');
+            return exits.success('ok');
+          }
+        }
       }
 
       if (!versions[key]) {
         versions[key] = [];
+      } else {
+        foundKey = true;
       }
 
       let foundVersion = false;
@@ -92,8 +102,15 @@ module.exports = {
         }
       }
 
+      if (foundKey === false && oldVersion) {
+        // here, we determine if we need to save an older version of the content.
+        // because in the past we didn't create a Content version for every new generation.
+        // otherwise if they translate they won't have the old version to go back to.
+        versions[key].push(oldVersion);
+      }
+
       if (foundVersion === false) {
-        // prior version not found. add new version to the top of the list.
+        // add new version to the top of the list.
         const length = versions[key].unshift(newVersion);
         if (length > 10) {
           versions[key].length = 10;

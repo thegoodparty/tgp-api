@@ -157,8 +157,20 @@ async function handleGenerateCampaignPlan(message) {
 
     campaign = await Campaign.findOne({ slug });
     data = campaign.data;
+    let oldVersion;
     if (chatResponse && chatResponse !== '') {
       if (subSectionKey === 'aiContent') {
+        try {
+          let oldVersionData = data[subSectionKey][key];
+          oldVersion = {
+            // todo: try to convert oldVersionData.updatedAt to a date object.
+            date: new Date().toString(),
+            text: oldVersionData.content,
+          };
+        } catch (e) {
+          // dont warn because this is expected to fail sometimes.
+          // console.log('error getting old version', e);
+        }
         data[subSectionKey][key] = {
           name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
           updatedAt: new Date().valueOf(),
@@ -175,6 +187,7 @@ async function handleGenerateCampaignPlan(message) {
         key,
         campaign.id,
         inputValues,
+        oldVersion,
       );
 
       if (
