@@ -37,92 +37,96 @@ module.exports = {
 
       const candidates = await Candidate.find();
       for (let i = 0; i < candidates.length; i++) {
-        const candidate = candidates[i];
+        try {
+          const candidate = candidates[i];
 
-        const data = JSON.parse(candidate.data);
-        let { electionDate, campaignOnboardingSlug } = data;
-        if (!campaignOnboardingSlug) {
-          // old candidates
-          continue;
-        }
-        const campaign = await Campaign.findOne({
-          slug: campaignOnboardingSlug,
-        }).populate('user');
-        if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
-          continue; // goals not set yet.
-        }
+          const data = JSON.parse(candidate.data);
+          let { electionDate, campaignOnboardingSlug } = data;
+          if (!campaignOnboardingSlug) {
+            // old candidates
+            continue;
+          }
+          const campaign = await Campaign.findOne({
+            slug: campaignOnboardingSlug,
+          }).populate('user');
+          if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
+            continue; // goals not set yet.
+          }
 
-        if (!electionDate && campaign.data.goals?.electionDate) {
-          electionDate = campaign.data.goals?.electionDate;
-          await Candidate.updateOne({ id: candidate.id }).set({
-            data: JSON.stringify({
-              ...data,
-              electionDate,
-            }),
-          });
-        }
+          if (!electionDate && campaign.data.goals?.electionDate) {
+            electionDate = campaign.data.goals?.electionDate;
+            await Candidate.updateOne({ id: candidate.id }).set({
+              data: JSON.stringify({
+                ...data,
+                electionDate,
+              }),
+            });
+          }
 
-        if (!electionDate) {
-          continue;
-        }
+          if (!electionDate) {
+            continue;
+          }
 
-        const now = moment(new Date());
-        const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
-        const end = moment(electionDate);
-        const duration = moment.duration(end.diff(now));
-        const weeks = Math.floor(duration.asWeeks());
-        // const weeks = 11;
+          const now = moment(new Date());
+          const nextWeek = moment().add(7, 'days').format('YYYY-MM-DD');
+          const end = moment(electionDate);
+          const duration = moment.duration(end.diff(now));
+          const weeks = Math.floor(duration.asWeeks());
+          // const weeks = 11;
 
-        if (weeks >= 0 && weeks <= 12 && campaign) {
-          // 12 weeks before election
-          const goals = calculateGoals(campaign.data, weeks);
-          const fields = [
-            {
-              key: 'doorKnocking',
-              sentence1: 'Knock on',
-              sentence2: 'doors this week',
-            },
-            {
-              key: 'calls',
-              sentence1: 'Make',
-              sentence2: 'calls this week',
-            },
-            {
-              key: 'digital',
-              sentence1: 'Create online content for',
-              sentence2: 'impressions this week',
-            },
-          ];
+          if (weeks >= 0 && weeks <= 12 && campaign) {
+            // 12 weeks before election
+            const goals = calculateGoals(campaign.data, weeks);
+            const fields = [
+              {
+                key: 'doorKnocking',
+                sentence1: 'Knock on',
+                sentence2: 'doors this week',
+              },
+              {
+                key: 'calls',
+                sentence1: 'Make',
+                sentence2: 'calls this week',
+              },
+              {
+                key: 'digital',
+                sentence1: 'Create online content for',
+                sentence2: 'impressions this week',
+              },
+            ];
 
-          for (let j = 0; j < fields.length; j++) {
-            const { key, sentence1, sentence2 } = fields[j];
-            const goal = goals[key];
-            if (goal.total > goal.progress) {
-              // goal is not complete, need to create notification
-              const notification = {
-                type: 'goal',
-                title: `${sentence1} ${numberFormatter(
-                  goal.total - goal.progress,
-                )} ${sentence2}`,
-                link: '/dashboard',
-                subTitle: 'Campaign Tracker',
-                dueDate: nextWeek,
-              };
+            for (let j = 0; j < fields.length; j++) {
+              const { key, sentence1, sentence2 } = fields[j];
+              const goal = goals[key];
+              if (goal.total > goal.progress) {
+                // goal is not complete, need to create notification
+                const notification = {
+                  type: 'goal',
+                  title: `${sentence1} ${numberFormatter(
+                    goal.total - goal.progress,
+                  )} ${sentence2}`,
+                  link: '/dashboard',
+                  subTitle: 'Campaign Tracker',
+                  dueDate: nextWeek,
+                };
 
-              await Notification.create({
-                isRead: false,
-                data: notification,
-                user: campaign.user?.id,
-              });
+                await Notification.create({
+                  isRead: false,
+                  data: notification,
+                  user: campaign.user?.id,
+                });
+              }
             }
+            const canEmail = await sails.helpers.notification.canEmail(
+              campaign.user,
+            );
+            if (canEmail) {
+              await sendEmail(goals, campaign.user);
+            }
+            count++;
           }
-          const canEmail = await sails.helpers.notification.canEmail(
-            campaign.user,
-          );
-          if (canEmail) {
-            await sendEmail(goals, campaign.user);
-          }
-          count++;
+        } catch (e) {
+          console.log('error at weekly goals loop', e);
         }
       }
 
