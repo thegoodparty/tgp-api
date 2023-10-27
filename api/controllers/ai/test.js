@@ -33,7 +33,8 @@ module.exports = {
       //   if (!canAccess || canAccess === 'staff') {
       //     return exits.forbidden();
       //   }
-      const response = await sails.helpers.ai.llmCompletion(prompt);
+      // const response = await sails.helpers.ai.llmCompletion(prompt);
+      const response = await sails.helpers.ai.embedCompletion(prompt);
 
       return exits.success({
         response,

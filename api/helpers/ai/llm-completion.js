@@ -4,11 +4,11 @@ const {
   OpenAIEmbedding,
   VectorStoreIndex,
   Document,
+  SimpleDirectoryReader,
+  storageContextFromDefaults,
 } = require('llamaindex');
 const { encode } = require('gpt-3-encoder');
-
 const fs = require('fs');
-
 const path = require('path');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
@@ -60,17 +60,33 @@ module.exports = {
         path.join(__dirname, '../../../data/ai/theoryofchange.txt'),
         'utf8',
       );
-
       const document = new Document({
         text: text,
       });
+
+      // const documents = await new SimpleDirectoryReader().loadData(
+      //   '/Users/taylor/Documents/Code/Sails/tgp-api/data/ai',
+      // );
+      // console.log('documents', documents);
+
       const serviceContext = serviceContextFromDefaults({
         llm: llm,
         embedModel: new OpenAIEmbedding({ apiKey: openAiKey }),
       });
+
+      const storageContext = await storageContextFromDefaults({
+        persistDir: '/Users/taylor/Documents/Code/Sails/tgp-api/storage',
+      });
+
       const index = await VectorStoreIndex.fromDocuments([document], {
         serviceContext,
+        storageContext,
       });
+
+      // const index = await VectorStoreIndex.fromDocuments(documents, {
+      //   serviceContext,
+      //   storageContext,
+      // });
       const queryEngine = index.asQueryEngine();
 
       let resp = '';
