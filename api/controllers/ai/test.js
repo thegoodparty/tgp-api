@@ -34,7 +34,7 @@ module.exports = {
       //     return exits.forbidden();
       //   }
       // const response = await sails.helpers.ai.llmCompletion(prompt);
-      const response = await sails.helpers.ai.embedCompletion(prompt);
+      const response = await sails.helpers.ai.langchainCompletion(prompt);
 
       return exits.success({
         response,
