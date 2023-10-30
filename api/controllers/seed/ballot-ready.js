@@ -4,17 +4,13 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    state: {
-      type: 'string',
-      required: true,
-    },
   },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
-      const { zip, state } = inputs;
+      const { zip } = inputs;
 
       const query = `
       query {
@@ -26,8 +22,7 @@ module.exports = {
             electionDay: {
               gt: "2023-10-29" 
               lt: "2025-01-01" 
-            }
-            state: "${state.toUpperCase()}"
+            }            
             mtfcc: "G4110"
             level: CITY
           }
