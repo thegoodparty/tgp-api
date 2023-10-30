@@ -174,4 +174,5 @@ module.exports.routes = {
 
   // test ai
   'POST   /api/v1/ai/test': 'ai/test',
+  'GET   /api/v1/ai/load': 'ai/load',
 };

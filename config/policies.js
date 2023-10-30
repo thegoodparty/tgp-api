@@ -54,4 +54,5 @@ module.exports.policies = {
   'campaign/deadlines/list': true,
   'campaign/ballotData/races': true,
   'ai/test': true,
+  'ai/load': true,
 };
