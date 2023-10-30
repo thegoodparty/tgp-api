@@ -105,9 +105,15 @@ module.exports = {
           });
         }
         output.push(
-          `${state} ${
-            subAreaName || ''
-          }; ${name}; ${description}; ${level}; ${partisanType}; ${employmentType}; ${salary}; ${eligibilityRequirements}; ${filingAddress}; ${filingPhone}; ${filingRequirements}; ${paperworkInstructions}; ${frequency}; ${electionDate}`,
+          `${state} ${subAreaName || ''}; ${cleanField(name)}; ${cleanField(
+            description,
+          )}; ${level}; ${cleanField(partisanType)}; ${cleanField(
+            employmentType,
+          )}; ${salary}; ${cleanField(eligibilityRequirements)}; ${cleanField(
+            filingAddress,
+          )}; ${filingPhone}; ${cleanField(filingRequirements)}; ${cleanField(
+            paperworkInstructions,
+          )}; ${frequency}; ${electionDate}`,
         );
       }
       return exits.success({
@@ -124,6 +130,13 @@ module.exports = {
     }
   },
 };
+
+function cleanField(field) {
+  if (!field) {
+    return '';
+  }
+  return field.replace(/;/g, '.');
+}
 
 const tomerCampaign = {
   slug: 'tomer-almog',
