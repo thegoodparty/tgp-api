@@ -1,13 +1,26 @@
-const { Pinecone } = require('@pinecone-database/pinecone');
-const { VectorDBQAChain } = require('langchain/chains');
 const { OpenAIEmbeddings } = require('langchain/embeddings/openai');
 const { OpenAI } = require('langchain/llms/openai');
-const { PineconeStore } = require('langchain/vectorstores/pinecone');
 const { Document } = require('langchain/document');
+const { DirectoryLoader } = require('langchain/document_loaders/fs/directory');
+const { PDFLoader } = require('langchain/document_loaders/fs/pdf');
+const { TextLoader } = require('langchain/document_loaders/fs/text');
 const { RecursiveCharacterTextSplitter } = require('langchain/text_splitter');
+const { PGVectorStore } = require('langchain/vectorstores/pgvector');
+const { PoolConfig } = require('pg');
 
 const path = require('path');
-const fs = require('fs');
+
+function cleanString(text) {
+  text = text.replace(/\\/g, '');
+  text = text.replace(/#/g, ' ');
+  text = text.replace(/\. \./g, '.');
+  text = text.replace(/\s\s+/g, ' ');
+  text = text.replace(/(\r\n|\n|\r)/gm, ' ');
+  // we also remove null characters
+  text = text.replace(/\0/g, '');
+
+  return text.trim();
+}
 
 module.exports = {
   inputs: {},
@@ -23,90 +36,69 @@ module.exports = {
     try {
       //   const { prompt, campaign, temperature } = inputs;
 
-      const filename = path.join(
-        __dirname,
-        '../../../data/ai/theoryofchange.txt',
-      );
+      // todo: use https://www.npmjs.com/package/pg-connection-string
+      const config = {
+        postgresConnectionOptions: {
+          type: 'postgres',
+          host: '127.0.0.1',
+          port: 5432,
+          user: 'postgres',
+          password: 'xxxx',
+          database: 'tgp-local',
+        },
+        tableName: 'embeddings',
+        columns: {
+          idColumnName: 'id',
+          vectorColumnName: 'vector',
+          contentColumnName: 'content',
+          metadataColumnName: 'metadata',
+        },
+      };
 
-      const text = fs.readFileSync(filename, 'utf8');
-      //   console.log('text', text);
+      // todo: truncate the table if it exists.
 
       process.env.OPENAI_API_KEY =
         sails.config.custom.openAi || sails.config.openAi;
-      process.env.PINECONE_API_KEY =
-        sails.config.custom.pineconeKey || sails.config.pineconeKey;
-      process.env.PINECONE_ENVIRONMENT =
-        sails.config.custom.pineconeEnvironment ||
-        sails.config.pineconeEnvironment;
-      const cachePath = path.resolve('./cache');
-      console.log('cachePath', cachePath);
 
-      const pinecone = new Pinecone();
-
-      const indexes = await pinecone.listIndexes();
-      console.log('indexes', indexes);
-      for (let i = 0; i < indexes.length; i++) {
-        const index = indexes[i];
-        if (index.name === 'gpindex') {
-          // delete the index if it already exists.
-          await pinecone.deleteIndex('gpindex');
-        }
-      }
-
-      await pinecone.createIndex({
-        name: 'gpindex',
-        dimension: 1536, // ada-002 embeddings model dimensions size
-        metric: 'cosine', // cosine, dotproduct, euclidean
-      });
-
-      const pineconeIndex = pinecone.Index('gpindex');
-
-      console.log('pineconeIndex', pineconeIndex);
-
-      //   let response = '';
-
-      const textSplitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 1536,
-        chunkOverlap: 0,
-        keepSeparator: false,
-        separators: ['\n', '\n\n'],
-      });
-      const chunks = await textSplitter.splitText(text);
-
-      let docs = [];
-      chunks.map((chunk, index) => {
-        const doc = new Document({
-          pageContent: chunk,
-          metadata: {
-            name: filename,
-          },
-        });
-        console.log('doc', doc);
-        docs.push(doc);
-      });
-
-      // insert into index
-      const insertResponse = await PineconeStore.fromDocuments(
-        docs,
+      const pgvectorStore = await PGVectorStore.initialize(
         new OpenAIEmbeddings(),
-        {
-          pineconeIndex,
-          maxConcurrency: 5, // Maximum number of batch requests to allow at once. Each batch is 1000 vectors.
-        },
+        config,
       );
 
-      console.log('insertResponse', insertResponse);
+      const embeddingsDirectory = path.resolve('./data/ai');
+      console.log('embeddingsDirectory', embeddingsDirectory);
 
-      console.log('response', response);
-      return exits.success(response);
-    } catch (error) {
-      console.log('error', error);
-      if (error.response.data.error.message) {
-        console.log(
-          'Error in helpers/ai/embed-compilation',
-          error.response.data.error.message,
-        );
+      const directoryLoader = new DirectoryLoader(embeddingsDirectory, {
+        '.pdf': (path) => new PDFLoader(path),
+        '.txt': (path) => new TextLoader(path),
+      });
+
+      console.log('loading directory');
+      const docs = await directoryLoader.load();
+
+      for (d = 0; d < docs.length; d++) {
+        // console.log('doc', doc);
+        docs[d].pageContent = cleanString(docs[d].pageContent);
       }
+
+      const textSplitter = new RecursiveCharacterTextSplitter({
+        chunkSize: 2000,
+        chunkOverlap: 200,
+        separators: ['\n'],
+        keepSeparator: false,
+      });
+
+      console.log('splitting docs');
+      // todo: add metaData to docs? filename? etc.
+      const splitDocs = await textSplitter.splitDocuments(docs);
+
+      console.log('adding docs');
+      // todo: wrap in try catch.
+      await pgvectorStore.addDocuments(splitDocs);
+
+      return exits.success('ok');
+    } catch (error) {
+      console.log('Error in helpers/ai/langchain-insert', error);
     }
     return exits.success('');
   },

@@ -132,3 +132,4 @@ lib-cov
 
 cache/*
 storage/*
+data/ai/*
