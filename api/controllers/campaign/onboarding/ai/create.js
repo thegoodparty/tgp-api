@@ -100,7 +100,7 @@ module.exports = {
       const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
       let prompt = cmsPrompts[keyNoDigits];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
-      await sails.helpers.slack.errorLoggerHelper('prompt', {
+      await sails.helpers.slack.aiLoggerHelper('prompt', {
         cmsPrompt: cmsPrompts[keyNoDigits],
         promptAfterReplace: prompt,
       });
