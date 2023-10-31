@@ -11,5 +11,11 @@
  */
 
 module.exports = {
-
+  default: {
+    adapter: require('sails-postgresql'),
+    ssl: {
+      sslmode: 'require',
+      rejectUnauthorized: false,
+    },
+  },
 };
