@@ -6,9 +6,9 @@ const { PineconeStore } = require('langchain/vectorstores/pinecone');
 const { Document } = require('langchain/document');
 const { PGVectorStore } = require('langchain/vectorstores/pgvector');
 const { PoolConfig } = require('pg');
-
 const path = require('path');
 const fs = require('fs');
+const parse = require('pg-connection-string').parse;
 
 module.exports = {
   inputs: {
@@ -38,15 +38,16 @@ module.exports = {
       const { prompt, campaign, temperature } = inputs;
 
       let response = '';
+      var pgOptions = parse(sails.config.datastores.default.url);
 
       const config = {
         postgresConnectionOptions: {
           type: 'postgres',
-          host: '127.0.0.1',
-          port: 5432,
-          user: 'postgres',
-          password: 'xxxx',
-          database: 'tgp-local',
+          host: pgOptions.host,
+          port: pgOptions.port,
+          user: pgOptions.user,
+          password: pgOptions.password,
+          database: pgOptions.database,
         },
         tableName: 'embeddings',
         columns: {

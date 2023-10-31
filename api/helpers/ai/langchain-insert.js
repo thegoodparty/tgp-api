@@ -7,8 +7,8 @@ const { TextLoader } = require('langchain/document_loaders/fs/text');
 const { RecursiveCharacterTextSplitter } = require('langchain/text_splitter');
 const { PGVectorStore } = require('langchain/vectorstores/pgvector');
 const { PoolConfig } = require('pg');
-
 const path = require('path');
+const parse = require('pg-connection-string').parse;
 
 function cleanString(text) {
   text = text.replace(/\\/g, '');
@@ -36,15 +36,15 @@ module.exports = {
     try {
       //   const { prompt, campaign, temperature } = inputs;
 
-      // todo: use https://www.npmjs.com/package/pg-connection-string
+      var pgOptions = parse(sails.config.datastores.default.url);
       const config = {
         postgresConnectionOptions: {
           type: 'postgres',
-          host: '127.0.0.1',
-          port: 5432,
-          user: 'postgres',
-          password: 'xxxx',
-          database: 'tgp-local',
+          host: pgOptions.host,
+          port: pgOptions.port,
+          user: pgOptions.user,
+          password: pgOptions.password,
+          database: pgOptions.database,
         },
         tableName: 'embeddings',
         columns: {
