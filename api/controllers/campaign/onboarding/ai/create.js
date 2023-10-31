@@ -118,7 +118,7 @@ module.exports = {
       };
 
       await sails.helpers.queue.enqueue(queueMessage);
-      await sails.helpers.slack.errorLoggerHelper(
+      await sails.helpers.slack.aiLoggerHelper(
         'Enqueued AI prompt',
         queueMessage,
       );
