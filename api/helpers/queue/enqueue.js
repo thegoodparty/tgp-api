@@ -49,7 +49,7 @@ module.exports = {
       sqs.sendMessage(params, async (err, data) => {
         if (err) {
           console.log('error at enqueue', err);
-          await sails.helpers.errorLoggerHelper('error at enqueue', err);
+          await sails.helpers.slack.errorLoggerHelper('error at enqueue', err);
           return exits.success({ message: 'not ok', e: err });
         } else {
           console.log('Success', data.MessageId);

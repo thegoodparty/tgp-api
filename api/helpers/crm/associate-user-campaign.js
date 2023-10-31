@@ -69,7 +69,7 @@ module.exports = {
       //   console.log('companyId', companyId);
       if (!companyId) {
         // this should not happen since its only called by update-campaign.
-        await sails.helpers.errorLoggerHelper(
+        await sails.helpers.slack.errorLoggerHelper(
           'campaign has no hubspotid in associateUserCampaign',
           campaign,
         );
@@ -107,7 +107,7 @@ module.exports = {
       return exits.success('ok');
     } catch (e) {
       console.log('hubspot error - associate user-campaign', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'error in associateUserCampaign',
         e,
       );

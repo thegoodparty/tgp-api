@@ -20,7 +20,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
 
@@ -33,7 +33,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error user/delete', e);
+      await sails.helpers.slack.errorLoggerHelper('Error user/delete', e);
       return exits.badRequest({
         message: 'Error Deleting User',
       });

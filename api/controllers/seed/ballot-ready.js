@@ -120,12 +120,11 @@ module.exports = {
         output,
       });
     } catch (e) {
-      console.log('Error in seed', e);
+      console.log('Error in ballot ready', e);
       return exits.success({
-        message: 'Error in seed',
+        message: 'Error in ballotready',
         e,
         error: JSON.stringify(e),
-        log,
       });
     }
   },

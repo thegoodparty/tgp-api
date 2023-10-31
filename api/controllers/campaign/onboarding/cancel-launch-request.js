@@ -57,7 +57,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error cancelling launch request', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error cancelling launch request',
         e,
       );

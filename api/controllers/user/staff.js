@@ -19,7 +19,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
       const staff = await Staff.find({
@@ -32,7 +32,10 @@ module.exports = {
     } catch (e) {
       console.log('error at user/leaderboard');
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at user/leaderboardw', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at user/leaderboardw',
+        e,
+      );
       return exits.forbidden();
     }
   },

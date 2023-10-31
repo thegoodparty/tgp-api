@@ -119,7 +119,10 @@ module.exports = {
       return exits.success({ message: 'success' });
     } catch (err) {
       console.log('error', err);
-      await sails.helpers.errorLoggerHelper('Error subscribing email', err);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error subscribing email',
+        err,
+      );
       return exits.badRequest({ message: 'Error subscribing email' });
     }
   },

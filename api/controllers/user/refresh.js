@@ -29,7 +29,7 @@ module.exports = {
     } catch (e) {
       console.log('error at user/refresh');
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at user/refresh', e);
+      await sails.helpers.slack.errorLoggerHelper('Error at user/refresh', e);
       return exits.forbidden();
     }
   },

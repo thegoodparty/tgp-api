@@ -26,14 +26,17 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { message } = inputs;
-      await sails.helpers.errorLoggerHelper('Front End error log', message);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Front End error log',
+        message,
+      );
       return exits.success({
         message: 'reported',
       });
     } catch (e) {
       console.log('error at health');
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at error-logerh]', e);
+      await sails.helpers.slack.errorLoggerHelper('Error at error-logerh]', e);
       return exits.badRequest({
         message: 'unknown error',
       });

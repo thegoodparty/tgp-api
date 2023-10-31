@@ -25,7 +25,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
       const returnUrl = `${appBase}/twitter-callback`;
@@ -47,7 +47,7 @@ module.exports = {
     } catch (err) {
       console.log('twitter login error');
       console.log(err);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at entrance/twitter-login',
         err,
       );

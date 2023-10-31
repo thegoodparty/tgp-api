@@ -54,7 +54,7 @@ module.exports = {
         },
       });
 
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'About to send slack message to campaign',
         updated,
       );
@@ -66,7 +66,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error at campaign launch request', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at campaign launch-request',
         e,
       );
@@ -111,5 +111,5 @@ async function sendSlackMessage(campaign, user) {
     ],
   };
 
-  await sails.helpers.slackHelper(slackMessage, 'victory');
+  await sails.helpers.slack.slackHelper(slackMessage, 'victory');
 }

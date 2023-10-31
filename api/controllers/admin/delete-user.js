@@ -39,7 +39,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at admin/delete-user', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at admin/delete-user',
+        e,
+      );
       return exits.badRequest({
         message: 'Error Deleting User',
       });

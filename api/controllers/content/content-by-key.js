@@ -91,7 +91,7 @@ module.exports = {
       }
     } catch (err) {
       console.log(err);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at content/landing-page-content',
         err,
       );

@@ -24,7 +24,7 @@ module.exports = {
       //   await axios.get('https://goodparty.org');
       // } catch (error) {
       //   console.log('axios can not get')
-      //   await sails.helpers.errorLoggerHelper('SITE IS DOWN!', error);
+      //   await sails.helpers.slack.errorLoggerHelper('SITE IS DOWN!', error);
       // }
       return exits.success({
         health: 'Welcome to Good Party Api',
@@ -32,7 +32,7 @@ module.exports = {
     } catch (e) {
       console.log('error at health');
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at api health', e);
+      await sails.helpers.slack.errorLoggerHelper('Error at api health', e);
       return exits.badRequest({
         message: 'unknown error',
       });

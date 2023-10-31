@@ -1,4 +1,5 @@
 const request = require('request-promise');
+// https://api.slack.com/apps/A0166K4G4E6/incoming-webhooks?
 
 module.exports = {
   friendlyName: 'Send Slack message helper',
@@ -51,6 +52,13 @@ module.exports = {
         slackChannelId =
           sails.config.custom.slackVictoryChannelId ||
           sails.config.slackVictoryChannelId;
+      } else if (channel === 'ai') {
+        token =
+          sails.config.custom.slackAiChannelToken ||
+          sails.config.slackAiChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackAiChannelId || sails.config.slackAiChannelId;
       } else {
         token =
           sails.config.custom.slackContentChannelToken ||

@@ -46,7 +46,7 @@ module.exports = {
             });
           }
         } else {
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             'Could not update hubspot with optout in twilio-webhook. No hubspot id found.',
             from,
           );
@@ -96,7 +96,7 @@ module.exports = {
       return this.res.set('Content-Type', 'text/xml').send(twiml.toString());
     } catch (e) {
       console.log('Error at messaging/twilio-webhook', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at messaging/twilio-webhook',
         e,
       );
@@ -113,7 +113,7 @@ function throwError(message) {
 
 async function findUserAndCampaign(from, twilioReq) {
   if (!from) {
-    await sails.helpers.errorLoggerHelper(
+    await sails.helpers.slack.errorLoggerHelper(
       'Error at messaging/twilio-webhook. No from number found.',
       twilioReq,
     );

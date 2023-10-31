@@ -57,7 +57,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at admin/deactivate-candidate-by-campaign',
         e,
       );

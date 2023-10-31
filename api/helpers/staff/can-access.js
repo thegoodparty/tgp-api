@@ -42,7 +42,7 @@ module.exports = {
 
       return exits.success(true);
     } catch (e) {
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at helpers/staff/can-access',
         e,
       );
