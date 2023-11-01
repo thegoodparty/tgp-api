@@ -20,12 +20,6 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      // try {
-      //   await axios.get('https://goodparty.org');
-      // } catch (error) {
-      //   console.log('axios can not get')
-      //   await sails.helpers.slack.errorLoggerHelper('SITE IS DOWN!', error);
-      // }
       return exits.success({
         health: 'Welcome to Good Party Api',
       });

@@ -34,7 +34,6 @@ module.exports = {
       let slackChannelId;
       const slackAppId =
         sails.config.custom.slackAppId || sails.config.slackAppId;
-
       let token;
       if (channel === 'dev') {
         token =
@@ -70,7 +69,7 @@ module.exports = {
       }
 
       if (!slackChannelId || !slackAppId || !token) {
-        return exits.badRequest({
+        throw new Error({
           message: 'Missing Env Variables',
         });
       }
@@ -86,7 +85,7 @@ module.exports = {
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
-      // console.log(e);
+      console.log('error at slack-helper', e);
       return exits.success({ message: 'Error sending Slack message' });
     }
   },
