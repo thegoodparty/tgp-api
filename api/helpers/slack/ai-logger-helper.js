@@ -46,7 +46,7 @@ module.exports = {
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
-      // console.log(e);
+      console.log('error at ai logger helper', e);
       return null;
     }
   },
