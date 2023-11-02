@@ -37,7 +37,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const reqUser = this.req.user;
       const { presidentialRank, senateRank, houseRank } = inputs;
@@ -65,7 +65,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error updating user ranking', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error updating user ranking',
+        e,
+      );
       return exits.badRequest({
         message: 'Error updating user ranking',
       });

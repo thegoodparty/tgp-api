@@ -121,7 +121,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error updating user', e);
+      await sails.helpers.slack.errorLoggerHelper('Error updating user', e);
       return exits.badRequest({
         message: 'Error updating user',
       });

@@ -25,7 +25,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at admin/candidates', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at admin/candidates',
+        e,
+      );
       return exits.badRequest({
         message: 'Error getting candidates',
       });

@@ -129,7 +129,7 @@ module.exports = {
       }
     } catch (e) {
       console.log('hubspot error - update candidate', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error updating hubspot- update-candidate',
         e,
       );

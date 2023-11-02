@@ -155,7 +155,7 @@ module.exports = {
             'could not find contact by email. user has never filled a form!',
             e,
           );
-          // await sails.helpers.errorLoggerHelper(
+          // await sails.helpers.slack.errorLoggerHelper(
           //   'Error getting hubspot contact',
           //   e,
           // );
@@ -170,7 +170,7 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating contact', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             'Error updating hubspot contact',
             e,
           );
@@ -184,7 +184,7 @@ module.exports = {
           await updateMeta(user, hubspotId, profile_updated_count);
         } catch (e) {
           console.log('error creating contact', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             'Error creating hubspot contact',
             e,
           );

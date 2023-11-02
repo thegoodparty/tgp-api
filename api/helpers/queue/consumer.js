@@ -107,7 +107,7 @@ async function handleGenerateCampaignPlan(message) {
   let generateError = false;
 
   try {
-    await sails.helpers.errorLoggerHelper(
+    await sails.helpers.slack.aiLoggerHelper(
       'handling campaign from queue',
       message,
     );
@@ -131,7 +131,7 @@ async function handleGenerateCampaignPlan(message) {
       console.log('Error! Exceeded the token limit!');
     }
 
-    await sails.helpers.errorLoggerHelper(
+    await sails.helpers.slack.aiLoggerHelper(
       `[ ${slug} - ${key} ] Prompt Size (Tokens):`,
       promptTokens,
     );
@@ -159,7 +159,7 @@ async function handleGenerateCampaignPlan(message) {
     // TODO: investigate if there is a way to get token usage with langchain.
     const totalTokens = 0;
 
-    await sails.helpers.errorLoggerHelper(
+    await sails.helpers.slack.aiLoggerHelper(
       `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
       totalTokens,
     );
@@ -218,7 +218,7 @@ async function handleGenerateCampaignPlan(message) {
       }).set({
         data,
       });
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.aiLoggerHelper(
         `updated campaign with ai. chatResponse: subSectionKey: ${subSectionKey}. key: ${key}`,
         chatResponse,
       );
@@ -229,17 +229,25 @@ async function handleGenerateCampaignPlan(message) {
     generateError = true;
 
     if (e.data) {
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
+        'error at AI queue consumer (with msg): ',
+        e.data.error,
+      );
+      await sails.helpers.slack.aiLoggerHelper(
         'error at AI queue consumer (with msg): ',
         e.data.error,
       );
       console.log('error', e.data.error);
     } else {
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'error at AI queue consumer. Queue Message: ',
         message,
       );
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
+        'error at AI queue consumer debug: ',
+        e,
+      );
+      await sails.helpers.slack.aiLoggerHelper(
         'error at AI queue consumer debug: ',
         e,
       );
@@ -260,7 +268,7 @@ async function handleGenerateCampaignPlan(message) {
         ? data.campaignPlanAttempts[key] + 1
         : 1;
 
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.aiLoggerHelper(
         'Current Attempts:',
         data.campaignPlanAttempts[key],
       );
@@ -271,7 +279,7 @@ async function handleGenerateCampaignPlan(message) {
         data.campaignPlanStatus[key].status !== 'completed'
       ) {
         if (data.campaignPlanAttempts[key] >= 3) {
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.aiLoggerHelper(
             'Deleting campaignPlanStatus for key',
             key,
           );

@@ -46,7 +46,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { email, phone, password, token } = inputs;
       if (!email && !phone) {
@@ -95,7 +95,7 @@ module.exports = {
         message: 'Password successfully updated.',
       });
     } catch (e) {
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at entrance/reset-password',
         e,
       );

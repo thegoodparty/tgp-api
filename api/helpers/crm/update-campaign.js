@@ -94,7 +94,7 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating crm', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             `Error updating company for ${firstName} ${lastName} with existing hubspotId: ${existingId} in hubspot`,
             e,
           );
@@ -105,7 +105,7 @@ module.exports = {
           await sails.helpers.crm.updateUser(user);
         } catch (e) {
           console.log('error updating crm', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             `Error updating user ${user.id} with existing hubspotId: ${existingId} in hubspot`,
             e,
           );
@@ -122,14 +122,14 @@ module.exports = {
             await hubspotClient.crm.companies.basicApi.create(companyObj);
         } catch (e) {
           console.log('error creating company', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             `Error creating company for ${firstName} ${lastName} in hubspot`,
             e,
           );
         }
 
         if (!createCompanyResponse) {
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             `Error creating company for ${firstName} ${lastName} in hubspot. No response from hubspot.`,
             companyObj,
           );
@@ -157,7 +157,7 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating crm', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             `Error associating user ${user.id}. hubspot id: ${hubspotId} to campaign ${campaign.id} in hubspot`,
             e,
           );
@@ -167,7 +167,7 @@ module.exports = {
           await sails.helpers.crm.updateUser(user);
         } catch (e) {
           console.log('error updating crm', e);
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             `Error updating user ${user.id}. in hubspot`,
             e,
           );
@@ -176,7 +176,7 @@ module.exports = {
       }
     } catch (e) {
       console.log('hubspot error - update-campaign', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Uncaught error in update-campaign',
         e,
       );

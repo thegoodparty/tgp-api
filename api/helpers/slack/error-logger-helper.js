@@ -42,7 +42,7 @@ module.exports = {
         ],
       };
 
-      await sails.helpers.slackHelper(slackMessage, 'dev');
+      await sails.helpers.slack.slackHelper(slackMessage, 'dev');
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {

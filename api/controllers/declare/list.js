@@ -71,7 +71,7 @@ module.exports = {
     } catch (e) {
       console.log('error at declare list');
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at declare list', e);
+      await sails.helpers.slack.errorLoggerHelper('Error at declare list', e);
       return exits.badRequest({
         message: 'unknown error',
       });

@@ -46,7 +46,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { email, socialPic, socialToken, socialProvider } = inputs;
       const lowerCaseEmail = email.toLowerCase();
@@ -95,7 +95,7 @@ module.exports = {
     } catch (err) {
       console.log('login error');
       console.log(err);
-      // await sails.helpers.errorLoggerHelper('Error at entrance/social-login', err);
+      // await sails.helpers.slack.errorLoggerHelper('Error at entrance/social-login', err);
       return exits.badRequest({
         message: 'Login Error',
       });

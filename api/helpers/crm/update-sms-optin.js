@@ -43,7 +43,7 @@ module.exports = {
           userObj,
         );
         if (resp?.id !== hubspotId) {
-          await sails.helpers.errorLoggerHelper(
+          await sails.helpers.slack.errorLoggerHelper(
             'Error updating hubspot- update-sms-optin',
             resp,
           );
@@ -52,7 +52,7 @@ module.exports = {
 
         return exits.success('ok');
       } else {
-        await sails.helpers.errorLoggerHelper(
+        await sails.helpers.slack.errorLoggerHelper(
           'Error updating hubspot- update-sms-optin',
           resp,
         );
@@ -60,7 +60,7 @@ module.exports = {
       }
     } catch (e) {
       console.log('hubspot error - update sms optin', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error updating hubspot- update-candidate',
         e,
       );

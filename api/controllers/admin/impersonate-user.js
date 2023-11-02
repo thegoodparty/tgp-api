@@ -44,7 +44,10 @@ module.exports = {
 
       return exits.success({ user: impersonateUser, token });
     } catch (err) {
-      await sails.helpers.errorLoggerHelper('Error at admin/impersonate', err);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at admin/impersonate',
+        err,
+      );
       console.log('impersonate error');
       console.log(err);
       return exits.badRequest({

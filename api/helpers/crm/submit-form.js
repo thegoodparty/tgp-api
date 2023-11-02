@@ -55,7 +55,7 @@ module.exports = {
     } catch (e) {
       console.log('hubspot error', e);
       console.log('hubspot error', e.response.data.errors);
-      await sails.helpers.errorLoggerHelper('Error submitting form', e);
+      await sails.helpers.slack.errorLoggerHelper('Error submitting form', e);
       // todo: change this to exirs.badRequest ?
       // frontend would need to be updated ?
       return exits.success('not ok');

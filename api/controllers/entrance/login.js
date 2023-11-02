@@ -72,12 +72,18 @@ module.exports = {
         await sails.helpers.crm.updateUser(user, true);
       } catch (e) {
         console.log('error updating user in crm', e);
-        await sails.helpers.errorLoggerHelper('Error at entrance/login.js', e);
+        await sails.helpers.slack.errorLoggerHelper(
+          'Error at entrance/login.js',
+          e,
+        );
       }
 
       return exits.success({ user, token });
     } catch (err) {
-      await sails.helpers.errorLoggerHelper('Error at entrance/login', err);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at entrance/login',
+        err,
+      );
       console.log('login error');
       console.log(err);
       return exits.badRequest({

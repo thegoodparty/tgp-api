@@ -132,7 +132,7 @@ Let me know if you have any questions or text stop to unsubscribe`,
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error updating tracker', e);
+      await sails.helpers.slack.errorLoggerHelper('Error updating tracker', e);
       return exits.badRequest({
         message: 'Error updating tracker',
         e,

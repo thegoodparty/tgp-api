@@ -2,11 +2,11 @@ pipeline {
   agent any
   environment {
     DEV_BRANCH            = "develop"
-    EB_DEV                = "gp-api-dev"
+    EB_DEV                = "gp-dev-api"
     QA_BRANCH            = "qa"
-    EB_QA                = "gp-api-qa"
+    EB_QA                = "gp-qa-api"
     PROD_BRANCH           = "master"
-    EB_PROD               = "gp-api-prod"
+    EB_PROD               = "gp-prod-api"
   }
   stages {
     // stage('deploy to develop') {

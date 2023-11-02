@@ -45,7 +45,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { oauthToken, oauthVerifier, candidateFollow } = inputs;
       const consumerKey =
@@ -121,11 +121,7 @@ module.exports = {
         socialProvider: 'twitter',
       };
 
-      const uuid =
-        guestUuid ||
-        Math.random()
-          .toString(36)
-          .substring(2, 12);
+      const uuid = guestUuid || Math.random().toString(36).substring(2, 12);
 
       const newUser = await User.create({
         uuid,
@@ -144,7 +140,7 @@ module.exports = {
     } catch (err) {
       console.log('twitter login error');
       console.log(err);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error at entrance/twitter-login',
         err,
       );

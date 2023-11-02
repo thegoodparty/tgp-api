@@ -114,7 +114,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error at campaign launch', e);
-      await sails.helpers.errorLoggerHelper('Error at campaign launch', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at campaign launch',
+        e,
+      );
       return exits.forbidden();
     }
   },

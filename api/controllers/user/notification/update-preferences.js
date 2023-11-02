@@ -50,7 +50,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'Error updating user notification preferences',
         e,
       );

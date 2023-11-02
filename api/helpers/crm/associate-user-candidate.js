@@ -83,7 +83,7 @@ module.exports = {
       return exits.success('ok');
     } catch (e) {
       console.log('hubspot error associate-user-candidate', e);
-      await sails.helpers.errorLoggerHelper(
+      await sails.helpers.slack.errorLoggerHelper(
         'error in associateUserCandidate',
         e,
       );

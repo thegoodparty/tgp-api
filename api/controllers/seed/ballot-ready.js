@@ -4,17 +4,13 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    state: {
-      type: 'string',
-      required: true,
-    },
   },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
-      const { zip, state } = inputs;
+      const { zip } = inputs;
 
       const query = `
       query {
@@ -26,8 +22,7 @@ module.exports = {
             electionDay: {
               gt: "2023-10-29" 
               lt: "2025-01-01" 
-            }
-            state: "${state.toUpperCase()}"
+            }            
             mtfcc: "G4110"
             level: CITY
           }
@@ -110,25 +105,37 @@ module.exports = {
           });
         }
         output.push(
-          `${state} ${
-            subAreaName || ''
-          }; ${name}; ${description}; ${level}; ${partisanType}; ${employmentType}; ${salary}; ${eligibilityRequirements}; ${filingAddress}; ${filingPhone}; ${filingRequirements}; ${paperworkInstructions}; ${frequency}; ${electionDate}`,
+          `${state} ${subAreaName || ''}; ${cleanField(name)}; ${cleanField(
+            description,
+          )}; ${level}; ${cleanField(partisanType)}; ${cleanField(
+            employmentType,
+          )}; ${salary}; ${cleanField(eligibilityRequirements)}; ${cleanField(
+            filingAddress,
+          )}; ${filingPhone}; ${cleanField(filingRequirements)}; ${cleanField(
+            paperworkInstructions,
+          )}; ${frequency}; ${electionDate}`,
         );
       }
       return exits.success({
         output,
       });
     } catch (e) {
-      console.log('Error in seed', e);
+      console.log('Error in ballot ready', e);
       return exits.success({
-        message: 'Error in seed',
+        message: 'Error in ballotready',
         e,
         error: JSON.stringify(e),
-        log,
       });
     }
   },
 };
+
+function cleanField(field) {
+  if (!field) {
+    return '';
+  }
+  return field.replace(/;/g, '.');
+}
 
 const tomerCampaign = {
   slug: 'tomer-almog',

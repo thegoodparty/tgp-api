@@ -33,7 +33,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     // Look up the user with this reset token.
     const user = this.req.user;
     const { oldPassword, newPassword } = inputs;
@@ -68,7 +68,10 @@ module.exports = {
       return exits.success({ message: 'password successfully changed.' });
     } catch (e) {
       console.log(e);
-      await sails.helpers.errorLoggerHelper('Error at user/change-password', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at user/change-password',
+        e,
+      );
       return exits.badRequest();
     }
   },
