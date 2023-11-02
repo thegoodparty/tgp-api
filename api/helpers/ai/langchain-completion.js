@@ -26,17 +26,19 @@ module.exports = {
     },
   },
 
-  exits: {
-    success: {
-      description: 'Campaign Found',
-      responseType: 'ok',
-    },
-  },
+  // exits: {
+  //   success: {
+  //     description: 'Campaign Found',
+  //     responseType: 'ok',
+  //   },
+  // },
 
   fn: async function (inputs, exits) {
     try {
       const { prompt, campaign, temperature } = inputs;
 
+      // cleanPrompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      // console.log('prompt', prompt);
       let response = '';
       var pgOptions = parse(sails.config.datastores.default.url);
 
@@ -58,8 +60,6 @@ module.exports = {
         },
       };
 
-      // todo: truncate the table if it exists.
-
       process.env.OPENAI_API_KEY =
         sails.config.custom.openAi || sails.config.openAi;
 
@@ -77,11 +77,12 @@ module.exports = {
       /* Use as part of a chain (currently no metadata filters) */
       const model = new OpenAI({
         engine: 'gpt-3.5-turbo-16k',
-        // temperature: temperature || 0.9,
-        // topP: 1,
+        maxTokens: 2000,
+        temperature: temperature || 0.7,
+        topP: 1,
       });
       const chain = VectorDBQAChain.fromLLM(model, pgvectorStore, {
-        k: 3, // number of sourceDocuments to include with the prompt.
+        k: 2, // number of sourceDocuments to include with the prompt.
         returnSourceDocuments: true,
       });
       response = await chain.call({
@@ -89,9 +90,11 @@ module.exports = {
       });
 
       console.log('response', response);
-      return exits.success(response);
+      let responseText = response?.text;
+      console.log('responseText', responseText);
+      return exits.success(responseText);
     } catch (error) {
-      console.log('Error in helpers/ai/langchain-compilation', error);
+      console.log('Error in helpers/ai/langchain-completion', error);
     }
     return exits.success('');
   },

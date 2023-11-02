@@ -27,10 +27,7 @@ module.exports = async function uploadAvatar(req, res) {
       `candidate-info/${name}`,
     );
   } else {
-    const files = await sails.helpers.s3LoadList(
-      `${assetsBase}/candidate-info`,
-      'candidate-info',
-    );
+    const files = await sails.helpers.s3LoadList(assetsBase, 'candidate-info');
     response = {
       data: {
         code: 220,
@@ -46,7 +43,7 @@ module.exports = async function uploadAvatar(req, res) {
       },
       success: true,
     };
-    files.forEach(file => {
+    files.forEach((file) => {
       if (file.Size > 0) {
         response.data.sources[0].files.push({
           file: file.Key.split('/')[1],

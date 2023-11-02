@@ -8,6 +8,7 @@ const { RecursiveCharacterTextSplitter } = require('langchain/text_splitter');
 const { PGVectorStore } = require('langchain/vectorstores/pgvector');
 const { PoolConfig } = require('pg');
 const path = require('path');
+const fs = require('fs');
 const parse = require('pg-connection-string').parse;
 
 function cleanString(text) {
@@ -55,7 +56,18 @@ module.exports = {
         },
       };
 
-      // todo: truncate the table if it exists.
+      // truncate the table
+      console.log('truncating embeddings table');
+      await sails.sendNativeQuery('TRUNCATE TABLE embeddings;');
+
+      const embeddingsDirectory = path.resolve('./data/ai');
+
+      // download documents from s3 to ./data/ai
+      await sails.helpers.s3LoadList(
+        'documents.goodparty.org',
+        '',
+        embeddingsDirectory,
+      );
 
       process.env.OPENAI_API_KEY =
         sails.config.custom.openAi || sails.config.openAi;
@@ -65,15 +77,12 @@ module.exports = {
         config,
       );
 
-      const embeddingsDirectory = path.resolve('./data/ai');
-      console.log('embeddingsDirectory', embeddingsDirectory);
-
       const directoryLoader = new DirectoryLoader(embeddingsDirectory, {
         '.pdf': (path) => new PDFLoader(path),
         '.txt': (path) => new TextLoader(path),
       });
 
-      console.log('loading directory');
+      console.log('loading directory', embeddingsDirectory);
       const docs = await directoryLoader.load();
 
       for (d = 0; d < docs.length; d++) {
@@ -95,6 +104,14 @@ module.exports = {
       console.log('adding docs');
       // todo: wrap in try catch.
       await pgvectorStore.addDocuments(splitDocs);
+
+      console.log('deleting documents from', embeddingsDirectory);
+      // delete all files in the embeddings directory
+      const files = fs.readdirSync(embeddingsDirectory);
+      for (const file of files) {
+        fs.unlinkSync(path.join(embeddingsDirectory, file));
+      }
+      console.log('done!');
 
       return exits.success('ok');
     } catch (error) {
