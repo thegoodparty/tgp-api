@@ -40,11 +40,6 @@ module.exports.routes = {
   'GET   /api/v1/user/campaign-status': 'user/campaign-status',
   'POST   /api/v1/upload-base64-image': 'user/upload-base64-image',
 
-  'POST   /api/v1/support': 'user/support/create',
-  'DELETE   /api/v1/support': 'user/support/delete',
-  'GET   /api/v1/supports': 'user/support/list-by-user',
-  // 'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
-
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
   'GET    /api/v1/admin/hidden-candidates': 'admin/candidate/hidden-list',
   'GET    /api/v1/admin/users': 'admin/all-users',
