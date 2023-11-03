@@ -27,6 +27,7 @@ jobs:
           curl -Lo /tmp/awsebcli.zip https://github.com/aws/aws-elastic-beanstalk-cli-setup/archive/master.zip
           unzip /tmp/awsebcli.zip -d /tmp/ebcli
           python /tmp/ebcli/aws-elastic-beanstalk-cli-setup-master/scripts/ebcli_installer.py
+          echo "/home/runner/.ebcli-virtual-env/executables" >> $GITHUB_PATH
 
       - name: Determine Environment Name and Deploy
         env:
