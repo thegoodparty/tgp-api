@@ -186,11 +186,6 @@ module.exports = {
     //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
     //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
-    supports: {
-      collection: 'support',
-      via: 'user',
-    },
-
     notifications: {
       collection: 'notification',
       via: 'user',

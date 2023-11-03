@@ -64,15 +64,10 @@ module.exports.routes = {
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
-  'GET   /api/v1/user/staff': 'user/staff',
-
   'POST   /api/v1/visit': 'visit/create',
 
   // campaign
-  'GET    /api/v1/campaign': 'campaign/find',
-  'PUT    /api/v1/campaign': 'campaign/update',
 
-  'GET    /api/v1/campaign/staff-role': 'campaign/staff/find',
   'GET    /api/v1/campaign/deadlines/refresh': 'campaign/deadlines/refresh',
   'GET    /api/v1/campaign/deadlines': 'campaign/deadlines/list',
 
@@ -80,8 +75,6 @@ module.exports.routes = {
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
   'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
-  'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
-  'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
   // campaignUpdateHistory
 
