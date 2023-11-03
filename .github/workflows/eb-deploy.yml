@@ -29,10 +29,19 @@ jobs:
           python /tmp/ebcli/aws-elastic-beanstalk-cli-setup-master/scripts/ebcli_installer.py
           echo "/home/runner/.ebcli-virtual-env/executables" >> $GITHUB_PATH
 
-      - name: Determine Environment Name and Deploy
-        env:
+      - name: Configure AWS Credentials
+        run: |
+          mkdir -p ~/.aws
+          echo "[eb-cli-tgp]" > ~/.aws/credentials
+          echo "aws_access_key_id = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+          echo "aws_secret_access_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+          echo "[default]" > ~/.aws/config
+          echo "region = us-west-2" >> ~/.aws/config # change the region to whatever you need
+          env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Determine Environment Name and Deploy
         run: |
           ENV_NAME=""
           if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
