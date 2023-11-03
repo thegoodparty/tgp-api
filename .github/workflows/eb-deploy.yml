@@ -1,0 +1,69 @@
+name: Elastic Beanstalk Deployment
+
+on:
+  push:
+    branches:
+      - develop
+      - qa
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          aws --version
+
+      - name: Install EB CLI
+        run: |
+          curl -Lo /tmp/awsebcli.zip https://github.com/aws/aws-elastic-beanstalk-cli-setup/archive/master.zip
+          unzip /tmp/awsebcli.zip -d /tmp/ebcli
+          python /tmp/ebcli/aws-elastic-beanstalk-cli-setup-master/scripts/ebcli_installer.py
+
+      - name: Determine Environment Name and Deploy
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          ENV_NAME=""
+          if [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            ENV_NAME="gp-dev-api"
+          elif [ "${{ github.ref }}" == "refs/heads/qa" ]; then
+            ENV_NAME="gp-qa-api"
+          elif [ "${{ github.ref }}" == "refs/heads/master" ]; then
+            ENV_NAME="gp-prod-api"
+          fi
+
+          if [ -z "$ENV_NAME" ]; then
+            echo "No environment name set for this branch, skipping deployment."
+            exit 0
+          else
+            eb use $ENV_NAME
+            eb deploy
+          fi
+
+      - name: Notify Slack on Success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,commit,author,action,eventName,ref,workflow,took # Customize as per your needs
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: Notify Slack on Failure
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,commit,author,action,eventName,ref,workflow,took # Customize as per your needs
+          only_mention_if: failure
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
