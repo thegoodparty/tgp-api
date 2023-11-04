@@ -6,7 +6,8 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       let activated = 0;
-      const campaigns = await Campaign.find({ isActive: false });
+      // const campaigns = await Campaign.find({ isActive: false });
+      const campaigns = await Campaign.find();
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i].data;
         if (campaign?.launchStatus === 'launched') {
@@ -14,6 +15,35 @@ module.exports = {
             isActive: true,
           });
           activated++;
+          const candidate = await Candidate.findOne({
+            slug: campaign.candidateSlug,
+          });
+          if (candidate) {
+            // copy candidatePositions
+            const candidatePositions = await CandidatePosition.find({
+              candidate: candidate.id,
+            });
+
+            for (let j = 0; j < candidatePositions.length; j++) {
+              const candidatePosition = candidatePositions[j];
+              await CandidatePosition.updateOne({
+                id: candidatePosition.id,
+              }).set({
+                campaign: campaigns[i].id,
+              });
+
+              await Campaign.addToCollection(
+                campaigns[i].id,
+                'positions',
+                candidatePosition.position,
+              );
+              await Campaign.addToCollection(
+                campaigns[i].id,
+                'topIssues',
+                candidatePosition.topIssue,
+              );
+            }
+          }
         }
       }
 

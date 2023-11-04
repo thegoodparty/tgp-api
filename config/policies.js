@@ -36,6 +36,7 @@ module.exports.policies = {
   'entrance/*': true,
   'content/*': true,
   'newCandidates/find': true,
+  'candidate/find': true,
   'newCandidates/homepage-candidates': true,
   'newCandidates/list': true,
   'declare/list': true,

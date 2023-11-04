@@ -66,6 +66,9 @@ module.exports.routes = {
 
   'POST   /api/v1/visit': 'visit/create',
 
+  // candidate from campaigns
+  'GET    /api/v1/candidate': 'candidate/find',
+
   // campaign
 
   'GET    /api/v1/campaign/deadlines/refresh': 'campaign/deadlines/refresh',
