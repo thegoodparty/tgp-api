@@ -4,7 +4,7 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    candidateId: {
+    campaignId: {
       type: 'number',
       required: true,
     },
@@ -40,36 +40,35 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { description, candidateId, positionId, topIssueId, order } =
-        inputs;
-      const candidate = await Candidate.findOne({ id: candidateId });
-      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
-      if (!canAccess || canAccess === 'staff') {
+      const { description, campaignId, positionId, topIssueId, order } = inputs;
+      const campaign = await Campaign.findOne({ id: campaignId });
+      const canAccess = await sails.helpers.staff.canAccess(campaign, user);
+      if (!canAccess) {
         return exits.forbidden();
       }
 
       // const existing = await CandidatePosition.findOne({
       //   topIssue: topIssueId,
-      //   candidate: candidateId,
+      //   campaign: campaignId,
       // });
       // if (existing) {
       //   return exits.badRequest({
-      //     message: 'This top issue already exists for this candidate',
+      //     message: 'This top issue already exists for this campaign',
       //   });
       // }
 
       const newPosition = await CandidatePosition.create({
         description,
-        candidate: candidateId,
+        campaign: campaignId,
         position: positionId,
         topIssue: topIssueId,
         order,
       }).fetch();
       // update the many to many relationships
-      await Candidate.addToCollection(candidateId, 'positions', positionId);
-      await Candidate.addToCollection(candidateId, 'topIssues', topIssueId);
+      await Campaign.addToCollection(campaignId, 'positions', positionId);
+      await Campaign.addToCollection(campaignId, 'topIssues', topIssueId);
 
-      await sails.helpers.crm.updateCandidate(candidate);
+      await sails.helpers.crm.updateCampaign(campaign);
 
       return exits.success({
         newPosition,

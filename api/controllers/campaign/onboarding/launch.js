@@ -38,12 +38,7 @@ module.exports = {
           slug: inputSlug,
         });
       } else {
-        const campaigns = await Campaign.find({
-          user: user.id,
-        });
-        if (campaigns && campaigns.length > 0) {
-          campaignRecord = campaigns[0];
-        }
+        campaignRecord = await sails.helpers.campaign.byUser(user);
       }
 
       if (!campaignRecord) {
@@ -53,48 +48,19 @@ module.exports = {
 
       const campaign = campaignRecord.data;
 
-      if (campaign.launchStatus === 'launched') {
+      if (campaignRecord.isActive || campaign.launchStatus === 'launched') {
         return exits.success({
           slug: campaign.candidateSlug || campaign.slug,
         });
       }
 
-      const candidate = mapCampaignToCandidate(campaign);
-      const { firstName, lastName, state } = candidate;
-      const slug = await findSlug(candidate);
-      candidate.slug = slug;
-      const dbFields = {
-        slug,
-        firstName,
-        lastName,
-        isActive: true,
-        state,
-        contact: {},
-        data: JSON.stringify(candidate),
-      };
-
-      const created = await Candidate.create(dbFields).fetch();
-      await Candidate.updateOne({
-        id: created.id,
-      }).set({
-        data: JSON.stringify({
-          ...candidate,
-          id: created.id,
-        }),
-      });
-
       const updated = await Campaign.updateOne({ slug: campaign.slug }).set({
+        isActive: true,
         data: {
           ...campaign,
           launchStatus: 'launched',
           candidateSlug: slug,
         },
-      });
-
-      await Staff.create({
-        role: 'owner',
-        user: campaignRecord.user,
-        candidate: created.id,
       });
 
       // console.log('cand', created);

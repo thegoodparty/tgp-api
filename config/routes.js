@@ -133,6 +133,8 @@ module.exports.routes = {
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
   'GET  /api/v1/candidate-position':
     'topIssues/candidatePosition/find-by-candidate',
+  'GET  /api/v1/campaign-position':
+    'topIssues/candidatePosition/find-by-campaign',
 
   // application
 

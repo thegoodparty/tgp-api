@@ -28,5 +28,22 @@ module.exports = {
       collection: 'campaignPlanVersion',
       via: 'campaign',
     },
+
+    // one to many relationship to candidateIssueItem
+    candidatePositions: {
+      collection: 'candidatePosition',
+      via: 'campaign',
+    },
+
+    //many to many
+    positions: {
+      collection: 'position',
+      via: 'campaigns',
+    },
+    //many to many
+    topIssues: {
+      collection: 'topIssue',
+      via: 'campaigns',
+    },
   },
 };

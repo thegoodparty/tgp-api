@@ -26,27 +26,27 @@ module.exports = {
       const { user } = this.req;
       const { id } = inputs;
       const candidatePosition = await CandidatePosition.findOne({ id });
-      const candidate = await Candidate.findOne({
-        id: candidatePosition.candidate,
+      const campaign = await Campaign.findOne({
+        id: candidatePosition.campaign,
       });
-      const canAccess = await sails.helpers.staff.canAccess(candidate, user);
-      if (!canAccess || canAccess === 'staff') {
+      const canAccess = await sails.helpers.staff.canAccess(campaign, user);
+      if (!canAccess) {
         return exits.forbidden();
       }
 
-      await Candidate.removeFromCollection(
-        candidate.id,
+      await Campaign.removeFromCollection(
+        campaign.id,
         'positions',
         candidatePosition.position,
       );
-      await Candidate.removeFromCollection(
-        candidate.id,
+      await Campaign.removeFromCollection(
+        campaign.id,
         'topIssues',
         candidatePosition.topIssue,
       );
       await CandidatePosition.destroyOne({ id });
 
-      await sails.helpers.crm.updateCandidate(candidate);
+      await sails.helpers.crm.updateCampaign(campaign);
 
       return exits.success({
         message: 'deleted',
