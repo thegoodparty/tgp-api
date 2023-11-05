@@ -45,6 +45,7 @@ module.exports.policies = {
   'topIssues/topIssue/list': true,
   'topIssues/position/list': true,
   'topIssues/candidatePosition/find-by-candidate': true,
+  'topIssues/candidatePosition/find-by-campaign': true,
   'visit/*': true,
   'newCandidates/application/upload-image': true, // for guest applications
   'socialListening/*': true,
