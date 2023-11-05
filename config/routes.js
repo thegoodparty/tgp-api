@@ -68,6 +68,7 @@ module.exports.routes = {
 
   // candidate from campaigns
   'GET    /api/v1/candidate': 'candidate/find',
+  'PUT    /api/v1/candidate': 'candidate/update',
 
   // campaign
 
