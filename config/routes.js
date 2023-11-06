@@ -54,13 +54,13 @@ module.exports.routes = {
     'admin/candidate/deactivate-candidate-by-campaign',
 
   // New Candidates
-  'POST   /api/v1/new-candidate': 'newCandidates/create',
-  'GET    /api/v1/new-candidate': 'newCandidates/find',
-  'PUT    /api/v1/new-candidate': 'newCandidates/update',
+  // 'POST   /api/v1/new-candidate': 'newCandidates/create',
+  // 'GET    /api/v1/new-candidate': 'newCandidates/find',
+  // 'PUT    /api/v1/new-candidate': 'newCandidates/update',
 
-  'GET    /api/v1/new-candidates': 'newCandidates/list',
-  'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
-  'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
+  // 'GET    /api/v1/new-candidates': 'newCandidates/list',
+  // 'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
+  // 'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
@@ -69,6 +69,8 @@ module.exports.routes = {
   // candidate from campaigns
   'GET    /api/v1/candidate': 'candidate/find',
   'PUT    /api/v1/candidate': 'candidate/update',
+  'GET    /api/v1/candidates': 'candidate/list',
+  'GET    /api/v1/candidate/can-edit': 'candidate/can-edit',
 
   // campaign
 

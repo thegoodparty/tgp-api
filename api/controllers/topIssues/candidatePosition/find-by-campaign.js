@@ -41,9 +41,7 @@ module.exports = {
         return exits.notFound();
       }
 
-      let candidatePositions = [];
-
-      candidatePositions = await candidatePositionFinder(campaign.id);
+      let candidatePositions = await candidatePositionFinder(campaign.id);
 
       return exits.success({
         candidatePositions,
