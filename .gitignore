@@ -130,4 +130,6 @@ lib-cov
 *.out
 *.pid
 
-
+cache/*
+storage/*
+data/ai/*
