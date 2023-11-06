@@ -139,25 +139,25 @@ async function handleGenerateCampaignPlan(message) {
     campaign = await Campaign.findOne({ slug });
     data = campaign.data;
 
-    // let completion = await openai.createChatCompletion({
-    //   model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
-    //   max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
-    //   messages: messages,
-    // });
-    // chatResponse = completion.data.choices[0].message.content.replace(
-    //   '/n',
-    //   '<br/><br/>',
-    // );
+    let completion = await openai.createChatCompletion({
+      model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
+      max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
+      messages: messages,
+    });
+    chatResponse = completion.data.choices[0].message.content.replace(
+      '/n',
+      '<br/><br/>',
+    );
 
-    const prompt = messages.map((message) => message.content).join('\n');
-    chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
-    chatResponse = chatResponse.replace('/n', '<br/><br/>');
+    // const prompt = messages.map((message) => message.content).join('\n');
+    // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
+    // chatResponse = chatResponse.replace('/n', '<br/><br/>');
 
     console.log('chatResponse', chatResponse);
 
-    // const totalTokens = completion.data.usage.total_tokens;
+    const totalTokens = completion.data.usage.total_tokens;
     // TODO: investigate if there is a way to get token usage with langchain.
-    const totalTokens = 0;
+    // const totalTokens = 0;
 
     await sails.helpers.slack.aiLoggerHelper(
       `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
