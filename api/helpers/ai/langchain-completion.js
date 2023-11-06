@@ -78,8 +78,10 @@ module.exports = {
       const model = new OpenAI({
         engine: 'gpt-3.5-turbo-16k',
         maxTokens: 2000,
-        temperature: temperature || 0.7,
-        topP: 1,
+        temperature: temperature || 1.0,
+        topP: 1.0,
+        presencePenalty: 0.0,
+        frequencyPenalty: 0.0,
       });
       const chain = VectorDBQAChain.fromLLM(model, pgvectorStore, {
         k: 2, // number of sourceDocuments to include with the prompt.
