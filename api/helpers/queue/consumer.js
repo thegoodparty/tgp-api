@@ -155,9 +155,9 @@ async function handleGenerateCampaignPlan(message) {
 
     console.log('chatResponse', chatResponse);
 
-    // const totalTokens = completion.data.usage.total_tokens;
+    const totalTokens = completion.data.usage.total_tokens;
     // TODO: investigate if there is a way to get token usage with langchain.
-    const totalTokens = 0;
+    // const totalTokens = 0;
 
     await sails.helpers.slack.aiLoggerHelper(
       `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
