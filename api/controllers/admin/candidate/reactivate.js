@@ -42,6 +42,7 @@ module.exports = {
       });
 
       await Campaign.updateOne({ slug: data.campaignOnboardingSlug }).set({
+        isActive: true,
         data: {
           ...campaign.data,
           launchStatus: 'launched',
