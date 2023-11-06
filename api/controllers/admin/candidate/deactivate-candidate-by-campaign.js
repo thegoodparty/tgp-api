@@ -46,6 +46,7 @@ module.exports = {
       });
 
       await Campaign.updateOne({ slug }).set({
+        isActive: false,
         data: {
           ...campaign.data,
           launchStatus: false,
