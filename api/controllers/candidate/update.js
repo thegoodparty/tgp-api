@@ -67,6 +67,7 @@ module.exports = {
         hashtag,
         website,
         electionDate,
+        endorsements,
       } = candidate;
 
       let campaign = await Campaign.findOne({
@@ -92,6 +93,7 @@ module.exports = {
       campaignData.pathToVictory = campaignData.pathToVictory || {};
       const updatedData = {
         ...campaignData,
+        endorsements,
         color,
         image,
         twitter,
