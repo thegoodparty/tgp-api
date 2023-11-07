@@ -18,5 +18,10 @@ module.exports = {
       collection: 'candidate',
       via: 'topIssues',
     },
+
+    campaigns: {
+      collection: 'campaign',
+      via: 'topIssues',
+    },
   },
 };

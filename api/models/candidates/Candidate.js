@@ -84,12 +84,6 @@ module.exports = {
       collection: 'campaignClaim',
       via: 'candidate',
     },
-
-    // one to many relationship to button impression
-    buttonImpressions: {
-      collection: 'buttonImpression',
-      via: 'candidate',
-    },
   },
 
   customToJSON: function () {

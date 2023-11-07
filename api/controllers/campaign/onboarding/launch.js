@@ -38,12 +38,7 @@ module.exports = {
           slug: inputSlug,
         });
       } else {
-        const campaigns = await Campaign.find({
-          user: user.id,
-        });
-        if (campaigns && campaigns.length > 0) {
-          campaignRecord = campaigns[0];
-        }
+        campaignRecord = await sails.helpers.campaign.byUser(user);
       }
 
       if (!campaignRecord) {
@@ -53,48 +48,19 @@ module.exports = {
 
       const campaign = campaignRecord.data;
 
-      if (campaign.launchStatus === 'launched') {
+      if (campaignRecord.isActive || campaign.launchStatus === 'launched') {
         return exits.success({
           slug: campaign.candidateSlug || campaign.slug,
         });
       }
 
-      const candidate = mapCampaignToCandidate(campaign);
-      const { firstName, lastName, state } = candidate;
-      const slug = await findSlug(candidate);
-      candidate.slug = slug;
-      const dbFields = {
-        slug,
-        firstName,
-        lastName,
-        isActive: true,
-        state,
-        contact: {},
-        data: JSON.stringify(candidate),
-      };
-
-      const created = await Candidate.create(dbFields).fetch();
-      await Candidate.updateOne({
-        id: created.id,
-      }).set({
-        data: JSON.stringify({
-          ...candidate,
-          id: created.id,
-        }),
-      });
-
       const updated = await Campaign.updateOne({ slug: campaign.slug }).set({
+        isActive: true,
         data: {
           ...campaign,
           launchStatus: 'launched',
           candidateSlug: slug,
         },
-      });
-
-      await Staff.create({
-        role: 'owner',
-        user: campaignRecord.user,
-        candidate: created.id,
       });
 
       // console.log('cand', created);
@@ -122,116 +88,6 @@ module.exports = {
     }
   },
 };
-
-function mapCampaignToCandidate(campaign) {
-  if (!campaign) {
-    return false;
-  }
-  const {
-    slug,
-    details,
-    goals,
-    campaignPlan,
-    pathToVictory,
-    color,
-    image,
-    twitter,
-    instagram,
-    facebook,
-    linkedin,
-    tiktok,
-    snap,
-    twitch,
-    hashtag,
-    website,
-    customIssues,
-    endorsements,
-  } = campaign;
-
-  const {
-    firstName,
-    lastName,
-    party,
-    otherParty,
-    state,
-    office,
-    otherOffice,
-    pastExperience,
-    occupation,
-    funFact,
-    district,
-    city,
-  } = details;
-  const { slogan, aboutMe, why } = campaignPlan || {};
-
-  const { electionDate, campaignWebsite } = goals || {};
-
-  const partyWithOther = party === 'Other' ? otherParty : party;
-
-  let voteGoal;
-  let voterProjection;
-  if (pathToVictory) {
-    ({ voteGoal, voterProjection } = pathToVictory);
-  }
-  return {
-    campaignOnboardingSlug: slug,
-    firstName: firstName.trim(),
-    lastName: lastName.trim(),
-    party: partyWithOther,
-    district,
-    state,
-    city,
-    office,
-    otherOffice,
-    slogan,
-    about: aboutMe,
-    why,
-    pastExperience,
-    occupation,
-    funFact,
-    voteGoal: parseInt(voteGoal) || 0,
-    voterProjection: parseInt(voterProjection) || 0,
-    color,
-    image,
-    twitter,
-    instagram,
-    facebook,
-    linkedin,
-    tiktok,
-    snap,
-    twitch,
-    hashtag,
-    website: campaignWebsite || website,
-    isActive: true,
-    electionDate,
-    customIssues,
-    endorsements,
-  };
-}
-
-async function findSlug(candidate) {
-  // trying first to use campaign slug
-  const campaignExists = await Candidate.findOne({
-    slug: candidate.campaignOnboardingSlug,
-  });
-  if (!campaignExists) {
-    return candidate.campaignOnboardingSlug;
-  }
-  const { firstName, lastName } = candidate;
-  const slug = slugify(`${firstName}-${lastName}`, { lower: true });
-  const exists = await Candidate.findOne({ slug });
-  if (!exists) {
-    return slug;
-  }
-  for (let i = 1; i < 100; i++) {
-    let slug = slugify(`${firstName}-${lastName}${i}`, { lower: true });
-    let exists = await Candidate.findOne({ slug });
-    if (!exists) {
-      return slug;
-    }
-  }
-  return slug; // should not happen
-}
 
 async function createCandidatePositions(topIssues, candidate) {
   if (!topIssues?.positions || !candidate.id) {

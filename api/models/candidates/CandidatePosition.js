@@ -26,6 +26,11 @@ module.exports = {
     },
 
     // has One
+    campaign: {
+      model: 'campaign',
+    },
+
+    // has One
     topIssue: {
       model: 'topIssue',
     },

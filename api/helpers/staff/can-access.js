@@ -1,6 +1,6 @@
 module.exports = {
   inputs: {
-    candidate: {
+    campaign: {
       type: 'ref',
       required: true,
     },
@@ -12,35 +12,12 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { candidate, user } = inputs;
+      const { campaign, user } = inputs;
       if (user.isAdmin) {
         return exits.success(true);
       }
 
-      const campaigns = await Campaign.find({
-        user: user.id,
-      });
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
-      }
-
-      const slug = campaign.candidateSlug;
-
-      if (slug !== candidate.slug) {
-        return exits.success(false);
-      }
-
-      // let candidateRecord = await Candidate.findOne({
-      //   slug,
-      //   isActive: true,
-      // });
-
-      // if (!candidateRecord) {
-      //   return exits.success(false);
-      // }
-
-      return exits.success(true);
+      return exits.success(campaign.user === user.id);
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
         'Error at helpers/staff/can-access',

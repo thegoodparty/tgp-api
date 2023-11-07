@@ -32,9 +32,11 @@ module.exports = {
       const campaign = await Campaign.findOne({
         slug,
       });
+      const data = campaign.data;
+      data.id = campaign.id;
 
       return exits.success({
-        campaign: campaign.data,
+        campaign: data,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

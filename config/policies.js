@@ -36,6 +36,8 @@ module.exports.policies = {
   'entrance/*': true,
   'content/*': true,
   'newCandidates/find': true,
+  'candidate/find': true,
+  'candidate/list': true,
   'newCandidates/homepage-candidates': true,
   'newCandidates/list': true,
   'declare/list': true,
@@ -44,6 +46,7 @@ module.exports.policies = {
   'topIssues/topIssue/list': true,
   'topIssues/position/list': true,
   'topIssues/candidatePosition/find-by-candidate': true,
+  'topIssues/candidatePosition/find-by-campaign': true,
   'visit/*': true,
   'newCandidates/application/upload-image': true, // for guest applications
   'socialListening/*': true,
