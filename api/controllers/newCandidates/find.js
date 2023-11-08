@@ -40,7 +40,7 @@ module.exports = {
       });
 
       if (!candidate) {
-        return exits.notFound();
+        return exits.notFound('no candidate');
       }
       let candidateData = JSON.parse(candidate.data);
 
@@ -64,7 +64,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in find candidate', e);
-      return exits.notFound();
+      return exits.notFound({ message: 'error', e });
     }
   },
 };
