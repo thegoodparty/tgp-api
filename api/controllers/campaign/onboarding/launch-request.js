@@ -82,7 +82,7 @@ async function sendSlackMessage(campaign, user) {
     return;
   }
   const { slug, details } = campaign;
-  const { firstName, lastName, office, state, district } = details;
+  const { firstName, lastName, office, city, state, district } = details;
   const slackMessage = {
     text: `Campaign Launch is pending a review`,
     blocks: [
@@ -100,6 +100,7 @@ async function sendSlackMessage(campaign, user) {
           text: `*Hi <@U01AY0VQFPE> and <@U03RY5HHYQ5> *\n
           \nName: ${firstName} ${lastName}
           \nOffice: ${office}
+          \nCity: ${city}
           \nState: ${state}
           \nDistrict: ${district}
           \nemail: ${user.email}
