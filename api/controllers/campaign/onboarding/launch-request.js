@@ -54,10 +54,17 @@ module.exports = {
         },
       });
 
-      await sails.helpers.slack.aiLoggerHelper(
-        'About to send slack message to campaign',
-        updated,
-      );
+      try {
+        await sails.helpers.slack.slackHelper(
+          simpleSlackMessage(
+            'About to send slack message to campaign',
+            updated,
+          ),
+          'victory',
+        );
+      } catch (e) {
+        console.log('error sending slack message', e);
+      }
 
       await sendSlackMessage(campaign, user);
 
@@ -113,4 +120,19 @@ async function sendSlackMessage(campaign, user) {
   };
 
   await sails.helpers.slack.slackHelper(slackMessage, 'victory');
+}
+
+function simpleSlackMessage(text, body) {
+  return {
+    text,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: body,
+        },
+      },
+    ],
+  };
 }
