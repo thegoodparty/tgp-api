@@ -4,7 +4,6 @@
  * @description :: Find all Presidential Candidates.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-const moment = require('moment');
 
 module.exports = {
   friendlyName: 'Find by slug one Candidate',
@@ -34,7 +33,6 @@ module.exports = {
       const { slug } = inputs;
       let campaign = await Campaign.findOne({
         slug,
-        isActive: true,
       });
 
       if (!campaign) {

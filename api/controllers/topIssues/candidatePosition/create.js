@@ -4,8 +4,8 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    campaignId: {
-      type: 'number',
+    campaignSlug: {
+      type: 'string',
       required: true,
     },
     positionId: {
@@ -40,8 +40,9 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { user } = this.req;
-      const { description, campaignId, positionId, topIssueId, order } = inputs;
-      const campaign = await Campaign.findOne({ id: campaignId });
+      const { description, campaignSlug, positionId, topIssueId, order } =
+        inputs;
+      const campaign = await Campaign.findOne({ slug: campaignSlug });
       const canAccess = await sails.helpers.staff.canAccess(campaign, user);
       if (!canAccess) {
         return exits.forbidden();
@@ -49,7 +50,7 @@ module.exports = {
 
       // const existing = await CandidatePosition.findOne({
       //   topIssue: topIssueId,
-      //   campaign: campaignId,
+      //   campaign: campaign.id,
       // });
       // if (existing) {
       //   return exits.badRequest({
@@ -59,14 +60,14 @@ module.exports = {
 
       const newPosition = await CandidatePosition.create({
         description,
-        campaign: campaignId,
+        campaign: campaign.id,
         position: positionId,
         topIssue: topIssueId,
         order,
       }).fetch();
       // update the many to many relationships
-      await Campaign.addToCollection(campaignId, 'positions', positionId);
-      await Campaign.addToCollection(campaignId, 'topIssues', topIssueId);
+      await Campaign.addToCollection(campaign.id, 'positions', positionId);
+      await Campaign.addToCollection(campaign.id, 'topIssues', topIssueId);
 
       await sails.helpers.crm.updateCampaign(campaign);
 
