@@ -1,7 +1,5 @@
 // Admin endpoint
 
-const { create } = require('lodash');
-const slugify = require('slugify');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
@@ -59,7 +57,7 @@ module.exports = {
         data: {
           ...campaign,
           launchStatus: 'launched',
-          candidateSlug: slug,
+          candidateSlug: campaign.slug,
         },
       });
 
@@ -72,11 +70,11 @@ module.exports = {
       // await sails.helpers.crm.updateCandidate(created);
       await sails.helpers.crm.updateCampaign(updated);
 
-      await sendMail(slug);
+      await sendMail(campaign.slug);
 
       return exits.success({
         message: 'created',
-        slug,
+        slug: campaign.slug,
       });
     } catch (e) {
       console.log('Error at campaign launch', e);
