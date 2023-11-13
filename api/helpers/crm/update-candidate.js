@@ -34,10 +34,7 @@ module.exports = {
       const { candidate } = inputs;
       const data = JSON.parse(candidate.data);
       const slug = slugify(`${data.firstName} ${data.lastName}`);
-      const totalImpressions = await ButtonImpression.count({
-        candidate: candidate.id,
-        type: 'impression',
-      });
+
       const endorsementsCount = await Endorsement.count({
         candidate: candidate.id,
       });

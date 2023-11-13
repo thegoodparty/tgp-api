@@ -40,11 +40,6 @@ module.exports.routes = {
   'GET   /api/v1/user/campaign-status': 'user/campaign-status',
   'POST   /api/v1/upload-base64-image': 'user/upload-base64-image',
 
-  'POST   /api/v1/support': 'user/support/create',
-  'DELETE   /api/v1/support': 'user/support/delete',
-  'GET   /api/v1/supports': 'user/support/list-by-user',
-  // 'GET   /api/v1/candidate-supports': 'user/support/list-by-candidate',
-
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
   'GET    /api/v1/admin/hidden-candidates': 'admin/candidate/hidden-list',
   'GET    /api/v1/admin/users': 'admin/all-users',
@@ -59,25 +54,26 @@ module.exports.routes = {
     'admin/candidate/deactivate-candidate-by-campaign',
 
   // New Candidates
-  'POST   /api/v1/new-candidate': 'newCandidates/create',
-  'GET    /api/v1/new-candidate': 'newCandidates/find',
-  'PUT    /api/v1/new-candidate': 'newCandidates/update',
+  // 'POST   /api/v1/new-candidate': 'newCandidates/create',
+  // 'GET    /api/v1/new-candidate': 'newCandidates/find',
+  // 'PUT    /api/v1/new-candidate': 'newCandidates/update',
 
-  'GET    /api/v1/new-candidates': 'newCandidates/list',
-  'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
-  'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
+  // 'GET    /api/v1/new-candidates': 'newCandidates/list',
+  // 'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
+  // 'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
-  'GET   /api/v1/user/staff': 'user/staff',
-
   'POST   /api/v1/visit': 'visit/create',
 
-  // campaign
-  'GET    /api/v1/campaign': 'campaign/find',
-  'PUT    /api/v1/campaign': 'campaign/update',
+  // candidate from campaigns
+  'GET    /api/v1/candidate': 'candidate/find',
+  'PUT    /api/v1/candidate': 'candidate/update',
+  'GET    /api/v1/candidates': 'candidate/list',
+  'GET    /api/v1/candidate/can-edit': 'candidate/can-edit',
 
-  'GET    /api/v1/campaign/staff-role': 'campaign/staff/find',
+  // campaign
+
   'GET    /api/v1/campaign/deadlines/refresh': 'campaign/deadlines/refresh',
   'GET    /api/v1/campaign/deadlines': 'campaign/deadlines/list',
 
@@ -85,8 +81,6 @@ module.exports.routes = {
   'GET    /api/v1/campaign/endorsements': 'campaign/endorsement/list',
   'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
-  'POST    /api/v1/campaign/claim': 'campaign/claim/claim',
-  'PUT   /api/v1/campaign/approve-claim': 'campaign/claim/approve-claim',
 
   // campaignUpdateHistory
 
@@ -145,6 +139,8 @@ module.exports.routes = {
   'DELETE   /api/v1/candidate-position': 'topIssues/candidatePosition/delete',
   'GET  /api/v1/candidate-position':
     'topIssues/candidatePosition/find-by-candidate',
+  'GET  /api/v1/campaign-position':
+    'topIssues/candidatePosition/find-by-campaign',
 
   // application
 

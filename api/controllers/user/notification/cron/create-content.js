@@ -35,32 +35,18 @@ module.exports = {
         });
       }
 
-      const candidates = await Candidate.find();
-      for (let i = 0; i < candidates.length; i++) {
+      const campaigns = await Campaign.find({ isActive: true }).populate(
+        'user',
+      );
+      for (let i = 0; i < campaigns.length; i++) {
         try {
-          const candidate = candidates[i];
+          const campaign = campaigns[i];
 
-          const data = JSON.parse(candidate.data);
-          let { electionDate, campaignOnboardingSlug } = data;
-          if (!campaignOnboardingSlug) {
-            // old candidates
-            continue;
-          }
-          const campaign = await Campaign.findOne({
-            slug: campaignOnboardingSlug,
-          }).populate('user');
+          const data = campaign.data;
+          const electionDate = data.goals?.electionDate;
+
           if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
             continue; // goals not set yet.
-          }
-
-          if (!electionDate && campaign.data.goals?.electionDate) {
-            electionDate = campaign.data.goals?.electionDate;
-            await Candidate.updateOne({ id: candidate.id }).set({
-              data: JSON.stringify({
-                ...data,
-                electionDate,
-              }),
-            });
           }
 
           if (!electionDate) {

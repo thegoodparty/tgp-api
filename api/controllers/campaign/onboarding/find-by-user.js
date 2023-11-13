@@ -24,21 +24,23 @@ module.exports = {
       description: 'Unauthorized',
       responseType: 'forbidden',
     },
+    notFound: {
+      description: 'Candidate Not Found.',
+      responseType: 'notFound',
+    },
   },
 
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-
-      const campaigns = await Campaign.find({
-        user: user.id,
-      });
-      let campaign = false;
-      let campaignId = 0;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
-        campaignId = campaigns[0].id;
+      const campaignRecord = await sails.helpers.campaign.byUser(user);
+      if (!campaignRecord) {
+        return exits.notFound();
       }
+
+      const campaign = campaignRecord.data;
+      const campaignId = campaignRecord.id;
+      campaign.id = campaignId;
 
       let updatedPlan;
       if (campaign.campaignPlanStatus) {

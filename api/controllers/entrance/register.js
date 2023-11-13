@@ -202,21 +202,6 @@ module.exports = {
         phone,
       });
 
-      // // check if the user has a pending invitation for a candidate campaign staff
-      // const invitations = await StaffInvitation.find({ email: lowerCaseEmail });
-      // if (invitations.length > 0) {
-      //   for (let i = 0; i < invitations.length; i++) {
-      //     const invitation = invitations[i];
-      //     await Staff.create({
-      //       role: invitation.role,
-      //       user: user.id,
-      //       candidate: invitation.candidate,
-      //       createdBy: invitation.createdBy,
-      //     });
-      //     await StaffInvitation.destroyOne({ id: invitation.id });
-      //   }
-      // }
-
       //  add user to our CRM.
       await sails.helpers.crm.updateUser(user);
 

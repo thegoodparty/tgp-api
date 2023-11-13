@@ -41,11 +41,12 @@ module.exports = {
         });
       }
 
-      await Candidate.updateOne({ slug }).set({
+      await Candidate.updateOne({ slug: campaign.data.candidateSlug }).set({
         isActive: false,
       });
 
       await Campaign.updateOne({ slug }).set({
+        isActive: false,
         data: {
           ...campaign.data,
           launchStatus: false,
