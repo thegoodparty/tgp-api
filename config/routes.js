@@ -20,6 +20,8 @@ module.exports.routes = {
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'GET    /api/v1/content/blog-articles-titles': 'content/blog-articles-titles',
+  'GET    /api/v1/content/blog-articles-by-section':
+    'content/blog-articles-by-section',
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
