@@ -119,8 +119,9 @@ function mapCampaignToCandidate(campaign) {
 
   let voteGoal;
   let voterProjection;
+  let finalVotes;
   if (pathToVictory) {
-    ({ voteGoal, voterProjection } = pathToVictory);
+    ({ voteGoal, voterProjection, finalVotes } = pathToVictory);
   }
   return {
     // campaignOnboardingSlug: slug,
@@ -157,5 +158,6 @@ function mapCampaignToCandidate(campaign) {
     customIssues,
     endorsements,
     reportedVoterGoals,
+    finalVotes,
   };
 }
