@@ -94,6 +94,7 @@ function mapCampaignToCandidate(campaign) {
     website,
     customIssues,
     endorsements,
+    reportedVoterGoals,
   } = campaign;
 
   const {
@@ -155,5 +156,6 @@ function mapCampaignToCandidate(campaign) {
     electionDate,
     customIssues,
     endorsements,
+    reportedVoterGoals,
   };
 }
