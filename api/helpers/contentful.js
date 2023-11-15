@@ -107,13 +107,22 @@ const mapResponse = (items) => {
 
         // console.log('item', item);
 
-        const { title } = item.fields;
+        const { title, banner } = item.fields;
         const { updatedAt } = item.sys;
         const slug = slugify(title, { lower: true });
         const letter = title.charAt(0).toUpperCase();
         if (!mappedResponse.glossaryItemsByLetter[letter]) {
           mappedResponse.glossaryItemsByLetter[letter] = [];
         }
+
+        if (banner) {
+          item.fields.banner = {
+            ...banner.fields,
+            largeImage: extractMediaFile(banner.fields.largeImage),
+            smallImage: extractMediaFile(banner.fields.smallImage),
+          };
+        }
+
         mappedResponse.glossaryItemsByLetter[letter].push(item.fields);
         mappedResponse.glossaryItemsByTitle[slug] = {
           ...item.fields,
