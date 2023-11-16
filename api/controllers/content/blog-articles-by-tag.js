@@ -26,7 +26,6 @@ module.exports = {
       const articles = content2.blogArticles;
       const articleBySlugs = hashArticles(articles);
       let slugs = content.articleTags[tag];
-      console.log('slugs', slugs);
       const tagArticles = [];
       let tagName;
       if (slugs) {
