@@ -38,6 +38,7 @@ module.exports = {
 
 const faqsOrder = [];
 const faqsOrderHash = {};
+const articleTags = {};
 
 function mapResponse(items) {
   const mappedResponse = {};
@@ -67,12 +68,25 @@ function mapResponse(items) {
         }
         const text = documentToPlainTextString(item.fields.body);
         const time = readingTime(text);
+        const tags = extractArticleTags(item.fields.tags);
+        if (tags) {
+          tags.forEach((tag) => {
+            if (!articleTags[tag.slug]) {
+              articleTags[tag.slug] = [];
+            }
+            articleTags[tag.slug].push({
+              slug: item.fields.slug,
+              tagName: tag.name,
+            });
+          });
+        }
+
         const article = {
           ...item.fields,
           id: elementId,
           mainImage: extractMediaFile(item.fields.mainImage),
           readingTime: time,
-          tags: extractArticleTags(item.fields.tags),
+          tags,
         };
         if (article.section) {
           article.section = {
@@ -228,6 +242,8 @@ function mapResponse(items) {
   });
 
   mappedResponse.recentGlossaryItems = getRecentGlossaryItems(mappedResponse);
+
+  mappedResponse.articleTags = articleTags;
 
   // need to order the event chronologically and separate the past events.
   // mappedResponse.events.sort(compareEvents);
