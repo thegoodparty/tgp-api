@@ -38,7 +38,8 @@ module.exports = {
 
 const faqsOrder = [];
 const faqsOrderHash = {};
-const mapResponse = (items) => {
+
+function mapResponse(items) {
   const mappedResponse = {};
   // console.log(JSON.stringify(items));
   items.map((item) => {
@@ -71,6 +72,7 @@ const mapResponse = (items) => {
           id: elementId,
           mainImage: extractMediaFile(item.fields.mainImage),
           readingTime: time,
+          tags: extractArticleTags(item.fields.tags),
         };
         if (article.section) {
           article.section = {
@@ -255,9 +257,9 @@ const mapResponse = (items) => {
   delete mappedResponse.aiContentCategoriesHash;
 
   return mappedResponse;
-};
+}
 
-const getRecentGlossaryItems = (mappedResponse) => {
+function getRecentGlossaryItems(mappedResponse) {
   const sorted = Object.keys(mappedResponse.glossaryItemsByTitle);
   sorted.sort((a, b) => {
     return new Date(b.updatedAt) - new Date(b.updatedAt);
@@ -265,7 +267,7 @@ const getRecentGlossaryItems = (mappedResponse) => {
   return sorted.slice(0, 3).map((key) => {
     return mappedResponse.glossaryItemsByTitle[key].title;
   });
-};
+}
 
 const compareArticles = (a, b) => {
   const orderA = faqsOrderHash[a.id] || 9999;
@@ -311,12 +313,29 @@ const compareBlogSections = (a, b) => {
   return 0;
 };
 
-const extractMediaFile = (img) => {
+function extractMediaFile(img) {
   if (img && img.fields && img.fields.file) {
     return { url: img.fields.file.url, alt: img.fields.title || '' };
   }
   return null;
-};
+}
+
+function extractArticleTags(tags) {
+  if (!tags) {
+    return undefined;
+  }
+  let resTags = [];
+  tags.forEach((tag) => {
+    resTags.push({
+      name: tag.fields.name,
+      slug: slugify(tag.fields.name, { lower: true }),
+    });
+  });
+
+  console.log('resTags', resTags);
+
+  return resTags;
+}
 
 const addArticlesToCategories = (mapped) => {
   const { articleCategories, faqArticles } = mapped;
