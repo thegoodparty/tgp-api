@@ -45,7 +45,7 @@ module.exports = {
     } catch (err) {
       console.log('Error at content/blog-articles-by-section', err);
       await sails.helpers.slack.errorLoggerHelper(
-        'Error at content/blog-articles-by-section',
+        'Error at content/blog-articles-by-section.',
         err,
       );
       return exits.badRequest({
