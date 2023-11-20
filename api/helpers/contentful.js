@@ -166,6 +166,7 @@ function mapResponse(items) {
         mappedResponse.blogSections.push({
           fields: item.fields,
           id: elementId,
+          slug: item.fields.slug,
         });
       } else if (itemId === 'privacyPage') {
         mappedResponse.privacyPage = item.fields;
@@ -357,8 +358,6 @@ function extractArticleTags(tags) {
     });
   });
 
-  console.log('resTags', resTags);
-
   return resTags;
 }
 
@@ -367,7 +366,11 @@ const addArticlesToCategories = (mapped) => {
 
   const categoriesById = {};
   articleCategories.forEach((category) => {
-    categoriesById[category.id] = { ...category, articles: [] };
+    categoriesById[category.id] = {
+      ...category,
+      name: category.fields.name,
+      articles: [],
+    };
   });
   faqArticles.forEach((article) => {
     if (article.category) {

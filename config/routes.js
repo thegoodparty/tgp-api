@@ -16,7 +16,6 @@ module.exports.routes = {
   'POST   /api/v1/log-error': 'general/error-logger',
   'GET    /api/v1/seed': 'seed/seed',
   'GET    /api/v1/ballot-ready': 'seed/ballot-ready',
-  'GET    /api/v1/content/all-content': 'content/all-content',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'GET    /api/v1/content/blog-articles-titles': 'content/blog-articles-titles',

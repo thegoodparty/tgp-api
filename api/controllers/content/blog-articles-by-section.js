@@ -14,53 +14,77 @@ module.exports = {
       description: 'Error',
       responseType: 'badRequest',
     },
+    notFound: {
+      description: 'Error',
+      responseType: 'notFound',
+    },
   },
 
   fn: async function (inputs, exits) {
     try {
       const { sectionSlug } = inputs;
-      const contents = await CmsContent.find();
-      const content = JSON.parse(contents[0].content);
-      const content2 = JSON.parse(contents[1].content);
 
-      let sections = content.blogSections;
-      let heroObj = content2.blogArticles[0];
-      const { id, title, mainImage, publishDate, slug, summary } = heroObj;
-      let hero = { id, title, mainImage, publishDate, slug, summary };
-      let sectionIndex;
-      for (let i = 0; i < sections.length; i++) {
-        const section = sections[i];
-        if (sectionSlug && section.fields.slug !== sectionSlug) {
-          sections[i] = {
-            fields: { title: section.fields.title, slug: section.fields.slug },
-          };
+      if (sectionSlug) {
+        const sections = await Content.find({
+          key: 'blogSections',
+        });
+        if (!sections) {
+          return exits.notFound();
         }
-        if (sectionSlug && section.fields.slug === sectionSlug) {
+        const results = [];
+        let sectionIndex = 0;
+        let hero;
+        for (let i = 0; i < sections.length; i++) {
+          const section = sections[i].data;
+          if (section.fields.slug === sectionSlug) {
+            sectionIndex = i;
+            const { id, title, mainImage, publishDate, slug, summary } =
+              section.articles[0];
+            hero = { id, title, mainImage, publishDate, slug, summary };
+            section.articles = section.articles.slice(1);
+            results.push(section);
+          } else {
+            delete section.articles;
+            results.push(section);
+          }
+        }
+        return exits.success({
+          sections: results,
+          hero,
+          sectionIndex,
+        });
+      } else {
+        const sections = await Content.find({ key: 'blogSections' });
+        const heroObj = await Content.find({ key: 'blogArticles' })
+          .sort('id ASC')
+          .limit(1);
+        const { id, title, mainImage, publishDate, slug, summary } =
+          heroObj[0].data;
+        const hero = { id, title, mainImage, publishDate, slug, summary };
+
+        const result = [];
+        let sectionIndex = 0;
+        for (let i = 0; i < sections.length; i++) {
           sectionIndex = i;
-          heroObj = section.articles[0];
-          const { id, title, mainImage, publishDate, slug, summary } = heroObj;
-          hero = { id, title, mainImage, publishDate, slug, summary };
-        }
-
-        if (!sectionSlug && section.articles.length > 3) {
-          if (section.articles[0].id === hero.id) {
+          const section = sections[i].data;
+          section.slug = section.fields.slug;
+          if (
+            section.articles.length > 0 &&
+            section.articles[0].id === hero.id
+          ) {
             section.articles = section.articles.slice(1, 4);
             hero.section = { fields: { title: section.fields.title } };
           } else {
             section.articles = section.articles.slice(0, 3);
           }
+          result.push(section);
         }
+        return exits.success({
+          sections: result,
+          sectionIndex,
+          hero,
+        });
       }
-      // if (sectionSlug) {
-      //   sections = sections.slice(0, 1);
-      //   sections[0].articles = sections[0].articles.slice(1);
-      // }
-
-      return exits.success({
-        sections,
-        hero,
-        sectionIndex,
-      });
     } catch (err) {
       console.log('Error at content/blog-articles-by-section', err);
       await sails.helpers.slack.errorLoggerHelper(

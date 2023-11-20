@@ -36,59 +36,52 @@ module.exports = {
       description: 'Error',
       responseType: 'badRequest',
     },
+    notFound: {
+      description: 'Not Found',
+      responseType: 'notFound',
+    },
   },
 
   fn: async function (inputs, exits) {
     try {
       const { key, subKey, subValue, limit, deleteKey } = inputs;
+
       let content;
-      const contents = await CmsContent.find();
+      let criteria;
+      let entry;
 
-      if (contents.length === 2) {
-        if (key === 'blogArticles') {
-          content = JSON.parse(contents[1].content);
-        } else {
-          content = JSON.parse(contents[0].content);
-        }
-      }
-      const keyContent = content[key];
-
-      if (keyContent) {
-        if (subKey) {
-          if (Array.isArray(keyContent)) {
-            for (let i = 0; i < keyContent.length; i++) {
-              if (
-                keyContent[i][subKey].toLowerCase() === subValue.toLowerCase()
-              ) {
-                return exits.success({ content: keyContent[i] });
-              }
-            }
-          }
-          if (keyContent[subKey]) {
-            return exits.success({ content: keyContent[subKey] });
-          }
-          return exits.success({ content: false });
-        } else {
-          let contentWithLimit;
-          if (limit && Array.isArray(keyContent) && limit < keyContent.length) {
-            contentWithLimit = keyContent.splice(0, limit);
-          } else {
-            contentWithLimit = keyContent;
-          }
-          if (deleteKey) {
-            contentWithLimit.forEach((item) => {
-              delete item[deleteKey];
-            });
-          }
-          return exits.success({
-            content: contentWithLimit,
-          });
-        }
+      if (subValue) {
+        criteria = { key, subKey: subValue };
       } else {
-        return exits.badRequest({
-          message: 'No Content Found',
+        criteria = { key };
+      }
+      if (limit) {
+        entry = await Content.find(criteria).limit(limit);
+      } else {
+        entry = await Content.find(criteria);
+      }
+      if (entry.length === 0) {
+        return exits.notFound();
+      }
+      if (entry.length === 1) {
+        content = entry[0].data;
+      }
+      if (entry.length > 1) {
+        content = [];
+        entry.forEach((item) => {
+          content.push(item.data);
         });
       }
+
+      if (deleteKey) {
+        content.forEach((item) => {
+          delete item[deleteKey];
+        });
+      }
+
+      return exits.success({
+        content,
+      });
     } catch (err) {
       console.log(err);
       await sails.helpers.slack.errorLoggerHelper(

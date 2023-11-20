@@ -19,13 +19,16 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { tag } = inputs;
-      const contents = await CmsContent.find();
-      const content = JSON.parse(contents[0].content);
-      const content2 = JSON.parse(contents[1].content);
 
-      const articles = content2.blogArticles;
+      const articleTags = (await Content.findOne({ key: 'articleTags' })).data;
+      const slugs = articleTags[tag];
+      const querySlugs = slugs.map((slug) => slug.slug);
+      const articles = await Content.find({
+        key: 'blogArticles',
+        subKey: querySlugs,
+      });
+
       const articleBySlugs = hashArticles(articles);
-      let slugs = content.articleTags[tag];
       const tagArticles = [];
       let tagName;
       if (slugs) {
@@ -55,7 +58,7 @@ module.exports = {
 function hashArticles(articles) {
   const bySlug = {};
   articles.forEach((article) => {
-    const { title, mainImage, publishDate, slug, summary } = article;
+    const { title, mainImage, publishDate, slug, summary } = article.data;
     bySlug[slug] = { title, mainImage, publishDate, slug, summary };
   });
   return bySlug;

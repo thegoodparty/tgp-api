@@ -5,8 +5,26 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const axios = require('axios');
-const appBase = sails.config.custom.appBase || sails.config.appBase;
+const schemaConfig = {
+  faqArticles: {
+    subKey: 'id',
+  },
+  blogSections: {
+    subKey: 'slug',
+  },
+  elections: {
+    subKey: 'slug',
+  },
+  aiContentCategories: {
+    subKey: 'name',
+  },
+  articleCategories: {
+    subKey: 'name',
+  },
+  blogArticles: {
+    subKey: 'slug',
+  },
+};
 
 module.exports = {
   friendlyName: 'All Content',
@@ -31,50 +49,25 @@ module.exports = {
       // fetch content from the api
       const content = await sails.helpers.contentful();
 
-      // save content to our DB.
-      // entry with id=1 has all the content expect for blogArticles
-      // row with id=2 has blogArticles
+      // console.log(Object.keys(content));
 
-      const stringifiedBlogArticles = JSON.stringify({
-        blogArticles: content.blogArticles,
-      });
-      delete content.blogArticles;
-      const stringifiedContent = JSON.stringify(content);
+      const keys = Object.keys(content);
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const value = content[key];
 
-      // first see if we already have an entries
-      //
-      const contents = await CmsContent.find();
-      if (contents.length === 0) {
-        // no content yet, create one
-        await CmsContent.create({
-          content: stringifiedContent,
-        });
-        await CmsContent.create({
-          content: stringifiedBlogArticles,
-        });
-      } else if (contents.length > 2) {
-        console.log('something is off. more than two entries');
-        await CmsContent.updateOne({ id: contents[0].id }).set({
-          content: stringifiedContent,
-        });
-        await CmsContent.updateOne({ id: contents[1].id }).set({
-          content: stringifiedBlogArticles,
-        });
-      } else {
-        await CmsContent.updateOne({ id: contents[0].id }).set({
-          content: stringifiedContent,
-        });
-        if (contents.length === 1) {
-          // temp while we change from one entry to two
-          await CmsContent.create({
-            content: stringifiedBlogArticles,
-          });
+        if (schemaConfig[key]) {
+          const { subKey } = schemaConfig[key];
+          for (let j = 0; j < value.length; j++) {
+            // console.log('key, subKey, value', key, subKey, value[j]);
+            await updateOrCreate(key, subKey, value[j]);
+          }
         } else {
-          await CmsContent.updateOne({ id: contents[1].id }).set({
-            content: stringifiedBlogArticles,
-          });
+          //just save it
+          await updateOrCreate(key, false, value);
         }
       }
+
       return exits.success();
     } catch (err) {
       console.log('content error');
@@ -89,3 +82,21 @@ module.exports = {
     }
   },
 };
+
+async function updateOrCreate(key, subKey, value) {
+  if (subKey) {
+    const existing = await Content.findOne({ key, subKey: value[subKey] });
+    if (existing) {
+      await Content.updateOne({ id: existing.id }).set({ data: value });
+    } else {
+      await Content.create({ key, subKey: value[subKey], data: value });
+    }
+  } else {
+    const existing = await Content.findOne({ key });
+    if (existing) {
+      await Content.updateOne({ id: existing.id }).set({ data: value });
+    } else {
+      await Content.create({ key, data: value });
+    }
+  }
+}
