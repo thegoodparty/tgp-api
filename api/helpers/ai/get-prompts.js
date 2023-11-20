@@ -10,15 +10,16 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      let content;
-      const contents = await CmsContent.find();
+      const onboardingPrompts = await Content.findOne({
+        key: 'onboardingPrompts',
+      });
+      const candidateContentPrompts = await Content.findOne({
+        key: 'candidateContentPrompts',
+      });
 
-      if (contents.length > 0) {
-        content = { ...JSON.parse(contents[0].content) };
-      }
       const combined = {
-        ...content.onboardingPrompts,
-        ...content.candidateContentPrompts,
+        ...onboardingPrompts.data,
+        ...candidateContentPrompts.data,
       };
 
       return exits.success(combined);
