@@ -351,11 +351,16 @@ function extractArticleTags(tags) {
     return undefined;
   }
   let resTags = [];
+  const unique = {};
   tags.forEach((tag) => {
-    resTags.push({
-      name: tag.fields.name,
-      slug: slugify(tag.fields.name, { lower: true }),
-    });
+    const slug = slugify(tag.fields.name, { lower: true });
+    if (!unique[slug]) {
+      unique[slug] = true;
+      resTags.push({
+        name: tag.fields.name,
+        slug,
+      });
+    }
   });
 
   return resTags;

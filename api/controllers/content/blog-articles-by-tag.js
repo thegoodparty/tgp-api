@@ -66,3 +66,243 @@ function hashArticles(articles) {
   });
   return bySlug;
 }
+
+const tags = [
+  { slug: 'what-is-a-nonpartisan-election', tagName: 'Electoral Reform' },
+  {
+    slug: '7-hidden-forms-political-corruption',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'looking-north-pros-cons-ranked-choice-voting',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'open-primaries-understanding-the-mechanics-and-implications',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'ranked-choice-voting-in-the-usa', tagName: 'Electoral Reform' },
+  {
+    slug: 'what-is-the-electoral-college-and-how-does-it-work',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'why-lifelong-term-limits-are-good-for-corruption-and-bad-for-everything-else',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'electoral-college-pros-and-cons', tagName: 'Electoral Reform' },
+  { slug: 'what-are-political-donations', tagName: 'Electoral Reform' },
+  {
+    slug: 'open-primary-vs-closed-primary-exploring-different-primary-election-systems',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'what-exactly-is-gerrymandering-why-is-it-so-bad',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'how-do-independent-candidates-get-on-the-ballot',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'breaking-the-two-party-duopoly', tagName: 'Electoral Reform' },
+  {
+    slug: 'the-electoral-college-is-even-more-anti-democratic-than-you-probably-thought',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'swing-states-deciding-presidential-elections',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'implications-of-citizens-united', tagName: 'Electoral Reform' },
+  { slug: 'overcoming-electoral-barriers', tagName: 'Electoral Reform' },
+  {
+    slug: 'uncontested-elections-rot-democracy-from-the-inside-out',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'fundraising-and-the-race-to-the-bottom-how-the-two-party-system-brings-out',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'superdelegates-are-super-anti-democratic-how-political-parties-try-to-rig',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'time-to-bring-back-fairness-doctrine',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'can-independent-voters-vote-in-primaries',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'electoral-reform-how-to-challenge-ballot-access-laws',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'navigating-labyrinth-independents-gerrymandering',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'approval-voting-alternate-voting-system',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'what-is-a-nonpartisan-election', tagName: 'Electoral Reform' },
+  {
+    slug: '7-hidden-forms-political-corruption',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'looking-north-pros-cons-ranked-choice-voting',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'open-primaries-understanding-the-mechanics-and-implications',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'ranked-choice-voting-in-the-usa', tagName: 'Electoral Reform' },
+  {
+    slug: 'what-is-the-electoral-college-and-how-does-it-work',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'why-lifelong-term-limits-are-good-for-corruption-and-bad-for-everything-else',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'electoral-college-pros-and-cons', tagName: 'Electoral Reform' },
+  { slug: 'what-are-political-donations', tagName: 'Electoral Reform' },
+  {
+    slug: 'open-primary-vs-closed-primary-exploring-different-primary-election-systems',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'what-exactly-is-gerrymandering-why-is-it-so-bad',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'how-do-independent-candidates-get-on-the-ballot',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'breaking-the-two-party-duopoly', tagName: 'Electoral Reform' },
+  {
+    slug: 'the-electoral-college-is-even-more-anti-democratic-than-you-probably-thought',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'swing-states-deciding-presidential-elections',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'implications-of-citizens-united', tagName: 'Electoral Reform' },
+  { slug: 'overcoming-electoral-barriers', tagName: 'Electoral Reform' },
+  {
+    slug: 'uncontested-elections-rot-democracy-from-the-inside-out',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'fundraising-and-the-race-to-the-bottom-how-the-two-party-system-brings-out',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'superdelegates-are-super-anti-democratic-how-political-parties-try-to-rig',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'time-to-bring-back-fairness-doctrine',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'can-independent-voters-vote-in-primaries',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'electoral-reform-how-to-challenge-ballot-access-laws',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'navigating-labyrinth-independents-gerrymandering',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'approval-voting-alternate-voting-system',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'what-is-a-nonpartisan-election', tagName: 'Electoral Reform' },
+  {
+    slug: '7-hidden-forms-political-corruption',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'looking-north-pros-cons-ranked-choice-voting',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'open-primaries-understanding-the-mechanics-and-implications',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'ranked-choice-voting-in-the-usa', tagName: 'Electoral Reform' },
+  {
+    slug: 'what-is-the-electoral-college-and-how-does-it-work',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'why-lifelong-term-limits-are-good-for-corruption-and-bad-for-everything-else',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'electoral-college-pros-and-cons', tagName: 'Electoral Reform' },
+  { slug: 'what-are-political-donations', tagName: 'Electoral Reform' },
+  {
+    slug: 'open-primary-vs-closed-primary-exploring-different-primary-election-systems',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'what-exactly-is-gerrymandering-why-is-it-so-bad',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'how-do-independent-candidates-get-on-the-ballot',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'breaking-the-two-party-duopoly', tagName: 'Electoral Reform' },
+  {
+    slug: 'the-electoral-college-is-even-more-anti-democratic-than-you-probably-thought',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'swing-states-deciding-presidential-elections',
+    tagName: 'Electoral Reform',
+  },
+  { slug: 'implications-of-citizens-united', tagName: 'Electoral Reform' },
+  { slug: 'overcoming-electoral-barriers', tagName: 'Electoral Reform' },
+  {
+    slug: 'uncontested-elections-rot-democracy-from-the-inside-out',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'fundraising-and-the-race-to-the-bottom-how-the-two-party-system-brings-out',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'superdelegates-are-super-anti-democratic-how-political-parties-try-to-rig',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'time-to-bring-back-fairness-doctrine',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'can-independent-voters-vote-in-primaries',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'electoral-reform-how-to-challenge-ballot-access-laws',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'navigating-labyrinth-independents-gerrymandering',
+    tagName: 'Electoral Reform',
+  },
+  {
+    slug: 'approval-voting-alternate-voting-system',
+    tagName: 'Electoral Reform',
+  },
+];
