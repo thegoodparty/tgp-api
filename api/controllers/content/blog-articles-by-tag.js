@@ -37,6 +37,9 @@ module.exports = {
           tagName = slug.tagName;
         });
       }
+      tagArticles.sort((a, b) => {
+        return new Date(b.publishDate) - new Date(a.publishDate);
+      });
 
       return exits.success({
         articles: tagArticles,
