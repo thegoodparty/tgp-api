@@ -65,7 +65,7 @@ module.exports = {
       const { topIssues } = campaign.details;
       // topIssues;
 
-      await createCandidatePositions(topIssues, created);
+      await createCandidatePositions(topIssues, updated);
 
       // await sails.helpers.crm.updateCandidate(created);
       await sails.helpers.crm.updateCampaign(updated);

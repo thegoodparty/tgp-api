@@ -38,9 +38,9 @@ module.exports = {
       const { campaign } = inputs;
       const { data } = campaign;
       const { launchStatus, lastStepDate } = data;
-      const dataDetails = campaign?.data?.details;
-      const goals = campaign?.data?.goals;
-      const currentStep = campaign?.data?.currentStep || '';
+      const dataDetails = data?.details;
+      const goals = data?.goals;
+      const currentStep = data?.currentStep || '';
       const electionDate = goals?.electionDate || undefined;
 
       const profileCompleted =
