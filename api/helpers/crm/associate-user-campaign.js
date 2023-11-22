@@ -63,6 +63,15 @@ module.exports = {
           }
         }
       }
+
+      if (!contactId) {
+        // this should not happen since the contact id should have created
+        await sails.helpers.slack.errorLoggerHelper(
+          'user does not have a contact id',
+          user,
+        );
+        return exits.success('not ok');
+      }
       //   console.log('contactId', contactId);
 
       let companyId = campaign.data ? campaign.data.hubspotId : false;

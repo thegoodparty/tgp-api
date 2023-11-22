@@ -214,7 +214,7 @@ module.exports = {
   },
 };
 
-const updateMeta = async (user, hubspotId, profile_updated_count) => {
+async function updateMeta(user, hubspotId, profile_updated_count) {
   let metaData;
 
   if (user.metaData && user.metaData !== '') {
@@ -231,6 +231,6 @@ const updateMeta = async (user, hubspotId, profile_updated_count) => {
   await User.updateOne({ id: user.id }).set({
     metaData: JSON.stringify(metaData),
   });
-};
+}
 
 const formatDate = (date) => moment(date).format('YYYY-MM-DD');

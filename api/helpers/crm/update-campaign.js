@@ -74,7 +74,7 @@ module.exports = {
           unlock_jared: profileCompleted ? 'Yes' : 'No',
           p2v_complete_date: data?.p2vCompleteDate || undefined,
           p2v_status: data?.p2vStatus || 'Locked',
-          election_date: electionDate || undefined,
+          // election_date: electionDate || undefined,
           doors_knocked: data?.reportedVoterGoals?.doorKnocking || 0,
           calls_made: data?.reportedVoterGoals?.calls || 0,
           online_impressions: data?.reportedVoterGoals?.digital || 0,
