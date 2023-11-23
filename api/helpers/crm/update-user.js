@@ -54,22 +54,6 @@ module.exports = {
       //   status: 'in review',
       // });
 
-      const supports = await Support.find({
-        user: id,
-      }).sort([{ createdAt: 'DESC' }]);
-
-      let allEndorsements = '';
-      for (let i = 0; i < supports.length; i++) {
-        const candidate = await Candidate.findOne({
-          id: supports[i].candidate,
-        });
-        if (!candidate) {
-          continue;
-        }
-        allEndorsements += `${candidate.firstName} ${candidate.lastName} \n`;
-        supports[i].candidate = candidate;
-      }
-
       const campaigns = await Campaign.find({
         user: id,
       });
@@ -90,7 +74,7 @@ module.exports = {
           active_candidate: campaign ? 'Yes' : 'No',
           live_candidate: campaign && campaign?.launchStatus === 'launched',
           source: 'Good Party Site',
-          all_endorsements: allEndorsements,
+          // all_endorsements: allEndorsements,
           recent_endorsement:
             supports.length > 0
               ? `${supports[0].candidate.firstName} ${supports[0].candidate.lastName}`
