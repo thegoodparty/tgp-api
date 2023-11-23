@@ -75,10 +75,10 @@ module.exports = {
           live_candidate: campaign && campaign?.launchStatus === 'launched',
           source: 'Good Party Site',
           // all_endorsements: allEndorsements,
-          recent_endorsement:
-            supports.length > 0
-              ? `${supports[0].candidate.firstName} ${supports[0].candidate.lastName}`
-              : '',
+          // recent_endorsement:
+          //   supports.length > 0
+          //     ? `${supports[0].candidate.firstName} ${supports[0].candidate.lastName}`
+          //     : '',
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
         },
