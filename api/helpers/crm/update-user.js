@@ -193,6 +193,10 @@ module.exports = {
       return exits.success('ok');
     } catch (e) {
       console.log('error on crm update user helper', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error on crm update user helper',
+        e,
+      );
       // Error if same phone...
       try {
         if (
@@ -207,6 +211,10 @@ module.exports = {
         }
       } catch (err) {
         console.log('error updating meta', err);
+        await sails.helpers.slack.errorLoggerHelper(
+          'error on crm update user helper2',
+          err,
+        );
       }
       // console.log('hubspot error', e);
       return exits.success('not ok');
