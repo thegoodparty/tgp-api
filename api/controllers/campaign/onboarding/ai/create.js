@@ -91,9 +91,22 @@ module.exports = {
       }
 
       // checking if this is the first time the campaign plan is visited. If so - send a slack message.
-      if (key === 'slogan' && !regenerate && !campaign[subSectionKey][key]) {
-        await sendSlackMessage(campaign, user);
+      if (
+        key === 'slogan' &&
+        !regenerate &&
+        !campaign[subSectionKey][key] &&
+        campaign.p2vStatus !== 'Waiting'
+      ) {
+        const campaignRecord = Campaign.findOne({ slug: campaign.slug });
+        if (campaignRecord.data.p2vStatus !== 'Waiting') {
+          await sendSlackMessage(campaign, user);
+        }
         campaign.p2vStatus = 'Waiting';
+        await Campaign.updateOne({
+          slug: campaign.slug,
+        }).set({
+          data: campaign,
+        });
       }
 
       const cmsPrompts = await sails.helpers.ai.getPrompts();
