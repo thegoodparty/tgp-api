@@ -162,7 +162,7 @@ async function sendSlackMessage(campaign, user) {
     return;
   }
   const { slug, details } = campaign;
-  const { firstName, lastName, office, state, district } = details;
+  const { firstName, lastName, office, state, city, district } = details;
   const slackMessage = {
     text: `Onboarding Alert!`,
     blocks: [
@@ -181,7 +181,8 @@ async function sendSlackMessage(campaign, user) {
           \nName: ${firstName} ${lastName}
           \nOffice: ${office}
           \nState: ${state}
-          \nDistrict: ${district}
+          \nCity: ${city || 'n/a'}
+          \nDistrict: ${district || 'n/a'}
           \nemail: ${user.email}
           \nslug: ${slug}\n
           \nadmin link: ${appBase}/admin/victory-path/${slug}
