@@ -68,7 +68,7 @@ module.exports = {
         // this should not happen since the contact id should have created
         await sails.helpers.slack.errorLoggerHelper(
           'user does not have a contact id',
-          user,
+          user.email,
         );
         return exits.success('not ok');
       }
