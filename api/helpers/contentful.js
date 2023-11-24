@@ -53,7 +53,7 @@ function mapResponse(items) {
         }
         const article = {
           ...item.fields,
-          id: elementId,
+          id: elementId.toLowerCase(),
         };
         if (article.category) {
           article.category = {
