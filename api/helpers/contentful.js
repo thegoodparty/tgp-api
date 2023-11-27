@@ -124,6 +124,7 @@ function mapResponse(items) {
         if (!mappedResponse.glossaryItemsByTitle) {
           mappedResponse.glossaryItemsByLetter = {};
           mappedResponse.glossaryItemsByTitle = {};
+          mappedResponse.glossaryItems = [];
         }
 
         // console.log('item', item);
@@ -149,6 +150,11 @@ function mapResponse(items) {
           ...item.fields,
           updatedAt,
         };
+        mappedResponse.glossaryItems.push({
+          slug,
+          ...item.fields,
+          updatedAt,
+        });
       } else if (itemId === 'faqOrder') {
         const faqOrder = item.fields.faqArticle;
         faqOrder.forEach((article) => {
