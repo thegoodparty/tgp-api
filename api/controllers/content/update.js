@@ -24,6 +24,9 @@ const schemaConfig = {
   blogArticles: {
     subKey: 'slug',
   },
+  glossaryItems: {
+    subKey: 'slug',
+  },
 };
 
 module.exports = {
