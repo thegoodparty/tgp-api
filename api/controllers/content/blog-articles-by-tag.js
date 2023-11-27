@@ -22,6 +22,11 @@ module.exports = {
 
       const articleTags = (await Content.findOne({ key: 'articleTags' })).data;
       const slugs = articleTags[tag];
+      if (!slugs) {
+        return exits.badRequest({
+          message: 'Content fetch failed.',
+        });
+      }
       const querySlugs = slugs.map((slug) => slug.slug);
       const articles = await Content.find({
         key: 'blogArticles',

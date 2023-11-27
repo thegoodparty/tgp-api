@@ -39,6 +39,7 @@ module.exports = {
 const faqsOrder = [];
 const faqsOrderHash = {};
 const articleTags = {};
+const articleTagsSlugs = {}; // to prevent duplicates
 
 function mapResponse(items) {
   const mappedResponse = {};
@@ -73,11 +74,15 @@ function mapResponse(items) {
           tags.forEach((tag) => {
             if (!articleTags[tag.slug]) {
               articleTags[tag.slug] = [];
+              articleTagsSlugs[tag.slug] = {};
             }
-            articleTags[tag.slug].push({
-              slug: item.fields.slug,
-              tagName: tag.name,
-            });
+            if (!articleTagsSlugs[tag.slug][item.fields.slug]) {
+              articleTagsSlugs[tag.slug][item.fields.slug] = true;
+              articleTags[tag.slug].push({
+                slug: item.fields.slug,
+                tagName: tag.name,
+              });
+            }
           });
         }
 
