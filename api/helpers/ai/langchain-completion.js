@@ -91,7 +91,7 @@ module.exports = {
         query: prompt,
       });
 
-      console.log('response', response);
+      console.log('langchain response', response);
       let responseText = response?.text;
       console.log('responseText', responseText);
       return exits.success(responseText);

@@ -65,22 +65,34 @@ module.exports = {
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
 
-      const completion = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        max_tokens: 3000,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful political assistant.',
-          },
-          { role: 'user', content: prompt },
-          ...chat,
-        ],
-      });
-      chatResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
-      );
+      let messages = [
+        {
+          role: 'system',
+          content: 'You are a helpful political assistant.',
+        },
+        { role: 'user', content: prompt },
+        ...chat,
+      ];
+
+      let engine = sails.config.custom.aiEngine || sails.config.aiEngine;
+
+      if (engine === 'togetherAi') {
+        const chatPrompt = messages
+          .map((message) => message.content)
+          .join('\n');
+        chatResponse = await sails.helpers.ai.llmCompletion(chatPrompt);
+      } else {
+        // default engine is openAi
+        let completion = await openai.createChatCompletion({
+          model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
+          max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
+          messages: messages,
+        });
+        chatResponse = completion.data.choices[0].message.content;
+      }
+
+      chatResponse = chatResponse.replace('/n', '<br/><br/>');
+      console.log('chatResponse', chatResponse);
 
       if (subSectionKey === 'aiContent') {
         campaign[subSectionKey][key]['content'] = chatResponse;

@@ -40,19 +40,30 @@ module.exports = {
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      let messages = [{ role: 'user', content: prompt }];
 
-      const completion = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }],
-      });
-      aiResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
-      );
+      let engine = sails.config.custom.aiEngine || sails.config.aiEngine;
+
+      if (engine === 'togetherAi') {
+        const chatPrompt = messages
+          .map((message) => message.content)
+          .join('\n');
+        chatResponse = await sails.helpers.ai.llmCompletion(chatPrompt);
+      } else {
+        // default engine is openAi
+        let completion = await openai.createChatCompletion({
+          model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
+          max_tokens: 500,
+          messages: messages,
+        });
+        chatResponse = completion.data.choices[0].message.content;
+      }
+
+      chatResponse = chatResponse.replace('/n', '<br/><br/>');
+      console.log('chatResponse', chatResponse);
 
       return exits.success({
-        aiResponse,
+        aiResponse: chatResponse,
       });
     } catch (e) {
       console.log('Error in find candidate', e);
