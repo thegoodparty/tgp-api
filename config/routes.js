@@ -170,6 +170,7 @@ module.exports.routes = {
 
   // ballotData
   'GET   /api/v1/ballot-data/races': 'campaign/ballotData/races',
+  'GET   /api/v1/ballot-data/opponents': 'campaign/ballotData/opponents',
 
   // test ai
   'POST   /api/v1/ai/test': 'ai/test',
