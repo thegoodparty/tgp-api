@@ -115,13 +115,33 @@ module.exports = {
       `;
 
       const { races } = await sails.helpers.graphql.queryHelper(query);
+      const groupedRaces = { local: [], state: [], federal: [] };
+      const existingPosition = {};
+      // group races by level
+      if (races?.edges) {
+        for (let i = 0; i < races.edges.length; i++) {
+          const edge = races.edges[i];
+          const level = edge?.node?.position?.level;
+          const id = edge?.node?.position?.id;
+          if (existingPosition[id]) {
+            continue;
+          }
+          existingPosition[id] = true;
+          if (level === 'FEDERAL') {
+            groupedRaces.federal.push(edge.node);
+          } else if (level === 'STATE') {
+            groupedRaces.state.push(edge.node);
+          } else {
+            groupedRaces.local.push(edge.node);
+          }
+        }
+      }
 
       return exits.success({
-        races: races?.edges || [],
+        races: groupedRaces,
       });
     } catch (e) {
-      console.log('error at ballotData/get');
-      console.log(e);
+      console.log('error at ballotData/get', e);
       return exits.success({
         error: true,
         e,
