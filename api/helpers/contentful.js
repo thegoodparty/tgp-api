@@ -26,12 +26,24 @@ module.exports = {
       accessToken: contentfulAccessToken,
     });
 
-    const entries = await client.getEntries({
-      limit: 1000,
+    const entries1 = await client.getEntries({
+      limit: 500,
     });
-    const items = client.parseEntries(entries).items;
 
-    const flatResponse = mapResponse(items);
+    const entries2 = await client.getEntries({
+      limit: 500,
+      skip: 500,
+    });
+    const entries3 = await client.getEntries({
+      limit: 500,
+      skip: 1000,
+    });
+
+    const items1 = client.parseEntries(entries1).items;
+    const items2 = client.parseEntries(entries2).items;
+    const items3 = client.parseEntries(entries3).items;
+
+    const flatResponse = mapResponse([...items1, ...items2, ...items3]);
     return exits.success(flatResponse);
   },
 };
@@ -44,7 +56,7 @@ const articleTagsSlugs = {}; // to prevent duplicates
 function mapResponse(items) {
   const mappedResponse = {};
   // console.log(JSON.stringify(items));
-  items.map((item) => {
+  items.forEach((item) => {
     if (item && item.sys && item.sys.contentType && item.sys.contentType.sys) {
       const itemId = item.sys.contentType.sys.id;
       const elementId = item.sys.id;
