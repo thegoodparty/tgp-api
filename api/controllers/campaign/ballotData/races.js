@@ -25,6 +25,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      await sails.helpers.queue.consumer();
       const { zip } = inputs;
       const today = moment().format('YYYY-MM-DD');
       const nextYear = moment().add(1, 'year').format('YYYY-MM-DD');
@@ -121,6 +122,7 @@ module.exports = {
       if (races?.edges) {
         for (let i = 0; i < races.edges.length; i++) {
           const edge = races.edges[i];
+
           const level = edge?.node?.position?.level;
           const id = edge?.node?.position?.id;
           if (existingPosition[id]) {
@@ -134,7 +136,13 @@ module.exports = {
           } else {
             groupedRaces.local.push(edge.node);
           }
+          const queueMessage = {
+            type: 'saveBallotReadyRace',
+            data: edge,
+          };
+          await sails.helpers.queue.enqueue(queueMessage);
         }
+        // use queue to dave these to our db
       }
 
       return exits.success({

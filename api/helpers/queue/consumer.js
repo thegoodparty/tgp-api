@@ -92,6 +92,9 @@ async function handleMessage(message) {
     case 'generateCampaignPlan':
       await handleGenerateCampaignPlan(data);
       break;
+    case 'saveBallotReadyRace':
+      await handleSaveBallotReadyRace(data);
+      break;
   }
 }
 
@@ -296,5 +299,49 @@ async function handleGenerateCampaignPlan(message) {
     }
     // throw an Error so that the message goes back to the queue or the DLQ.
     throw new Error('error generating ai content');
+  }
+}
+
+async function handleSaveBallotReadyRace(race) {
+  console.log('handleing races in queue consumer');
+  //create or update each election and position
+  try {
+    const node = race.node;
+    const positionId = node.position?.id;
+    const electionId = node.election?.id;
+
+    const existingRecord = await BallotElection.findOne({
+      ballotId: electionId,
+    });
+    if (existingRecord) {
+      await BallotElection.updateOne({ ballotId: electionId }).set({
+        electionDate: new Date(node.election.electionDay).getTime(),
+        state: node.election.state,
+        data: node.election,
+      });
+    } else {
+      await BallotElection.create({
+        ballotId: electionId,
+        electionDate: new Date(node.election.electionDay).getTime(),
+        state: node.election.state,
+        data: node.election,
+      });
+    }
+
+    const existingPosition = await BallotPosition.findOne({
+      ballotId: positionId,
+    });
+    if (existingPosition) {
+      await BallotPosition.updateOne({ ballotId: positionId }).set({
+        data: node.position,
+      });
+    } else {
+      await BallotPosition.create({
+        ballotId: positionId,
+        data: node.election,
+      });
+    }
+  } catch (e) {
+    console.log('error in consumer/handleSaveBallotReadyRaces', e);
   }
 }
