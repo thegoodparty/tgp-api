@@ -100,8 +100,8 @@ module.exports = {
       ) {
         const campaignRecord = Campaign.findOne({ slug: campaign.slug });
         if (
-          !campaignRecord.data.p2vStatus ||
-          campaignRecord.data.p2vStatus !== 'Waiting'
+          !campaignRecord.data?.p2vStatus ||
+          campaignRecord.data?.p2vStatus !== 'Waiting'
         ) {
           await sendSlackMessage(campaign, user);
         }
