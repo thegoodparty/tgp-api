@@ -10,6 +10,7 @@ module.exports = {
       const campaigns = await Campaign.find().populate(user);
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i].data;
+        const user = campaign[i].user;
         if (!campaign) {
           continue;
         }
