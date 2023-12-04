@@ -5,9 +5,9 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      let activated = 0;
+      let sent = 0;
       // const campaigns = await Campaign.find({ isActive: false });
-      const campaigns = await Campaign.find().populate(user);
+      const campaigns = await Campaign.find().populate('user');
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i].data;
         const user = campaign[i].user;
@@ -28,11 +28,12 @@ module.exports = {
               },
             });
           }
+          sent++;
         }
       }
 
       return exits.success({
-        message: `Activated ${activated} campaigns`,
+        message: `Sent ${sent} emails`,
       });
     } catch (e) {
       console.log('Error in seed', e);
