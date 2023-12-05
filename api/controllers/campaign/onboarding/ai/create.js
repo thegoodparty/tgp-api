@@ -96,7 +96,8 @@ module.exports = {
         (key === 'slogan' &&
           !regenerate &&
           !campaign[subSectionKey][key] &&
-          campaign.p2vStatus !== 'Waiting')
+          campaign.p2vStatus !== 'Waiting' &&
+          campaign.p2vStatus !== 'Complete')
       ) {
         const campaignRecord = Campaign.findOne({ slug: campaign.slug });
         if (

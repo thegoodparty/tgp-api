@@ -28,14 +28,6 @@ module.exports = {
         name: `${user.name}`,
         link: `${appBase}/onboarding/${slug}/campaign-plan`,
       });
-      await sails.helpers.mailgun.mailgunTemplateSender(
-        user.email,
-        'Exciting News: Your Customized Campaign Plan is Updated!',
-        'candidate-victory-ready',
-        variables,
-        'jared@goodparty.org',
-      );
-
       await Campaign.updateOne({ slug }).set({
         data: {
           ...campaign.data,
@@ -43,6 +35,14 @@ module.exports = {
           p2vStatus: 'Complete',
         },
       });
+
+      await sails.helpers.mailgun.mailgunTemplateSender(
+        user.email,
+        'Exciting News: Your Customized Campaign Plan is Updated!',
+        'candidate-victory-ready',
+        variables,
+        'jared@goodparty.org',
+      );
 
       return exits.success({
         message: 'sent',
