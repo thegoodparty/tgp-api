@@ -49,7 +49,7 @@ module.exports = {
 };
 
 async function sendSlackMessage(campaign, user) {
-  if (appBase !== 'https://goodparty.org') {
+  if (appBase !== 'https://goodparty.org' || !user || !user.email) {
     return;
   }
   const { slug, details } = campaign;
