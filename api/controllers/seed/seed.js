@@ -1,3 +1,5 @@
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 module.exports = {
   inputs: {},
 
