@@ -18,6 +18,14 @@ const s3Bucket = 'ballotready-chunks';
 const s3 = new AWS.S3();
 
 let count = 0;
+let files = 5;
+if (
+  appBase === 'https://goodparty.org' ||
+  appBase === 'https://qa.goodparty.org'
+) {
+  files = 61;
+}
+
 module.exports = {
   inputs: {},
 
@@ -25,7 +33,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      for (let i = 0; i < 61; i++) {
+      for (let i = 0; i < files; i++) {
         const s3Key = `ballotready_part${i + 1}.csv`;
         console.log('processing file ', s3Key);
         await readAndProcessCSV(s3Key);
