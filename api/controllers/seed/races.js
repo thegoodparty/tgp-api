@@ -25,10 +25,13 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const s3Key = 'ballotready_part25.csv';
-      readAndProcessCSV(s3Key);
+      for (let i = 0; i < 61; i++) {
+        const s3Key = `ballotready_part${i + 1}.csv`;
+        console.log('processing file ', s3Key);
+        await readAndProcessCSV(s3Key);
+      }
       return exits.success({
-        message: `done`,
+        message: `created ${count} entities`,
       });
     } catch (e) {
       console.log('Error in seed', e);
@@ -42,52 +45,94 @@ module.exports = {
 };
 
 function readAndProcessCSV(s3Key) {
-  const s3Stream = s3
-    .getObject({ Bucket: s3Bucket, Key: s3Key })
-    .createReadStream();
+  return new Promise((resolve, reject) => {
+    const s3Stream = s3
+      .getObject({ Bucket: s3Bucket, Key: s3Key })
+      .createReadStream();
 
-  s3Stream
-    .pipe(csv())
-    .on('data', (row) => {
-      // Immediately invoked async function to handle each row
-      (async () => {
-        await insertCountyIntoDatabase(row);
-      })();
-    })
-    .on('end', () => {
-      console.log('CSV file successfully processed');
-    });
+    const promises = [];
+
+    s3Stream
+      .pipe(csv())
+      .on('data', (row) => {
+        // Push the promise of each row processing into an array
+        const processRow = async () => {
+          try {
+            await insertCountyIntoDatabase(row);
+          } catch (error) {
+            reject(error); // Reject the main promise on any error
+          }
+        };
+        promises.push(processRow());
+      })
+      .on('end', () => {
+        // Wait for all row processing to complete
+        Promise.all(promises)
+          .then(() => {
+            console.log('CSV file successfully processed');
+            resolve(); // Resolve the main promise after all rows are processed
+          })
+          .catch(reject); // Reject the main promise if any of the row processing fails
+      })
+      .on('error', reject); // Handle any stream errors
+  });
 }
 
 async function insertCountyIntoDatabase(row) {
   try {
-    const { position_name } = row;
+    const { position_name, state, race_id } = row;
 
     const { name, level } = await sails.helpers.ballotready.extractLocation(
       row,
     );
-    if (name === '') {
-      console.log('position_name', position_name);
-      console.log('original level', row.level);
-      console.log('name', name);
-      console.log('level', level);
-      console.log('---');
-    }
-
-    // console.log('county', county);
-    // console.log('state_id', state_id);
-    // const exists = await County.findOne({
-    //   name: county,
-    //   state: state_id,
-    // });
-    // if (!exists) {
-    //   await County.create({
-    //     name: county,
-    //     state: state_id,
-    //     data: row,
-    //   });
-    //   count++;
+    // if (name === '') {
+    //   console.log('position_name', position_name);
+    //   console.log('original level', row.level);
+    //   console.log('name', name);
+    //   console.log('level', level);
+    //   console.log('---');
     // }
+    const exists = await BallotRace.findOne({
+      ballotId: race_id,
+    });
+    if (!exists && name !== '') {
+      if (level === 'county') {
+        const countyExists = await County.findOne({
+          name,
+          state,
+        });
+        if (countyExists) {
+          await BallotRace.create({
+            ballotId: race_id,
+            state,
+            data: row,
+            county: countyExists.id,
+          });
+          count++;
+        }
+      } else if (level === 'state') {
+        await BallotRace.create({
+          ballotId: race_id,
+          state,
+          data: row,
+        });
+        count++;
+      } else {
+        const municipalityExists = await Municipality.findOne({
+          name,
+          state,
+        });
+        if (municipalityExists) {
+          await BallotRace.create({
+            ballotId: race_id,
+            state,
+            data: row,
+            municipality: municipalityExists.id,
+          });
+          count++;
+        }
+      }
+    }
   } catch (e) {
     console.log('error in insertIntoDb', e);
   }

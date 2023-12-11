@@ -8,7 +8,11 @@ module.exports = {
       required: true,
       unique: true,
     },
-
+    state: {
+      type: 'string',
+      maxLength: 2,
+      minLength: 2,
+    },
     data: {
       type: 'json',
     },
