@@ -53,15 +53,24 @@ module.exports = {
       if (cc) {
         data.cc = cc;
       }
-      mg.messages().send(data, function (error, body) {
+      mg.messages().send(data, async function (error, body) {
         if (error) {
+          await sails.helpers.slack.errorLoggerHelper(
+            'error sending mail - template',
+            error,
+          );
           console.log('error sending mail', error);
           return exits.badRequest('error sending email');
         }
         return exits.success({ message: 'email sent successfully' });
       });
     } catch (e) {
+      await sails.helpers.slack.errorLoggerHelper(
+        'error sending mail - template',
+        e,
+      );
       console.log(e);
+
       throw 'badRequest';
     }
   },

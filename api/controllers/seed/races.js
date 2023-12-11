@@ -75,7 +75,7 @@ function readAndProcessCSV(s3Key) {
         // Push the promise of each row processing into an array
         const processRow = async () => {
           try {
-            await insertCountyIntoDatabase(row);
+            await insertIntoDatabase(row);
           } catch (error) {
             reject(error); // Reject the main promise on any error
           }
@@ -95,7 +95,7 @@ function readAndProcessCSV(s3Key) {
   });
 }
 
-async function insertCountyIntoDatabase(row) {
+async function insertIntoDatabase(row) {
   try {
     const { position_name, state, race_id } = row;
 
@@ -113,6 +113,8 @@ async function insertCountyIntoDatabase(row) {
       ballotId: race_id,
     });
     if (!exists && name !== '') {
+      // federal
+      // add level to ballot race table, is_judicial is_primary, sub_area_name	sub_area_value	sub_area_name_secondary	sub_area_value_secondary
       if (level === 'county') {
         const countyExists = await County.findOne({
           name,

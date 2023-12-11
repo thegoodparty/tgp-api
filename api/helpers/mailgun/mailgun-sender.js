@@ -36,16 +36,10 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      const {
-        message,
-        messageHeader,
-        email,
-        name,
-        subject,
-        fromEmail,
-      } = inputs;
+      const { message, messageHeader, email, name, subject, fromEmail } =
+        inputs;
 
       const mailgunApiKey =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
@@ -65,8 +59,8 @@ module.exports = {
           text: message,
           html: html(message, messageHeader, subject),
         })
-        .then(msg => {}) // logs response data
-        .catch(e => {
+        .then((msg) => {}) // logs response data
+        .catch((e) => {
           console.log('error at helpers/mailgun-sender', e);
           throw e;
         }); // logs any error
@@ -74,6 +68,10 @@ module.exports = {
       return exits.success();
     } catch (e) {
       console.log('error at helpers/mailgun-sender', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error sending mail - sender',
+        error,
+      );
       throw e;
     }
   },
