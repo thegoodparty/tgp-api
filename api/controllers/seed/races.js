@@ -36,8 +36,17 @@ module.exports = {
       for (let i = 0; i < files; i++) {
         const s3Key = `ballotready_part${i + 1}.csv`;
         console.log('processing file ', s3Key);
+        await sails.helpers.slack.errorLoggerHelper('processing file', {
+          fileName: s3Key,
+        });
         await readAndProcessCSV(s3Key);
       }
+      await sails.helpers.slack.errorLoggerHelper(
+        'completed races processing',
+        {
+          count,
+        },
+      );
       return exits.success({
         message: `created ${count} entities`,
       });
