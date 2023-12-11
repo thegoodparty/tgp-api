@@ -1,4 +1,6 @@
-const mailgun = require('mailgun-js');
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData);
 
 module.exports = {
   friendlyName: 'MAIL GUN Sender',
@@ -36,50 +38,43 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
-      const {
-        message,
-        messageHeader,
-        email,
-        name,
-        subject,
-        fromEmail,
-      } = inputs;
+      const { message, messageHeader, email, name, subject, fromEmail } =
+        inputs;
 
       const mailgunApiKey =
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
 
       const domain = 'mg.goodparty.org';
-      const mg = mailgun({ apiKey: mailgunApiKey, domain });
+      const mg = mailgun.client({ key: mailgunApiKey, username: 'api' });
 
       // const validFromEmail =
       //   fromEmail || 'The Good Party <noreply@goodparty.org>';
       const validFromEmail = fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
 
-      mg.messages()
-        .send({
-          from: validFromEmail,
-          to: email,
-          subject,
-          text: message,
-          html: html(message, messageHeader, subject),
-        })
-        .then(msg => {}) // logs response data
-        .catch(e => {
-          console.log('error at helpers/mailgun-sender', e);
-          throw e;
-        }); // logs any error
+      const data = {
+        from: validFromEmail,
+        to: email,
+        subject,
+        text: message,
+        html: html(message, messageHeader, subject),
+      };
+      const msg = await mg.messages.create(domain, data);
 
       return exits.success();
     } catch (e) {
       console.log('error at helpers/mailgun-sender', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error sending mail - sender',
+        e,
+      );
       throw e;
     }
   },
 };
 
-const html = (msg = '', messageHeader = '', subject = '') => {
+function html(msg = '', messageHeader = '', subject = '') {
   return `
 <style type="text/css">
   html, body {
@@ -179,4 +174,4 @@ const html = (msg = '', messageHeader = '', subject = '') => {
     </td>
   </tr>
 </table>`;
-};
+}

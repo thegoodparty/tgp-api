@@ -1,4 +1,6 @@
-const mailgun = require('mailgun-js');
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
+const mailgun = new Mailgun(formData);
 
 module.exports = {
   friendlyName: 'Send emails using mailgun helper',
@@ -42,7 +44,7 @@ module.exports = {
         sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
 
       const domain = 'mg.goodparty.org';
-      const mg = mailgun({ apiKey: mailgunApiKey, domain });
+      const mg = mailgun.client({ key: mailgunApiKey, username: 'api' });
       const data = {
         from: 'GOOD PARTY <noreply@goodparty.org>',
         to,
@@ -53,15 +55,17 @@ module.exports = {
       if (cc) {
         data.cc = cc;
       }
-      mg.messages().send(data, function (error, body) {
-        if (error) {
-          console.log('error sending mail', error);
-          return exits.badRequest('error sending email');
-        }
-        return exits.success({ message: 'email sent successfully' });
-      });
+
+      const msg = await mg.messages.create(domain, data);
+      console.log('msg', msg);
+      return exits.success({ message: 'email sent successfully' });
     } catch (e) {
-      console.log(e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error sending mail - template',
+        e,
+      );
+      console.log('error sending mail - template', e);
+
       throw 'badRequest';
     }
   },
