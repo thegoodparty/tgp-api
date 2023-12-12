@@ -1,5 +1,4 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-const fs = require('fs');
 const csv = require('csv-parser');
 const AWS = require('aws-sdk');
 const accessKeyId =
@@ -18,7 +17,7 @@ const s3Bucket = 'ballotready-chunks';
 const s3 = new AWS.S3();
 
 let count = 0;
-let files = 5;
+let files = 3;
 if (
   appBase === 'https://goodparty.org' ||
   appBase === 'https://qa.goodparty.org'
@@ -97,7 +96,17 @@ function readAndProcessCSV(s3Key) {
 
 async function insertIntoDatabase(row) {
   try {
-    const { position_name, state, race_id } = row;
+    const {
+      position_name,
+      state,
+      race_id,
+      is_primary,
+      is_judicial,
+      sub_area_name,
+      sub_area_value,
+    } = row;
+    const isPrimary = is_primary && is_primary.toLowerCase() === 'true';
+    const isJudicial = is_judicial && is_judicial.toLowerCase() === 'true';
 
     const { name, level } = await sails.helpers.ballotready.extractLocation(
       row,
@@ -113,8 +122,6 @@ async function insertIntoDatabase(row) {
       ballotId: race_id,
     });
     if (!exists && name !== '') {
-      // federal
-      // add level to ballot race table, is_judicial is_primary, sub_area_name	sub_area_value	sub_area_name_secondary	sub_area_value_secondary
       if (level === 'county') {
         const countyExists = await County.findOne({
           name,
@@ -126,14 +133,24 @@ async function insertIntoDatabase(row) {
             state,
             data: row,
             county: countyExists.id,
+            level,
+            isPrimary,
+            isJudicial,
+            subAreaName: sub_area_name,
+            subAreaValue: sub_area_value,
           });
           count++;
         }
-      } else if (level === 'state') {
+      } else if (level === 'state' || level === 'federal') {
         await BallotRace.create({
           ballotId: race_id,
           state,
           data: row,
+          level,
+          isPrimary,
+          isJudicial,
+          subAreaName: sub_area_name,
+          subAreaValue: sub_area_value,
         });
         count++;
       } else {
@@ -147,6 +164,11 @@ async function insertIntoDatabase(row) {
             state,
             data: row,
             municipality: municipalityExists.id,
+            level,
+            isPrimary,
+            isJudicial,
+            subAreaName: sub_area_name,
+            subAreaValue: sub_area_value,
           });
           count++;
         }

@@ -10,9 +10,32 @@ module.exports = {
     },
     state: {
       type: 'string',
+      required: true,
       maxLength: 2,
       minLength: 2,
     },
+
+    level: {
+      type: 'string',
+      required: true,
+    },
+
+    subAreaName: {
+      type: 'string',
+    },
+
+    subAreaValue: {
+      type: 'string',
+    },
+
+    isJudicial: {
+      type: 'boolean',
+    },
+
+    isPrimary: {
+      type: 'boolean',
+    },
+
     data: {
       type: 'json',
     },

@@ -85,7 +85,7 @@ module.exports = {
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
-      console.log('error at slack-helper', e);
+      // console.log('error at slack-helper', e);
       return exits.success({ message: 'Error sending Slack message' });
     }
   },
