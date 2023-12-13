@@ -1,6 +1,7 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 const csv = require('csv-parser');
 const AWS = require('aws-sdk');
+const crypto = require('crypto');
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
@@ -122,6 +123,8 @@ async function insertIntoDatabase(row) {
       ballotId: race_id,
     });
     if (!exists && name !== '') {
+      const hashId = await randomHash();
+
       if (level === 'county') {
         const countyExists = await County.findOne({
           name,
@@ -129,6 +132,7 @@ async function insertIntoDatabase(row) {
         });
         if (countyExists) {
           await BallotRace.create({
+            hashId,
             ballotId: race_id,
             state,
             data: row,
@@ -143,6 +147,7 @@ async function insertIntoDatabase(row) {
         }
       } else if (level === 'state' || level === 'federal') {
         await BallotRace.create({
+          hashId,
           ballotId: race_id,
           state,
           data: row,
@@ -160,6 +165,7 @@ async function insertIntoDatabase(row) {
         });
         if (municipalityExists) {
           await BallotRace.create({
+            hashId,
             ballotId: race_id,
             state,
             data: row,
@@ -177,4 +183,14 @@ async function insertIntoDatabase(row) {
   } catch (e) {
     console.log('error in insertIntoDb', e);
   }
+}
+
+async function randomHash() {
+  const hashId = crypto.randomBytes(3).toString('hex').substr(0, 8);
+  const existing = await BallotRace.findOne({ hashId });
+  if (existing) {
+    console.log('duplicate hash', hashId);
+    return await randomHash();
+  }
+  return hashId;
 }

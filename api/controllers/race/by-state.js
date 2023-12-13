@@ -25,7 +25,7 @@ module.exports = {
       const state = inputState.toUpperCase();
       const counties = await County.find({
         where: { state },
-        select: ['name'],
+        select: ['name', 'slug'],
       });
       const races = await BallotRace.find({
         state,

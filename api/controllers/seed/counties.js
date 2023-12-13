@@ -1,4 +1,5 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const slugify = require('slugify');
 const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
@@ -57,6 +58,7 @@ function readAndProcessCSV(filePath) {
 async function insertCountyIntoDatabase(row) {
   try {
     const { county, state_id } = row;
+
     // console.log('county', county);
     // console.log('state_id', state_id);
     const exists = await County.findOne({
@@ -64,10 +66,14 @@ async function insertCountyIntoDatabase(row) {
       state: state_id,
     });
     if (!exists) {
+      const slug = `${slugify(state_id, { lower: true })}/${slugify(county, {
+        lower: true,
+      })}`;
       await County.create({
         name: county,
         state: state_id,
         data: row,
+        slug,
       });
       count++;
     }

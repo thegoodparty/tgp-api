@@ -3,6 +3,7 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
+const slugify = require('slugify');
 let csvFilePath = path.join(
   __dirname,
   '../../../data/geoPoliticalEntities/dec23/uscities_v1.77_short.csv',
@@ -59,6 +60,7 @@ async function insertCityIntoDatabase(row) {
   try {
     const { city, state_id, county_name, township, incorporated } = row;
     // console.log('state_id', state_id);
+
     let type = 'city';
     if (township === 'TRUE') {
       type = 'township';
@@ -71,11 +73,17 @@ async function insertCityIntoDatabase(row) {
       state: state_id,
     });
     if (county) {
+      const slug = `${slugify(state_id, {
+        lower: true,
+      })}/${slugify(county_name, {
+        lower: true,
+      })}/${slugify(city, {
+        lower: true,
+      })}`;
+
       const exists = await Municipality.findOne({
-        name: city,
         type,
-        state: state_id,
-        county: county.id,
+        slug,
       });
       if (!exists) {
         await Municipality.create({
@@ -84,6 +92,7 @@ async function insertCityIntoDatabase(row) {
           state: state_id,
           county: county.id,
           data: row,
+          slug,
         });
         count++;
       }

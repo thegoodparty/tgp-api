@@ -8,6 +8,11 @@ module.exports = {
       required: true,
       unique: true,
     },
+    hashId: {
+      type: 'string',
+      required: true,
+      unique: true,
+    },
     state: {
       type: 'string',
       required: true,
