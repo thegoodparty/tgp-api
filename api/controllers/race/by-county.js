@@ -45,7 +45,7 @@ module.exports = {
         return exits.notFound();
       }
       const municipalities = await Municipality.find({
-        where: { state, county: county.id },
+        where: { state, county: countyRecord.id },
         select: ['name', 'slug'],
       });
       const races = await BallotRace.find({
