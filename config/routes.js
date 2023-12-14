@@ -184,4 +184,5 @@ module.exports.routes = {
   'GET   /api/v1/race/by-county': 'race/by-county',
   'GET   /api/v1/race/by-city': 'race/by-city',
   'GET   /api/v1/race': 'race/get',
+  'GET   /api/v1/race/csv': 'race/races-csv',
 };
