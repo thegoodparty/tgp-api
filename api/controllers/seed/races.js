@@ -105,6 +105,7 @@ async function insertIntoDatabase(row) {
       is_judicial,
       sub_area_name,
       sub_area_value,
+      filing_periods,
     } = row;
     const isPrimary = is_primary && is_primary.toLowerCase() === 'true';
     const isJudicial = is_judicial && is_judicial.toLowerCase() === 'true';
@@ -124,6 +125,11 @@ async function insertIntoDatabase(row) {
     });
     if (!exists && name !== '') {
       const hashId = await randomHash();
+      const dates = extractDates(filing_periods);
+      if (dates) {
+        row.filing_date_start = dates.startDate;
+        row.filing_date_end = dates.endDate;
+      }
 
       if (level === 'county') {
         const countyExists = await County.findOne({
@@ -193,4 +199,28 @@ async function randomHash() {
     return await randomHash();
   }
   return hashId;
+}
+
+function extractDates(str) {
+  // the string format is [{"notes"=>nil, "end_on"=>"2024-05-10", "start_on"=>"2024-05-06"}] or []
+  // Replace '=>' with ':' to make it a valid JSON string
+  if (!str || str === '' || str === '[]') {
+    return false;
+  }
+  try {
+    let validJsonString = str.replace(/=>/g, ':');
+    validJsonString = validJsonString.replace(/nil/g, 'null');
+
+    // Parse the string as JSON
+    const jsonObject = JSON.parse(validJsonString);
+
+    // Extract the 'start_on' and 'end_on' dates
+    const startDate = jsonObject[0].start_on;
+    const endDate = jsonObject[0].end_on;
+
+    return { startDate, endDate };
+  } catch (e) {
+    console.log('error', e);
+    return false;
+  }
 }
