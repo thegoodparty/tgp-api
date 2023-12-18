@@ -16,6 +16,10 @@ module.exports.routes = {
   'POST   /api/v1/log-error': 'general/error-logger',
   'GET    /api/v1/seed': 'seed/seed',
   'GET    /api/v1/ballot-ready': 'seed/ballot-ready',
+  'GET    /api/v1/seed/counties': 'seed/counties',
+  'GET    /api/v1/seed/municipalities': 'seed/municipalities',
+  'GET    /api/v1/seed/split': 'seed/split-large-csv',
+  'GET    /api/v1/seed/races': 'seed/races',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'GET    /api/v1/content/blog-articles-titles': 'content/blog-articles-titles',
@@ -174,4 +178,11 @@ module.exports.routes = {
   // test ai
   'POST   /api/v1/ai/test': 'ai/test',
   'GET   /api/v1/ai/load': 'ai/load',
+
+  // races
+  'GET   /api/v1/race/by-state': 'race/by-state',
+  'GET   /api/v1/race/by-county': 'race/by-county',
+  'GET   /api/v1/race/by-city': 'race/by-city',
+  'GET   /api/v1/race': 'race/get',
+  'GET   /api/v1/race/csv': 'race/races-csv',
 };

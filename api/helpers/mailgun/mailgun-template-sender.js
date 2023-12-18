@@ -56,8 +56,7 @@ module.exports = {
         data.cc = cc;
       }
 
-      const msg = await mg.messages.create(domain, data);
-      console.log('msg', msg);
+      await mg.messages.create(domain, data);
       return exits.success({ message: 'email sent successfully' });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(

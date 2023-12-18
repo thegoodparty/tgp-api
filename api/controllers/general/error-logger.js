@@ -34,8 +34,8 @@ module.exports = {
         message: 'reported',
       });
     } catch (e) {
-      console.log('error at health');
-      console.log(e);
+      console.log('error at s3 logger');
+      // console.log(e);
       await sails.helpers.slack.errorLoggerHelper('Error at error-logerh]', e);
       return exits.badRequest({
         message: 'unknown error',

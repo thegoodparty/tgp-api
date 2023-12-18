@@ -58,4 +58,5 @@ module.exports.policies = {
   'campaign/ballotData/races': true,
   'ai/test': true,
   'ai/load': true,
+  'race/*': true,
 };
