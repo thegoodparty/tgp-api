@@ -20,6 +20,12 @@ module.exports = {
       minLength: 2,
     },
 
+    electionDate: {
+      type: 'number',
+      description: 'A JS timestamp (epoch ms)',
+      example: 1502844074211,
+    },
+
     level: {
       type: 'string',
       required: true,

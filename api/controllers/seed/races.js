@@ -106,6 +106,7 @@ async function insertIntoDatabase(row) {
       sub_area_name,
       sub_area_value,
       filing_periods,
+      election_day,
     } = row;
     const isPrimary = is_primary && is_primary.toLowerCase() === 'true';
     const isJudicial = is_judicial && is_judicial.toLowerCase() === 'true';
@@ -130,6 +131,7 @@ async function insertIntoDatabase(row) {
         row.filing_date_start = dates.startDate;
         row.filing_date_end = dates.endDate;
       }
+      const electionDate = election_day ? new Date(election_day).getTime() : 0;
 
       if (level === 'county') {
         const countyExists = await County.findOne({
@@ -148,6 +150,7 @@ async function insertIntoDatabase(row) {
             isJudicial,
             subAreaName: sub_area_name,
             subAreaValue: sub_area_value,
+            electionDate,
           });
           count++;
         }
@@ -162,6 +165,7 @@ async function insertIntoDatabase(row) {
           isJudicial,
           subAreaName: sub_area_name,
           subAreaValue: sub_area_value,
+          electionDate,
         });
         count++;
       } else {
@@ -181,6 +185,7 @@ async function insertIntoDatabase(row) {
             isJudicial,
             subAreaName: sub_area_name,
             subAreaValue: sub_area_value,
+            electionDate,
           });
           count++;
         }
