@@ -3,12 +3,12 @@ const readline = require('readline');
 const path = require('path');
 const csvFilePath = path.join(
   __dirname,
-  '../../../data/geoPoliticalEntities/dec23/temp/ballotready-full.csv',
+  '../../../data/geoPoliticalEntities/dec23/ballot/ballotready-full.csv',
 );
 
 const outputPath = path.join(
   __dirname,
-  '../../../data/geoPoliticalEntities/dec23/temp/',
+  '../../../data/geoPoliticalEntities/dec23/ballot/',
 );
 
 let fileCount = 0;
@@ -19,7 +19,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      splitCsvFile(csvFilePath, 10000);
+      splitCsvFile(csvFilePath, 5000);
       return exits.success({
         message: `saved into ${fileCount}`,
       });
