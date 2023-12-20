@@ -3,12 +3,12 @@ const readline = require('readline');
 const path = require('path');
 const csvFilePath = path.join(
   __dirname,
-  '../../../data/geoPoliticalEntities/dec23/ballot/ballotready-full.csv',
+  '../../../data/geoPoliticalEntities/dec23/uscities_v1.77.csv',
 );
 
 const outputPath = path.join(
   __dirname,
-  '../../../data/geoPoliticalEntities/dec23/ballot/',
+  '../../../data/geoPoliticalEntities/dec23/cities/',
 );
 
 let fileCount = 0;
@@ -61,7 +61,7 @@ async function splitCsvFile(filePath, linesPerFile) {
         outFile.close();
       }
       outFile = fs.createWriteStream(
-        `${outputPath}ballotready_part${++fileCount}.csv`,
+        `${outputPath}cities_part${++fileCount}.csv`,
       );
       outFile.write(headerLine + '\n');
     }
