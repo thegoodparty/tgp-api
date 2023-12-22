@@ -254,7 +254,13 @@ function againstToStr(runningAgainst) {
     return '';
   }
   let str = '';
-  runningAgainst.forEach((opponent) => {
+  if (runningAgainst.length > 1) {
+    str = `${runningAgainst.length} candidates who are: `;
+  }
+  runningAgainst.forEach((opponent, index) => {
+    if (index > 0) {
+      str += 'and also running against ';
+    }
     str += `name: ${opponent.name}, party: ${opponent.party} ,description: ${opponent.description}. `;
   });
   return str;
