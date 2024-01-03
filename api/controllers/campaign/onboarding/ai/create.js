@@ -235,17 +235,24 @@ async function enqueuePathToVictory(campaign) {
   // we need to add it to the campaign details
   // we currently guess by seeing if city is filled out.
   // we also need to add electionCounty to the campaign details
+
+  let termLength = 0;
+  // extract the number from the officeTermLength string
+  if (officeTermLength) {
+    termLength = officeTermLength.match(/\d+/)[0];
+  }
+
   const queueMessage = {
     type: 'pathToVictory',
     data: {
       officeName: office,
       electionYear: electionYear,
-      electionTerm: officeTermLength,
+      electionTerm: termLength,
       electionLevel: city ? 'city' : 'state',
       electionState: state,
       electionCounty: '',
       electionMunicipality: city,
-      subAreaName: 'district',
+      subAreaName: district ? 'district' : undefined,
       subAreaValue: district,
     },
   };

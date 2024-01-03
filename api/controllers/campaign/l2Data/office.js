@@ -92,7 +92,7 @@ async function enqueuePathToVictory(campaign) {
       electionState: state,
       electionCounty: '',
       electionMunicipality: city,
-      subAreaName: 'district',
+      subAreaName: district ? 'district' : undefined,
       subAreaValue: district,
     },
   };
