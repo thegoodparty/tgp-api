@@ -56,6 +56,8 @@ module.exports.policies = {
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.
   'campaign/deadlines/list': true,
   'campaign/ballotData/races': true,
+  'campaign/l2Data/office': true,
+  'campaign/l2Data/counts': true,
   'ai/test': true,
   'ai/load': true,
   'race/*': true,

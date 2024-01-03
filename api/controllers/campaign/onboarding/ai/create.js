@@ -105,6 +105,7 @@ module.exports = {
           campaignRecord.data?.p2vStatus !== 'Waiting'
         ) {
           await sendSlackMessage(campaign, user);
+          await enqueuePathToVictory(campaign, user);
         }
         campaign.p2vStatus = 'Waiting';
         await Campaign.updateOne({
@@ -213,4 +214,40 @@ async function sendSlackMessage(campaign, user) {
   };
 
   await sails.helpers.slack.slackHelper(slackMessage, 'victory');
+}
+
+async function enqueuePathToVictory(campaign) {
+  // TODO: add this back when we go to production.
+  // if (appBase !== 'https://goodparty.org') {
+  //   return;
+  // }
+  const { details, goals } = campaign;
+  const { office, state, city, district, officeTermLength } = details;
+  const { electionDate } = goals;
+
+  const currentYear = new Date().getFullYear();
+  let electionYear = currentYear;
+  if (electionDate) {
+    electionYear = electionDate.split('-')[0];
+  }
+
+  // TODO: we don't currently store the election level in the campaign details
+  // we need to add it to the campaign details
+  // we currently guess by seeing if city is filled out.
+  // we also need to add electionCounty to the campaign details
+  const queueMessage = {
+    type: 'pathToVictory',
+    data: {
+      officeName: office,
+      electionYear: electionYear,
+      electionTerm: officeTermLength,
+      electionLevel: city ? 'city' : 'state',
+      electionState: state,
+      electionCounty: '',
+      electionMunicipality: city,
+      subAreaName: 'district',
+      subAreaValue: district,
+    },
+  };
+  await sails.helpers.queue.enqueue(queueMessage);
 }
