@@ -234,7 +234,7 @@ function positionsToStr(topIssues, customIssues) {
   }
   let str = '';
 
-  const { positions } = topIssues;
+  const { positions } = topIssues || {};
   if (positions) {
     positions.forEach((position, index) => {
       if (position && position.name) {
