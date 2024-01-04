@@ -59,4 +59,5 @@ module.exports.policies = {
   'ai/test': true,
   'ai/load': true,
   'race/*': true,
+  'data-processing/*': true,
 };
