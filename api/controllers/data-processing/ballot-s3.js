@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
+const csv = require('csv-parser');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -39,6 +40,7 @@ module.exports = {
       const objectKey = findLatestCandidatesFile(files);
       const localFilePath = `${csvFilePath}/${objectKey}`;
       await downloadFile(s3Bucket, objectKey, localFilePath);
+      await parseFile(localFilePath);
       const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
       await sails.helpers.google.uploadSheets(
         localFilePath,
@@ -87,7 +89,6 @@ async function getLatestFiles(bucket, maxKeys) {
 
 function findLatestCandidatesFile(files) {
   for (let i = 0; i < files.length; i++) {
-    console.log('file', files[i]);
     const key = files[i]?.Key;
     if (key?.startsWith('candidacies_v3')) {
       return key;
@@ -111,4 +112,58 @@ function downloadFile(bucket, key, filePath) {
       .on('error', (error) => reject(error))
       .pipe(file);
   });
+}
+async function parseFile(filePath) {
+  const rows = [];
+  let headers = [];
+
+  fs.createReadStream(filePath)
+    .pipe(csv())
+    .on('headers', (headerList) => {
+      // Capture the headers
+      headers = headerList;
+    })
+    .on('data', (row) => {
+      // Modify the "parties" column
+      if (row.parties) {
+        const match = row.parties.match(/"name"=>\s*"([^"]+)"/);
+        if (match && match[1]) {
+          row.parties = match[1];
+        }
+      }
+
+      // Add the modified row to the rows array
+      rows.push(row);
+    })
+    .on('end', () => {
+      // Manually construct the CSV
+      const updatedCsv = rowsToCsv(headers, rows);
+
+      // Save the updated CSV to the same file
+      fs.writeFile(filePath, updatedCsv, (err) => {
+        if (err) {
+          console.error('Error writing the file', err);
+        } else {
+          console.log('File successfully written');
+        }
+      });
+    });
+}
+
+function rowsToCsv(headers, rows) {
+  // Join headers
+  const csvString = headers.join(',') + '\n';
+
+  // Join rows
+  return rows.reduce((csv, row) => {
+    const rowString = headers
+      .map((header) => {
+        const cell = row[header] || '';
+        // Add quotes only if necessary
+        return /[\s,]/.test(cell) ? `"${cell}"` : cell;
+      })
+      .join(',');
+
+    return csv + rowString + '\n';
+  }, csvString);
 }

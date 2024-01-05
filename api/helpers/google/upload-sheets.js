@@ -130,7 +130,7 @@ function uploadCsvToTab(sheets, spreadsheetId, fileName, tabName) {
 
         throw err;
       } else {
-        console.log('%d cells updated.', result.updatedCells);
+        // console.log('%d cells updated.', result.updatedCells);
       }
     },
   );
@@ -142,10 +142,7 @@ async function readJsonFromS3(bucketName, keyName) {
       Bucket: bucketName,
       Key: keyName,
     };
-    console.log('bucketName, keyName', bucketName, keyName);
     const data = await s3.getObject(params).promise();
-    console.log('=========================');
-    console.log('data', data);
     const jsonContent = JSON.parse(data.Body.toString());
     return jsonContent;
   } catch (error) {
