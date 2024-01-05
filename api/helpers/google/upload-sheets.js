@@ -46,7 +46,6 @@ module.exports = {
       );
 
       const googleServiceKey = googleServiceJSON.private_key;
-      console.log('googleServiceKey');
       // Configure a JWT client with service account
       const jwtClient = new google.auth.JWT(
         googleServiceEmail,

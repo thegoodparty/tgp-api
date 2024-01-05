@@ -133,4 +133,4 @@ lib-cov
 cache/*
 storage/*
 data/ai/*
-data/candidates/*
+data/candidates/*.csv
