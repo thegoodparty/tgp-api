@@ -89,6 +89,15 @@ module.exports.routes = {
   'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
 
+  // volunteerInvitation
+
+  'POST   /api/v1/campaign/volunteer/invitation':
+    'campaign/volunteer/invitation/create',
+  'GET   /api/v1/campaign/volunteer/invitations':
+    'campaign/volunteer/invitation/list',
+  'DELETE   /api/v1/campaign/volunteer/invitation':
+    'campaign/volunteer/invitation/delete',
+
   // campaignUpdateHistory
 
   'POST   /api/v1/campaign/update-history':

@@ -35,6 +35,12 @@ module.exports = {
       via: 'campaign',
     },
 
+    // one to many relationship to candidateIssueItem
+    volunteerInvitations: {
+      collection: 'volunteerInvitation',
+      via: 'campaign',
+    },
+
     //many to many
     positions: {
       collection: 'position',
