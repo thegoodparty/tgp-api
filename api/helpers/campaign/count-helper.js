@@ -59,10 +59,9 @@ module.exports = {
         columns: ['Parties_Description'],
       };
 
-      countsJson['filters'][electionType] = electionLocation;
+      countsJson.filters[electionType] = electionLocation;
       if (electionDistrict) {
         countsJson.filters[electionType] = electionDistrict;
-        // countsJson['filters'][electionDistrict] = 1;
       }
 
       let counts = await getCounts(electionState, countsJson);
@@ -101,7 +100,7 @@ module.exports = {
       let turnoutCounts = [];
       for (const column of foundColumns) {
         let historyJson = countsJson;
-        historyJson['filters'][column.column] = 1;
+        historyJson.filters[column.column] = 1;
         let counts = await getCounts(electionState, historyJson);
         console.log(`counts ${column.column} `, counts);
         turnoutCounts.push(counts.total);
