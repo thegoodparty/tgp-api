@@ -23,7 +23,7 @@ if (
   appBase === 'https://goodparty.org' ||
   appBase === 'https://qa.goodparty.org'
 ) {
-  files = 61;
+  files = 122;
 }
 
 module.exports = {

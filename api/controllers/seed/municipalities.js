@@ -9,24 +9,28 @@ let csvFilePath = path.join(
   '../../../data/geoPoliticalEntities/dec23/uscities_v1.77_short.csv',
 );
 
-if (
-  appBase === 'https://goodparty.org' ||
-  appBase === 'https://qa.goodparty.org'
-) {
-  csvFilePath = path.join(
-    __dirname,
-    '../../../data/geoPoliticalEntities/dec23/uscities_v1.77.csv',
-  );
-}
-
 let count = 0;
 module.exports = {
-  inputs: {},
+  inputs: {
+    partNumber: {
+      type: 'number',
+    },
+  },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
+      const { partNumber } = inputs;
+      if (
+        appBase === 'https://goodparty.org' ||
+        appBase === 'https://qa.goodparty.org'
+      ) {
+        csvFilePath = path.join(
+          __dirname,
+          `../../../data/geoPoliticalEntities/dec23/cities/cities_part${partNumber}.csv`,
+        );
+      }
       readAndProcessCSV(csvFilePath);
       return exits.success({
         message: `inserted ${count} cities`,

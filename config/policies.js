@@ -60,4 +60,5 @@ module.exports.policies = {
   'campaign/ballotData/races': true,
   'campaign/l2Data/office': true, // for testing only.
   'race/*': true,
+  'data-processing/*': true,
 };

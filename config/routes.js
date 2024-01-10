@@ -19,6 +19,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/counties': 'seed/counties',
   'GET    /api/v1/seed/municipalities': 'seed/municipalities',
   'GET    /api/v1/seed/split': 'seed/split-large-csv',
+  'GET    /api/v1/seed/reduce': 'seed/reduce-large-csv',
   'GET    /api/v1/seed/races': 'seed/races',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
@@ -189,4 +190,6 @@ module.exports.routes = {
   'GET   /api/v1/race/by-city': 'race/by-city',
   'GET   /api/v1/race': 'race/get',
   'GET   /api/v1/race/csv': 'race/races-csv',
+
+  'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
 };

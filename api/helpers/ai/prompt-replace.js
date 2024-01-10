@@ -23,7 +23,10 @@ module.exports = {
       const { prompt, campaign } = inputs;
       let newPrompt = prompt;
 
-      const positionsStr = positionsToStr(campaign.details.topIssues);
+      const positionsStr = positionsToStr(
+        campaign.details.topIssues,
+        campaign.customIssues,
+      );
       const party =
         campaign.details?.party === 'Other'
           ? campaign.details.otherParty
@@ -225,22 +228,28 @@ module.exports = {
   },
 };
 
-function positionsToStr(topIssues) {
-  if (!topIssues) {
-    return '';
-  }
-  const { positions } = topIssues;
-  if (!positions) {
+function positionsToStr(topIssues, customIssues) {
+  if (!topIssues && !customIssues) {
     return '';
   }
   let str = '';
-  positions.forEach((position, index) => {
-    if (position && position.name) {
-      str += `${position.name}  - ${
-        position.topIssue ? position.topIssue.name : ''
-      } ${topIssues[`position-${position.id}`]}, `;
-    }
-  });
+
+  const { positions } = topIssues || {};
+  if (positions) {
+    positions.forEach((position, index) => {
+      if (position && position.name) {
+        str += `${position.name}  - ${
+          position.topIssue ? position.topIssue.name : ''
+        } ${topIssues[`position-${position.id}`]}, `;
+      }
+    });
+  }
+
+  if (customIssues) {
+    customIssues.forEach((issue) => {
+      str += `${issue.title} - ${issue.position}, `;
+    });
+  }
   return str;
 }
 
@@ -254,7 +263,13 @@ function againstToStr(runningAgainst) {
     return '';
   }
   let str = '';
-  runningAgainst.forEach((opponent) => {
+  if (runningAgainst.length > 1) {
+    str = `${runningAgainst.length} candidates who are: `;
+  }
+  runningAgainst.forEach((opponent, index) => {
+    if (index > 0) {
+      str += 'and also running against ';
+    }
     str += `name: ${opponent.name}, party: ${opponent.party} ,description: ${opponent.description}. `;
   });
   return str;

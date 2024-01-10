@@ -92,7 +92,7 @@ module.exports = {
 
       // checking if this is the first time the campaign plan is visited. If so - send a slack message.
       if (
-        !campaign.p2vStatus ||
+        (key === 'slogan' && !campaign.p2vStatus) ||
         (key === 'slogan' &&
           !regenerate &&
           !campaign[subSectionKey][key] &&
