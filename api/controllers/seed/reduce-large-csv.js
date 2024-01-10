@@ -8,10 +8,7 @@ const inputFilePath = path.join(
   '../../../data/temp/recruitment_v1_01_03_2024_08_37.csv',
 );
 
-const outputFilePath = path.join(
-  __dirname,
-  '../../../data/temp/reduced_recruitment_v1_01_03_2024_08_37.csv',
-);
+const outputFilePath = path.join(__dirname, '../../../data/temp/');
 
 const columns = [
   'id',
@@ -73,16 +70,46 @@ async function reduceCsvFile() {
 
   console.log('headers', headers);
   // Set up the CSV writer
-  const csvWriter = createCsvWriter({
-    path: outputFilePath,
+  const csvWriterQ1 = createCsvWriter({
+    path: `${outputFilePath}candidates-2024Q1.csv`,
     header: headers,
   });
+
+  const csvWriterQ2 = createCsvWriter({
+    path: `${outputFilePath}candidates-2024Q2.csv`,
+    header: headers,
+  });
+
+  const csvWriterQ3 = createCsvWriter({
+    path: `${outputFilePath}candidates-2024Q3.csv`,
+    header: headers,
+  });
+
+  const csvWriterQ4 = createCsvWriter({
+    path: `${outputFilePath}candidates-2024Q4.csv`,
+    header: headers,
+  });
+
+  const csvWriter2025 = createCsvWriter({
+    path: `${outputFilePath}candidates-2025.csv`,
+    header: headers,
+  });
+
+  const date2023 = new Date('1/1/2024');
+  const dateQ1 = new Date('4/1/2024');
+  const dateQ2 = new Date('7/1/2024');
+  const dateQ3 = new Date('10/1/2024');
+  const dateQ4 = new Date('1/1/2025');
 
   // Create a read stream
   const readStream = fs.createReadStream(inputFilePath);
 
   // Create an array to hold the data chunks
-  let dataChunks = [];
+  let dataChunksQ1 = [];
+  let dataChunksQ2 = [];
+  let dataChunksQ3 = [];
+  let dataChunksQ4 = [];
+  let dataChunks2025 = [];
   readStream
     .pipe(csv())
     .on('data', (row) => {
@@ -109,18 +136,45 @@ async function reduceCsvFile() {
           });
           filteredRow.processed_name = name;
           filteredRow.processed_level = level;
-          dataChunks.push(filteredRow);
+
+          const electionDate = new Date(row.election_day);
+          if (electionDate < date2023) {
+            // do nothing
+          } else if (electionDate < dateQ1) {
+            dataChunksQ1.push(filteredRow);
+          } else if (electionDate < dateQ2) {
+            dataChunksQ2.push(filteredRow);
+          } else if (electionDate < dateQ3) {
+            dataChunksQ3.push(filteredRow);
+          } else if (electionDate < dateQ4) {
+            dataChunksQ4.push(filteredRow);
+          } else {
+            dataChunks2025.push(filteredRow);
+          }
         } catch (e) {
           console.log('error caught', e);
         }
       })();
     })
     .on('end', () => {
-      // Write the filtered data to a new CSV file
-      console.log('======= writing =========');
-      csvWriter
-        .writeRecords(dataChunks)
-        .then(() => console.log('The CSV file was written successfully'));
+      (async () => {
+        // Write the filtered data to a new CSV file
+        console.log('======= writing =========');
+        await csvWriterQ1.writeRecords(dataChunksQ1);
+        console.log('Q1 CSV file was written successfully');
+
+        await csvWriterQ2.writeRecords(dataChunksQ2);
+        console.log('Q2 CSV file was written successfully');
+
+        await csvWriterQ3.writeRecords(dataChunksQ3);
+        console.log('Q3 CSV file was written successfully');
+
+        await csvWriterQ4.writeRecords(dataChunksQ4);
+        console.log('Q4 CSV file was written successfully');
+
+        await csvWriter2025.writeRecords(dataChunks2025);
+        console.log('2025 CSV file was written successfully');
+      })();
     });
 }
 
