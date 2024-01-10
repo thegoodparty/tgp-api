@@ -30,6 +30,8 @@ module.exports.policies = {
   'campaign/onboarding/by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   'topIssues/byLocation/find': ['isAuthenticated'],
+  'ai/test': ['isAuthenticated', 'isAdmin'],
+  'ai/load': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,
@@ -56,9 +58,6 @@ module.exports.policies = {
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.
   'campaign/deadlines/list': true,
   'campaign/ballotData/races': true,
-  'campaign/l2Data/office': true,
-  'campaign/l2Data/counts': true,
-  'ai/test': true,
-  'ai/load': true,
+  'campaign/l2Data/office': true, // for testing only.
   'race/*': true,
 };

@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
+
 module.exports = {
   friendlyName: 'Office Helper',
 
@@ -20,7 +22,6 @@ module.exports = {
         'regional',
       ],
     },
-    // should be 2 digit state abbreviation ie: NC, CA, TN, etc.
     electionState: {
       type: 'string',
       required: true,
@@ -59,36 +60,14 @@ module.exports = {
         subAreaValue,
       } = inputs;
 
-      const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
+      let searchColumns = determineSearchColumns(electionLevel);
 
-      // Determine the search columns based on the electionLevel
-      let searchColumns = [];
-      if (electionLevel === 'federal') {
-        searchColumns = ['US_Congressional_District'];
-      } else if (electionLevel === 'state') {
-        // searchColumns = ['Borough', 'Township', 'Town_District', 'Village'];
-        searchColumns = ['State_Senate_District', 'State_House_District'];
-      } else if (electionLevel === 'county') {
-        searchColumns = ['County'];
-      } else if (electionLevel === 'city' || electionLevel === 'local') {
-        searchColumns = ['City', 'Town', 'Township', 'Village', 'Hamlet'];
-      } else {
-        return exits.badRequest({
-          error: true,
-          message: 'Invalid electionLevel',
-        });
-      }
-
-      // First we need to detect if it is a miscellaneous district.
-      // If it is a miscellaneous district then it is not a Municipality/County.
       let foundMiscDistricts = [];
       foundMiscDistricts = searchMiscDistricts(officeName);
 
       if (foundMiscDistricts.length > 0) {
-        // We found a match in the misc districts so we override the previously set searchColumns
         searchColumns = foundMiscDistricts;
       }
-
       console.log('searchColumns', searchColumns);
 
       // STEP 1: determine if there is a subAreaName / District
@@ -114,11 +93,8 @@ module.exports = {
       } else if (electionLevel === 'city' && electionMunicipality) {
         electionSearch = electionMunicipality;
       } else {
-        // both state and federal use the state.
-        // const longState = await sails.helpers.zip.shortToLongState(
-        //   electionState,
-        // );
-        electionSearch = electionState; //longState;
+        // Note: we may want to search for the long AND short state to maximize match.
+        electionSearch = electionState; // await sails.helpers.zip.shortToLongState(electionState);
         electionSearch2 = formattedDistrictValue;
       }
 
@@ -128,7 +104,6 @@ module.exports = {
         electionState,
         electionSearch,
         electionSearch2,
-        l2ApiKey,
       );
 
       console.log('electionTypes', electionTypes);
@@ -143,42 +118,11 @@ module.exports = {
         foundMiscDistricts.length === 0 &&
         districtValue
       ) {
-        let districtMap = {
-          Borough: ['Borough_Ward'],
-          City: ['City_Ward', 'City_Council_Commissioner_District'],
-          County: [
-            'County_Commissioner_District',
-            'County_Legislative_District',
-            'County_Supervisorial_District',
-            'Residence_Addresses_CensusTract',
-            'Precinct',
-          ],
-          Town: ['Town_Ward', 'Town_District'],
-          Township: ['Township_Ward'],
-          Village: ['Village_Ward'],
-          Hamlet: ['Hamlet_Community_Area'],
-        };
-
-        for (const column of electionTypes) {
-          if (districtMap[column.column]) {
-            console.log(
-              'searching for sub columns',
-              districtMap[column.column],
-            );
-            let subColumns = await getSearchColumn(
-              districtMap[column.column],
-              electionState,
-              districtValue,
-              column.value, // ie: 'CA##RIVERSIDE CITY'
-              l2ApiKey,
-            );
-            if (subColumns.length > 0) {
-              console.log('found sub columns', subColumns);
-              electionDistricts[column.column] = subColumns;
-            }
-          }
-        }
-        console.log('electionDistricts', electionDistricts);
+        electionDistricts = await determineElectionDistricts(
+          electionTypes,
+          electionState,
+          districtValue,
+        );
       }
 
       return exits.success({
@@ -191,6 +135,68 @@ module.exports = {
     }
   },
 };
+
+async function determineElectionDistricts(
+  electionTypes,
+  electionState,
+  districtValue,
+) {
+  let electionDistricts = {};
+
+  let districtMap = {
+    Borough: ['Borough_Ward'],
+    City: ['City_Ward', 'City_Council_Commissioner_District'],
+    County: [
+      'County_Commissioner_District',
+      'County_Legislative_District',
+      'County_Supervisorial_District',
+      'Residence_Addresses_CensusTract',
+      'Precinct',
+    ],
+    Town: ['Town_Ward', 'Town_District'],
+    Township: ['Township_Ward'],
+    Village: ['Village_Ward'],
+    Hamlet: ['Hamlet_Community_Area'],
+  };
+
+  for (const column of electionTypes) {
+    if (districtMap[column.column]) {
+      console.log('searching for sub columns', districtMap[column.column]);
+      let subColumns = await getSearchColumn(
+        districtMap[column.column],
+        electionState,
+        districtValue,
+        column.value, // ie: 'CA##RIVERSIDE CITY'
+      );
+      if (subColumns.length > 0) {
+        console.log('found sub columns', subColumns);
+        electionDistricts[column.column] = subColumns;
+      }
+    }
+  }
+  console.log('electionDistricts', electionDistricts);
+  return electionDistricts;
+}
+
+function determineSearchColumns(electionLevel) {
+  let searchColumns = [];
+  if (electionLevel === 'federal') {
+    searchColumns = ['US_Congressional_District'];
+  } else if (electionLevel === 'state') {
+    // searchColumns = ['Borough', 'Township', 'Town_District', 'Village'];
+    searchColumns = ['State_Senate_District', 'State_House_District'];
+  } else if (electionLevel === 'county') {
+    searchColumns = ['County'];
+  } else if (electionLevel === 'city' || electionLevel === 'local') {
+    searchColumns = ['City', 'Town', 'Township', 'Village', 'Hamlet'];
+  } else {
+    return exits.badRequest({
+      error: true,
+      message: 'Invalid electionLevel',
+    });
+  }
+  return searchColumns;
+}
 
 function searchMiscDistricts(officeName) {
   const miscellaneousDistricts = {
@@ -347,7 +353,7 @@ function getDistrictValue(officeName, subAreaName, subAreaValue) {
   return districtValue;
 }
 
-async function querySearchColumn(searchColumn, electionState, l2ApiKey) {
+async function querySearchColumn(searchColumn, electionState) {
   let searchValues = [];
   try {
     let searchUrl = `https://api.l2datamapping.com/api/v2/customer/application/column/values/1OSR/VM_${electionState}/${searchColumn}?id=1OSR&apikey=${l2ApiKey}`;
@@ -367,7 +373,6 @@ async function getSearchColumn(
   electionState,
   searchString,
   searchString2,
-  l2ApiKey,
 ) {
   let foundColumns = [];
   //   console.log('searchColumns', searchColumns);
@@ -377,11 +382,7 @@ async function getSearchColumn(
     console.log(
       `querying ${searchColumn} for ${searchString} - ${searchString2}`,
     );
-    let searchValues = await querySearchColumn(
-      searchColumn,
-      electionState,
-      l2ApiKey,
-    );
+    let searchValues = await querySearchColumn(searchColumn, electionState);
     // console.log('searchValues', searchValues);
     for (const searchValue of searchValues) {
       if (searchValue.toLowerCase().includes(searchString.toLowerCase())) {
