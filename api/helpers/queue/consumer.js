@@ -221,11 +221,6 @@ async function handlePathToVictory(message) {
       }
     }
 
-    const officeResponseJson = JSON.stringify(officeResponse);
-    const pathToVictoryResponseJson = JSON.stringify(pathToVictoryResponse);
-    console.log('officeResponseJson', officeResponseJson);
-    console.log('pathToVictoryResponseJson', pathToVictoryResponseJson);
-
     const slackMessage = `
     • Candidate: ${campaign.data.details.firstName} ${campaign.data.details.lastName} [${campaign.slug}]
     • Office: ${officeName}
@@ -264,19 +259,27 @@ async function handlePathToVictory(message) {
         'victory',
       );
     } else {
+      let debugMessage = 'No Path To Victory Found.\n';
+      if (officeResponse) {
+        debugMessage += 'Developer/Debug Data:\n';
+        debugMessage += 'officeResponse: ' + JSON.stringify(officeResponse);
+      }
+      if (pathToVictoryResponse) {
+        debugMessage +=
+          'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
+      }
+      if (officeDebugData) {
+        debugMessage += 'officeDebugData: ' + JSON.stringify(officeDebugData);
+      }
       await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Path To Victory',
-          slackMessage +
-            `No Path To Victory Found.\nDeveloper Data: ${officeDebugData}`,
-        ),
+        simpleSlackMessage('Path To Victory', slackMessage + debugMessage),
         'victory',
       );
     }
 
     // TODO: automatically update the Campaign with the pathToVictory data.
   } catch (e) {
-    console.log('error in consumer/handleSaveBallotReadyRaces', e);
+    console.log('error in consumer/handlePathToVictory', e);
   }
 }
 
