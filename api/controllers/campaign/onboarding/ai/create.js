@@ -105,6 +105,7 @@ module.exports = {
           campaignRecord.data?.p2vStatus !== 'Waiting'
         ) {
           await sendSlackMessage(campaign, user);
+          await sails.helpers.queue.enqueuePathToVictory(campaign);
         }
         campaign.p2vStatus = 'Waiting';
         await Campaign.updateOne({
