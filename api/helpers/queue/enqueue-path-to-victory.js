@@ -30,6 +30,21 @@ module.exports = {
       // we need to add it to the campaign details
       // we currently guess by seeing if city is filled out.
       // we also need to add electionCounty to the campaign details
+      // for now we do some basic guessing for electionLevel;
+      let electionLevel = 'city';
+      if (
+        office.toLowerCase().includes('senate') ||
+        office.toLowerCase().includes('house')
+      ) {
+        electionLevel = 'state';
+      } else if (office.toLowerCase().includes('county')) {
+        electionLevel = 'county';
+      } else if (
+        office.toLowerCase().includes('congress') ||
+        office.toLowerCase().includes('president')
+      ) {
+        electionLevel = 'federal';
+      }
 
       let termLength = 0;
       // extract the number from the officeTermLength string
@@ -44,7 +59,7 @@ module.exports = {
           officeName: office,
           electionDate: electionDate,
           electionTerm: termLength,
-          electionLevel: city ? 'city' : 'state',
+          electionLevel: electionLevel,
           electionState: state,
           electionCounty: '',
           electionMunicipality: city,
