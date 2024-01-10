@@ -128,11 +128,6 @@ module.exports = {
       return exits.success({
         electionTypes,
         electionDistricts,
-        officeDebugData: {
-          districtValue,
-          electionTypes,
-          electionDistricts,
-        },
       });
     } catch (e) {
       console.log('error at office-helper', e);

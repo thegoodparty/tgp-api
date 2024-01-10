@@ -155,8 +155,7 @@ async function handlePathToVictory(message) {
     console.log('officeResponse', officeResponse);
 
     if (officeResponse) {
-      const { electionTypes, electionDistricts, officeDebugData } =
-        officeResponse;
+      const { electionTypes, electionDistricts } = officeResponse;
 
       if (electionTypes && electionTypes.length > 0) {
         for (let electionType of electionTypes) {
@@ -267,9 +266,6 @@ async function handlePathToVictory(message) {
       if (pathToVictoryResponse) {
         debugMessage +=
           'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
-      }
-      if (officeDebugData) {
-        debugMessage += 'officeDebugData: ' + JSON.stringify(officeDebugData);
       }
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage('Path To Victory', slackMessage + debugMessage),
