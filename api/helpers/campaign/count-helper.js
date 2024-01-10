@@ -53,6 +53,8 @@ module.exports = {
         electionDistrict,
       } = inputs;
 
+      console.log(`countHelper invoked with ${JSON.stringify(inputs)}`);
+
       let countsJson = {
         format: 'counts',
         filters: {},
@@ -130,8 +132,8 @@ function getProjectedTurnout(counts, turnoutCounts) {
     trajectory = turnoutCounts[0] - turnoutCounts[1];
   }
 
-  let averageTurnoutPercent = (averageTurnout / counts.total).toFixed(2) * 100;
-  counts.averageTurnoutPercent = averageTurnoutPercent;
+  let averageTurnoutPercent = (averageTurnout / counts.total).toFixed(2);
+  counts.averageTurnoutPercent = (averageTurnoutPercent * 100).toString() + '%';
 
   // Calculate the projected turnout.
   // TODO: Jared will revise the strategy in this section.
@@ -146,10 +148,10 @@ function getProjectedTurnout(counts, turnoutCounts) {
   } else {
     projectedTurnout = Math.ceil(averageTurnoutPercent * counts.total);
   }
-  let projectedTurnoutPercent =
-    (projectedTurnout / counts.total).toFixed(2) * 100;
+  let projectedTurnoutPercent = (projectedTurnout / counts.total).toFixed(2);
   counts.projectedTurnout = projectedTurnout;
-  counts.projectedTurnoutPercent = projectedTurnoutPercent;
+  counts.projectedTurnoutPercent =
+    (projectedTurnoutPercent * 100).toString() + '%';
   return counts;
 }
 
@@ -185,7 +187,7 @@ async function getColumns(electionState) {
 async function getCounts(electionState, countsJson) {
   let counts = {
     total: 0,
-    democratic: 0,
+    democrat: 0,
     republican: 0,
     independent: 0,
   };
@@ -205,7 +207,7 @@ async function getCounts(electionState, countsJson) {
   for (const item of response?.data) {
     counts.total += item.__COUNT;
     if (item.Parties_Description === 'Democratic') {
-      counts.democratic += item.__COUNT;
+      counts.democrat += item.__COUNT;
     } else if (item.Parties_Description === 'Republican') {
       counts.republican += item.__COUNT;
     } else {

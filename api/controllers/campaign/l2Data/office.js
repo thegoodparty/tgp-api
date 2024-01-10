@@ -25,13 +25,14 @@ module.exports = {
     try {
       // this view is just for testing the enqueuePathToVictory function
       const { campaignId } = inputs;
-      await sails.helpers.queue.consumer();
 
       let campaign = await Campaign.findOne({
         id: campaignId,
       });
 
       await sails.helpers.queue.enqueuePathToVictory(campaign);
+
+      await sails.helpers.queue.consumer();
 
       return exits.success({
         success: true,

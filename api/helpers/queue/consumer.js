@@ -78,6 +78,7 @@ const camelToSentence = (text) => {
 };
 
 async function handleMessage(message) {
+  // console.log(`consumer received message: ${message.Body}`);
   if (!message) {
     return;
   }
@@ -106,6 +107,7 @@ async function handlePathToVictory(message) {
   //create or update each election and position
   try {
     const {
+      campaignId,
       officeName,
       electionDate,
       electionTerm,
@@ -120,7 +122,7 @@ async function handlePathToVictory(message) {
     let pathToVictoryResponse = {
       electionType: '',
       electionLocation: '',
-      division: '',
+      district: '',
       counts: {
         total: 0,
         democrat: 0,
@@ -128,6 +130,17 @@ async function handlePathToVictory(message) {
         independent: 0,
       },
     };
+
+    let campaign;
+    try {
+      campaign = await Campaign.findOne({ id: campaignId });
+    } catch (e) {
+      console.log('error getting campaign', e);
+    }
+    if (!campaign) {
+      console.log('error: no campaign found');
+      return;
+    }
 
     const officeResponse = await sails.helpers.campaign.officeHelper(
       officeName,
@@ -142,20 +155,24 @@ async function handlePathToVictory(message) {
     console.log('officeResponse', officeResponse);
 
     if (officeResponse) {
-      const { electionTypes, electionDistricts } = officeResponse;
+      const { electionTypes, electionDistricts, officeDebugData } =
+        officeResponse;
 
       if (electionTypes && electionTypes.length > 0) {
-        for (const electionType of electionTypes) {
+        for (let electionType of electionTypes) {
           // for now we only try the top district in the list.
           let district;
+          console.log(`checking if electionDistricts has ${electionType}`);
+          let electionTypeName = electionType.column;
           if (
             electionDistricts &&
-            electionDistricts.hasOwnProperty(electionType) &&
-            electionDistricts[electionType].length > 0
+            electionDistricts.hasOwnProperty(electionTypeName) &&
+            electionDistricts[electionTypeName].length > 0
           ) {
-            district = electionDistricts[electionType][0].value;
+            district = electionDistricts[electionTypeName][0].value;
+            electionType = electionDistricts[electionTypeName][0];
           }
-          console.log('division', division);
+          console.log('district', district);
           console.log('electionType', electionType);
           const counts = await sails.helpers.campaign.countHelper(
             electionTerm,
@@ -209,21 +226,40 @@ async function handlePathToVictory(message) {
     console.log('officeResponseJson', officeResponseJson);
     console.log('pathToVictoryResponseJson', pathToVictoryResponseJson);
 
+    const slackMessage = `
+    • Candidate: ${campaign.data.details.firstName} ${campaign.data.details.lastName} [${campaign.slug}]
+    • Office: ${officeName}
+    • Election Date: ${electionDate}
+    • Election Term: ${electionTerm}
+    • Election Level: ${electionLevel}
+    • Election State: ${electionState}
+    • Election County: ${electionCounty}
+    • Election Municipality: ${electionMunicipality}
+    • Sub Area Name: ${subAreaName}
+    • Sub Area Value: ${subAreaValue}
+    `;
+
     if (
       pathToVictoryResponse?.electionType &&
       pathToVictoryResponse?.counts?.total &&
       pathToVictoryResponse.counts.total > 0
     ) {
+      const pathToVictorySlackMessage = `
+      ￮ L2 Election Type: ${pathToVictoryResponse.electionType}
+      ￮ L2 Location: ${pathToVictoryResponse.electionLocation}
+      ￮ Total Voters: ${pathToVictoryResponse.counts.total}
+      ￮ Democrats: ${pathToVictoryResponse.counts.democrat}
+      ￮ Republicans: ${pathToVictoryResponse.counts.republican}
+      ￮ Independents: ${pathToVictoryResponse.counts.independent}
+      ￮ Average Turnout %: ${pathToVictoryResponse.counts.averageTurnoutPercent}
+      ￮ Projected Turnout: ${pathToVictoryResponse.counts.projectedTurnout}
+      ￮ Projected Turnout %: ${pathToVictoryResponse.counts.projectedTurnoutPercent}
+      `;
+
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage(
           'Path To Victory',
-          `Found pathToVictory data for office: ${officeName}.\n electionType: ${
-            pathToVictoryResponse.electionType
-          }.\n electionLocation: ${
-            pathToVictoryResponse.electionLocation
-          }.\n District: ${
-            pathToVictoryResponse.division
-          }.\n counts: ${JSON.stringify(pathToVictoryResponse.counts)}`,
+          slackMessage + pathToVictorySlackMessage,
         ),
         'victory',
       );
@@ -231,11 +267,14 @@ async function handlePathToVictory(message) {
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage(
           'Path To Victory',
-          `Could not find pathToVictory data for office: ${officeName}.`,
+          slackMessage +
+            `No Path To Victory Found.\nDeveloper Data: ${officeDebugData}`,
         ),
         'victory',
       );
     }
+
+    // TODO: automatically update the Campaign with the pathToVictory data.
   } catch (e) {
     console.log('error in consumer/handleSaveBallotReadyRaces', e);
   }
