@@ -95,6 +95,8 @@ module.exports.routes = {
     'campaign/volunteer/invitation/create',
   'GET   /api/v1/campaign/volunteer/invitations':
     'campaign/volunteer/invitation/list',
+  'GET   /api/v1/campaign/volunteer/invitations-by-user':
+    'campaign/volunteer/invitation/list-by-user',
   'DELETE   /api/v1/campaign/volunteer/invitation':
     'campaign/volunteer/invitation/delete',
 

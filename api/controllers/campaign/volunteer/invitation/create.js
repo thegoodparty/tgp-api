@@ -1,4 +1,6 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const moment = require('moment');
+
 module.exports = {
   inputs: {
     email: {
@@ -45,6 +47,25 @@ module.exports = {
       if (campaign?.data?.details) {
         name = `${campaign.data.details.firstName} ${campaign.data.details.lastName}`;
       }
+
+      const existingUser = await User.findOne({ email });
+      const nextMonth = moment().add(1, 'month').format('YYYY-MM-DD');
+      if (existingUser) {
+        const notification = {
+          type: 'invitation',
+          title: `The campaign for ${name} invited you to volunteer`,
+          subTitle: 'Make a difference!',
+          link: '/invitations',
+          dueDate: nextMonth,
+        };
+
+        await Notification.create({
+          isRead: false,
+          data: notification,
+          user: existingUser.id,
+        });
+      }
+
       const office =
         campaign.details?.office === 'Other'
           ? campaign.details.otherOffice
