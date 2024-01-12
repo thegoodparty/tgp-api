@@ -99,6 +99,12 @@ module.exports.routes = {
     'campaign/volunteer/invitation/list-by-user',
   'DELETE   /api/v1/campaign/volunteer/invitation':
     'campaign/volunteer/invitation/delete',
+  'PUT   /api/v1/campaign/volunteer/invitation/accept':
+    'campaign/volunteer/invitation/accept',
+
+  // campaignVolunteer
+  'GET   /api/v1/campaign/volunteers': 'campaign/volunteer/list',
+  'POST   /api/v1/campaign/volunteer': 'campaign/volunteer/create',
 
   // campaignUpdateHistory
 

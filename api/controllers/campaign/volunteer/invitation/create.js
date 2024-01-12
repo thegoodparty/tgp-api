@@ -8,6 +8,10 @@ module.exports = {
       required: true,
       isEmail: true,
     },
+    role: {
+      type: 'string',
+      isIn: ['volunteer', 'staff'],
+    },
   },
 
   exits: {
@@ -22,7 +26,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { email } = inputs;
+      const { email, role } = inputs;
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
@@ -40,7 +44,7 @@ module.exports = {
       await VolunteerInvitation.create({
         email,
         campaign: campaign.id,
-        status: 'pending',
+        role,
       });
 
       let name = '';

@@ -4,12 +4,6 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    email: {
-      type: 'string',
-      required: true,
-      isEmail: true,
-    },
-
     role: {
       type: 'string',
       isIn: ['volunteer', 'staff'],
@@ -17,6 +11,10 @@ module.exports = {
 
     campaign: {
       model: 'campaign',
+    },
+
+    user: {
+      model: 'user',
     },
   },
 };
