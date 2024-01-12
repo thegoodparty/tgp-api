@@ -174,7 +174,7 @@ async function determineElectionDistricts(
       }
     }
   }
-  console.log('electionDistricts', electionDistricts);
+  console.log('electionDistricts (officeHelper)', electionDistricts);
   return electionDistricts;
 }
 
