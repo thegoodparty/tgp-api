@@ -1,7 +1,7 @@
 const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
-const { isWithinTokenLimit } = require('gpt-tokenizer');
+const { isWithinTokenLimit } = require('gpt-tokenizer/cjs/model/gpt-3.5-turbo');
 
 const { Configuration, OpenAIApi } = require('openai');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
@@ -141,6 +141,7 @@ async function handlePathToVictory(message) {
       console.log('error: no campaign found');
       return;
     }
+    let slug = campaign.slug;
 
     const officeResponse = await sails.helpers.campaign.officeHelper(
       officeName,
@@ -152,6 +153,7 @@ async function handlePathToVictory(message) {
       subAreaValue,
     );
 
+    // sails.helpers.log(slug, 'officeResponse', officeResponse);
     console.log('officeResponse', officeResponse);
 
     if (officeResponse) {
