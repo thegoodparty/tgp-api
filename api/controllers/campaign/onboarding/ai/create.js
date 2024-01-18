@@ -90,31 +90,6 @@ module.exports = {
         campaign[subSectionKey] = {};
       }
 
-      // checking if this is the first time the campaign plan is visited. If so - send a slack message.
-      if (
-        (key === 'slogan' && !campaign.p2vStatus) ||
-        (key === 'slogan' &&
-          !regenerate &&
-          !campaign[subSectionKey][key] &&
-          campaign.p2vStatus !== 'Waiting' &&
-          campaign.p2vStatus !== 'Complete')
-      ) {
-        const campaignRecord = Campaign.findOne({ slug: campaign.slug });
-        if (
-          !campaignRecord.data?.p2vStatus ||
-          campaignRecord.data?.p2vStatus !== 'Waiting'
-        ) {
-          await sendSlackMessage(campaign, user);
-          await sails.helpers.queue.enqueuePathToVictory(campaignRecord);
-        }
-        campaign.p2vStatus = 'Waiting';
-        await Campaign.updateOne({
-          slug: campaign.slug,
-        }).set({
-          data: campaign,
-        });
-      }
-
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
       let prompt = cmsPrompts[keyNoDigits];
@@ -175,43 +150,3 @@ module.exports = {
     }
   },
 };
-
-async function sendSlackMessage(campaign, user) {
-  if (appBase !== 'https://goodparty.org') {
-    return;
-  }
-  const { slug, details } = campaign;
-  const { firstName, lastName, office, state, city, district } = details;
-  const slackMessage = {
-    text: `Onboarding Alert!`,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `__________________________________ \n *Candidate completed details section * \n ${appBase}`,
-        },
-      },
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: `*We need to add their admin Path to victory*\n
-          \nName: ${firstName} ${lastName}
-          \nOffice: ${office}
-          \nState: ${state}
-          \nCity: ${city || 'n/a'}
-          \nDistrict: ${district || 'n/a'}
-          \nemail: ${user.email}
-          \nslug: ${slug}\n
-          \nadmin link: ${appBase}/admin/victory-path/${slug}
-          \n
-          \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
-          `,
-        },
-      },
-    ],
-  };
-
-  await sails.helpers.slack.slackHelper(slackMessage, 'victory');
-}

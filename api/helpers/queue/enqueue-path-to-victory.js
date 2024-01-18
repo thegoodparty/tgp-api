@@ -21,7 +21,7 @@ module.exports = {
       //   return;
       // }
       const { campaign } = inputs;
-      const { data } = campaign;
+      const { data, slug } = campaign;
       const { details, goals } = data;
       const { office, state, city, district, officeTermLength } = details;
       const { electionDate } = goals;
@@ -68,7 +68,7 @@ module.exports = {
         },
       };
 
-      console.log('queueMessage', queueMessage);
+      sails.helpers.log(slug, 'queueing Message', queueMessage);
       await sails.helpers.queue.enqueue(queueMessage);
       return exits.success({ message: 'ok' });
     } catch (e) {
