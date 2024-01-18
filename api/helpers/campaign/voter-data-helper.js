@@ -49,7 +49,13 @@ module.exports = {
         limitApproved,
       } = inputs;
 
-      const campaign = await Campaign.findOne({ id: campaignId });
+      let campaign;
+      try {
+        campaign = await Campaign.findOne({ id: campaignId });
+      } catch (e) {
+        console.log('error finding campaign in voter-data-helper', e);
+        return exits.badRequest('error');
+      }
 
       console.log(`voterDataHelper invoked with ${JSON.stringify(inputs)}`);
 
@@ -151,7 +157,7 @@ async function parseVoterData(csvData) {
   // wait up to 30 seconds for the parsing to finish.
   for (let i = 0; i < 60; i++) {
     console.log('parsing voterData...');
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await sleep(500);
     if (finishedParsing === true) {
       break;
     }
@@ -167,9 +173,24 @@ async function getVoterData(
   campaign,
   limitApproved,
 ) {
-  let searchResponse;
-  let searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+  const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
 
+  const filters = createFilters(l2ColumnName, l2ColumnValue, additionalFilters);
+
+  if (isFilterEmpty(filters)) {
+    return;
+  }
+
+  const totalRecords = await getTotalRecords(searchUrl, filters);
+  if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
+    return;
+  }
+
+  const job = await initiateSearch(searchUrl, filters);
+  return await waitForSearchCompletion(job, campaign);
+}
+
+function createFilters(l2ColumnName, l2ColumnValue, additionalFilters) {
   let filters = {};
   if (l2ColumnName && l2ColumnValue) {
     filters[l2ColumnName] = l2ColumnValue;
@@ -177,118 +198,113 @@ async function getVoterData(
   if (additionalFilters) {
     filters = { ...filters, ...additionalFilters };
   }
-  if (!filters || Object.keys(filters).length === 0) {
-    // dont allow empty filters search to prevent pulling all records.
-    return searchResponse;
-  }
+  return filters;
+}
 
-  let estimateResponse;
+function isFilterEmpty(filters) {
+  return !filters || Object.keys(filters).length === 0;
+}
+
+async function getTotalRecords(searchUrl, filters) {
   try {
-    estimateResponse = await axios.post(searchUrl, {
+    const estimateResponse = await axios.post(searchUrl, {
       format: 'counts',
       filters,
       columns: ['Parties_Description'],
     });
+
+    let totalRecords = 0;
+    if (estimateResponse?.data) {
+      totalRecords = estimateResponse.data.reduce(
+        (acc, item) => acc + (item?.__COUNT || 0),
+        0,
+      );
+    }
+    return totalRecords;
   } catch (e) {
     console.log('error at getVoterData estimate', e);
+    return 0;
   }
+}
 
-  let totalRecords = 0;
-  if (estimateResponse?.data && estimateResponse.data.length > 0) {
-    for (const item of estimateResponse.data) {
-      if (item?.__COUNT) {
-        totalRecords += item.__COUNT;
-      }
-    }
-  }
-
-  if (totalRecords > 100000 && limitApproved === false) {
-    // if the estimate is over 100,000 records, then we don't want to pull it unless its approved.
-    await sails.helpers.slack.slackHelper(
-      simpleSlackMessage(
-        'Voter Data',
-        `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}. Campaign: ${campaign.slug}. Approval is required.`,
-      ),
+async function canProceedWithSearch(totalRecords, limitApproved, campaign) {
+  if (totalRecords > 100000 && !limitApproved) {
+    await sendSlackNotification(
+      'Voter Data',
+      `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}. Campaign: ${campaign.slug}. Approval is required.`,
       'victory',
     );
-    return searchResponse;
+    return false;
   }
+  return true;
+}
 
-  let response;
+async function initiateSearch(searchUrl, filters) {
   try {
-    response = await axios.post(searchUrl, {
-      filters,
-      wait: 0, // allow us to get a job to track the status of the search.
-    });
+    const response = await axios.post(searchUrl, { filters, wait: 0 });
+    return response?.data?.job;
   } catch (e) {
     console.log('error at getVoterData search', e);
+    return;
   }
+}
 
-  let job;
-  if (response?.data) {
-    job = response.data.job;
-  }
-  if (!job) {
-    return searchResponse;
-  }
-
+async function waitForSearchCompletion(job, campaign) {
   let attempts = 0;
-  let jobUrl = `https://api.l2datamapping.com/api/v2/records/search/status/${job}?id=1OSR&apikey=${l2ApiKey}`;
+  const jobUrl = `https://api.l2datamapping.com/api/v2/records/search/status/${job}?id=1OSR&apikey=${l2ApiKey}`;
+
   while (true) {
+    await sleep(10000);
     try {
-      response = await axios.get(jobUrl);
+      const response = await axios.get(jobUrl);
+      const status = response?.data?.status;
+
+      if (status === 'FINISHED') {
+        return await downloadFile(job);
+      } else if (status === 'ERROR') {
+        await sendSlackNotification(
+          'Voter Data',
+          `Error getting voter data. Job id: ${job}. Campaign: ${campaign.slug}.`,
+          'victory',
+        );
+        break;
+      }
+
+      if (++attempts > 180) {
+        await sendSlackNotification(
+          'Voter Data',
+          `Failed to get voter data. Job timed out. Job id: ${job}. Campaign: ${campaign.slug}.`,
+          'victory',
+        );
+        break;
+      }
     } catch (e) {
       console.log('error at getVoterData', e);
     }
-    let status;
-    if (response?.data) {
-      status = response.data.status;
-    }
-    if (status === 'FINISHED') {
-      let fileUrl = `https://api.l2datamapping.com/api/v2/records/search/file/${job}?id=1OSR&apikey=${l2ApiKey}`;
-      try {
-        response = await axios.get(fileUrl);
-      } catch (e) {
-        console.log('error at getVoterData', e);
-      }
-      let file;
-      // if the download fails it will try again.
-      if (response?.data) {
-        file = response.data;
-        return file;
-      }
-    } else if (status === 'ERROR') {
-      // send slack message
-      await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Voter Data',
-          `Error getting voter data. Job id: ${job}. Campaign: ${campaign.slug}.`,
-        ),
-        'victory',
-      );
-      break;
-    }
-    // sleep for 10 seconds
-    console.log(
-      'sleeping for 10 seconds. waiting for job to complete. job id: ',
-      job,
-    );
-    await new Promise((resolve) => setTimeout(resolve, 10000));
-    attempts++;
-    // give up after 30 minutes.
-    if (attempts > 180) {
-      await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Voter Data',
-          `Failed to get voter data. Job timed out. Job id: ${job}. Campaign: ${campaign.slug}.`,
-        ),
-        'victory',
-      );
-      break;
-    }
   }
+  return null;
+}
 
-  return searchResponse;
+async function downloadFile(job) {
+  const fileUrl = `https://api.l2datamapping.com/api/v2/records/search/file/${job}?id=1OSR&apikey=${l2ApiKey}`;
+  try {
+    const response = await axios.get(fileUrl);
+    return response?.data;
+  } catch (e) {
+    console.log('error at getVoterData downloadFile', e);
+    return;
+  }
+}
+
+async function sendSlackNotification(title, message, channel) {
+  await sails.helpers.slack.slackHelper(
+    simpleSlackMessage(title, message),
+    channel,
+  );
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function simpleSlackMessage(text, body) {
