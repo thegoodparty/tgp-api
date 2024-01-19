@@ -101,9 +101,17 @@ module.exports = {
       // Launch the Path to Victory queue
       if (launchP2V) {
         sails.helpers.log(slug, 'sending p2v slack message');
-        await sendSlackMessage(updated, user);
+        try {
+          await sendSlackMessage(campaign, user);
+        } catch (e) {
+          sails.helpers.log(slug, 'error sending slack message', e);
+        }
         sails.helpers.log(slug, 'enqueuing p2v');
-        await sails.helpers.queue.enqueuePathToVictory(updated);
+        try {
+          await sails.helpers.queue.enqueuePathToVictory(updated);
+        } catch (e) {
+          sails.helpers.log(slug, 'error enqueuing p2v', e);
+        }
       }
 
       if (user.isAdmin && updateCandidate) {
@@ -126,7 +134,11 @@ module.exports = {
         }
       }
 
-      await sails.helpers.crm.updateCampaign(updated);
+      try {
+        await sails.helpers.crm.updateCampaign(updated);
+      } catch (e) {
+        sails.helpers.log(slug, 'error updating crm', e);
+      }
 
       return exits.success({
         message: 'updated',
