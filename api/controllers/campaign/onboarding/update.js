@@ -40,8 +40,9 @@ module.exports = {
     try {
       const { campaign, versionKey, updateCandidate, subSectionKey } = inputs;
       const { user } = this.req;
+      let slug = campaign.slug;
       const existing = await Campaign.findOne({
-        slug: campaign.slug,
+        slug,
       });
 
       // setting last_step_date for the crm
