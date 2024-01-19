@@ -84,6 +84,7 @@ module.exports = {
       });
 
       await updateUserPhone(updated.data, user);
+      await updateUserZip(updated.data, user);
 
       if (user.isAdmin && updateCandidate) {
         // the campaign might be associated with public candidate, and we need to update it too. specifically - admin path to victory: voteGoal, voterProjection
@@ -125,16 +126,27 @@ module.exports = {
 async function updateUserPhone(campaign, user) {
   try {
     if (
-      campaign?.details?.campaignPhone &&
-      campaign?.details?.campaignPhone !== '' &&
+      campaign?.details?.phone &&
+      campaign?.details?.phone !== '' &&
       !user.phone
     ) {
-      console.log('updating user with ', campaign.details.campaignPhone);
       await User.updateOne({ id: user.id }).set({
-        phone: campaign.details.campaignPhone,
+        phone: campaign.details.phone,
       });
     }
   } catch (e) {
     console.log('error at updateUserPhone', e);
+  }
+}
+
+async function updateUserZip(campaign, user) {
+  try {
+    if (campaign?.details?.zip && campaign?.details?.zip !== '' && !user.zip) {
+      await User.updateOne({ id: user.id }).set({
+        zip: campaign.details.zip,
+      });
+    }
+  } catch (e) {
+    console.log('error at updateUserZip', e);
   }
 }

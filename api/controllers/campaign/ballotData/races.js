@@ -116,7 +116,7 @@ module.exports = {
       `;
 
       const { races } = await sails.helpers.graphql.queryHelper(query);
-      const groupedRaces = { local: [], state: [], federal: [] };
+      const groupedRaces = [];
       const existingPosition = {};
       // group races by level
       if (races?.edges) {
@@ -130,11 +130,11 @@ module.exports = {
           }
           existingPosition[id] = true;
           if (level === 'FEDERAL') {
-            groupedRaces.federal.push(edge.node);
+            groupedRaces.push(edge.node);
           } else if (level === 'STATE') {
-            groupedRaces.state.push(edge.node);
+            groupedRaces.push(edge.node);
           } else {
-            groupedRaces.local.push(edge.node);
+            groupedRaces.push(edge.node);
           }
           const queueMessage = {
             type: 'saveBallotReadyRace',
