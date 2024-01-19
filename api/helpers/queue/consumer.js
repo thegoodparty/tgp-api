@@ -1,7 +1,7 @@
 const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
-const { isWithinTokenLimit } = require('gpt-tokenizer');
+const { isWithinTokenLimit } = require('gpt-tokenizer/cjs/model/gpt-3.5-turbo');
 
 const { Configuration, OpenAIApi } = require('openai');
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
@@ -141,6 +141,7 @@ async function handlePathToVictory(message) {
       console.log('error: no campaign found');
       return;
     }
+    let slug = campaign.slug;
 
     const officeResponse = await sails.helpers.campaign.officeHelper(
       officeName,
@@ -152,7 +153,8 @@ async function handlePathToVictory(message) {
       subAreaValue,
     );
 
-    console.log('officeResponse', officeResponse);
+    // sails.helpers.log(slug, 'officeResponse', officeResponse);
+    sails.helpers.log(slug, 'officeResponse', officeResponse);
 
     if (officeResponse) {
       const { electionTypes, electionDistricts } = officeResponse;
@@ -161,7 +163,10 @@ async function handlePathToVictory(message) {
         for (let electionType of electionTypes) {
           // for now we only try the top district in the list.
           let district;
-          console.log(`checking if electionDistricts has ${electionType}`);
+          sails.helpers.log(
+            slug,
+            `checking if electionDistricts has ${electionType}`,
+          );
           let electionTypeName = electionType.column;
           if (
             electionDistricts &&
@@ -171,8 +176,8 @@ async function handlePathToVictory(message) {
             district = electionDistricts[electionTypeName][0].value;
             electionType = electionDistricts[electionTypeName][0];
           }
-          console.log('district', district);
-          console.log('electionType', electionType);
+          sails.helpers.log(slug, 'district', district);
+          sails.helpers.log(slug, 'electionType', electionType);
           const counts = await sails.helpers.campaign.countHelper(
             electionTerm,
             electionDate,
@@ -182,7 +187,7 @@ async function handlePathToVictory(message) {
             district,
           );
 
-          console.log('counts (consumer)', counts);
+          sails.helpers.log(slug, 'counts', counts);
 
           if (counts && counts?.total && counts.total > 0) {
             pathToVictoryResponse.electionType = electionType.column;
@@ -275,7 +280,7 @@ async function handlePathToVictory(message) {
 
     // TODO: automatically update the Campaign with the pathToVictory data.
   } catch (e) {
-    console.log('error in consumer/handlePathToVictory', e);
+    sails.helpers.log(slug, 'error in consumer/handlePathToVictory', e);
   }
 }
 

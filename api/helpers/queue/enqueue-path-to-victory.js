@@ -21,9 +21,10 @@ module.exports = {
       //   return;
       // }
       const { campaign } = inputs;
-      const { data } = campaign;
+      const { data, slug } = campaign;
       const { details, goals } = data;
-      const { office, state, city, district, officeTermLength } = details;
+      const { office, state, city, district, officeTermLength, otherOffice } =
+        details;
       const { electionDate } = goals;
 
       // TODO: we don't currently store the election level in the campaign details
@@ -52,11 +53,16 @@ module.exports = {
         termLength = officeTermLength.match(/\d+/)[0];
       }
 
+      let officeName = office;
+      if (officeName === 'Other') {
+        officeName = otherOffice;
+      }
+
       const queueMessage = {
         type: 'pathToVictory',
         data: {
           campaignId: campaign.id,
-          officeName: office,
+          officeName: officeName,
           electionDate: electionDate,
           electionTerm: termLength,
           electionLevel: electionLevel,
@@ -68,7 +74,7 @@ module.exports = {
         },
       };
 
-      console.log('queueMessage', queueMessage);
+      sails.helpers.log(slug, 'queueing Message', queueMessage);
       await sails.helpers.queue.enqueue(queueMessage);
       return exits.success({ message: 'ok' });
     } catch (e) {

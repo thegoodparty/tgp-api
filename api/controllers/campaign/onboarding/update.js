@@ -4,7 +4,7 @@
  * @description :: Stand Alone action2 for signing up a user.
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
-
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 const moment = require('moment');
 
 module.exports = {
@@ -40,8 +40,9 @@ module.exports = {
     try {
       const { campaign, versionKey, updateCandidate, subSectionKey } = inputs;
       const { user } = this.req;
+      let slug = campaign.slug;
       const existing = await Campaign.findOne({
-        slug: campaign.slug,
+        slug,
       });
 
       // setting last_step_date for the crm
@@ -67,6 +68,18 @@ module.exports = {
         );
       }
 
+      let launchP2V = false;
+      if (
+        campaign?.details?.pledged &&
+        campaign.details.pledged === true &&
+        (!campaign?.p2vStatus || campaign?.p2vStatus === 'Locked')
+      ) {
+        sails.helpers.log(slug, 'launching p2v...');
+        campaign.p2vStatus = 'Waiting';
+        launchP2V = true;
+        await sails.helpers.queue.consumer();
+      }
+
       // update can be done by an admin or a user.
       if (user.isAdmin) {
         await Campaign.updateOne({
@@ -84,6 +97,14 @@ module.exports = {
       });
 
       await updateUserPhone(updated.data, user);
+
+      // Launch the Path to Victory queue
+      if (launchP2V) {
+        sails.helpers.log(slug, 'sending p2v slack message');
+        await sendSlackMessage(updated, user);
+        sails.helpers.log(slug, 'enqueuing p2v');
+        await sails.helpers.queue.enqueuePathToVictory(updated);
+      }
 
       if (user.isAdmin && updateCandidate) {
         // the campaign might be associated with public candidate, and we need to update it too. specifically - admin path to victory: voteGoal, voterProjection
@@ -137,4 +158,44 @@ async function updateUserPhone(campaign, user) {
   } catch (e) {
     console.log('error at updateUserPhone', e);
   }
+}
+
+async function sendSlackMessage(campaign, user) {
+  if (appBase !== 'https://goodparty.org') {
+    return;
+  }
+  const { slug, details } = campaign;
+  const { firstName, lastName, office, state, city, district } = details;
+  const slackMessage = {
+    text: `Onboarding Alert!`,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `__________________________________ \n *Candidate completed details section * \n ${appBase}`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*We need to add their admin Path to victory*\n
+          \nName: ${firstName} ${lastName}
+          \nOffice: ${office}
+          \nState: ${state}
+          \nCity: ${city || 'n/a'}
+          \nDistrict: ${district || 'n/a'}
+          \nemail: ${user.email}
+          \nslug: ${slug}\n
+          \nadmin link: ${appBase}/admin/victory-path/${slug}
+          \n
+          \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
+          `,
+        },
+      },
+    ],
+  };
+
+  await sails.helpers.slack.slackHelper(slackMessage, 'victory');
 }
