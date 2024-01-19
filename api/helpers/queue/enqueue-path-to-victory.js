@@ -53,6 +53,7 @@ module.exports = {
         termLength = officeTermLength.match(/\d+/)[0];
       }
 
+      let officeName = office;
       if (officeName === 'Other') {
         officeName = otherOffice;
       }
@@ -61,7 +62,7 @@ module.exports = {
         type: 'pathToVictory',
         data: {
           campaignId: campaign.id,
-          officeName: office,
+          officeName: officeName,
           electionDate: electionDate,
           electionTerm: termLength,
           electionLevel: electionLevel,
