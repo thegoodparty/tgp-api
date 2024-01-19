@@ -1,6 +1,6 @@
 module.exports = {
-  friendlyName: 'Logger helper',
-  description: 'Logging',
+  friendlyName: 'Log helper',
+  description: 'Make logging easier',
 
   inputs: {
     slug: {
@@ -18,19 +18,25 @@ module.exports = {
       type: 'ref',
     },
   },
-  fn: async function (inputs, exits) {
+  fn: async function (inputs) {
     try {
       const { arg1, arg2, arg3 } = inputs;
       if (arg1 && arg2 && arg3) {
-        console.log(`[${inputs.slug}]`, arg1, arg2, arg3);
+        log([`[${inputs.slug}]`, arg1, arg2, arg3]);
       } else if (arg1 && arg2) {
-        console.log(`[${inputs.slug}]`, arg1, arg2);
+        log([`[${inputs.slug}]`, arg1, arg2]);
       } else if (arg1) {
-        console.log(`[${inputs.slug}]`, arg1);
+        log([`[${inputs.slug}]`, arg1]);
       }
-      return exits.success('');
-    } catch (e) {
-      return exits.badRequest('');
-    }
+    } catch (e) {}
+    return;
   },
 };
+
+function log(args) {
+  if (sails.config.environment === 'production') {
+    sails.log.info(...args);
+  } else {
+    console.log(...args);
+  }
+}
