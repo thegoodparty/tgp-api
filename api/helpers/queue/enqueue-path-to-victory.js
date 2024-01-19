@@ -23,7 +23,8 @@ module.exports = {
       const { campaign } = inputs;
       const { data, slug } = campaign;
       const { details, goals } = data;
-      const { office, state, city, district, officeTermLength } = details;
+      const { office, state, city, district, officeTermLength, otherOffice } =
+        details;
       const { electionDate } = goals;
 
       // TODO: we don't currently store the election level in the campaign details
@@ -50,6 +51,10 @@ module.exports = {
       // extract the number from the officeTermLength string
       if (officeTermLength) {
         termLength = officeTermLength.match(/\d+/)[0];
+      }
+
+      if (officeName === 'Other') {
+        officeName = otherOffice;
       }
 
       const queueMessage = {
