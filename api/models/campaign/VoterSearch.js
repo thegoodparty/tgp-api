@@ -1,3 +1,6 @@
+// sails run indexes
+// to add the index to the votersearch table.
+
 module.exports = {
   attributes: {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
