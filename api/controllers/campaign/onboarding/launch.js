@@ -28,6 +28,10 @@ module.exports = {
       const { user } = this.req;
       // permissions - admin can launch by slug, but we also allow shortVersion campaign to launch without admin permissions.
       if (inputSlug && !user.isAdmin) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Attempt to launch with no slug',
+          {},
+        );
         return exits.forbidden();
       }
       let campaignRecord;
@@ -41,6 +45,10 @@ module.exports = {
 
       if (!campaignRecord) {
         console.log('no campaign');
+        await sails.helpers.slack.errorLoggerHelper(
+          'Attempt to launch. no campaing',
+          { inputSlug },
+        );
         return exits.forbidden();
       }
 
