@@ -178,9 +178,10 @@ async function handlePathToVictory(message) {
           }
           sails.helpers.log(slug, 'district', district);
           sails.helpers.log(slug, 'electionType', electionType);
+
           const counts = await sails.helpers.campaign.countHelper(
             electionTerm,
-            electionDate,
+            electionDate ? electionDate : new Date().toISOString().slice(0, 10),
             electionState,
             electionType.column,
             electionType.value,

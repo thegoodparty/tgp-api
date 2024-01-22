@@ -22,10 +22,12 @@ module.exports = {
       // }
       const { campaign } = inputs;
       const { data, slug } = campaign;
-      const { details, goals } = data;
+      const { details } = data;
       const { office, state, city, district, officeTermLength, otherOffice } =
         details;
-      const { electionDate } = goals;
+
+      let goals = data?.goals;
+      let electionDate = goals?.electionDate;
 
       // TODO: we don't currently store the election level in the campaign details
       // we need to add it to the campaign details
