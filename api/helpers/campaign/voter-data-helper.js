@@ -1,0 +1,323 @@
+const axios = require('axios');
+const fastCsv = require('fast-csv');
+
+const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
+
+module.exports = {
+  friendlyName: 'Voter Data Helper',
+
+  inputs: {
+    campaignId: {
+      type: 'string',
+      required: true,
+    },
+    electionState: {
+      type: 'string',
+      required: true,
+    },
+    l2ColumnName: {
+      type: 'string',
+    },
+    l2ColumnValue: {
+      type: 'string',
+    },
+    additionalFilters: {
+      type: 'json',
+    },
+    limitApproved: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+  },
+  exits: {
+    success: {
+      description: 'OK',
+    },
+    badRequest: {
+      description: 'Error',
+    },
+  },
+
+  fn: async function (inputs, exits) {
+    try {
+      const {
+        campaignId,
+        electionState,
+        l2ColumnName,
+        l2ColumnValue,
+        additionalFilters,
+        limitApproved,
+      } = inputs;
+
+      let campaign;
+      try {
+        campaign = await Campaign.findOne({ id: campaignId });
+      } catch (e) {
+        console.log('error finding campaign in voter-data-helper', e);
+        return exits.badRequest('error');
+      }
+
+      console.log(`voterDataHelper invoked with ${JSON.stringify(inputs)}`);
+
+      let csvData = await getVoterData(
+        electionState,
+        l2ColumnName,
+        l2ColumnValue,
+        additionalFilters,
+        campaign,
+        limitApproved,
+      );
+
+      let voterData = [];
+      if (csvData) {
+        voterData = await parseVoterData(csvData);
+      }
+
+      let voterObjs = [];
+      for (const voter of voterData) {
+        let voterObj = {};
+        voterObj.voterId = voter.LALVOTERID;
+        voterObj.data = voter;
+        voterObj.address = voter.Residence_Addresses_AddressLine;
+        voterObj.party = voter.Parties_Description;
+        voterObj.state = voter.Residence_Addresses_State;
+        voterObj.city = voter.Residence_Addresses_City;
+        voterObj.zip = voter.Residence_Addresses_Zip;
+
+        // TODO: calculate these using google api.
+        voterObj.lat = '';
+        voterObj.lng = '';
+        voterObj.geoHash = '';
+        voterObjs.push(voterObj);
+      }
+      console.log('Adding voters to db. Total voters:', voterObjs.length);
+
+      // createEach wont work because we need to find it first to see if it exists.
+      // const voters = await Voter.createEach(voterObjs)
+      //   .fetch()
+      //   .tolerate('E_UNIQUE');
+
+      if (voterObjs.length > 0) {
+        for (const voterObj of voterObjs) {
+          try {
+            const voter = await Voter.findOrCreate(
+              { voterId: voterObj.voterId },
+              voterObj,
+            );
+            await Campaign.addToCollection(campaign.id, 'voters', voter.id);
+            // because sails does not have unique_together we must do this.
+            await VoterSearch.findOrCreate(
+              {
+                voter: voter.id,
+                l2ColumnName,
+                l2ColumnValue,
+              },
+              {
+                voter: voter.id,
+                l2ColumnName,
+                l2ColumnValue,
+              },
+            );
+          } catch (e) {
+            console.log('error at voter-data-helper', e);
+          }
+        }
+
+        await sails.helpers.slack.slackHelper(
+          simpleSlackMessage(
+            'Voter Data',
+            `Added ${voterObjs.length} voter records to campaign ${campaign.slug}.`,
+          ),
+          'victory',
+        );
+      }
+
+      return exits.success('ok');
+    } catch (e) {
+      console.log('error at voter-data-helper', e);
+      return exits.badRequest('error');
+    }
+  },
+};
+
+async function parseVoterData(csvData) {
+  let parsedVoterData = [];
+  let finishedParsing = false;
+  // Uses fast-csv to parse the CSV data into an Object.
+  fastCsv
+    .parseString(csvData, { headers: true })
+    .on('data', (row) => {
+      parsedVoterData.push(row);
+    })
+    .on('end', () => {
+      console.log('finished parsing voterData');
+      finishedParsing = true;
+    });
+
+  // wait up to 30 seconds for the parsing to finish.
+  for (let i = 0; i < 60; i++) {
+    console.log('parsing voterData...');
+    await sleep(500);
+    if (finishedParsing === true) {
+      break;
+    }
+  }
+  return parsedVoterData;
+}
+
+async function getVoterData(
+  electionState,
+  l2ColumnName,
+  l2ColumnValue,
+  additionalFilters,
+  campaign,
+  limitApproved,
+) {
+  const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+
+  const filters = createFilters(l2ColumnName, l2ColumnValue, additionalFilters);
+
+  if (isFilterEmpty(filters)) {
+    return;
+  }
+
+  const totalRecords = await getTotalRecords(searchUrl, filters);
+  if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
+    return;
+  }
+
+  const job = await initiateSearch(searchUrl, filters);
+  return await waitForSearchCompletion(job, campaign);
+}
+
+function createFilters(l2ColumnName, l2ColumnValue, additionalFilters) {
+  let filters = {};
+  if (l2ColumnName && l2ColumnValue) {
+    filters[l2ColumnName] = l2ColumnValue;
+  }
+  if (additionalFilters) {
+    filters = { ...filters, ...additionalFilters };
+  }
+  return filters;
+}
+
+function isFilterEmpty(filters) {
+  return !filters || Object.keys(filters).length === 0;
+}
+
+async function getTotalRecords(searchUrl, filters) {
+  try {
+    const estimateResponse = await axios.post(searchUrl, {
+      format: 'counts',
+      filters,
+      columns: ['Parties_Description'],
+    });
+
+    let totalRecords = 0;
+    if (estimateResponse?.data) {
+      totalRecords = estimateResponse.data.reduce(
+        (acc, item) => acc + (item?.__COUNT || 0),
+        0,
+      );
+    }
+    return totalRecords;
+  } catch (e) {
+    console.log('error at getVoterData estimate', e);
+    return 0;
+  }
+}
+
+async function canProceedWithSearch(totalRecords, limitApproved, campaign) {
+  if (totalRecords > 100000 && !limitApproved) {
+    await sendSlackNotification(
+      'Voter Data',
+      `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}. Campaign: ${campaign.slug}. Approval is required.`,
+      'victory',
+    );
+    return false;
+  }
+  return true;
+}
+
+async function initiateSearch(searchUrl, filters) {
+  try {
+    const response = await axios.post(searchUrl, { filters, wait: 0 });
+    return response?.data?.job;
+  } catch (e) {
+    console.log('error at getVoterData search', e);
+    return;
+  }
+}
+
+async function waitForSearchCompletion(job, campaign) {
+  let attempts = 0;
+  const jobUrl = `https://api.l2datamapping.com/api/v2/records/search/status/${job}?id=1OSR&apikey=${l2ApiKey}`;
+
+  while (true) {
+    await sleep(10000);
+    try {
+      const response = await axios.get(jobUrl);
+      const status = response?.data?.status;
+
+      if (status === 'FINISHED') {
+        return await downloadFile(job);
+      } else if (status === 'ERROR') {
+        await sendSlackNotification(
+          'Voter Data',
+          `Error getting voter data. Job id: ${job}. Campaign: ${campaign.slug}.`,
+          'victory',
+        );
+        break;
+      }
+
+      if (++attempts > 180) {
+        await sendSlackNotification(
+          'Voter Data',
+          `Failed to get voter data. Job timed out. Job id: ${job}. Campaign: ${campaign.slug}.`,
+          'victory',
+        );
+        break;
+      }
+    } catch (e) {
+      console.log('error at getVoterData', e);
+    }
+  }
+  return null;
+}
+
+async function downloadFile(job) {
+  const fileUrl = `https://api.l2datamapping.com/api/v2/records/search/file/${job}?id=1OSR&apikey=${l2ApiKey}`;
+  try {
+    const response = await axios.get(fileUrl);
+    return response?.data;
+  } catch (e) {
+    console.log('error at getVoterData downloadFile', e);
+    return;
+  }
+}
+
+async function sendSlackNotification(title, message, channel) {
+  await sails.helpers.slack.slackHelper(
+    simpleSlackMessage(title, message),
+    channel,
+  );
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function simpleSlackMessage(text, body) {
+  return {
+    text,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: body,
+        },
+      },
+    ],
+  };
+}

@@ -45,5 +45,10 @@ module.exports = {
       collection: 'topIssue',
       via: 'campaigns',
     },
+    // many to many
+    voters: {
+      collection: 'voter',
+      via: 'campaigns',
+    },
   },
 };
