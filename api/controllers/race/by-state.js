@@ -36,7 +36,6 @@ module.exports = {
         select: ['hashId', 'data'],
         limit: viewAll ? undefined : 10,
       });
-      console.log('races', races.length);
       races.forEach((race) => {
         const { data } = race;
         const {

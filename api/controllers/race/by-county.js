@@ -12,6 +12,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    viewAll: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -32,7 +35,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { county } = inputs;
+      const { county, viewAll } = inputs;
       const inputState = inputs.state;
       const slug = `${slugify(inputState, { lower: true })}/${slugify(county, {
         lower: true,
@@ -48,16 +51,58 @@ module.exports = {
         where: { state, county: countyRecord.id },
         select: ['name', 'slug'],
       });
+      console.log('municipalities', municipalities);
       const races = await BallotRace.find({
-        state,
-        level: 'county',
-        county: countyRecord.id,
-        municipality: null,
+        where: {
+          state,
+          level: 'county',
+          county: countyRecord.id,
+          municipality: null,
+        },
+        select: ['hashId', 'data'],
+        limit: viewAll ? undefined : 10,
       });
+      races.forEach((race) => {
+        const { data } = race;
+        const {
+          election_name,
+          election_day,
+          position_name,
+          position_description,
+          level,
+        } = data;
+        race.electionName = election_name;
+        race.date = election_day;
+        race.positionName = position_name;
+        race.positionDescription = position_description;
+        race.level = level;
+        delete race.data;
+      });
+
+      const {
+        county_full,
+        city_largest,
+        population,
+        density,
+        income_household_median,
+        unemployment_rate,
+        home_value,
+      } = countyRecord.data;
+
+      const shortCounty = {
+        county: countyRecord.data.county,
+        county_full,
+        city_largest,
+        population,
+        density,
+        income_household_median,
+        unemployment_rate,
+        home_value,
+      };
       return exits.success({
         municipalities,
         races,
-        county: countyRecord.data,
+        county: shortCounty,
       });
     } catch (e) {
       console.log('error at races/by-county', e);
