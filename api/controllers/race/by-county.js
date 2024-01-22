@@ -105,7 +105,7 @@ module.exports = {
         county: shortCounty,
       });
     } catch (e) {
-      console.log('error at races/by-county.', e);
+      console.log('error at races/by-county', e);
       return exits.success({
         error: true,
         e,
