@@ -12,10 +12,15 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     // Run the raw SQL query to add composite indexes
-    console.log('creating votersearch l2ColumnIndex');
+    console.log('creating votersearch.l2ColumnIndex');
     await sails.getDatastore().sendNativeQuery(`
           CREATE INDEX l2ColumnIndex ON public.votersearch ("l2ColumnName", "l2ColumnValue")
         `);
+
+    console.log('creating l2count.l2CountIndex');
+    await sails.getDatastore().sendNativeQuery(`
+        CREATE INDEX l2CountIndex ON public.l2count ("electionType", "electionLocation", "electionDistrict")
+      `);
 
     // Report back to Sails that the migration was successful
     return exits.success();

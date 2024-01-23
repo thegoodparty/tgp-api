@@ -196,29 +196,33 @@ async function handlePathToVictory(message) {
             pathToVictoryResponse.electionDistrict = district;
             pathToVictoryResponse.counts = counts;
 
-            // const existingObj = await l2Count.findOne({
-            //   electionType: electionType.column,
-            //   electionLocation: electionType.value,
-            //   electionDistrict: district,
-            // });
-            // if (existingObj) {
-            //   await l2Count
-            //     .updateOne({
-            //       electionType: electionType.column,
-            //       electionLocation: electionType.value,
-            //       electionDistrict: district,
-            //     })
-            //     .set({
-            //       counts: counts,
-            //     });
-            // } else {
-            //   await l2Count.create({
-            //     electionType: electionType.column,
-            //     electionLocation: electionType.value,
-            //     electionDistrict: district,
-            //     counts: counts,
-            //   });
-            // }
+            try {
+              const existingObj = await l2Count.findOne({
+                electionType: electionType.column,
+                electionLocation: electionType.value,
+                electionDistrict: district,
+              });
+              if (existingObj) {
+                await l2Count
+                  .updateOne({
+                    electionType: electionType.column,
+                    electionLocation: electionType.value,
+                    electionDistrict: district,
+                  })
+                  .set({
+                    counts: counts,
+                  });
+              } else {
+                await l2Count.create({
+                  electionType: electionType.column,
+                  electionLocation: electionType.value,
+                  electionDistrict: district,
+                  counts: counts,
+                });
+              }
+            } catch (e) {
+              console.log('error saving l2Count', e);
+            }
 
             break;
           }
