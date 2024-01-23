@@ -16,6 +16,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    viewAll: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -36,7 +39,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { county, city } = inputs;
+      const { county, city, viewAll } = inputs;
       const inputState = inputs.state;
       const countySlug = `${slugify(inputState, { lower: true })}/${slugify(
         county,
@@ -62,9 +65,9 @@ module.exports = {
       }
 
       const races = await BallotRace.find({
-        state,
-        county: null,
-        municipality: municipalityRecord.id,
+        where: { state, county: null, municipality: municipalityRecord.id },
+        select: ['hashId', 'data'],
+        limit: viewAll ? undefined : 10,
       });
       races.forEach((race) => {
         const { data } = race;
@@ -82,9 +85,28 @@ module.exports = {
         race.level = level;
         delete race.data;
       });
+
+      const {
+        population,
+        density,
+        income_household_median,
+        unemployment_rate,
+        home_value,
+        county_name,
+      } = municipalityRecord.data;
+
+      const shortCity = {
+        population,
+        density,
+        income_household_median,
+        unemployment_rate,
+        home_value,
+        county_name,
+        city: municipalityRecord.data.city,
+      };
       return exits.success({
         races,
-        municipality: municipalityRecord.data,
+        municipality: shortCity,
       });
     } catch (e) {
       console.log('error at races/by-city', e);
