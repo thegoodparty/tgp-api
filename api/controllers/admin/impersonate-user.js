@@ -48,7 +48,7 @@ module.exports = {
         'Error at admin/impersonate',
         err,
       );
-      console.log('impersonate error');
+      console.log('impersonate error.');
       console.log(err);
       return exits.badRequest({
         message: 'unknown error',
