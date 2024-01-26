@@ -61,4 +61,6 @@ module.exports.policies = {
   'campaign/l2Data/office': true, // for testing only.
   'race/*': true,
   'data-processing/*': true,
+  'job/*': true,
+  'jobs/*': true,
 };

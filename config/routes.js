@@ -191,4 +191,8 @@ module.exports.routes = {
   'GET   /api/v1/race/csv': 'race/races-csv',
 
   'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
+
+  // jobs
+  'GET   /api/v1/jobs': 'jobs/list',
+  'GET   /api/v1/job': 'jobs/get',
 };
