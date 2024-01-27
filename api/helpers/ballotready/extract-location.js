@@ -88,6 +88,7 @@ function extractCountyName(row) {
     'Court Judge',
     'Township Justice of the Peace',
     'Village Justice of the Peace',
+    'General Sessions Court Judge',
     'Justice of the Peace',
     'City Sheriff',
     'City Circuit Attorney',
