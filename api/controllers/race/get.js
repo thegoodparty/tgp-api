@@ -78,6 +78,7 @@ module.exports = {
 
       const filtered = {
         id,
+        hashId: race.hashId,
         positionName: position_name,
         locationName: name,
         electionDate: election_day,
