@@ -17,6 +17,7 @@ const s3Bucket = 'ballotready-chunks';
 
 const s3 = new AWS.S3();
 
+const startFile = 46;
 let count = 0;
 let files = 3;
 if (
@@ -33,7 +34,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      for (let i = 0; i < files; i++) {
+      for (let i = startFile - 1; i < files; i++) {
         const s3Key = `ballotready_part${i + 1}.csv`;
         console.log('processing file ', s3Key);
         await sails.helpers.slack.errorLoggerHelper('processing file', {
