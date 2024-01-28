@@ -74,6 +74,7 @@ module.exports = {
         filing_requirements,
         eligibility_requirements,
         is_runoff,
+        is_primary,
       } = race.data;
 
       const filtered = {
@@ -101,6 +102,7 @@ module.exports = {
         filingRequirements: filing_requirements,
         eligibilityRequirements: eligibility_requirements,
         isRunoff: is_runoff,
+        isPriamry: is_primary,
         municipality: race.municipality
           ? { name: race.municipality.name, slug: race.municipality.slug }
           : null,
