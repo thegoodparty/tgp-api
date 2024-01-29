@@ -27,13 +27,21 @@ if (
 }
 
 module.exports = {
-  inputs: {},
+  inputs: {
+    startFile: {
+      type: 'number',
+    },
+  },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
-      for (let i = 0; i < files; i++) {
+      const { startFile } = inputs;
+      if (!startFile) {
+        startFile = 1;
+      }
+      for (let i = startFile - 1; i < files; i++) {
         const s3Key = `ballotready_part${i + 1}.csv`;
         console.log('processing file ', s3Key);
         await sails.helpers.slack.errorLoggerHelper('processing file', {

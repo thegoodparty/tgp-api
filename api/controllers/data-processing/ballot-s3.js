@@ -14,6 +14,18 @@ AWS.config.update({
   secretAccessKey,
 });
 
+// Define the desired order of columns
+const desiredOrder = [
+  'first_name',
+  'last_name',
+  'state',
+  'parsedLocation',
+  'normalized_position_name',
+  'parties',
+  'email',
+  'phone',
+];
+
 const s3Bucket = 'goodparty-ballotready';
 
 let csvFilePath = path.join(__dirname, '../../../data/candidates');
@@ -121,19 +133,41 @@ async function parseFile(filePath) {
     .pipe(csv())
     .on('headers', (headerList) => {
       // Capture the headers
-      headers = headerList;
+      const orderedHeaders = [
+        ...desiredOrder,
+        ...headerList.filter((h) => !desiredOrder.includes(h)),
+      ];
+
+      headers = orderedHeaders;
     })
     .on('data', (row) => {
-      // Modify the "parties" column
-      if (row.parties) {
-        const match = row.parties.match(/"name"=>\s*"([^"]+)"/);
-        if (match && match[1]) {
-          row.parties = match[1];
+      (async () => {
+        // Modify the "parties" column
+        if (row.parties) {
+          const match = row.parties.match(/"name"=>\s*"([^"]+)"/);
+          if (match && match[1]) {
+            row.parties = match[1];
+          }
         }
-      }
+        if (row.parties !== 'Democratic' && row.parties !== 'Republican') {
+          const { name } = await sails.helpers.ballotready.extractLocation(row);
+          row.parsedLocation = name ? name.replace(/\"+/g, '') : ''; //remove quotes
+          row.normalizedPosition = row.normalizedPosition
+            ? row.normalizedPosition.replace(/\"+/g, '')
+            : ''; //remove quotes
+          row.positionName = row.positionName
+            ? row.positionName.replace(/\"+/g, '')
+            : ''; //remove quotes
 
-      // Add the modified row to the rows array
-      rows.push(row);
+          const reorderedRow = {};
+          headers.forEach((header) => {
+            reorderedRow[header] = row[header] || '';
+          });
+
+          // Add the modified row to the rows array
+          rows.push(reorderedRow);
+        }
+      })();
     })
     .on('end', () => {
       // Manually construct the CSV
