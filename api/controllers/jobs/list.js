@@ -4,7 +4,7 @@
  * @description :: Find all Asbhy Job listings.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
+const axios = require('axios');
 const ashbyKey = sails.config.custom.ashbyKey || sails.config.ashbyKey;
 
 module.exports = {
@@ -29,40 +29,28 @@ module.exports = {
     let jobs = [];
     try {
       const apiUrl = 'https://api.ashbyhq.com/jobPosting.list';
-
-      // Prepare the authentication credentials
-      const authHeader =
-        'Basic ' + Buffer.from(ashbyKey + ':').toString('base64');
-
-      // Set up the fetch options
-      const fetchOptions = {
-        method: 'POST',
-        body: JSON.stringify({ listedOnly: true }),
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: authHeader,
-        },
-      };
-
       try {
-        // Make the POST request
-        const response = await fetch(apiUrl, fetchOptions);
-        console.log('response', response);
-        // Handle the response
-        if (response?.ok) {
-          const jobsResponse = await response.json();
-          console.log('jobsResponse', jobsResponse);
-          if (jobsResponse && jobsResponse?.results) {
-            jobs = jobsResponse.results;
-            // jobs = jobs.filter((job) => job.status === 'Open');
-          } else {
-            console.error(
-              'Failed to fetch data:',
-              response.status,
-              response.statusText,
-            );
-          }
+        const response = await axios.post(
+          apiUrl,
+          { listedOnly: true },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+              Authorization: `Basic ${Buffer.from(ashbyKey + ':').toString(
+                'base64',
+              )}`,
+            },
+          },
+        );
+        if (response?.data && response?.data?.results) {
+          jobs = response.data.results;
+        } else {
+          console.error(
+            'Failed to fetch data:',
+            response.status,
+            response.statusText,
+          );
         }
       } catch (error) {
         console.error('Error during fetch:', error.message);
@@ -70,8 +58,6 @@ module.exports = {
           notFound: true,
         };
       }
-
-      console.log('jobs', jobs);
 
       return exits.success({
         jobs,
