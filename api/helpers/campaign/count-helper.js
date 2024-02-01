@@ -1,5 +1,5 @@
 const axios = require('axios');
-const { get } = require('lodash');
+const lodash = require('lodash');
 
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 
@@ -44,7 +44,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const {
+      let {
         electionTerm,
         electionDate,
         electionState,
@@ -55,18 +55,16 @@ module.exports = {
 
       console.log(`countHelper invoked with ${JSON.stringify(inputs)}`);
 
-      let countsJson = {
-        format: 'counts',
+      let searchJson = {
         filters: {},
-        columns: ['Parties_Description'],
       };
 
-      countsJson.filters[electionType] = electionLocation;
+      searchJson.filters[electionType] = electionLocation;
       if (electionDistrict) {
-        countsJson.filters[electionType] = electionDistrict;
+        searchJson.filters[electionType] = electionDistrict;
       }
 
-      let counts = await getCounts(electionState, countsJson);
+      let counts = await getPartisanCounts(electionState, searchJson);
       console.log('counts', counts);
 
       if (counts.total === 0) {
@@ -79,9 +77,24 @@ module.exports = {
       let columns = await getColumns(electionState);
 
       let numberOfElections = 3;
-      if (electionTerm >= 4) {
-        // for longer terms we only want to look at the last 2 elections.
-        numberOfElections = 2;
+      // if (electionTerm >= 4) {
+      //   // for longer terms we only want to look at the last 2 elections. (deprecated)
+      //   numberOfElections = 2;
+      // }
+
+      // TODO: If a Local election is Partisan then it will also be a General Election.
+      // But we need to pass that information from Ballotready
+      if (
+        electionType === 'State_House_District' ||
+        electionType === 'State_Senate_District' ||
+        electionType === 'US_House_District' ||
+        electionType === 'US_Senate'
+      ) {
+        // update the electionDate to the first Tuesday of November.
+        let year = electionDate.split('-')[0];
+        const electionDateObj = getFirstTuesdayOfNovember(year);
+        electionDate = electionDateObj.toISOString().slice(0, 10);
+        console.log('updated electionDate to GE date:', electionDate);
       }
 
       let foundColumns = [];
@@ -101,11 +114,17 @@ module.exports = {
       // get the counts for each of the 3 years.
       let turnoutCounts = [];
       for (const column of foundColumns) {
-        let historyJson = countsJson;
+        let historyJson = lodash.cloneDeep(searchJson);
         historyJson.filters[column.column] = 1;
-        let counts = await getCounts(electionState, historyJson);
-        console.log(`counts ${column.column} `, counts);
-        turnoutCounts.push(counts.total);
+        console.log('historyJson', historyJson);
+        let estimatedCount = await getEstimatedCounts(
+          electionState,
+          historyJson,
+        );
+        console.log(`estimatedCount ${column.column} `, estimatedCount);
+        if (estimatedCount > 0) {
+          turnoutCounts.push(estimatedCount);
+        }
       }
 
       // update counts with the average and projected turnouts.
@@ -120,6 +139,22 @@ module.exports = {
   },
 };
 
+function getFirstTuesdayOfNovember(year) {
+  // Month in JavaScript is 0-indexed, so November is represented by 10
+  const november = new Date(year, 10, 1);
+
+  // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
+  const dayOfWeek = november.getDay();
+
+  // Calculate the number of days to add to reach the first Tuesday
+  const daysToAdd = (2 + 7 - dayOfWeek) % 7;
+
+  // Set the date to the first Tuesday of November
+  november.setDate(1 + daysToAdd);
+
+  return november;
+}
+
 function getProjectedTurnout(counts, turnoutCounts) {
   // Note: l2 lacks data for number of registered voters at a point in time.
   // so we calculate turnout for all prior years based on current registered voters.
@@ -133,7 +168,8 @@ function getProjectedTurnout(counts, turnoutCounts) {
   }
 
   let averageTurnoutPercent = (averageTurnout / counts.total).toFixed(2);
-  counts.averageTurnoutPercent = (averageTurnoutPercent * 100).toString() + '%';
+  counts.averageTurnoutPercent =
+    (averageTurnoutPercent * 100).toFixed(2).toString() + '%';
 
   // Calculate the projected turnout.
   // TODO: Jared will revise the strategy in this section.
@@ -151,7 +187,7 @@ function getProjectedTurnout(counts, turnoutCounts) {
   let projectedTurnoutPercent = (projectedTurnout / counts.total).toFixed(2);
   counts.projectedTurnout = projectedTurnout;
   counts.projectedTurnoutPercent =
-    (projectedTurnoutPercent * 100).toString() + '%';
+    (projectedTurnoutPercent * 100).toFixed(2).toString() + '%';
   return counts;
 }
 
@@ -184,13 +220,17 @@ async function getColumns(electionState) {
   return columns;
 }
 
-async function getCounts(electionState, countsJson) {
+async function getPartisanCounts(electionState, searchJson) {
   let counts = {
     total: 0,
     democrat: 0,
     republican: 0,
     independent: 0,
   };
+
+  let countsJson = lodash.cloneDeep(searchJson);
+  countsJson.format = 'counts';
+  countsJson.columns = ['Parties_Description'];
 
   const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
   let response;
@@ -204,7 +244,7 @@ async function getCounts(electionState, countsJson) {
     return counts;
   }
 
-  for (const item of response?.data) {
+  for (const item of response.data) {
     counts.total += item.__COUNT;
     if (item.Parties_Description === 'Democratic') {
       counts.democrat += item.__COUNT;
@@ -215,6 +255,26 @@ async function getCounts(electionState, countsJson) {
     }
   }
   return counts;
+}
+
+async function getEstimatedCounts(electionState, searchJson) {
+  let count = 0;
+  // Note: this endpoint also returns # of households which we don't use.
+  // This endpoint could use same query as getPartisanCounts but we use a different endpoint
+  // but if we need partisan election counts we can use the same endpoint.
+  const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/estimate/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+  let response;
+  try {
+    response = await axios.post(searchUrl, searchJson);
+  } catch (e) {
+    console.log('error getting counts', e);
+    return count;
+  }
+  if (!response?.data || !response?.data?.results) {
+    return count;
+  }
+
+  return response.data.results?.count || count;
 }
 
 function getElectionClassification(electionKeyType) {
@@ -289,8 +349,8 @@ function determineHistoryColumn(
           if (
             electionKeyType !== 'EG' &&
             electionKeyType !== 'ECG' &&
-            electionKeyType !== 'EL' &&
-            electionKeyType !== 'EP'
+            electionKeyType !== 'EL' // &&
+            // electionKeyType !== 'EP'
           ) {
             continue;
           }
