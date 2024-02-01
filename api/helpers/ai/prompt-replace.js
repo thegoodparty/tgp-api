@@ -1,5 +1,3 @@
-const { forEach } = require('lodash');
-
 module.exports = {
   inputs: {
     prompt: {
@@ -40,7 +38,9 @@ module.exports = {
       const replaceArr = [
         {
           find: 'name',
-          replace: `${campaign.details.firstName} ${campaign.details.lastName}`,
+          replace: campaign.name
+            ? campaign.name
+            : `${campaign.details.firstName} ${campaign.details.lastName}`,
         },
         {
           find: 'zip',
@@ -70,7 +70,10 @@ module.exports = {
         },
         {
           find: 'pastExperience',
-          replace: campaign.details.pastExperience,
+          replace:
+            typeof campaign.details.pastExperience === 'string'
+              ? campaign.details.pastExperience
+              : JSON.stringify(campaign.details.pastExperience || {}),
         },
         {
           find: 'occupation',

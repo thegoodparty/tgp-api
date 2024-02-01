@@ -26,7 +26,7 @@ module.exports = {
       await sails.helpers.queue.consumer();
 
       const slug = await findSlug(user.name);
-      const data = { slug };
+      const data = { slug, name: user.name };
 
       // see if the user already have campaign
       const existing = await Campaign.findOne({ user: user.id });

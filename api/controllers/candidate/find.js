@@ -126,8 +126,8 @@ function mapCampaignToCandidate(campaign) {
   return {
     // campaignOnboardingSlug: slug,
     slug,
-    firstName: firstName.trim(),
-    lastName: lastName.trim(),
+    firstName: firstName?.trim() || '',
+    lastName: lastName?.trim() || '',
     party: partyWithOther,
     district,
     state,
