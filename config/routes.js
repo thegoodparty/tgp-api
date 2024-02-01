@@ -113,7 +113,7 @@ module.exports.routes = {
     'campaign/onboarding/launch-request',
   'DELETE   /api/v1/campaign/onboarding/launch-request':
     'campaign/onboarding/cancel-launch-request',
-  'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch', // admin
+  'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch',
 
   // onboarding AI
   'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',
