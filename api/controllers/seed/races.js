@@ -37,7 +37,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { startFile } = inputs;
+      let { startFile } = inputs;
       if (!startFile) {
         startFile = 1;
       }

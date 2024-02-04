@@ -1,3 +1,5 @@
+// https://developers.civicengine.com/docs/api/graphql
+
 const moment = require('moment');
 
 module.exports = {
@@ -44,6 +46,7 @@ module.exports = {
         ) {
           edges {
             node {
+              id
               election {
                 id
                 electionDay
@@ -116,26 +119,20 @@ module.exports = {
       `;
 
       const { races } = await sails.helpers.graphql.queryHelper(query);
-      const groupedRaces = [];
+      const cleanRaces = [];
       const existingPosition = {};
       // group races by level
       if (races?.edges) {
         for (let i = 0; i < races.edges.length; i++) {
           const edge = races.edges[i];
 
-          const level = edge?.node?.position?.level;
           const id = edge?.node?.position?.id;
           if (existingPosition[id]) {
             continue;
           }
           existingPosition[id] = true;
-          if (level === 'FEDERAL') {
-            groupedRaces.push(edge.node);
-          } else if (level === 'STATE') {
-            groupedRaces.push(edge.node);
-          } else {
-            groupedRaces.push(edge.node);
-          }
+          cleanRaces.push(edge.node);
+
           const queueMessage = {
             type: 'saveBallotReadyRace',
             data: edge,
@@ -146,7 +143,7 @@ module.exports = {
       }
 
       return exits.success({
-        races: groupedRaces,
+        races: cleanRaces,
       });
     } catch (e) {
       console.log('error at ballotData/get', e);
