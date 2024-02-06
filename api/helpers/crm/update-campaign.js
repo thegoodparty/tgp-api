@@ -43,13 +43,6 @@ module.exports = {
       const currentStep = data?.currentStep || '';
       const electionDate = goals?.electionDate || undefined;
 
-      lastStepOptions = [
-        'registration',
-        'onboarding-1-5',
-        'onboarding-pledge',
-        'onboarding-complete',
-      ];
-
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
       const { zip, party, office, state, pledged } = dataDetails;
