@@ -130,11 +130,11 @@ async function sendMail(slug) {
     const { user } = campaign;
     const variables = JSON.stringify({
       name: `${user.name}`,
-      link: `${appBase}/${slug}`,
+      link: `${appBase}/dashboard`,
     });
     await sails.helpers.mailgun.mailgunTemplateSender(
       user.email,
-      'Your Good Party Campaign is live!',
+      'Full Suite of AI Campaign Tools Now Available',
       'campagin-launch',
       variables,
     );
