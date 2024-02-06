@@ -17,8 +17,16 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const topIssues = await TopIssue.find()
-        .populate('positions')
-        .sort([{ id: 'ASC' }]);
+        .sort([{ name: 'ASC' }])
+        .populate('positions');
+
+      for (let topIssue of topIssues) {
+        if (topIssue.positions && Array.isArray(topIssue.positions)) {
+          topIssue.positions.sort((a, b) => a.name.localeCompare(b.name));
+        }
+      }
+
+      console.log('topIssues', topIssues);
       return exits.success({
         topIssues,
       });
