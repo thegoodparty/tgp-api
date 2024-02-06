@@ -66,6 +66,7 @@ module.exports = {
           ...campaign,
           launchStatus: 'launched',
           candidateSlug: campaign.slug,
+          currentStep: 'onboarding-complete',
         },
       });
 

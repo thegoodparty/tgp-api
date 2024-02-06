@@ -34,10 +34,6 @@ module.exports = {
         metaData: JSON.stringify(updated),
       });
 
-      // see if the user already have campaign
-      const campaigns = await Campaign.find({
-        user: user.id,
-      });
       const campaignRecord = await sails.helpers.campaign.byUser(user);
       if (!campaignRecord) {
         return exits.success({
