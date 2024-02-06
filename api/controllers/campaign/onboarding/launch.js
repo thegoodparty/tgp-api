@@ -130,7 +130,7 @@ async function sendMail(slug) {
     const { user } = campaign;
     const variables = JSON.stringify({
       name: `${user.name}`,
-      link: `${appBase}/dashboard`,
+      link: `${appBase}/dashboard/plan`,
     });
     await sails.helpers.mailgun.mailgunTemplateSender(
       user.email,
