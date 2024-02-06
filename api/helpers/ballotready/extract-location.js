@@ -35,6 +35,7 @@ module.exports = {
           locationName = extractCountyName(row);
           break;
         case 'city':
+        case 'local':
           locationName = extractCityName(row);
           if (row.position_name.includes('Village')) {
             locationLevel = 'village';
