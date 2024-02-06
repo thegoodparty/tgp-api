@@ -38,22 +38,22 @@ module.exports = {
       const campaigns = await Campaign.find({
         user: user.id,
       });
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
-      }
-      if (!campaign) {
+      const campaignRecord = await sails.helpers.campaign.byUser(user);
+      if (!campaignRecord) {
         return exits.success({
           status: false,
         });
       }
+
+      const campaign = campaignRecord.data;
+
       await Campaign.updateOne({ slug: campaign.slug }).set({
         data: { ...campaign, lastVisited: timestamp },
       });
-      if (campaign.candidateSlug) {
+      if (campaignRecord.isActive) {
         return exits.success({
           status: 'candidate',
-          profile: campaign.candidateSlug,
+          profile: campaign.slug,
           pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
         });
       }

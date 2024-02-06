@@ -46,7 +46,7 @@ module.exports = {
       if (!campaignRecord) {
         console.log('no campaign');
         await sails.helpers.slack.errorLoggerHelper(
-          'Attempt to launch. no campaing',
+          'Attempt to launch. no campaign',
           { inputSlug },
         );
         return exits.forbidden();
@@ -56,7 +56,7 @@ module.exports = {
 
       if (campaignRecord.isActive || campaign.launchStatus === 'launched') {
         return exits.success({
-          slug: campaign.candidateSlug || campaign.slug,
+          ...campaign,
         });
       }
 

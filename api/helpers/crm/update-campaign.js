@@ -36,20 +36,23 @@ module.exports = {
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
       const { campaign } = inputs;
-      const { data } = campaign;
-      const { launchStatus, lastStepDate } = data;
+      const { data, isActive } = campaign;
+      const { lastStepDate, name } = data;
       const dataDetails = data?.details;
       const goals = data?.goals;
       const currentStep = data?.currentStep || '';
       const electionDate = goals?.electionDate || undefined;
 
-      const profileCompleted =
-        data?.profile &&
-        (data.profile.completed || data.profile.campaignWebsite);
+      lastStepOptions = [
+        'registration',
+        'onboarding-1-5',
+        'onboarding-pledge',
+        'onboarding-complete',
+      ];
+
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
-      const { zip, firstName, lastName, party, office, state, pledged } =
-        dataDetails;
+      const { zip, party, office, state, pledged } = dataDetails;
 
       //UNIX formatted timestamps in milliseconds
       const electionDateMs = electionDate
@@ -61,22 +64,19 @@ module.exports = {
         : undefined;
       const companyObj = {
         properties: {
-          name: `${firstName} ${lastName}`,
-          candidate_name: `${firstName} ${lastName}`,
+          name,
           candidate_party: party,
           candidate_office: office,
           state: longState,
           lifecyclestage: 'customer',
-          type: 'CANDIDATE',
+          type: 'Campaign',
           last_step: currentStep,
           last_step_date: lastStepDate || undefined,
           zip,
           pledge_status: pledged ? 'yes' : 'no',
-          is_active: !!firstName,
-          live_candidate: launchStatus === 'launched',
+          is_active: !!name,
+          live_candidate: isActive,
           // todo: this will need to be reworked if/when we add in Rob/Colton
-          unlock_expert: profileCompleted ? 'Jared' : '',
-          unlock_jared: profileCompleted ? 'Yes' : 'No',
           p2v_complete_date: data?.p2vCompleteDate || undefined,
           p2v_status: data?.p2vStatus || 'Locked',
           election_date: electionDateMs,
@@ -100,7 +100,7 @@ module.exports = {
         } catch (e) {
           console.log('error updating crm', e);
           await sails.helpers.slack.errorLoggerHelper(
-            `Error updating company for ${firstName} ${lastName} with existing hubspotId: ${existingId} in hubspot`,
+            `Error updating company for ${name} with existing hubspotId: ${existingId} in hubspot`,
             e,
           );
         }
@@ -128,14 +128,14 @@ module.exports = {
         } catch (e) {
           console.log('error creating company', e);
           await sails.helpers.slack.errorLoggerHelper(
-            `Error creating company for ${firstName} ${lastName} in hubspot`,
+            `Error creating company for ${name} in hubspot`,
             e,
           );
         }
 
         if (!createCompanyResponse) {
           await sails.helpers.slack.errorLoggerHelper(
-            `Error creating company for ${firstName} ${lastName} in hubspot. No response from hubspot.`,
+            `Error creating company for ${name} in hubspot. No response from hubspot.`,
             companyObj,
           );
           return exits.success('not ok');

@@ -32,7 +32,7 @@ module.exports = {
       const existing = await Campaign.findOne({ user: user.id });
       if (existing) {
         return exits.success({
-          slug: existing.slug,
+          ...existing.data,
         });
       }
 
