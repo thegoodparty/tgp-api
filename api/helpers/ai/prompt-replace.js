@@ -61,9 +61,7 @@ module.exports = {
       const replaceArr = [
         {
           find: 'name',
-          replace: campaign.name
-            ? campaign.name
-            : `${campaign.details.firstName} ${campaign.details.lastName}`,
+          replace: name,
         },
         {
           find: 'zip',
