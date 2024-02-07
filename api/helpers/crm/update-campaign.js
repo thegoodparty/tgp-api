@@ -52,8 +52,14 @@ module.exports = {
         ? new Date(electionDate).getTime()
         : undefined;
 
-      if (!name) {
+      if (!name && dataDetails?.firstName && dataDetails?.lastName) {
         name = `${dataDetails?.firstName} ${dataDetails?.lastName}`;
+      }
+      if (!name) {
+        // the name is on hte user (old records)
+        const user = await User.findOne({ id: campaign.user });
+        name = user.name;
+        data.name = name;
       }
 
       const longState = state
