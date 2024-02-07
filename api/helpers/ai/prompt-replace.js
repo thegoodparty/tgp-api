@@ -21,8 +21,14 @@ module.exports = {
       const { prompt, campaign } = inputs;
       let newPrompt = prompt;
 
+      const campaignPositions = await CandidatePosition.find({
+        campaign: campaign.id,
+      })
+        .populate('topIssue')
+        .populate('position');
+
       const positionsStr = positionsToStr(
-        campaign.details.topIssues,
+        campaignPositions,
         campaign.customIssues,
       );
       const party =
@@ -222,7 +228,6 @@ module.exports = {
       newPrompt += `\n
         
       `;
-
       return exits.success(newPrompt);
     } catch (e) {
       console.log('Error in helpers/ai/promptReplace', e);
@@ -231,22 +236,17 @@ module.exports = {
   },
 };
 
-function positionsToStr(topIssues, customIssues) {
-  if (!topIssues && !customIssues) {
+function positionsToStr(campaignPositions, customIssues) {
+  if (!campaignPositions && !customIssues) {
     return '';
   }
   let str = '';
-
-  const { positions } = topIssues || {};
-  if (positions) {
-    positions.forEach((position, index) => {
-      if (position && position.name) {
-        str += `${position.name}  - ${
-          position.topIssue ? position.topIssue.name : ''
-        } ${topIssues[`position-${position.id}`]}, `;
-      }
-    });
-  }
+  campaignPositions.forEach((campaignPosition, i) => {
+    const { position, topIssue } = campaignPosition;
+    str += `Issue #${i + 1}: ${topIssue.name}. Position on the issue: ${
+      position.name
+    }. Candidate's position: ${campaignPosition.description}. `;
+  });
 
   if (customIssues) {
     customIssues.forEach((issue) => {
@@ -277,3 +277,72 @@ function againstToStr(runningAgainst) {
   });
   return str;
 }
+
+const i = [
+  {
+    createdAt: 1707260019702,
+    updatedAt: 1707260019702,
+    id: 7,
+    description: 'aaa',
+    order: 1,
+    candidate: null,
+    campaign: 2,
+    topIssue: {
+      createdAt: 1706680018563,
+      updatedAt: 1706680018563,
+      id: 1,
+      name: 'health insurance',
+    },
+    position: {
+      createdAt: 1706680036896,
+      updatedAt: 1706680036896,
+      id: 1,
+      name: 'free insurance for all',
+      topIssue: 1,
+    },
+  },
+  {
+    createdAt: 1707260025299,
+    updatedAt: 1707260025299,
+    id: 8,
+    description: 'dddd',
+    order: 2,
+    candidate: null,
+    campaign: 2,
+    topIssue: {
+      createdAt: 1706684816916,
+      updatedAt: 1706684816916,
+      id: 2,
+      name: 'Gun control',
+    },
+    position: {
+      createdAt: 1706684841520,
+      updatedAt: 1706684841520,
+      id: 3,
+      name: 'Protect the second',
+      topIssue: 2,
+    },
+  },
+  {
+    createdAt: 1707260042759,
+    updatedAt: 1707260042759,
+    id: 9,
+    description: 'ffff',
+    order: 3,
+    candidate: null,
+    campaign: 2,
+    topIssue: {
+      createdAt: 1707259959086,
+      updatedAt: 1707259959086,
+      id: 3,
+      name: 'Border control',
+    },
+    position: {
+      createdAt: 1707259997620,
+      updatedAt: 1707259997620,
+      id: 6,
+      name: 'I stand with Texas',
+      topIssue: 3,
+    },
+  },
+];
