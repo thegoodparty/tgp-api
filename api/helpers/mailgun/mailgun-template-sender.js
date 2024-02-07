@@ -61,7 +61,7 @@ module.exports = {
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
         'error sending mail - template',
-        e,
+        { error: e, inputs },
       );
       console.log('error sending mail - template', e);
 
