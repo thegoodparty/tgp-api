@@ -27,6 +27,23 @@ module.exports = {
         .populate('topIssue')
         .populate('position');
 
+      let name = campaign.name;
+      if (!name && campaign.details?.firstName && campaign.details?.lastName) {
+        name = `${campaign.details?.firstName} ${campaign.details?.lastName}`;
+      }
+      if (!name) {
+        // the name is on the user (old records)
+        const campaignRecord = await Campaign.findOne({
+          id: campaign.id,
+        }).populate('user');
+        name = campaignRecord.user?.name;
+        if (name) {
+          await Campaign.updateOne({ id: campaign.id }).set({
+            data: { ...campaign.data, name },
+          });
+        }
+      }
+
       const positionsStr = positionsToStr(
         campaignPositions,
         campaign.customIssues,
