@@ -100,6 +100,15 @@ module.exports = {
         }).set({ data: campaign });
       }
 
+      if (
+        campaignRecord.isActive &&
+        campaign.currentStep !== 'onboarding-complete'
+      ) {
+        await Campaign.updateOne({
+          id: campaignId,
+        }).set({ data: { ...campaign, currentStep: 'onboarding-complete' } });
+      }
+
       return exits.success({
         campaign,
       });

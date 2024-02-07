@@ -1,12 +1,3 @@
-const appBase = sails.config.custom.appBase || sails.config.appBase;
-const fs = require('fs');
-const csv = require('csv-parser');
-const path = require('path');
-const csvFilePath = path.join(
-  __dirname,
-  '../../../data/geoPoliticalEntities/dec23/uscounties_v1.73_short.csv',
-);
-
 module.exports = {
   inputs: {},
 
@@ -14,9 +5,20 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      readAndProcessCSV(csvFilePath);
+      // migrate pledged candidates with old onboarding to active candidate
+      const pledged = await Campaign.find({ isActive: false });
+      for (let i = 0; i < pledged.length; i++) {
+        const campaign = pledged[i];
+        const { data } = campaign;
+        const { details } = data || {};
+        if (details?.pledged) {
+          await Campaign.updateOne({ id: campaign.id }).set({
+            isActive: true,
+          });
+        }
+      }
       return exits.success({
-        message: `Sent emails`,
+        message: 'ok',
       });
     } catch (e) {
       console.log('Error in seed', e);
@@ -28,38 +30,3 @@ module.exports = {
     }
   },
 };
-
-function readAndProcessCSV(filePath) {
-  fs.createReadStream(filePath)
-    .pipe(csv())
-    .on('data', (row) => {
-      // Immediately invoked async function to handle each row
-      (async () => {
-        await insertCountyIntoDatabase(row);
-      })();
-    })
-    .on('end', () => {
-      console.log('CSV file successfully processed');
-    });
-}
-
-async function insertCountyIntoDatabase(row) {
-  try {
-    const { county, state_id } = row;
-    console.log('county', county);
-    console.log('state_id', state_id);
-    const exists = await County.findOne({
-      name: county,
-      state: state_id,
-    });
-    if (!exists) {
-      await County.create({
-        name: county,
-        state: state_id,
-        data: row,
-      });
-    }
-  } catch (e) {
-    console.log('error in insertIntoDb', e);
-  }
-}
