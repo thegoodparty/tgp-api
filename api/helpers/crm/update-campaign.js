@@ -37,7 +37,7 @@ module.exports = {
 
       const { campaign } = inputs;
       const { data, isActive } = campaign;
-      const { lastStepDate, name } = data;
+      let { lastStepDate, name } = data;
       const dataDetails = data?.details;
       const goals = data?.goals;
       const currentStep = data?.currentStep || '';
@@ -51,6 +51,10 @@ module.exports = {
       const electionDateMs = electionDate
         ? new Date(electionDate).getTime()
         : undefined;
+
+      if (!name) {
+        name = `${dataDetails?.firstName} ${dataDetails?.lastName}`;
+      }
 
       const longState = state
         ? await sails.helpers.zip.shortToLongState(state)
@@ -129,7 +133,7 @@ module.exports = {
         if (!createCompanyResponse) {
           await sails.helpers.slack.errorLoggerHelper(
             `Error creating company for ${name} in hubspot. No response from hubspot.`,
-            companyObj,
+            { companyObj, campaign },
           );
           return exits.success('not ok');
         }
