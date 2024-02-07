@@ -14,6 +14,11 @@ module.exports = {
         if (details?.pledged) {
           await Campaign.updateOne({ id: campaign.id }).set({
             isActive: true,
+            data: {
+              ...data,
+              launchStatus: 'launched',
+              currentStep: 'onboarding-complete',
+            },
           });
         }
       }
