@@ -19,7 +19,7 @@ const desiredOrder = [
   'first_name',
   'last_name',
   'state',
-  'parsedLocation',
+  'parsed_location',
   'normalized_position_name',
   'parties',
   'email',
@@ -151,12 +151,12 @@ async function parseFile(filePath) {
         }
         if (row.parties !== 'Democratic' && row.parties !== 'Republican') {
           const { name } = await sails.helpers.ballotready.extractLocation(row);
-          row.parsedLocation = name ? name.replace(/\"+/g, '') : ''; //remove quotes
-          row.normalizedPosition = row.normalizedPosition
-            ? row.normalizedPosition.replace(/\"+/g, '')
+          row.parsed_location = name ? name.replace(/\"+/g, '') : ''; //remove quotes
+          row.normalized_position_name = row.normalized_position_name
+            ? row.normalized_position_name.replace(/\"+/g, '')
             : ''; //remove quotes
-          row.positionName = row.positionName
-            ? row.positionName.replace(/\"+/g, '')
+          row.position_name = row.position_name
+            ? row.position_name.replace(/\"+/g, '')
             : ''; //remove quotes
 
           const reorderedRow = {};
