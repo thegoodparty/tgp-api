@@ -72,7 +72,7 @@ module.exports = {
           candidate_office: office,
           state: longState,
           lifecyclestage: 'customer',
-          type: 'Campaign',
+          type: 'CAMPAIGN',
           last_step: currentStep,
           last_step_date: lastStepDate || undefined,
           zip,
