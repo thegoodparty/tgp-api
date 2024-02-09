@@ -327,22 +327,14 @@ async function handleGenerateCampaignPlan(message) {
       0.9,
     );
     // console.log('completion', completion);
-    if (completion) {
-      chatResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
-      );
-      chatResponse = chatResponse.replace(/\`\`\`html/g, '');
-      chatResponse = chatResponse.replace(/\`\`\`/g, '');
-    }
+    chatResponse = completion.content;
+    const totalTokens = completion.tokens;
 
     // const prompt = messages.map((message) => message.content).join('\n');
     // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
     // chatResponse = chatResponse.replace('/n', '<br/><br/>');
 
     console.log('chatResponse', chatResponse);
-
-    const totalTokens = completion.data.usage.total_tokens;
     // TODO: investigate if there is a way to get token usage with langchain.
     // const totalTokens = 0;
 

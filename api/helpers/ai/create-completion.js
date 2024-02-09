@@ -77,7 +77,7 @@ module.exports = {
       console.log('Error in helpers/ai/create-compilation', error);
       if (error.response.data.error.message) {
         console.log('error message', error.response.data.error.message);
-        return exits.badRequest(completion);
+        return exits.badRequest({ content: '', tokens: 0 });
       }
     }
 
@@ -87,10 +87,18 @@ module.exports = {
       completion.data.choices[0].message.content
     ) {
       console.log('completion success');
-      return exits.success(completion);
+      let content = completion.data.choices[0].message.content;
+      if (content.includes('```html')) {
+        content = content.match(/```html([\s\S]*?)```/)[1];
+      }
+      content = content.replace('/n', '<br/><br/>');
+      return exits.success({
+        content: content,
+        tokens: completion.data.usage.total_tokens,
+      });
     } else {
       console.log('completion failure');
-      return exits.badRequest(completion);
+      return exits.badRequest({ content: '', tokens: 0 });
     }
   },
 };

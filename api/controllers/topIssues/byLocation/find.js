@@ -44,12 +44,7 @@ module.exports = {
         0.1,
       );
 
-      if (completion) {
-        chatResponse = completion.data.choices[0].message.content;
-        if (chatResponse.includes('```html')) {
-          chatResponse = chatResponse.match(/```html([\s\S]*?)```/)[1];
-        }
-      }
+      const chatResponse = completion.content;
       const issues = chatResponse.split(',');
       issues.forEach((issue, index) => {
         issues[index] = issue.trim();

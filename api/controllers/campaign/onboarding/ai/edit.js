@@ -78,15 +78,7 @@ module.exports = {
         0.5,
         0.1,
       );
-      if (completion) {
-        chatResponse = completion.data.choices[0].message.content.replace(
-          '/n',
-          '<br/><br/>',
-        );
-        if (chatResponse.includes('```html')) {
-          chatResponse = chatResponse.match(/```html([\s\S]*?)```/)[1];
-        }
-      }
+      chatResponse = completion.content;
 
       if (subSectionKey === 'aiContent') {
         campaign[subSectionKey][key]['content'] = chatResponse;

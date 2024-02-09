@@ -42,20 +42,13 @@ module.exports = {
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
       let messages = [{ role: 'user', content: prompt }];
 
-      console.log('[create-no-queue] calling ai.createCompletion');
       const completion = await sails.helpers.ai.createCompletion(
         messages,
         500,
         0.5,
         0.1,
       );
-      aiResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
-      );
-      if (aiResponse.includes('```html')) {
-        aiResponse = aiResponse.match(/```html([\s\S]*?)```/)[1];
-      }
+      aiResponse = completion.content;
       return exits.success({
         aiResponse,
       });
