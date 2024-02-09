@@ -38,14 +38,15 @@ module.exports = {
       const { campaign } = inputs;
       const { data, isActive } = campaign;
       let { lastStepDate, name } = data;
-      const dataDetails = data?.details;
+      const dataDetails = data?.details || {};
       const goals = data?.goals;
       const currentStep = data?.currentStep || '';
       const electionDate = goals?.electionDate || undefined;
 
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
-      const { zip, party, office, state, pledged } = dataDetails;
+      const { zip, party, office, state, pledged, campaignCommittee } =
+        dataDetails;
 
       //UNIX formatted timestamps in milliseconds
       const electionDateMs = electionDate
@@ -89,7 +90,7 @@ module.exports = {
           my_content_pieces_created: data?.aiContent
             ? Object.keys(data.aiContent).length
             : 0,
-          filed_candidate: data?.details?.campaignCommittee ? 'yes' : 'no',
+          filed_candidate: campaignCommittee ? 'yes' : 'no',
         },
       };
 
