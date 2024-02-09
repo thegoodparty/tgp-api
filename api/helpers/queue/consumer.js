@@ -231,7 +231,7 @@ async function handlePathToVictory(message) {
     }
 
     const slackMessage = `
-    • Candidate: ${campaign.data.details.firstName} ${campaign.data.details.lastName} [${campaign.slug}]
+    • Candidate: ${campaign.data.name} [${campaign.slug}]
     • Office: ${officeName}
     • Election Date: ${electionDate}
     • Election Term: ${electionTerm}

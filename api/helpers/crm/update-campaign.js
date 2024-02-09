@@ -89,6 +89,7 @@ module.exports = {
           my_content_pieces_created: data?.aiContent
             ? Object.keys(data.aiContent).length
             : 0,
+          filed_candidate: data?.details?.campaignCommittee ? 'yes' : 'no',
         },
       };
 

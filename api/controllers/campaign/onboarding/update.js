@@ -44,6 +44,9 @@ module.exports = {
       const existing = await Campaign.findOne({
         slug,
       });
+      if (campaign.name) {
+        campaign.name = user.name;
+      }
 
       // setting last_step_date for the crm
       // moment().format('YYYY-MM-DD'),
