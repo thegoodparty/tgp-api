@@ -38,7 +38,7 @@ module.exports = {
       const { campaign } = inputs;
       const { data, isActive } = campaign;
       let { lastStepDate, name } = data;
-      const dataDetails = data?.details || {};
+      const dataDetails = data?.details;
       const goals = data?.goals;
       const currentStep = data?.currentStep || '';
       const electionDate = goals?.electionDate || undefined;
@@ -46,7 +46,7 @@ module.exports = {
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
       const { zip, party, office, state, pledged, campaignCommittee } =
-        dataDetails;
+        dataDetails || {};
 
       //UNIX formatted timestamps in milliseconds
       const electionDateMs = electionDate
