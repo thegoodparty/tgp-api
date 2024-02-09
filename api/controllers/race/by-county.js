@@ -1,4 +1,5 @@
 const slugify = require('slugify');
+const moment = require('moment');
 
 module.exports = {
   inputs: {
@@ -51,17 +52,24 @@ module.exports = {
         where: { state, county: countyRecord.id },
         select: ['name', 'slug'],
       });
-      console.log('municipalities', municipalities);
+
+      const nextYear = moment()
+        .startOf('year')
+        .add(1, 'year')
+        .format('M D, YYYY');
+
       const races = await BallotRace.find({
         where: {
           state,
           level: 'county',
           county: countyRecord.id,
           municipality: null,
+          electionDate: { '<': new Date(nextYear) },
         },
         select: ['hashId', 'data'],
         limit: viewAll ? undefined : 10,
-      });
+      }).sort('electionDate ASC');
+
       races.forEach((race) => {
         const { data } = race;
         const {

@@ -1,4 +1,5 @@
 const slugify = require('slugify');
+const moment = require('moment');
 
 module.exports = {
   inputs: {
@@ -64,11 +65,22 @@ module.exports = {
         return exits.notFound();
       }
 
+      const nextYear = moment()
+        .startOf('year')
+        .add(1, 'year')
+        .format('M D, YYYY');
+
       const races = await BallotRace.find({
-        where: { state, county: null, municipality: municipalityRecord.id },
+        where: {
+          state,
+          county: null,
+          municipality: municipalityRecord.id,
+          electionDate: { '<': new Date(nextYear) },
+        },
         select: ['hashId', 'data'],
         limit: viewAll ? undefined : 10,
-      });
+      }).sort('electionDate ASC');
+
       races.forEach((race) => {
         const { data } = race;
         const {

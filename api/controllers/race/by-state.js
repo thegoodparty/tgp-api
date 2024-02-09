@@ -1,3 +1,4 @@
+const moment = require('moment');
 module.exports = {
   inputs: {
     state: {
@@ -31,11 +32,23 @@ module.exports = {
         where: { state },
         select: ['name', 'slug'],
       });
+
+      const nextYear = moment()
+        .startOf('year')
+        .add(1, 'year')
+        .format('M D, YYYY');
+
       const races = await BallotRace.find({
-        where: { state, level: 'state', county: null, municipality: null },
+        where: {
+          state,
+          level: 'state',
+          county: null,
+          municipality: null,
+          electionDate: { '<': new Date(nextYear) },
+        },
         select: ['hashId', 'data'],
         limit: viewAll ? undefined : 10,
-      });
+      }).sort('electionDate ASC');
       races.forEach((race) => {
         const { data } = race;
         const {
