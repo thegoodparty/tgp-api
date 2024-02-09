@@ -48,11 +48,13 @@ module.exports = {
         campaignPositions,
         campaign.customIssues,
       );
-      const party =
+      let party =
         campaign.details?.party === 'Other'
           ? campaign.details.otherParty
           : campaign.details?.party;
-
+      if (party === 'Independent') {
+        party = 'Independent non partisan';
+      }
       const office =
         campaign.details?.office === 'Other'
           ? campaign.details.otherOffice
