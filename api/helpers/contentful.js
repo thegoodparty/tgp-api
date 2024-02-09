@@ -231,15 +231,23 @@ function mapResponse(items) {
           mappedResponse.candidateContentPrompts = {};
         }
 
+        if (!mappedResponse.contentPromptsQuestions) {
+          // legacy name. Keeping it to limit blast radius
+          mappedResponse.contentPromptsQuestions = {};
+        }
+
         if (!mappedResponse.aiContentCategories) {
           // legacy name. Keeping it to limit blast radius
           mappedResponse.aiContentCategories = [];
           mappedResponse.aiContentCategoriesHash = {};
         }
 
-        const { name, content, category } = item.fields;
+        const { name, content, category, requiresAdditionalQuestions } =
+          item.fields;
         const key = camelCase(name);
         mappedResponse.candidateContentPrompts[key] = content;
+        mappedResponse.contentPromptsQuestions[key] =
+          requiresAdditionalQuestions;
         const { title, order } = category.fields || {};
         if (!mappedResponse.aiContentCategoriesHash[title]) {
           mappedResponse.aiContentCategoriesHash[title] = [];
@@ -318,7 +326,7 @@ function getRecentGlossaryItems(mappedResponse) {
   });
 }
 
-const compareArticles = (a, b) => {
+function compareArticles(a, b) {
   const orderA = faqsOrderHash[a.id] || 9999;
   const orderB = faqsOrderHash[b.id] || 9999;
   if (orderA > orderB) {
@@ -328,17 +336,17 @@ const compareArticles = (a, b) => {
     return -1;
   }
   return 0;
-};
+}
 
-const compareBlogArticles = (a, b) => {
+function compareBlogArticles(a, b) {
   return new Date(b.publishDate) - new Date(a.publishDate);
-};
+}
 
-const compareGlossaryItems = (a, b) => {
+function compareGlossaryItems(a, b) {
   return a.title.toLowerCase().localeCompare(b.title.toLowerCase());
-};
+}
 
-const compareArticleCategories = (a, b) => {
+function compareArticleCategories(a, b) {
   const orderA = a.fields.order || 9999;
   const orderB = b.fields.order || 9999;
   if (orderA > orderB) {
@@ -348,9 +356,9 @@ const compareArticleCategories = (a, b) => {
     return -1;
   }
   return 0;
-};
+}
 
-const compareBlogSections = (a, b) => {
+function compareBlogSections(a, b) {
   const orderA = a.fields.order || 9999;
   const orderB = b.fields.order || 9999;
   if (orderA > orderB) {
@@ -360,7 +368,7 @@ const compareBlogSections = (a, b) => {
     return -1;
   }
   return 0;
-};
+}
 
 function extractMediaFile(img) {
   if (img && img.fields && img.fields.file) {
@@ -389,7 +397,7 @@ function extractArticleTags(tags) {
   return resTags;
 }
 
-const addArticlesToCategories = (mapped) => {
+function addArticlesToCategories(mapped) {
   const { articleCategories, faqArticles } = mapped;
 
   const categoriesById = {};
@@ -409,9 +417,9 @@ const addArticlesToCategories = (mapped) => {
     }
   });
   mapped.articleCategories = Object.values(categoriesById);
-};
+}
 
-const addBlogArticlesToSections = (mapped) => {
+function addBlogArticlesToSections(mapped) {
   const { blogSections, blogArticles } = mapped;
   const sectionsById = {};
   blogSections.forEach((section) => {
@@ -430,7 +438,7 @@ const addBlogArticlesToSections = (mapped) => {
     }
   });
   mapped.blogSections = Object.values(sectionsById);
-};
+}
 
 function combineAiContentAndCategories(categories, categoriesHash) {
   categories.sort((a, b) => a.order - b.order);
