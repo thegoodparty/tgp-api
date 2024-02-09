@@ -1,5 +1,5 @@
 const { Configuration, OpenAIApi } = require('openai');
-const { encode } = require('gpt-3-encoder');
+// const { encode } = require('gpt-3-encoder');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
@@ -11,17 +11,21 @@ const openai = new OpenAIApi(configuration);
 
 module.exports = {
   inputs: {
-    prompt: {
-      required: true,
-      type: 'string',
-    },
-    campaign: {
-      required: true,
+    messages: {
       type: 'json',
+      required: true,
+    },
+    maxTokens: {
+      type: 'number',
+      defaultsTo: 500,
     },
     temperature: {
-      required: true,
       type: 'number',
+      defaultsTo: 1.0,
+    },
+    topP: {
+      type: 'number',
+      defaultsTo: 0.1,
     },
   },
 
@@ -30,63 +34,63 @@ module.exports = {
       description: 'Campaign Found',
       responseType: 'ok',
     },
+    badRequest: {
+      description: 'The request was invalid',
+      responseType: 'badRequest',
+    },
   },
 
   fn: async function (inputs, exits) {
+    let { messages, maxTokens, temperature, topP } = inputs;
+    let completion;
     try {
-      const { prompt, campaign, temperature } = inputs;
-
-      cleanPrompt = await sails.helpers.ai.promptReplace(prompt, campaign);
-
-      // const compilation = await openai.createCompletion({
-      //   model: 'text-davinci-003',
-      //   prompt: cleanPrompt,
-      //   temperature,
-      //   max_tokens: 256,
-      // });
-
-      let model = 'gpt-3.5-turbo';
-      let topP = 0.1;
-      const tokens = encode(cleanPrompt);
-      const encodedLength = tokens.length;
-      if (encodedLength > 1000) {
-        model += '-16k';
+      for (let i = 0; i < messages.length; i++) {
+        if (
+          messages[i].content !== undefined &&
+          messages[i].content.length > 0
+        ) {
+          // replace invalid characters
+          messages[i].content = messages[i].content.replace(/\–/g, '-');
+          messages[i].content = messages[i].content.replace(/\`/g, "'");
+        }
       }
 
-      let resp = '';
-      // for now we put everything in user prompt because the system prompt doesn't heed instructions as well.
-      let systemPrompt = '';
-      const completion = await openai.createChatCompletion({
+      // TODO: centralized token limit check
+      // and possibly use gpt4-32k if response would exceed token limit.
+      // let promptTokens = 0;
+      // for (const message of messages) {
+      //   const tokens = isWithinTokenLimit(message.content, 13000) || 13000;
+      //   promptTokens += tokens;
+      // }
+
+      let model = 'gpt-4-turbo-preview'; // gpt-4-0125-preview
+      console.log('creating chat completion....');
+      completion = await openai.createChatCompletion({
         model: model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: cleanPrompt },
-        ],
-        //   max_tokens: max_length,
+        messages: messages,
+        max_tokens: maxTokens,
         top_p: topP,
         temperature: temperature,
       });
-      // console.log("completion", completion);
-
-      if (
-        completion &&
-        completion.data.choices &&
-        completion.data.choices[0].message.content
-      ) {
-        resp = completion.data.choices[0].message.content.trim();
-        console.log('OpenAI Response', resp);
-      }
+      // console.log('completion', completion);
     } catch (error) {
-      console.log('error', error);
+      console.log('Error in helpers/ai/create-compilation', error);
       if (error.response.data.error.message) {
-        console.log(
-          'Error in helpers/ai/create-compilation',
-          error.response.data.error.message,
-        );
-        return exits.success('');
+        console.log('error message', error.response.data.error.message);
+        return exits.badRequest(completion);
       }
+    }
 
-      return exits.success(resp.replace('/n', ''));
+    if (
+      completion &&
+      completion.data.choices &&
+      completion.data.choices[0].message.content
+    ) {
+      console.log('completion success');
+      return exits.success(completion);
+    } else {
+      console.log('completion failure');
+      return exits.badRequest(completion);
     }
   },
 };

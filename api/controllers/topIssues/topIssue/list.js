@@ -26,7 +26,7 @@ module.exports = {
         }
       }
 
-      console.log('topIssues', topIssues);
+      // console.log('topIssues', topIssues);
       return exits.success({
         topIssues,
       });
