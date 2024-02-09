@@ -7,7 +7,7 @@ const readingTime = require('reading-time');
 const slugify = require('slugify');
 
 module.exports = {
-  friendlyName: 'helper for fetching content from contentful cms',
+  friendlyName: 'helper for fetching content from contentful cms.',
   description:
     'Contentful api. https://www.contentful.com/developers/docs/references/content-delivery-api/',
 
