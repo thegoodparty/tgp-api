@@ -1,5 +1,8 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
 const hubspot = require('@hubspot/api-client');
+const {
+  of,
+} = require('@hubspot/api-client/lib/codegen/communication_preferences/rxjsStub');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
@@ -45,8 +48,17 @@ module.exports = {
 
       // console.log('dataDetails', dataDetails);
       // console.log('lastStepDate', lastStepDate);
-      const { zip, party, office, state, pledged, campaignCommittee } =
-        dataDetails || {};
+      const {
+        zip,
+        party,
+        office,
+        state,
+        pledged,
+        campaignCommittee,
+        otherOffice,
+        district,
+        city,
+      } = dataDetails || {};
 
       //UNIX formatted timestamps in milliseconds
       const electionDateMs = electionDate
@@ -63,6 +75,8 @@ module.exports = {
         data.name = name;
       }
 
+      const resolvedOffice = office === 'Other' ? otherOffice : office;
+
       const longState = state
         ? await sails.helpers.zip.shortToLongState(state)
         : undefined;
@@ -70,9 +84,12 @@ module.exports = {
         properties: {
           name,
           candidate_party: party,
-          candidate_office: office,
+          candidate_office: resolvedOffice,
           state: longState,
+          candidate_state: longState,
+          candidate_district: district,
           lifecyclestage: 'customer',
+          city,
           type: 'CAMPAIGN',
           last_step: currentStep,
           last_step_date: lastStepDate || undefined,
@@ -80,7 +97,6 @@ module.exports = {
           pledge_status: pledged ? 'yes' : 'no',
           is_active: !!name,
           live_candidate: isActive,
-          // todo: this will need to be reworked if/when we add in Rob/Colton
           p2v_complete_date: data?.p2vCompleteDate || undefined,
           p2v_status: data?.p2vStatus || 'Locked',
           election_date: electionDateMs,
