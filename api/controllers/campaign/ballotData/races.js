@@ -142,6 +142,8 @@ module.exports = {
         // use queue to dave these to our db
       }
 
+      cleanRaces.sort(sortRaces);
+
       return exits.success({
         races: cleanRaces,
       });
@@ -154,3 +156,29 @@ module.exports = {
     }
   },
 };
+
+function sortRaces(a, b) {
+  const aLevel = levelValue(a.position?.level);
+  const bLevel = levelValue(b.position?.level);
+  return aLevel - bLevel;
+}
+
+function levelValue(level) {
+  if (level === 'FEDERAL') {
+    return 10;
+  }
+  if (level === 'STATE') {
+    return 8;
+  }
+
+  if (level === 'COUNTY') {
+    return 6;
+  }
+  if (level === 'CITY') {
+    return 4;
+  }
+  if (level === 'LOCAL') {
+    return 0;
+  }
+  return 12;
+}
