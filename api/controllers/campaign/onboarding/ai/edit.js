@@ -64,23 +64,21 @@ module.exports = {
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
-
-      const completion = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        max_tokens: 3000,
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a helpful political assistant.',
-          },
-          { role: 'user', content: prompt },
-          ...chat,
-        ],
-      });
-      chatResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
+      messages = [
+        {
+          role: 'system',
+          content: 'You are a helpful political assistant.',
+        },
+        { role: 'user', content: prompt },
+        ...chat,
+      ];
+      const completion = await sails.helpers.ai.createCompletion(
+        messages,
+        3000,
+        0.5,
+        0.1,
       );
+      chatResponse = completion.content;
 
       if (subSectionKey === 'aiContent') {
         campaign[subSectionKey][key]['content'] = chatResponse;
