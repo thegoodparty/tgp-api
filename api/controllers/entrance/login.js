@@ -15,11 +15,9 @@ module.exports = {
       description: 'User Email',
       type: 'string',
       isEmail: true,
+      required: true,
     },
-    phone: {
-      description: 'User Phone',
-      type: 'string',
-    },
+
     password: {
       description: 'User Password',
       type: 'string',
@@ -40,45 +38,51 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { email, phone, password } = inputs;
-      if (!email && !phone) {
-        return exits.badRequest({ message: 'phone or email are required' });
-      }
-      let user;
-      if (email) {
-        const lowerCaseEmail = email.toLowerCase();
-        user = await User.findOne({ email: lowerCaseEmail });
-      } else {
-        const users = await User.find({ phone });
-        if (users.length > 0) {
-          user = users[0];
-        }
-      }
+      const { email, password } = inputs;
+
+      const lowerCaseEmail = email.toLowerCase();
+      const user = await User.findOne({ email: lowerCaseEmail });
+
       if (!user) {
-        return exits.badRequest({});
-      }
-      try {
-        await sails.helpers.passwords.checkPassword(password, user.password);
-      } catch (e) {
-        return exits.badRequest({});
-      }
+        // register
+        const user = await User.create({
+          email,
+          password,
+        }).fetch();
 
-      const token = await sails.helpers.jwtSign({
-        id: user.id,
-        email: user.email,
-      });
+        const token = await sails.helpers.jwtSign({
+          id: user.id,
+          email: lowerCaseEmail,
+        });
+        await sails.helpers.crm.updateUser(user);
+        return exits.success({
+          user,
+          token,
+          newUser: true,
+        });
+      } else {
+        try {
+          await sails.helpers.passwords.checkPassword(password, user.password);
+        } catch (e) {
+          return exits.badRequest({});
+        }
 
-      try {
-        await sails.helpers.crm.updateUser(user, true);
-      } catch (e) {
-        console.log('error updating user in crm', e);
-        await sails.helpers.slack.errorLoggerHelper(
-          'Error at entrance/login.js',
-          e,
-        );
+        const token = await sails.helpers.jwtSign({
+          id: user.id,
+          email: user.email,
+        });
+
+        try {
+          await sails.helpers.crm.updateUser(user, true);
+        } catch (e) {
+          console.log('error updating user in crm', e);
+          await sails.helpers.slack.errorLoggerHelper(
+            'Error at entrance/login.js',
+            e,
+          );
+        }
+        return exits.success({ user, token, newUser: false });
       }
-
-      return exits.success({ user, token });
     } catch (err) {
       await sails.helpers.slack.errorLoggerHelper(
         'Error at entrance/login',

@@ -33,6 +33,16 @@ module.exports = {
       type: 'string',
       required: false,
     },
+    socialId: {
+      type: 'string',
+      required: false,
+      description: 'Social Channel Id',
+    },
+    name: {
+      description: 'User Name',
+      type: 'string',
+      required: true,
+    },
   },
 
   exits: {
@@ -48,7 +58,16 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { email, socialPic, socialToken, socialProvider } = inputs;
+      /*
+socialId: id,
+      socialProvider: provider,
+      socialPic,
+      name,
+      email,
+      socialToken: idToken,
+      */
+      const { email, socialPic, socialToken, socialProvider, socialId, name } =
+        inputs;
       const lowerCaseEmail = email.toLowerCase();
 
       try {
@@ -63,13 +82,34 @@ module.exports = {
         });
       }
 
-      const user = await User.findOne({ email: lowerCaseEmail });
+      let user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
-        return exits.badRequest({
-          message: `The email ${lowerCaseEmail} is not in our system. Please create an account first.`,
-          noUser: true,
-        }); //we don't disclose whether we have a user in the db or not
+        // register
+        user = await User.create({
+          email: lowerCaseEmail,
+          name,
+          socialProvider,
+          avatar: socialPic,
+          isEmailVerified: true,
+          socialId,
+        }).fetch();
+
+        const token = await sails.helpers.jwtSign({
+          id: user.id,
+          email: lowerCaseEmail,
+        });
+        try {
+          await sails.helpers.crm.updateUser(user);
+        } catch (e) {
+          console.log('Error at entrance/social-login', e);
+        }
+        return exits.success({
+          user,
+          token,
+          newUser: true,
+        });
       }
+      // login flow
       if (socialPic && !user.avatar) {
         await User.updateOne({ email: lowerCaseEmail }).set({
           avatar: socialPic,
@@ -80,13 +120,6 @@ module.exports = {
         id: user.id,
         email: lowerCaseEmail,
       });
-
-      // const userWithZip = await User.findOne({ id: user.id });
-      //
-      // const zipCode = await ZipCode.findOne({
-      //   id: userWithZip.zipCode,
-      // }).populate('cds');
-      // userWithZip.zipCode = zipCode;
 
       return exits.success({
         user,
