@@ -254,7 +254,7 @@ module.exports = {
       }
 
       if (values.email) {
-        // set isAdmin
+        // set isAdmin.
         const adminEmails =
           sails.config.custom.adminEmails || sails.config.adminEmails;
         if (adminEmails && adminEmails.includes(values.email)) {
