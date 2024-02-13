@@ -40,17 +40,15 @@ module.exports = {
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      let messages = [{ role: 'user', content: prompt }];
 
-      const completion = await openai.createChatCompletion({
-        model: 'gpt-3.5-turbo',
-        max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }],
-      });
-      aiResponse = completion.data.choices[0].message.content.replace(
-        '/n',
-        '<br/><br/>',
+      const completion = await sails.helpers.ai.createCompletion(
+        messages,
+        500,
+        0.5,
+        0.1,
       );
-
+      aiResponse = completion.content;
       return exits.success({
         aiResponse,
       });

@@ -1,15 +1,6 @@
 const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
-const { isWithinTokenLimit } = require('gpt-tokenizer/cjs/model/gpt-3.5-turbo');
-
-const { Configuration, OpenAIApi } = require('openai');
-const openAiKey = sails.config.custom.openAi || sails.config.openAi;
-
-const AiConfiguration = new Configuration({
-  apiKey: openAiKey,
-});
-const openai = new OpenAIApi(AiConfiguration);
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -321,50 +312,29 @@ async function handleGenerateCampaignPlan(message) {
       message,
     );
 
-    // replace invalid characters
-    for (let i = 0; i < messages.length; i++) {
-      if (messages[i].content !== undefined && messages[i].content.length > 0) {
-        messages[i].content = messages[i].content.replace(/\–/g, '-');
-        messages[i].content = messages[i].content.replace(/\`/g, "'");
-      }
-    }
-
-    let promptTokens = 0;
-    for (const message of messages) {
-      const tokens = isWithinTokenLimit(message.content, 13000) || 13000;
-      promptTokens += tokens;
-    }
-
-    if (promptTokens >= 13000) {
-      // todo: fail the request here? capture the error on the frontend?
-      console.log('Error! Exceeded the token limit!');
-    }
-
-    await sails.helpers.slack.aiLoggerHelper(
-      `[ ${slug} - ${key} ] Prompt Size (Tokens):`,
-      promptTokens,
-    );
-
     campaign = await Campaign.findOne({ slug });
     data = campaign.data;
 
-    let completion = await openai.createChatCompletion({
-      model: promptTokens < 1500 ? 'gpt-3.5-turbo' : 'gpt-3.5-turbo-16k',
-      max_tokens: existingChat && existingChat.length > 0 ? 2000 : 2500,
-      messages: messages,
-    });
-    chatResponse = completion.data.choices[0].message.content.replace(
-      '/n',
-      '<br/><br/>',
+    let maxTokens = 2000;
+    if (existingChat && existingChat.length > 0) {
+      maxTokens = 2500;
+    }
+
+    let completion = await sails.helpers.ai.createCompletion(
+      messages,
+      maxTokens,
+      0.7,
+      0.9,
     );
+    // console.log('completion', completion);
+    chatResponse = completion.content;
+    const totalTokens = completion.tokens;
 
     // const prompt = messages.map((message) => message.content).join('\n');
     // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
     // chatResponse = chatResponse.replace('/n', '<br/><br/>');
 
     console.log('chatResponse', chatResponse);
-
-    const totalTokens = completion.data.usage.total_tokens;
     // TODO: investigate if there is a way to get token usage with langchain.
     // const totalTokens = 0;
 
