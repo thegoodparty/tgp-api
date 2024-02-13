@@ -167,6 +167,7 @@ function contentByWeek(week) {
 }
 
 async function sendEmail(weeks, user) {
+  const name = await sails.helpers.user.name(user);
   const byWeek = {
     week12: {
       subject: 'Social Media Blitz Begins!',
@@ -349,7 +350,7 @@ There's nothing like a personal connection to earn a vote. Craft your door-knock
           <li>Highlight the journey of your campaign</li>
           <li>Share final reminders for voting day</li>
         </ul>
-        You've got this, ${user.name}! We're with you every step of the way.
+        You've got this, ${name}! We're with you every step of the way.
         <br/>
         <br/>
         Please feel free to reach out if you have any questions or need further assistance. Here's to a successful campaign!
@@ -363,7 +364,7 @@ There's nothing like a personal connection to earn a vote. Craft your door-knock
   };
 
   const variables = {
-    name: `${user.name}`,
+    name: `${name}`,
     focus: byWeek[`week${weeks}`].focus,
     content: byWeek[`week${weeks}`].content,
   };

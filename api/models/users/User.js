@@ -26,14 +26,6 @@ module.exports = {
       example: 'mary.sue@example.com',
     },
 
-    // uuid: {
-    //   type: 'string',
-    //   required: true,
-    //   unique: true,
-    //   maxLength: 200,
-    //   example: 'random string',
-    // },
-
     name: {
       type: 'string',
       required: false,
@@ -42,11 +34,18 @@ module.exports = {
       example: 'John Smith',
     },
 
-    feedback: {
+    firstName: {
       type: 'string',
       required: false,
-      description: "User's Feedback",
-      maxLength: 140,
+      maxLength: 120,
+      example: 'John',
+    },
+
+    lastName: {
+      type: 'string',
+      required: false,
+      maxLength: 120,
+      example: 'Smith',
     },
 
     socialId: {
@@ -62,19 +61,6 @@ module.exports = {
       description: 'Social Channel',
       example: 'facebook',
       allowNull: true,
-    },
-
-    displayAddress: {
-      type: 'string',
-      required: false,
-      description: "User's display address",
-      example: '123 main road Los Angeles, CA 91210',
-    },
-
-    addressComponents: {
-      type: 'string',
-      required: false,
-      description: 'Google auto-complete address components',
     },
 
     zip: {
@@ -142,20 +128,6 @@ module.exports = {
       description: 'voting status - null, verified, na',
     },
 
-    guestReferrer: {
-      type: 'string',
-      required: false,
-      description: 'guest uuid that was used to invited the user.',
-      allowNull: true,
-    },
-    //adding (denormalized) crewCount for quick lookups and sorting
-
-    crewCount: {
-      type: 'number',
-      required: false,
-      description: 'count of the many to many crew relationship',
-      defaultsTo: 0,
-    },
     isAdmin: {
       type: 'boolean',
       defaultsTo: false,
@@ -166,19 +138,7 @@ module.exports = {
       type: 'string',
     },
 
-    address: {
-      type: 'string',
-    },
-
-    city: {
-      type: 'string',
-    },
-
     displayName: {
-      type: 'string',
-    },
-
-    pronouns: {
       type: 'string',
     },
 

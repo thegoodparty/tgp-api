@@ -97,6 +97,7 @@ module.exports = {
 };
 
 async function sentEmail(user, link) {
+  const name = await sails.helpers.user.name(user);
   const subject = 'Reset your password - The Good Party';
   const message = `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
           <tbody>
@@ -110,7 +111,7 @@ async function sentEmail(user, link) {
                     margin-bottom: 5px;
                   "
                 >
-                Hi ${user.name}!<br/> <br>
+                Hi ${name}!<br/> <br>
                 </p>
               </td>
             </tr>
@@ -152,7 +153,7 @@ async function sentEmail(user, link) {
   const messageHeader = '';
   await sails.helpers.mailgun.mailgunSender(
     user.email,
-    user.name,
+    name,
     subject,
     messageHeader,
     message,

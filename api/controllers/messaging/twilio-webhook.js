@@ -63,10 +63,11 @@ module.exports = {
         message =
           'Please just reply with the number. If you have any questions please email jared@goodparty.org';
       } else {
+        const name = await sails.helpers.user.name(user);
         await sails.helpers.slack.errorLoggerHelper(
           'User updated their campaign via to text',
           {
-            user: user.name,
+            user: name,
             userEmail: user.email,
             response: body,
             fromNumber: from,

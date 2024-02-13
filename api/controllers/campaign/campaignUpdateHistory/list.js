@@ -47,9 +47,10 @@ module.exports = {
         campaign: campaign.id,
       }).populate('user');
 
-      updateHistory.forEach((update) => {
+      updateHistory.forEach(async (update) => {
+        const name = await sails.helpers.user.name(user);
         update.user = {
-          name: update.user.name,
+          name,
           avatar: update.user.avatar,
         };
       });

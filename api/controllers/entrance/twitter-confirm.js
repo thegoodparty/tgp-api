@@ -113,10 +113,10 @@ module.exports = {
       }
       // register
       const { guestUuid } = inputs;
-
+      const name = await sails.helpers.user.name(user);
       const userAttr = {
         email: user.email,
-        name: user.name,
+        name: name,
         avatar: user.image,
         socialProvider: 'twitter',
       };
@@ -151,7 +151,7 @@ module.exports = {
   },
 };
 
-const twitterFollow = async (candidateFollow, client, exits) => {
+async function twitterFollow(candidateFollow, client, exits) {
   const candidate = await Candidate.findOne({ id: candidateFollow });
   const data = JSON.parse(candidate.data);
   let { twitter } = data;
@@ -170,4 +170,4 @@ const twitterFollow = async (candidateFollow, client, exits) => {
     user_id: userTwitterId,
     follow: true,
   });
-};
+}

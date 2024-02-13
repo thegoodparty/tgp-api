@@ -236,9 +236,9 @@ async function sendEmail(goals, user) {
     //goals already reached
     return;
   }
-
+  const name = await sails.helpers.user.name(user);
   const variables = {
-    name: `${user.name}`,
+    name: `${name}`,
   };
   if (doorKnocking.total - doorKnocking.progress > 0) {
     variables.doorKnocking = `

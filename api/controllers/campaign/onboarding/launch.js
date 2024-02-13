@@ -128,8 +128,9 @@ async function sendMail(slug) {
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
     const { user } = campaign;
+    const name = await sails.helpers.user.name(user);
     const variables = JSON.stringify({
-      name: `${user.name}`,
+      name,
       link: `${appBase}/dashboard/plan`,
     });
     await sails.helpers.mailgun.mailgunTemplateSender(

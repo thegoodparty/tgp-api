@@ -27,7 +27,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { id, chamber, isIncumbent } = inputs;
       let candidate;
@@ -54,8 +54,9 @@ module.exports = {
         const timeAgo = await sails.helpers.timeAgo(rankWithUser.createdAt);
         let name = '';
         let district = '';
-        if (user && user.name) {
-          name = await sails.helpers.fullFirstLastInitials(user.name);
+        const fullName = await sails.helpers.user.name(user);
+        if (fullName !== '') {
+          name = await sails.helpers.fullFirstLastInitials(fullName);
         }
         district = await districtFromUser(user);
 
@@ -91,8 +92,9 @@ module.exports = {
         const user = await User.findOne({ uuid: share.uuid });
         let name = '';
         let district = '';
-        if (user && user.name) {
-          name = await sails.helpers.fullFirstLastInitials(user.name);
+        const fullName = await sails.helpers.user.name(user);
+        if (fullName !== '') {
+          name = await sails.helpers.fullFirstLastInitials(fullName);
           district = await districtFromUser(user);
         } else {
           name = 'Supporter';
@@ -125,21 +127,21 @@ module.exports = {
   },
 };
 
-const properCase = city => {
+const properCase = (city) => {
   if (!city) {
     return '';
   }
   return city
     .split(' ')
     .map(
-      w =>
+      (w) =>
         (w[0] ? w[0].toUpperCase() : '') +
         (w.substr(1) ? w.substr(1).toLowerCase() : ''),
     )
     .join(' ');
 };
 
-const districtFromUser = async user => {
+const districtFromUser = async (user) => {
   if (!user) {
     return '';
   }
