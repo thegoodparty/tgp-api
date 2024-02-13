@@ -27,11 +27,9 @@ module.exports = {
     },
     email: {
       type: 'string',
-      unique: true,
     },
     phone: {
       type: 'string',
-      unique: true,
     },
     candidacy_id: {
       type: 'string',

@@ -67,7 +67,9 @@ module.exports = {
 
       for (const objectKey of objectKeys) {
         const localFilePath = `${csvFilePath}/${objectKey}`;
+        console.log('downloading file', objectKey, localFilePath);
         await downloadFile(s3Bucket, objectKey, localFilePath);
+        console.log('parsing file', objectKey, localFilePath);
         await parseFile(localFilePath);
         if (addToSheets) {
           const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
@@ -77,6 +79,7 @@ module.exports = {
             objectKey,
           );
         }
+        console.log('done', objectKey, localFilePath);
       }
 
       return exits.success({
@@ -158,7 +161,6 @@ function downloadFile(bucket, key, filePath) {
 async function parseFile(filePath) {
   const rows = [];
   let headers = [];
-  let finished = false;
 
   fs.createReadStream(filePath)
     .pipe(csv())
@@ -212,35 +214,17 @@ async function parseFile(filePath) {
           console.log('File successfully written');
         }
       });
-      finished = true;
+
+      (async () => {
+        for (const row of rows) {
+          try {
+            await BallotCandidate.create(row);
+          } catch (error) {
+            console.error('Error writing to the database', error);
+          }
+        }
+      })();
     });
-
-  // Wait for the file to be processed
-  let count = 0;
-  while (!finished) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    count++;
-    if (count > 300) {
-      throw new Error('Timeout while processing the file');
-    }
-  }
-
-  // Write the rows to the database
-  // try {
-  //   await BallotCandidate.createEach(rows);
-  // } catch (error) {
-  //   console.error('Error writing to the database', error);
-  // }
-
-  for (const row of rows) {
-    console.log('writing row');
-    console.log('row', row);
-    try {
-      await BallotCandidate.create(row);
-    } catch (error) {
-      console.error('Error writing to the database', error);
-    }
-  }
 }
 
 function rowsToCsv(headers, rows) {
