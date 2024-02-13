@@ -3,6 +3,8 @@ const { Configuration, OpenAIApi } = require('openai');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 const configuration = new Configuration({
   apiKey: openAiKey,
 });
@@ -63,7 +65,13 @@ module.exports = {
       //   promptTokens += tokens;
       // }
 
-      let model = 'gpt-4-turbo-preview'; // gpt-4-0125-preview
+      // i
+
+      let model = 'gpt-3.5-turbo-16k';
+      if (appBase === 'https://dev.goodparty.org') {
+        model = 'gpt-4-turbo-preview'; // gpt-4-0125-preview
+      }
+
       console.log('creating chat completion....');
       completion = await openai.createChatCompletion({
         model: model,
