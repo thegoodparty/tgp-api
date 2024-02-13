@@ -108,6 +108,7 @@ async function handlePathToVictory(message) {
       electionMunicipality,
       subAreaName,
       subAreaValue,
+      partisanType,
     } = message;
 
     let pathToVictoryResponse = {
@@ -177,6 +178,7 @@ async function handlePathToVictory(message) {
             electionType.column,
             electionType.value,
             district,
+            partisanType,
           );
 
           sails.helpers.log(slug, 'counts', counts);
@@ -232,6 +234,7 @@ async function handlePathToVictory(message) {
     • Election Municipality: ${electionMunicipality}
     • Sub Area Name: ${subAreaName}
     • Sub Area Value: ${subAreaValue}
+    • Partisan Type: ${partisanType}
     `;
 
     if (

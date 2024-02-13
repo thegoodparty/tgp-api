@@ -31,6 +31,9 @@ module.exports = {
     electionDistrict: {
       type: 'string',
     },
+    partisanType: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -51,6 +54,7 @@ module.exports = {
         electionType,
         electionLocation,
         electionDistrict,
+        partisanType,
       } = inputs;
 
       console.log(`countHelper invoked with ${JSON.stringify(inputs)}`);
@@ -82,13 +86,12 @@ module.exports = {
       //   numberOfElections = 2;
       // }
 
-      // TODO: If a Local election is Partisan then it will also be a General Election.
-      // But we need to pass that information from Ballotready
       if (
         electionType === 'State_House_District' ||
         electionType === 'State_Senate_District' ||
         electionType === 'US_House_District' ||
-        electionType === 'US_Senate'
+        electionType === 'US_Senate' ||
+        partisanType === 'partisan'
       ) {
         // update the electionDate to the first Tuesday of November.
         let year = electionDate.split('-')[0];
