@@ -33,8 +33,16 @@ let csvFilePath = path.join(__dirname, '../../../data/candidates');
 const s3 = new AWS.S3();
 
 module.exports = {
-  inputs: {},
-
+  inputs: {
+    allFiles: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+    addToSheets: {
+      type: 'boolean',
+      defaultsTo: true,
+    },
+  },
   exits: {
     success: {
       description: 'ok',
@@ -47,18 +55,29 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    const { allFiles, addToSheets } = inputs;
     try {
       const files = await getLatestFiles(s3Bucket, 200);
-      const objectKey = findLatestCandidatesFile(files);
-      const localFilePath = `${csvFilePath}/${objectKey}`;
-      await downloadFile(s3Bucket, objectKey, localFilePath);
-      await parseFile(localFilePath);
-      const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
-      await sails.helpers.google.uploadSheets(
-        localFilePath,
-        sheetId,
-        objectKey,
-      );
+      let objectKeys = [];
+      if (allFiles) {
+        objectKeys = findAllCandidatesFile(files);
+      } else {
+        objectKeys = findLatestCandidatesFile(files);
+      }
+
+      for (const objectKey of objectKeys) {
+        const localFilePath = `${csvFilePath}/${objectKey}`;
+        await downloadFile(s3Bucket, objectKey, localFilePath);
+        await parseFile(localFilePath);
+        if (addToSheets) {
+          const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
+          await sails.helpers.google.uploadSheets(
+            localFilePath,
+            sheetId,
+            objectKey,
+          );
+        }
+      }
 
       return exits.success({
         message: 'ok',
@@ -103,10 +122,21 @@ function findLatestCandidatesFile(files) {
   for (let i = 0; i < files.length; i++) {
     const key = files[i]?.Key;
     if (key?.startsWith('candidacies_v3')) {
-      return key;
+      return [key];
     }
   }
-  return null;
+  return [];
+}
+
+function findAllCandidatesFile(files) {
+  let keys = [];
+  for (let i = 0; i < files.length; i++) {
+    const key = files[i]?.Key;
+    if (key?.startsWith('candidacies_v3')) {
+      keys.push(key);
+    }
+  }
+  return keys;
 }
 
 function downloadFile(bucket, key, filePath) {
@@ -128,6 +158,7 @@ function downloadFile(bucket, key, filePath) {
 async function parseFile(filePath) {
   const rows = [];
   let headers = [];
+  let finished = false;
 
   fs.createReadStream(filePath)
     .pipe(csv())
@@ -181,7 +212,35 @@ async function parseFile(filePath) {
           console.log('File successfully written');
         }
       });
+      finished = true;
     });
+
+  // Wait for the file to be processed
+  let count = 0;
+  while (!finished) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    count++;
+    if (count > 300) {
+      throw new Error('Timeout while processing the file');
+    }
+  }
+
+  // Write the rows to the database
+  // try {
+  //   await BallotCandidate.createEach(rows);
+  // } catch (error) {
+  //   console.error('Error writing to the database', error);
+  // }
+
+  for (const row of rows) {
+    console.log('writing row');
+    console.log('row', row);
+    try {
+      await BallotCandidate.create(row);
+    } catch (error) {
+      console.error('Error writing to the database', error);
+    }
+  }
 }
 
 function rowsToCsv(headers, rows) {

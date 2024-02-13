@@ -88,8 +88,7 @@ module.exports = {
       type: 'string',
     },
     race_id: {
-      type: 'number',
-      columnType: 'bigint',
+      type: 'string',
     },
     geofence_id: {
       type: 'string',
@@ -107,8 +106,7 @@ module.exports = {
       type: 'string',
     },
     candidate_id: {
-      type: 'number',
-      columnType: 'bigint',
+      type: 'string',
     },
     middle_name: {
       type: 'string',
