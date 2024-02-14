@@ -90,9 +90,10 @@ module.exports = {
             );
 
             if (canText) {
+              const name = await sails.helpers.user.name(campaign.user);
               await sails.helpers.sms.sendSms(
                 campaign.user.phone,
-                `Hey ${campaign.user.name}, 
+                `Hey ${name}, 
                 
 This is Jared from Good Party, checking in to update your Campaign Tracker, Doors Knocked - https://goodparty.org/dashboard 
 
@@ -134,8 +135,9 @@ async function sendEmail(user) {
   if (!user) {
     return;
   }
+  const name = await sails.helpers.user.name(user);
   const variables = {
-    name: `${user.name}`,
+    name: `${name}`,
   };
 
   await sails.helpers.mailgun.mailgunTemplateSender(

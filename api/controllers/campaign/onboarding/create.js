@@ -9,7 +9,10 @@ const slugify = require('slugify');
 
 module.exports = {
   inputs: {
-    name: {
+    firstName: {
+      type: 'string',
+    },
+    lastName: {
       type: 'string',
     },
   },
@@ -27,15 +30,17 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
-      const { name } = inputs;
+      const { firstName, lastName } = inputs;
       await sails.helpers.queue.consumer();
-      let resolvedName = user.name || name;
-      if (name && !user.name) {
-        await User.updateOne({ id: user.id }).set({ name });
+      const userName = await sails.helpers.user.name(user);
+      const inputName = `${firstName} ${lastName}`;
+      let resolvedName = userName !== '' ? userName : inputName;
+      if (inputName && !user.firstName) {
+        await User.updateOne({ id: user.id }).set({ firstName, lastName });
       }
 
-      if (name) {
-        await submitCrmForm(name, user.email);
+      if (firstName) {
+        await submitCrmForm(firstName, lastName, user.email);
       }
 
       const slug = await findSlug(resolvedName);
@@ -82,13 +87,12 @@ async function findSlug(name) {
   return slug; // should not happen
 }
 
-async function submitCrmForm(name, email) {
-  if (!email || !name) {
+async function submitCrmForm(firstName, lastName, email) {
+  if (!email || !firstName) {
     // candidate page doesn't require email
     return;
   }
-  const firstName = name.split(' ')[0];
-  const lastName = name.split(' ').length > 0 && name.split(' ')[1];
+
   const crmFields = [
     { name: 'firstName', value: firstName, objectTypeId: '0-1' },
     { name: 'lastName', value: lastName, objectTypeId: '0-1' },

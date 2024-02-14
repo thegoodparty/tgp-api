@@ -71,7 +71,7 @@ module.exports = {
       if (!name) {
         // the name is on hte user (old records)
         const user = await User.findOne({ id: campaign.user });
-        name = user.name;
+        name = await sails.helpers.user.name(user);
         data.name = name;
       }
 

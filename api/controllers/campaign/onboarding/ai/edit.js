@@ -53,7 +53,7 @@ module.exports = {
         campaign[subSectionKey] = {};
       }
 
-      campaign.details.name = user.name;
+      campaign.details.name = await sails.helpers.user.name(user);
 
       let chatResponse;
       if (subSectionKey === 'aiContent') {

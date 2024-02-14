@@ -45,7 +45,7 @@ module.exports = {
         slug,
       });
       if (campaign.name) {
-        campaign.name = user.name;
+        campaign.name = await sails.helpers.user.name(user);
       }
 
       // setting last_step_date for the crm
@@ -193,6 +193,7 @@ async function sendSlackMessage(campaign, user) {
   }
   const { slug, details } = campaign;
   const { office, state, city, district } = details;
+  const name = await sails.helpers.user.name(user);
   const slackMessage = {
     text: `Onboarding Alert!`,
     blocks: [
@@ -208,7 +209,7 @@ async function sendSlackMessage(campaign, user) {
         text: {
           type: 'mrkdwn',
           text: `*We need to add their admin Path to victory*\n
-          \nName: ${user.name}
+          \nName: ${name}
           \nOffice: ${office}
           \nState: ${state}
           \nCity: ${city || 'n/a'}

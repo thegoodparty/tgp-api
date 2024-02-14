@@ -24,8 +24,9 @@ module.exports = {
       const { slug } = inputs;
       const campaign = await Campaign.findOne({ slug }).populate('user');
       const { user } = campaign;
+      const name = await sails.helpers.user.name(user);
       const variables = JSON.stringify({
-        name: `${user.name}`,
+        name,
         link: `${appBase}/onboarding/${slug}/campaign-plan`,
       });
       await Campaign.updateOne({ slug }).set({

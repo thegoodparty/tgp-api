@@ -7,28 +7,45 @@ module.exports = {
 
   async fn(inputs, exits) {
     let count = 0;
+    let errors = [];
     try {
-      // migrate pledged candidates with old onboarding to active candidate
-      const pledged = await Campaign.find({ isActive: false }).populate('user');
-      for (let i = 0; i < pledged.length; i++) {
-        const campaign = pledged[i];
-        const { data } = campaign;
-        const { details } = data || {};
-        if (details?.pledged) {
-          await Campaign.updateOne({ id: campaign.id }).set({
-            isActive: true,
-            data: {
-              ...data,
-              launchStatus: 'launched',
-              currentStep: 'onboarding-complete',
-            },
-          });
-          await sendMail(campaign);
+      const users = await User.find({
+        or: [
+          { firstName: '' }, // Matches users with an empty string as firstName
+          { firstName: null }, // Matches users with null as firstName
+        ],
+      });
+      for (const user of users) {
+        try {
+          const { name } = user;
+          console.log('name', name);
+          if (!name || name === '') {
+            continue;
+          }
+          const prompt = `Given a name, split it into first name and last name and return the result in JSON format. For example, if the name is "John Doe", the output should be exactly as follows:
+          {"firstName": "John", "lastName": "Doe"}
+          Please provide the JSON object only, without any additional text or explanation.
+          Name: ${name}`;
+          let messages = [{ role: 'user', content: prompt }];
+          const completion = await sails.helpers.ai.createCompletion(messages);
+          aiResponse = completion.content;
+          const parsedName = JSON.parse(aiResponse);
+          if (parsedName.firstName && parsedName.lastName) {
+            await User.updateOne({ id: user.id }).set({
+              firstName: parsedName.firstName,
+              lastName: parsedName.lastName,
+            });
+          }
+          console.log('aiResponse', aiResponse, typeof aiResponse);
           count++;
+        } catch (e) {
+          console.log('Error in seed', e);
+          errors.push(e);
         }
       }
       return exits.success({
-        message: `updated ${count} campaigns`,
+        message: `updated ${count} users`,
+        errors,
       });
     } catch (e) {
       console.log('Error in seed', e);
@@ -40,21 +57,3 @@ module.exports = {
     }
   },
 };
-
-async function sendMail(campaign) {
-  try {
-    const { user } = campaign;
-    const variables = JSON.stringify({
-      name: `${user.name}`,
-      link: `${appBase}/dashboard/plan`,
-    });
-    await sails.helpers.mailgun.mailgunTemplateSender(
-      user.email,
-      'Full Suite of AI Campaign Tools Now Available',
-      'campagin-launch',
-      variables,
-    );
-  } catch (e) {
-    console.log(e);
-  }
-}
