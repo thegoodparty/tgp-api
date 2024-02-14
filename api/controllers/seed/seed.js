@@ -9,7 +9,12 @@ module.exports = {
     let count = 0;
     let errors = [];
     try {
-      const users = await User.find({ firstName: '' });
+      const users = await User.find({
+        or: [
+          { firstName: '' }, // Matches users with an empty string as firstName
+          { firstName: null }, // Matches users with null as firstName
+        ],
+      });
       for (const user of users) {
         try {
           const { name } = user;
