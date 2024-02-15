@@ -1,3 +1,4 @@
+// Enqueue a message to the queue to process the path to victory for a campaign.
 module.exports = {
   inputs: {
     campaign: {
@@ -31,7 +32,7 @@ module.exports = {
         },
       };
 
-      let ballotRace;
+      // let ballotRace;
       if (details?.raceId) {
         let raceId = details.raceId;
         // console.log('raceId', raceId);
@@ -151,7 +152,8 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   const electionDate = row?.election?.electionDay;
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
-  const electionLevel = row?.position?.level.toLowerCase();
+  const level = row?.position?.level.toLowerCase();
+  const electionLevel = getRaceLevel(level);
   const partisanType = row?.position?.partisanType;
   const subAreaName =
     row?.position?.subAreaName && row.position.subAreaName !== 'null'
@@ -200,6 +202,7 @@ async function getBallotReadyDbMessage(queueMessage, campaign, ballotRace) {
       campaign.data.details.electionDate = ballotRace.data.election_day;
     }
   }
+
   if (ballotRace?.level) {
     queueMessage.data.electionLevel = ballotRace.level;
     campaign.data.details.electionLevel = ballotRace.level;
@@ -231,6 +234,30 @@ async function getBallotReadyDbMessage(queueMessage, campaign, ballotRace) {
   });
 
   return queueMessage;
+}
+
+function getRaceLevel(level) {
+  // "level"
+  // "city"
+  // "county"
+  // "federal"
+  // "local"
+  // "regional"
+  // "state"
+  // "town"
+  // "township"
+  // "village"
+  // TODO: it might be advantageous to distinguish city from town, township, and village
+  // But for now they are consolidated to "city"
+  if (
+    (level && level !== 'federal') ||
+    level !== 'state' ||
+    level !== 'county' ||
+    level !== 'city'
+  ) {
+    level = 'city';
+  }
+  return level;
 }
 
 async function getRaceDatabaseId(nodeId) {
