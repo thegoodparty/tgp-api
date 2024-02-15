@@ -44,7 +44,13 @@ module.exports = {
       }
 
       const slug = await findSlug(resolvedName);
-      const data = { slug, name: resolvedName, currentStep: 'registration' };
+      const data = {
+        slug,
+        name: resolvedName,
+        currentStep: 'registration',
+        firstName,
+        lastName,
+      };
 
       // see if the user already have campaign
       const existing = await Campaign.findOne({ user: user.id });
