@@ -36,7 +36,7 @@ module.exports = {
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
       const { user, loginEvent, updateEvent } = inputs;
-      const { id, name, email, phone, uuid, zip } = user;
+      const { id, firstName, lastName, email, phone, uuid, zip } = user;
 
       // const userCrew = await User.findOne({ id }).populate('crew');
       // const crew = userCrew.crew;
@@ -64,8 +64,8 @@ module.exports = {
 
       const contactObj = {
         properties: {
-          firstname: name.split(' ').slice(0, -1).join(' '),
-          lastname: name.split(' ').slice(-1).join(' '),
+          firstname: firstName,
+          lastname: lastName,
           email,
           phone,
           // type: applicationApproved > 0 ? 'Campaign' : 'User',
