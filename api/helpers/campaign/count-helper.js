@@ -198,6 +198,14 @@ function getProjectedTurnout(counts, turnoutCounts) {
   counts.projectedTurnout = projectedTurnout;
   counts.projectedTurnoutPercent =
     (projectedTurnoutPercent * 100).toFixed(2).toString() + '%';
+
+  // Currently win number is projected turnout x .5001 and voter contact is win number x 5
+  if (projectedTurnout && projectedTurnout > 0) {
+    const winNumber = Math.ceil(projectedTurnout * 0.5001).toFixed(2);
+    const voterContactGoal = Math.ceil(winNumber * 5).toFixed(2);
+    counts.winNumber = winNumber;
+    counts.voterContactGoal = voterContactGoal;
+  }
   return counts;
 }
 

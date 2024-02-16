@@ -261,6 +261,8 @@ async function handlePathToVictory(message) {
       ￮ Average Turnout %: ${pathToVictoryResponse.counts.averageTurnoutPercent}
       ￮ Projected Turnout: ${pathToVictoryResponse.counts.projectedTurnout}
       ￮ Projected Turnout %: ${pathToVictoryResponse.counts.projectedTurnoutPercent}
+      ￮ Win Number: ${pathToVictoryResponse.counts.winNumber}
+      ￮ Voter Contact Goal: ${pathToVictoryResponse.counts.voterContactGoal}
       `;
 
       await sails.helpers.slack.slackHelper(
@@ -304,9 +306,8 @@ async function handlePathToVictory(message) {
               indies: pathToVictoryResponse.counts.independent,
               averageTurnout: pathToVictoryResponse.counts.averageTurnout,
               projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
-              // TODO: calculate winNumber and voterContactGoal.
-              // winNumber: pathToVictoryResponse.counts.winNumber,
-              // voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+              winNumber: pathToVictoryResponse.counts.winNumber,
+              voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
             },
           },
         });
