@@ -32,31 +32,8 @@ module.exports = {
         },
       };
 
-      // let ballotRace;
       if (details?.raceId) {
         let raceId = details.raceId;
-        // console.log('raceId', raceId);
-        // // if raceId is numeric. test it using a regex. since its a string.
-        // let dbRaceId;
-        // if (!raceId.match(/^\d+$/)) {
-        //   dbRaceId = await getRaceDatabaseId(raceId);
-        //   console.log('determined dbRaceId', dbRaceId);
-        // }
-        // ballotRace = await BallotRace.findOne({
-        //   ballotId: dbRaceId.toString(),
-        // });
-        // if (ballotRace) {
-        //   console.log('found ballotRace in database');
-        //   queueMessage = await getBallotReadyDbMessage(
-        //     queueMessage,
-        //     campaign,
-        //     ballotRace,
-        //   );
-        // } else {
-        //   console.log(
-        //     'ballotRace not found in database. getting data from api',
-        //   );
-
         // API and AI Location Extraction is more accurate for now.
         queueMessage = await getBallotReadyApiMessage(
           queueMessage,
@@ -65,8 +42,9 @@ module.exports = {
         );
         // }
       } else {
-        console.log('queueing message using campaign details');
-        queueMessage = await getCampaignDbMessage(queueMessage, campaign);
+        // This method was not accurate enough and was deprecated.
+        // queueMessage = await getCampaignDbMessage(queueMessage, campaign);
+        await sendVictoryIssuesSlackMessage(campaign, this.req.user);
       }
 
       console.log('queueMessage', queueMessage);
@@ -81,6 +59,46 @@ module.exports = {
   },
 };
 
+async function sendVictoryIssuesSlackMessage(campaign, user) {
+  const { data, slug } = campaign;
+  const { details } = data;
+  const { name, office, state, city, district } = details;
+  const appBase = sails.config.custom.appBase || sails.config.appBase;
+
+  const slackMessage = {
+    text: `Onboarding Alert!`,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `__________________________________ \n *Candidate did not select a standard position. * \n ${appBase}`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `*We need to add their admin Path to victory*\n
+          \nName: ${name}
+          \nOffice: ${office}
+          \nState: ${state}
+          \nCity: ${city || 'n/a'}
+          \nDistrict: ${district || 'n/a'}
+          \nemail: ${user.email}
+          \nslug: ${slug}\n
+          \nadmin link: ${appBase}/admin/victory-path/${slug}
+          \n
+          \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
+          `,
+        },
+      },
+    ],
+  };
+
+  await sails.helpers.slackHelper(slackMessage, 'victory-issues');
+}
+
 async function getCampaignDbMessage(queueMessage, campaign) {
   const { data } = campaign;
   const { details } = data;
@@ -89,11 +107,6 @@ async function getCampaignDbMessage(queueMessage, campaign) {
 
   let goals = data?.goals;
   let electionDate = goals?.electionDate;
-  // TODO: we don't currently store the election level in the campaign details
-  // we need to add it to the campaign details
-  // we currently guess by seeing if city is filled out.
-  // we also need to add electionCounty to the campaign details
-  // for now we do some basic guessing for electionLevel;
   let electionLevel = 'city';
   if (
     office.toLowerCase().includes('senate') ||
@@ -140,6 +153,7 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
     officeName,
   );
 
+  // extractLocation was deprecated in favor of extractLocationAi
   // const locationData = {
   //   position_name: row?.position?.name,
   //   state: row?.position?.state,
@@ -180,11 +194,61 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   queueMessage.data.partisanType = partisanType;
 
   // TODO: we should probably update campaign object with our findings if they are different.
+  campaign.data.details.officeTermLength = termLength;
+  campaign.data.details.electionDate = electionDate;
+  campaign.data.details.level = electionLevel;
+  campaign.data.details.state = electionState;
+  campaign.data.details.county = locationData?.county; // not currently used
+  campaign.data.details.city = locationData?.city; // not currently used
+  campaign.data.details.district = subAreaValue;
+  campaign.data.details.partisanType = partisanType;
+
+  // update the Campaign details
+  await Campaign.updateOne({ id: campaign.id }).set({
+    data: campaign.data,
+  });
 
   return queueMessage;
 }
 
-async function getBallotReadyDbMessage(queueMessage, campaign, ballotRace) {
+function simpleSlackMessage(text, body) {
+  return {
+    text,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: body,
+        },
+      },
+    ],
+  };
+}
+
+async function getBallotReadyDbMessage(queueMessage, campaign, raceId) {
+  let ballotRace;
+  console.log('raceId', raceId);
+  // if raceId is numeric. test it using a regex. since its a string.
+  let dbRaceId;
+  if (!raceId.match(/^\d+$/)) {
+    dbRaceId = await getRaceDatabaseId(raceId);
+    console.log('determined dbRaceId', dbRaceId);
+  }
+  ballotRace = await BallotRace.findOne({
+    ballotId: dbRaceId.toString(),
+  });
+  if (ballotRace) {
+    console.log('found ballotRace in database');
+    queueMessage = await getBallotReadyDbMessage(
+      queueMessage,
+      campaign,
+      ballotRace,
+    );
+  } else {
+    console.log('ballotRace not found in database. getting data from api');
+  }
+
   if (ballotRace.data?.frequency) {
     termData = ballotRace.data.frequency;
     const pattern = /\[(\d+)[^\d]?/;
@@ -205,7 +269,7 @@ async function getBallotReadyDbMessage(queueMessage, campaign, ballotRace) {
 
   if (ballotRace?.level) {
     queueMessage.data.electionLevel = ballotRace.level;
-    campaign.data.details.electionLevel = ballotRace.level;
+    campaign.data.details.level = ballotRace.level;
   }
   console.log('ballotRace.data?.partisan_type', ballotRace.data?.partisan_type);
   if (ballotRace.data?.partisan_type) {
@@ -230,7 +294,7 @@ async function getBallotReadyDbMessage(queueMessage, campaign, ballotRace) {
 
   // update the Campaign details
   await Campaign.updateOne({ id: campaign.id }).set({
-    details: campaign.data.details,
+    data: campaign.data,
   });
 
   return queueMessage;

@@ -51,6 +51,14 @@ module.exports = {
         slackChannelId =
           sails.config.custom.slackVictoryChannelId ||
           sails.config.slackVictoryChannelId;
+      } else if (channel === 'victory-issues') {
+        token =
+          sails.config.custom.slackVictoryIssuesChannelToken ||
+          sails.config.slackVictoryIssuesChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackVictoryIssuesChannelId ||
+          sails.config.slackVictoryIssuesChannelId;
       } else if (channel === 'ai') {
         token =
           sails.config.custom.slackAiChannelToken ||

@@ -223,7 +223,7 @@ async function handlePathToVictory(message) {
       }
     }
 
-    const slackMessage = `
+    const candidateSlackMessage = `
     • Candidate: ${campaign.data.name} [${campaign.slug}]
     • Office: ${officeName}
     • Election Date: ${electionDate}
@@ -237,18 +237,27 @@ async function handlePathToVictory(message) {
     • Partisan Type: ${partisanType}
     `;
 
+    const pathToVictorySlackMessage = `
+    ￮ L2 Election Type: ${pathToVictoryResponse.electionType}
+    ￮ L2 Location: ${pathToVictoryResponse.electionLocation}
+    ￮ Total Voters: ${pathToVictoryResponse.counts.total}
+    ￮ Democrats: ${pathToVictoryResponse.counts.democrat}
+    ￮ Republicans: ${pathToVictoryResponse.counts.republican}
+    ￮ Independents: ${pathToVictoryResponse.counts.independent}
+    `;
+
+    // Alert Jared and Rob.
+    const alertSlackMessage = `
+    <@U01AY0VQFPE> and <@U03RY5HHYQ5>
+    `;
+
     if (
       pathToVictoryResponse?.electionType &&
       pathToVictoryResponse?.counts?.total &&
-      pathToVictoryResponse.counts.total > 0
+      pathToVictoryResponse.counts.total > 0 &&
+      pathToVictoryResponse.counts.projectedTurnout > 0
     ) {
-      const pathToVictorySlackMessage = `
-      ￮ L2 Election Type: ${pathToVictoryResponse.electionType}
-      ￮ L2 Location: ${pathToVictoryResponse.electionLocation}
-      ￮ Total Voters: ${pathToVictoryResponse.counts.total}
-      ￮ Democrats: ${pathToVictoryResponse.counts.democrat}
-      ￮ Republicans: ${pathToVictoryResponse.counts.republican}
-      ￮ Independents: ${pathToVictoryResponse.counts.independent}
+      const turnoutSlackMessage = `
       ￮ Average Turnout %: ${pathToVictoryResponse.counts.averageTurnoutPercent}
       ￮ Projected Turnout: ${pathToVictoryResponse.counts.projectedTurnout}
       ￮ Projected Turnout %: ${pathToVictoryResponse.counts.projectedTurnoutPercent}
@@ -257,9 +266,68 @@ async function handlePathToVictory(message) {
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage(
           'Path To Victory',
-          slackMessage + pathToVictorySlackMessage,
+          candidateSlackMessage +
+            pathToVictorySlackMessage +
+            turnoutSlackMessage +
+            alertSlackMessage,
         ),
         'victory',
+      );
+
+      // automatically update the Campaign with the pathToVictory data.
+      if (campaign.data?.pathToVictory) {
+        await sails.heplers.slack.slackHelper(
+          simpleSlackMessage(
+            'Path To Victory',
+            `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
+          ),
+          'victory',
+        );
+      } else {
+        // refetch the Campaign object to make sure we have the latest data.
+        // and prevent race conditions.
+        try {
+          campaign = await Campaign.findOne({ id: campaignId });
+        } catch (e) {
+          console.log('error getting campaign', e);
+        }
+
+        await Campaign.updateOne({
+          id: campaign.id,
+        }).set({
+          data: {
+            ...campaign.data,
+            pathToVictory: {
+              totalRegisteredVoters: pathToVictoryResponse.counts.total,
+              republicans: pathToVictoryResponse.counts.republican,
+              democrats: pathToVictoryResponse.counts.democrat,
+              indies: pathToVictoryResponse.counts.independent,
+              averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+              projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+              // TODO: calculate winNumber and voterContactGoal.
+              // winNumber: pathToVictoryResponse.counts.winNumber,
+              // voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+            },
+          },
+        });
+      }
+    } else if (
+      pathToVictoryResponse?.electionType &&
+      pathToVictoryResponse?.counts?.total &&
+      pathToVictoryResponse.counts.total > 0
+    ) {
+      // Was not able to get the turnout numbers.
+      // TODO: possibly add more debug info here. Which election dates did we try to get turnout numbers for?
+      const debugMessage = 'Was not able to get the turnout numbers.\n';
+      await sails.helpers.slack.slackHelper(
+        simpleSlackMessage(
+          'Path To Victory',
+          candidateSlackMessage +
+            pathToVictorySlackMessage +
+            debugMessage +
+            alertSlackMessage,
+        ),
+        'victory-issues',
       );
     } else {
       let debugMessage = 'No Path To Victory Found.\n';
@@ -272,12 +340,13 @@ async function handlePathToVictory(message) {
           'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
       }
       await sails.helpers.slack.slackHelper(
-        simpleSlackMessage('Path To Victory', slackMessage + debugMessage),
-        'victory',
+        simpleSlackMessage(
+          'Path To Victory',
+          candidateSlackMessage + debugMessage + alertSlackMessage,
+        ),
+        'victory-issues',
       );
     }
-
-    // TODO: automatically update the Campaign with the pathToVictory data.
   } catch (e) {
     sails.helpers.log(slug, 'error in consumer/handlePathToVictory', e);
   }

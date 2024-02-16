@@ -170,7 +170,11 @@ function getProjectedTurnout(counts, turnoutCounts) {
     trajectory = turnoutCounts[0] - turnoutCounts[1];
   }
 
-  let averageTurnoutPercent = (averageTurnout / counts.total).toFixed(2);
+  let averageTurnoutPercent = 0;
+  if (averageTurnout > 0 && counts.total > 0) {
+    averageTurnoutPercent = (averageTurnout / counts.total).toFixed(2);
+  }
+  counts.averageTurnout = averageTurnout;
   counts.averageTurnoutPercent =
     (averageTurnoutPercent * 100).toFixed(2).toString() + '%';
 
@@ -187,7 +191,10 @@ function getProjectedTurnout(counts, turnoutCounts) {
   } else {
     projectedTurnout = Math.ceil(averageTurnoutPercent * counts.total);
   }
-  let projectedTurnoutPercent = (projectedTurnout / counts.total).toFixed(2);
+  let projectedTurnoutPercent = 0;
+  if (projectedTurnout > 0 && counts.total > 0) {
+    projectedTurnoutPercent = (projectedTurnout / counts.total).toFixed(2);
+  }
   counts.projectedTurnout = projectedTurnout;
   counts.projectedTurnoutPercent =
     (projectedTurnoutPercent * 100).toFixed(2).toString() + '%';

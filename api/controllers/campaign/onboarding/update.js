@@ -103,12 +103,12 @@ module.exports = {
 
       // Launch the Path to Victory queue
       if (launchP2V) {
-        sails.helpers.log(slug, 'sending p2v slack message');
-        try {
-          await sendSlackMessage(campaign, user);
-        } catch (e) {
-          sails.helpers.log(slug, 'error sending slack message', e);
-        }
+        // sails.helpers.log(slug, 'sending p2v slack message');
+        // try {
+        //   await sendSlackMessage(campaign, user);
+        // } catch (e) {
+        //   sails.helpers.log(slug, 'error sending slack message', e);
+        // }
         sails.helpers.log(slug, 'enqueuing p2v');
         try {
           await sails.helpers.queue.enqueuePathToVictory(updated);
