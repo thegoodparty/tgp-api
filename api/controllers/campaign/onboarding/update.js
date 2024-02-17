@@ -101,6 +101,7 @@ module.exports = {
 
       await updateUserPhone(updated.data, user);
 
+      sails.helpers.log(slug, 'launchP2V', launchP2V);
       // Launch the Path to Victory queue
       if (launchP2V) {
         // sails.helpers.log(slug, 'sending p2v slack message');

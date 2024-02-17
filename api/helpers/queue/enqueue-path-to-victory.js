@@ -44,7 +44,13 @@ module.exports = {
       } else {
         // This method was not accurate enough and was deprecated.
         // queueMessage = await getCampaignDbMessage(queueMessage, campaign);
-        await sendVictoryIssuesSlackMessage(campaign, this.req.user);
+        const user = await User.findOne({ id: campaign.user });
+        await sails.helpers.log(
+          slug,
+          'campaign does not have race_id. skipping p2v...',
+        );
+        await sendVictoryIssuesSlackMessage(campaign, user);
+        return exits.success({ message: 'ok' });
       }
 
       console.log('queueMessage', queueMessage);
@@ -79,7 +85,7 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `*We need to add their admin Path to victory*\n
+          text: `*We need to manually add their admin Path to victory*\n
           \nName: ${name}
           \nOffice: ${office}
           \nState: ${state}
@@ -96,7 +102,7 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
     ],
   };
 
-  await sails.helpers.slackHelper(slackMessage, 'victory-issues');
+  await sails.helpers.slack.slackHelper(slackMessage, 'victory-issues');
 }
 
 async function getCampaignDbMessage(queueMessage, campaign) {

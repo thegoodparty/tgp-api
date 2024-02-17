@@ -94,47 +94,48 @@ async function handleMessage(message) {
 }
 
 async function handlePathToVictory(message) {
-  console.log('handling pathToVictory in queue consumer');
   //create or update each election and position
+  const {
+    campaignId,
+    officeName,
+    electionDate,
+    electionTerm,
+    electionLevel,
+    electionState,
+    electionCounty,
+    electionMunicipality,
+    subAreaName,
+    subAreaValue,
+    partisanType,
+  } = message;
+
+  let pathToVictoryResponse = {
+    electionType: '',
+    electionLocation: '',
+    district: '',
+    counts: {
+      total: 0,
+      democrat: 0,
+      republican: 0,
+      independent: 0,
+    },
+  };
+
+  let campaign;
   try {
-    const {
-      campaignId,
-      officeName,
-      electionDate,
-      electionTerm,
-      electionLevel,
-      electionState,
-      electionCounty,
-      electionMunicipality,
-      subAreaName,
-      subAreaValue,
-      partisanType,
-    } = message;
+    campaign = await Campaign.findOne({ id: campaignId });
+  } catch (e) {
+    console.log('error getting campaign', e);
+  }
+  if (!campaign) {
+    console.log('error: no campaign found');
+    return;
+  }
+  let slug = campaign.slug;
+  // sails.helpers.log(slug, 'campaign', campaign);
+  sails.helpers.log(slug, 'handling p2v message', message);
 
-    let pathToVictoryResponse = {
-      electionType: '',
-      electionLocation: '',
-      district: '',
-      counts: {
-        total: 0,
-        democrat: 0,
-        republican: 0,
-        independent: 0,
-      },
-    };
-
-    let campaign;
-    try {
-      campaign = await Campaign.findOne({ id: campaignId });
-    } catch (e) {
-      console.log('error getting campaign', e);
-    }
-    if (!campaign) {
-      console.log('error: no campaign found');
-      return;
-    }
-    let slug = campaign.slug;
-
+  try {
     const officeResponse = await sails.helpers.campaign.officeHelper(
       officeName,
       electionLevel,
@@ -144,6 +145,8 @@ async function handlePathToVictory(message) {
       subAreaName,
       subAreaValue,
     );
+
+    sails.helpers.log(slug, 'finished calling officeHelper');
 
     // sails.helpers.log(slug, 'officeResponse', officeResponse);
     sails.helpers.log(slug, 'officeResponse', officeResponse);
@@ -223,6 +226,8 @@ async function handlePathToVictory(message) {
       }
     }
 
+    console.log('preparing p2v messages');
+
     const candidateSlackMessage = `
     • Candidate: ${campaign.data.name} [${campaign.slug}]
     • Office: ${officeName}
@@ -278,7 +283,7 @@ async function handlePathToVictory(message) {
 
       // automatically update the Campaign with the pathToVictory data.
       if (campaign.data?.pathToVictory) {
-        await sails.heplers.slack.slackHelper(
+        await sails.helpers.slack.slackHelper(
           simpleSlackMessage(
             'Path To Victory',
             `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
