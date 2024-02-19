@@ -53,7 +53,7 @@ module.exports = {
           ? campaign.details.otherParty
           : campaign.details?.party;
       if (party === 'Independent') {
-        party = 'Independent non partisan';
+        party = 'Independent / non-partisan';
       }
       const office =
         campaign.details?.office === 'Other'
