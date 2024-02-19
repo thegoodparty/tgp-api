@@ -324,9 +324,10 @@ function getRaceLevel(level) {
   // TODO: it might be advantageous to distinguish city from town, township, and village
   // But for now they are consolidated to "city"
   if (
-    (level && level !== 'federal') ||
-    level !== 'state' ||
-    level !== 'county' ||
+    level &&
+    level !== 'federal' &&
+    level !== 'state' &&
+    level !== 'county' &&
     level !== 'city'
   ) {
     level = 'city';
