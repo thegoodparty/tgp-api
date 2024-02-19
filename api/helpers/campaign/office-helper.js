@@ -60,7 +60,7 @@ module.exports = {
         subAreaValue,
       } = inputs;
 
-      let searchColumns = determineSearchColumns(electionLevel);
+      let searchColumns = determineSearchColumns(electionLevel, officeName);
 
       let foundMiscDistricts = [];
       foundMiscDistricts = searchMiscDistricts(officeName);
@@ -178,13 +178,22 @@ async function determineElectionDistricts(
   return electionDistricts;
 }
 
-function determineSearchColumns(electionLevel) {
+function determineSearchColumns(electionLevel, officeName) {
   let searchColumns = [];
   if (electionLevel === 'federal') {
-    searchColumns = ['US_Congressional_District'];
+    if (officeName === 'President of the United States') {
+      // TODO: this may need special treatment.
+      searchColumns = ['US_Congressional_District'];
+    } else {
+      searchColumns = ['US_Congressional_District'];
+    }
   } else if (electionLevel === 'state') {
     // searchColumns = ['Borough', 'Township', 'Town_District', 'Village'];
-    searchColumns = ['State_Senate_District', 'State_House_District'];
+    if (officeName.includes('Senate')) {
+      searchColumns = ['State_Senate_District'];
+    } else if (officeName.includes('House')) {
+      searchColumns = ['State_House_District'];
+    }
   } else if (electionLevel === 'county') {
     searchColumns = ['County'];
   } else if (electionLevel === 'city' || electionLevel === 'local') {
