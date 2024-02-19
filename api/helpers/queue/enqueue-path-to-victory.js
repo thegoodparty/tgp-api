@@ -68,8 +68,12 @@ module.exports = {
 async function sendVictoryIssuesSlackMessage(campaign, user) {
   const { data, slug } = campaign;
   const { details } = data;
-  const { name, office, state, city, district } = details;
+  const { office, state, city, district } = details;
   const appBase = sails.config.custom.appBase || sails.config.appBase;
+
+  const resolvedName = user.firstName
+    ? `${user.firstName} ${user.lastName}`
+    : user.name || '/n/a';
 
   const slackMessage = {
     text: `Onboarding Alert!`,
@@ -86,7 +90,7 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
         text: {
           type: 'mrkdwn',
           text: `*We need to manually add their admin Path to victory*\n
-          \nName: ${name}
+          \nName: ${resolvedName}
           \nOffice: ${office}
           \nState: ${state}
           \nCity: ${city || 'n/a'}
