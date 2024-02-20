@@ -203,7 +203,7 @@ async function handlePathToVictory(message) {
           pathToVictoryResponse.electionLocation = electionType.value;
           pathToVictoryResponse.electionDistrict = district;
           pathToVictoryResponse.counts = counts;
-          await saveL2Counts(counts);
+          await saveL2Counts(counts, electionType, district);
         }
       }
     }
@@ -351,7 +351,7 @@ async function sendSlackMessage(
   }
 }
 
-async function saveL2Counts(counts) {
+async function saveL2Counts(counts, electionType, district) {
   if (electionType && electionType?.column && electionType.column !== '') {
     try {
       const existingObj = await l2Count.findOne({
