@@ -147,254 +147,282 @@ async function handlePathToVictory(message) {
       subAreaName,
       subAreaValue,
     );
-
-    sails.helpers.log(slug, 'finished calling officeHelper');
-
-    // sails.helpers.log(slug, 'officeResponse', officeResponse);
     sails.helpers.log(slug, 'officeResponse', officeResponse);
 
-    if (officeResponse) {
-      const { electionTypes, electionDistricts } = officeResponse;
-
-      if (electionTypes && electionTypes.length > 0) {
-        for (let electionType of electionTypes) {
-          // for now we only try the top district in the list.
-          let district;
-          sails.helpers.log(
-            slug,
-            `checking if electionDistricts has ${electionType}`,
-          );
-          let electionTypeName = electionType.column;
-          if (
-            electionDistricts &&
-            electionDistricts.hasOwnProperty(electionTypeName) &&
-            electionDistricts[electionTypeName].length > 0
-          ) {
-            district = electionDistricts[electionTypeName][0].value;
-            electionType = electionDistricts[electionTypeName][0];
-          }
-          sails.helpers.log(slug, 'district', district);
-          sails.helpers.log(slug, 'electionType', electionType);
-
-          if (officeName === 'President of the United States') {
-            // special case for President.
-            electionState = 'US';
-          }
-
-          const counts = await sails.helpers.campaign.countHelper(
-            electionTerm,
-            electionDate ? electionDate : new Date().toISOString().slice(0, 10),
-            electionState,
-            electionType.column,
-            electionType.value,
-            district,
-            partisanType,
-          );
-
-          sails.helpers.log(slug, 'counts', counts);
-
-          if (counts && counts?.total && counts.total > 0) {
-            pathToVictoryResponse.electionType = electionType.column;
-            pathToVictoryResponse.electionLocation = electionType.value;
-            pathToVictoryResponse.electionDistrict = district;
-            pathToVictoryResponse.counts = counts;
-
-            try {
-              const existingObj = await l2Count.findOne({
-                electionType: electionType.column,
-                electionLocation: electionType.value,
-                electionDistrict: district,
-              });
-              if (existingObj) {
-                await l2Count
-                  .updateOne({
-                    electionType: electionType.column,
-                    electionLocation: electionType.value,
-                    electionDistrict: district,
-                  })
-                  .set({
-                    counts: counts,
-                  });
-              } else {
-                await l2Count.create({
-                  electionType: electionType.column,
-                  electionLocation: electionType.value,
-                  electionDistrict: district,
-                  counts: counts,
-                });
-              }
-            } catch (e) {
-              console.log('error saving l2Count', e);
-            }
-
-            break;
-          }
-        }
-      }
+    let electionTypes;
+    let electionDistricts;
+    if (officeResponse && officeResponse?.electionTypes) {
+      electionTypes = officeResponse.electionTypes;
+    }
+    if (officeResponse && officeResponse?.electionDistricts) {
+      electionDistricts = officeResponse.electionDistricts;
     }
 
-    console.log('preparing p2v messages');
+    sails.helpers.log(slug, 'electionTypes', electionTypes);
+    sails.helpers.log(slug, 'electionDistricts', electionDistricts);
 
-    const candidateSlackMessage = `
-    • Candidate: ${campaign.data.name} [${campaign.slug}]
-    • Office: ${officeName}
-    • Election Date: ${electionDate}
-    • Election Term: ${electionTerm}
-    • Election Level: ${electionLevel}
-    • Election State: ${electionState}
-    • Election County: ${electionCounty}
-    • Election Municipality: ${electionMunicipality}
-    • Sub Area Name: ${subAreaName}
-    • Sub Area Value: ${subAreaValue}
-    • Partisan Type: ${partisanType}
-    `;
-
-    const pathToVictorySlackMessage = `
-    ￮ L2 Election Type: ${pathToVictoryResponse.electionType}
-    ￮ L2 Location: ${pathToVictoryResponse.electionLocation}
-    ￮ Total Voters: ${pathToVictoryResponse.counts.total}
-    ￮ Democrats: ${pathToVictoryResponse.counts.democrat}
-    ￮ Republicans: ${pathToVictoryResponse.counts.republican}
-    ￮ Independents: ${pathToVictoryResponse.counts.independent}
-    `;
-
-    // Alert Jared and Rob.
-    const alertSlackMessage = `
-    <@U01AY0VQFPE> and <@U03RY5HHYQ5>
-    `;
-
-    if (
-      pathToVictoryResponse?.electionType &&
-      pathToVictoryResponse?.counts?.total &&
-      pathToVictoryResponse.counts.total > 0 &&
-      pathToVictoryResponse.counts.projectedTurnout > 0
-    ) {
-      const turnoutSlackMessage = `
-      ￮ Average Turnout %: ${pathToVictoryResponse.counts.averageTurnoutPercent}
-      ￮ Projected Turnout: ${pathToVictoryResponse.counts.projectedTurnout}
-      ￮ Projected Turnout %: ${pathToVictoryResponse.counts.projectedTurnoutPercent}
-      ￮ Win Number: ${pathToVictoryResponse.counts.winNumber}
-      ￮ Voter Contact Goal: ${pathToVictoryResponse.counts.voterContactGoal}
-      `;
-
-      await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Path To Victory',
-          candidateSlackMessage +
-            pathToVictorySlackMessage +
-            turnoutSlackMessage +
-            alertSlackMessage,
-        ),
-        'victory',
-      );
-
-      // automatically update the Campaign with the pathToVictory data.
-      if (
-        campaign.data?.pathToVictory &&
-        campaign?.p2vStatus &&
-        campaign.p2vStatus === 'Complete'
-      ) {
-        await sails.helpers.slack.slackHelper(
-          simpleSlackMessage(
-            'Path To Victory',
-            `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
-          ),
-          'victory',
+    if (electionTypes && electionTypes.length > 0) {
+      for (let electionType of electionTypes) {
+        // for now we only try the top district in the list.
+        let district;
+        sails.helpers.log(
+          slug,
+          `checking if electionDistricts has ${electionType}`,
         );
-      } else {
-        // refetch the Campaign object to make sure we have the latest data.
-        // and prevent race conditions.
-        try {
-          campaign = await Campaign.findOne({ id: campaignId });
+        let electionTypeName = electionType.column;
+        if (
+          electionDistricts &&
+          electionDistricts.hasOwnProperty(electionTypeName) &&
+          electionDistricts[electionTypeName].length > 0
+        ) {
+          district = electionDistricts[electionTypeName][0].value;
+          electionType = electionDistricts[electionTypeName][0];
+        }
+        sails.helpers.log(slug, 'district', district);
+        sails.helpers.log(slug, 'electionType', electionType);
 
-          await Campaign.updateOne({
-            id: campaign.id,
-          }).set({
-            data: {
-              ...campaign.data,
-              pathToVictory: {
-                totalRegisteredVoters: pathToVictoryResponse.counts.total,
-                republicans: pathToVictoryResponse.counts.republican,
-                democrats: pathToVictoryResponse.counts.democrat,
-                indies: pathToVictoryResponse.counts.independent,
-                averageTurnout: pathToVictoryResponse.counts.averageTurnout,
-                projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
-                winNumber: pathToVictoryResponse.counts.winNumber,
-                voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
-              },
-            },
-          });
-        } catch (e) {
-          console.log('error getting campaign', e);
+        if (officeName === 'President of the United States') {
+          // special case for President.
+          electionState = 'US';
         }
 
-        // set the p2vStatus to 'Complete' and email the user.
-        await completePathToVictory(slug);
+        const counts = await sails.helpers.campaign.countHelper(
+          electionTerm,
+          electionDate ? electionDate : new Date().toISOString().slice(0, 10),
+          electionState,
+          electionType.column,
+          electionType.value,
+          district,
+          partisanType,
+        );
+
+        sails.helpers.log(slug, 'counts', counts);
+
+        if (counts && counts?.total && counts.total > 0) {
+          pathToVictoryResponse.electionType = electionType.column;
+          pathToVictoryResponse.electionLocation = electionType.value;
+          pathToVictoryResponse.electionDistrict = district;
+          pathToVictoryResponse.counts = counts;
+          await saveL2Counts(counts);
+        }
       }
-    } else if (
-      pathToVictoryResponse?.electionType &&
-      pathToVictoryResponse?.counts?.total &&
-      pathToVictoryResponse.counts.total > 0
-    ) {
-      // Was not able to get the turnout numbers.
-      // TODO: possibly add more debug info here. Which election dates did we try to get turnout numbers for?
-      const debugMessage = 'Was not able to get the turnout numbers.\n';
-      await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Path To Victory',
-          candidateSlackMessage +
-            pathToVictorySlackMessage +
-            debugMessage +
-            alertSlackMessage,
-        ),
-        'victory-issues',
-      );
-    } else {
-      let debugMessage = 'No Path To Victory Found.\n';
-      if (officeResponse) {
-        debugMessage += 'Developer/Debug Data:\n';
-        debugMessage += 'officeResponse: ' + JSON.stringify(officeResponse);
-      }
-      if (pathToVictoryResponse) {
-        debugMessage +=
-          'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
-      }
-      await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Path To Victory',
-          candidateSlackMessage + debugMessage + alertSlackMessage,
-        ),
-        'victory-issues',
-      );
     }
+
+    await sendSlackMessage(
+      campaign,
+      pathToVictoryResponse,
+      officeResponse,
+      officeName,
+      electionDate,
+      electionTerm,
+      electionLevel,
+      electionState,
+      electionCounty,
+      electionMunicipality,
+      subAreaName,
+      subAreaValue,
+      partisanType,
+    );
   } catch (e) {
     sails.helpers.log(slug, 'error in consumer/handlePathToVictory', e);
   }
 }
 
-async function completePathToVictory(slug) {
-  const campaign = await Campaign.findOne({ slug }).populate('user');
-  const { user } = campaign;
-  const name = await sails.helpers.user.name(user);
-  const variables = JSON.stringify({
-    name,
-    link: `${appBase}/dashboard`,
-  });
-  await Campaign.updateOne({ slug }).set({
-    data: {
-      ...campaign.data,
-      p2vCompleteDate: moment().format('YYYY-MM-DD'),
-      p2vStatus: 'Complete',
-    },
-  });
+async function sendSlackMessage(
+  campaign,
+  pathToVictoryResponse,
+  officeResponse,
+  officeName,
+  electionDate,
+  electionTerm,
+  electionLevel,
+  electionState,
+  electionCounty,
+  electionMunicipality,
+  subAreaName,
+  subAreaValue,
+  partisanType,
+) {
+  const candidateSlackMessage = `
+  • Candidate: ${campaign.data.name} [${campaign.slug}]
+  • Office: ${officeName}
+  • Election Date: ${electionDate}
+  • Election Term: ${electionTerm}
+  • Election Level: ${electionLevel}
+  • Election State: ${electionState}
+  • Election County: ${electionCounty}
+  • Election Municipality: ${electionMunicipality}
+  • Sub Area Name: ${subAreaName}
+  • Sub Area Value: ${subAreaValue}
+  • Partisan Type: ${partisanType}
+  `;
 
-  await sails.helpers.mailgun.mailgunTemplateSender(
-    user.email,
-    'Exciting News: Your Customized Campaign Plan is Updated!',
-    'candidate-victory-ready',
-    variables,
-    'jared@goodparty.org',
-  );
+  const pathToVictorySlackMessage = `
+  ￮ L2 Election Type: ${pathToVictoryResponse.electionType}
+  ￮ L2 Location: ${pathToVictoryResponse.electionLocation}
+  ￮ Total Voters: ${pathToVictoryResponse.counts.total}
+  ￮ Democrats: ${pathToVictoryResponse.counts.democrat}
+  ￮ Republicans: ${pathToVictoryResponse.counts.republican}
+  ￮ Independents: ${pathToVictoryResponse.counts.independent}
+  `;
+
+  // Alert Jared and Rob.
+  const alertSlackMessage = `
+  <@U01AY0VQFPE> and <@U03RY5HHYQ5>
+  `;
+
+  if (
+    pathToVictoryResponse?.electionType &&
+    pathToVictoryResponse?.counts?.total &&
+    pathToVictoryResponse.counts.total > 0 &&
+    pathToVictoryResponse.counts.projectedTurnout > 0
+  ) {
+    const turnoutSlackMessage = `
+    ￮ Average Turnout %: ${pathToVictoryResponse.counts.averageTurnoutPercent}
+    ￮ Projected Turnout: ${pathToVictoryResponse.counts.projectedTurnout}
+    ￮ Projected Turnout %: ${pathToVictoryResponse.counts.projectedTurnoutPercent}
+    ￮ Win Number: ${pathToVictoryResponse.counts.winNumber}
+    ￮ Voter Contact Goal: ${pathToVictoryResponse.counts.voterContactGoal}
+    `;
+
+    await sails.helpers.slack.slackHelper(
+      simpleSlackMessage(
+        'Path To Victory',
+        candidateSlackMessage +
+          pathToVictorySlackMessage +
+          turnoutSlackMessage +
+          alertSlackMessage,
+      ),
+      'victory',
+    );
+
+    // automatically update the Campaign with the pathToVictory data.
+    if (
+      campaign.data?.pathToVictory &&
+      campaign?.p2vStatus &&
+      campaign.p2vStatus === 'Complete'
+    ) {
+      await sails.helpers.slack.slackHelper(
+        simpleSlackMessage(
+          'Path To Victory',
+          `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
+        ),
+        'victory',
+      );
+    } else {
+      // set the p2vStatus to 'Complete' and email the user.
+      await completePathToVictory(campaign.slug);
+    }
+  } else if (
+    pathToVictoryResponse?.electionType &&
+    pathToVictoryResponse?.counts?.total &&
+    pathToVictoryResponse.counts.total > 0
+  ) {
+    // Was not able to get the turnout numbers.
+    // TODO: possibly add more debug info here. Which election dates did we try to get turnout numbers for?
+    const debugMessage = 'Was not able to get the turnout numbers.\n';
+    await sails.helpers.slack.slackHelper(
+      simpleSlackMessage(
+        'Path To Victory',
+        candidateSlackMessage +
+          pathToVictorySlackMessage +
+          debugMessage +
+          alertSlackMessage,
+      ),
+      'victory-issues',
+    );
+  } else {
+    let debugMessage = 'No Path To Victory Found.\n';
+    if (officeResponse) {
+      debugMessage += 'Developer/Debug Data:\n';
+      debugMessage += 'officeResponse: ' + JSON.stringify(officeResponse);
+    }
+    if (pathToVictoryResponse) {
+      debugMessage +=
+        'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
+    }
+    await sails.helpers.slack.slackHelper(
+      simpleSlackMessage(
+        'Path To Victory',
+        candidateSlackMessage + debugMessage + alertSlackMessage,
+      ),
+      'victory-issues',
+    );
+  }
+}
+
+async function saveL2Counts(counts) {
+  if (electionType && electionType?.column && electionType.column !== '') {
+    try {
+      const existingObj = await l2Count.findOne({
+        electionType: electionType.column,
+        electionLocation: electionType.value,
+        electionDistrict: district,
+      });
+      if (existingObj) {
+        await l2Count
+          .updateOne({
+            electionType: electionType.column,
+            electionLocation: electionType.value,
+            electionDistrict: district,
+          })
+          .set({
+            counts: counts,
+          });
+      } else {
+        await l2Count.create({
+          electionType: electionType.column,
+          electionLocation: electionType.value,
+          electionDistrict: district,
+          counts: counts,
+        });
+      }
+    } catch (e) {
+      console.log('error saving l2Count', e);
+    }
+  }
+}
+
+async function completePathToVictory(slug) {
+  try {
+    const campaign = await Campaign.findOne({ slug }).populate('user');
+    const { user } = campaign;
+    const name = await sails.helpers.user.name(user);
+    const variables = JSON.stringify({
+      name,
+      link: `${appBase}/dashboard`,
+    });
+
+    await Campaign.updateOne({
+      id: campaign.id,
+    }).set({
+      data: {
+        ...campaign.data,
+        pathToVictory: {
+          totalRegisteredVoters: pathToVictoryResponse.counts.total,
+          republicans: pathToVictoryResponse.counts.republican,
+          democrats: pathToVictoryResponse.counts.democrat,
+          indies: pathToVictoryResponse.counts.independent,
+          averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+          projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+          winNumber: pathToVictoryResponse.counts.winNumber,
+          voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+          p2vCompleteDate: moment().format('YYYY-MM-DD'),
+          p2vStatus: 'Complete',
+        },
+      },
+    });
+
+    await sails.helpers.mailgun.mailgunTemplateSender(
+      user.email,
+      'Exciting News: Your Customized Campaign Plan is Updated!',
+      'candidate-victory-ready',
+      variables,
+      'jared@goodparty.org',
+    );
+  } catch (e) {
+    console.log('error updating campaign', e);
+  }
 }
 
 function simpleSlackMessage(text, body) {
