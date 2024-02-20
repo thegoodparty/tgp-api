@@ -383,7 +383,7 @@ async function saveL2Counts(counts, electionType, district) {
   }
 }
 
-async function completePathToVictory(slug) {
+async function completePathToVictory(slug, pathToVictoryResponse) {
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
     const { user } = campaign;
