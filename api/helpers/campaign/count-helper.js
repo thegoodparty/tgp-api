@@ -22,11 +22,9 @@ module.exports = {
     },
     electionType: {
       type: 'string',
-      required: true,
     },
     electionLocation: {
       type: 'string',
-      required: true,
     },
     electionDistrict: {
       type: 'string',
