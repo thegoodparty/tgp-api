@@ -311,7 +311,7 @@ async function sendSlackMessage(
       );
     } else {
       // set the p2vStatus to 'Complete' and email the user.
-      await completePathToVictory(campaign.slug);
+      await completePathToVictory(campaign.slug, pathToVictoryResponse);
     }
   } else if (
     pathToVictoryResponse?.electionType &&
