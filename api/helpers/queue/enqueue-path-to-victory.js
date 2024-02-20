@@ -203,20 +203,25 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   queueMessage.data.subAreaValue = subAreaValue;
   queueMessage.data.partisanType = partisanType;
 
-  // TODO: we should probably update campaign object with our findings if they are different.
-  campaign.data.details.officeTermLength = termLength;
-  campaign.data.details.electionDate = electionDate;
-  campaign.data.details.level = electionLevel;
-  campaign.data.details.state = electionState;
-  campaign.data.details.county = locationData?.county; // not currently used
-  campaign.data.details.city = locationData?.city; // not currently used
-  campaign.data.details.district = subAreaValue;
-  campaign.data.details.partisanType = partisanType;
-
   // update the Campaign details
-  await Campaign.updateOne({ id: campaign.id }).set({
-    data: campaign.data,
-  });
+  if (data.details) {
+    await Campaign.updateOne({ id: campaign.id }).set({
+      data: {
+        ...data,
+        details: {
+          ...data.details,
+          officeTermLength: termLength ?? data.details.officeTermLength,
+          electionDate: electionDate ?? data.details.electionDate,
+          level: electionLevel ?? data.details.level,
+          state: electionState ?? data.details.state,
+          county: locationData?.county ?? data.details.county,
+          city: locationData?.city ?? data.details.city,
+          district: subAreaValue ?? data.details.district,
+          partisanType: partisanType ?? data.details.partisanType,
+        },
+      },
+    });
+  }
 
   return queueMessage;
 }
