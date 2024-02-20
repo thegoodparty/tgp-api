@@ -89,6 +89,6 @@
   "author": "Tomer Almog",
   "license": "CC0-1.0",
   "engines": {
-    "node": ">= 14"
+    "node": ">= 18"
   }
 }
