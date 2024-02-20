@@ -86,6 +86,8 @@ module.exports = {
       //   numberOfElections = 2;
       // }
 
+      let partisanRace = false;
+
       if (
         electionType === 'State_House_District' ||
         electionType === 'State_Senate_District' ||
@@ -93,6 +95,9 @@ module.exports = {
         electionType === 'US_Senate' ||
         partisanType === 'partisan'
       ) {
+        partisanRace = true;
+      }
+      if (partisanRace) {
         // update the electionDate to the first Tuesday of November.
         let year = electionDate.split('-')[0];
         const electionDateObj = getFirstTuesdayOfNovember(year);
@@ -107,6 +112,7 @@ module.exports = {
           electionState,
           electionTerm * (y + 1),
           columns,
+          partisanRace,
         );
         if (columnResults?.column) {
           foundColumns.push(columnResults);
@@ -322,10 +328,20 @@ function determineHistoryColumn(
   electionState,
   yearOffset,
   columns,
+  partisanRace,
 ) {
   let turnoutDateObj = new Date(electionDate);
   turnoutDateObj.setFullYear(turnoutDateObj.getFullYear() - yearOffset);
 
+  if (partisanRace) {
+    // partisan races are easy we use the General Election
+    return {
+      column: 'EG_' + turnoutDateObj.getFullYear() - yearOffset,
+      type: 'General Election',
+    };
+  }
+
+  // otherwise we have to guess on the prior election dates.
   let turnoutDates = [];
   turnoutDates.push(
     turnoutDateObj.toISOString().slice(0, 10).replace(/-/g, ''),
