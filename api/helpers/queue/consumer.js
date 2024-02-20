@@ -1,12 +1,14 @@
 const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
+const moment = require('moment');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 const queueUrl = sails.config.custom.queueUrl || sails.config.queueUrl;
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 let queue;
 AWS.config.update({
