@@ -174,6 +174,11 @@ async function handlePathToVictory(message) {
           sails.helpers.log(slug, 'district', district);
           sails.helpers.log(slug, 'electionType', electionType);
 
+          if (officeName === 'President of the United States') {
+            // special case for President.
+            electionState = 'US';
+          }
+
           const counts = await sails.helpers.campaign.countHelper(
             electionTerm,
             electionDate ? electionDate : new Date().toISOString().slice(0, 10),
@@ -316,6 +321,9 @@ async function handlePathToVictory(message) {
             },
           },
         });
+
+        // set the p2vStatus to 'Complete' and email the user.
+        await completePathToVictory(slug);
       }
     } else if (
       pathToVictoryResponse?.electionType &&
@@ -356,6 +364,31 @@ async function handlePathToVictory(message) {
   } catch (e) {
     sails.helpers.log(slug, 'error in consumer/handlePathToVictory', e);
   }
+}
+
+async function completePathToVictory(slug) {
+  const campaign = await Campaign.findOne({ slug }).populate('user');
+  const { user } = campaign;
+  const name = await sails.helpers.user.name(user);
+  const variables = JSON.stringify({
+    name,
+    link: `${appBase}/onboarding/${slug}/campaign-plan`,
+  });
+  await Campaign.updateOne({ slug }).set({
+    data: {
+      ...campaign.data,
+      p2vCompleteDate: moment().format('YYYY-MM-DD'),
+      p2vStatus: 'Complete',
+    },
+  });
+
+  await sails.helpers.mailgun.mailgunTemplateSender(
+    user.email,
+    'Exciting News: Your Customized Campaign Plan is Updated!',
+    'candidate-victory-ready',
+    variables,
+    'jared@goodparty.org',
+  );
 }
 
 function simpleSlackMessage(text, body) {

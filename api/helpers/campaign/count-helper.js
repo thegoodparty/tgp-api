@@ -63,8 +63,10 @@ module.exports = {
         filters: {},
       };
 
-      searchJson.filters[electionType] = electionLocation;
-      if (electionDistrict) {
+      if (electionType && electionType !== '') {
+        searchJson.filters[electionType] = electionLocation;
+      }
+      if (electionDistrict && electionDistrict !== '') {
         searchJson.filters[electionType] = electionDistrict;
       }
 
