@@ -27,7 +27,7 @@ module.exports = {
       const name = await sails.helpers.user.name(user);
       const variables = JSON.stringify({
         name,
-        link: `${appBase}/onboarding/${slug}/campaign-plan`,
+        link: `${appBase}/dashboard`,
       });
       await Campaign.updateOne({ slug }).set({
         data: {
