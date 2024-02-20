@@ -60,6 +60,14 @@ module.exports = {
         subAreaValue,
       } = inputs;
 
+      if (officeName === 'President of the United States') {
+        return exits.success({
+          // President is a special case.
+          electionTypes: [{ column: '', value: '' }],
+          electionDistricts: {},
+        });
+      }
+
       let searchColumns = determineSearchColumns(electionLevel, officeName);
 
       let foundMiscDistricts = [];
@@ -182,8 +190,7 @@ function determineSearchColumns(electionLevel, officeName) {
   let searchColumns = [];
   if (electionLevel === 'federal') {
     if (officeName === 'President of the United States') {
-      // TODO: this may need special treatment.
-      searchColumns = ['US_Congressional_District'];
+      searchColumns = [''];
     } else {
       searchColumns = ['US_Congressional_District'];
     }

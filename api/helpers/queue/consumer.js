@@ -174,6 +174,11 @@ async function handlePathToVictory(message) {
           sails.helpers.log(slug, 'district', district);
           sails.helpers.log(slug, 'electionType', electionType);
 
+          if (officeName === 'President of the United States') {
+            // special case for President.
+            electionState = 'US';
+          }
+
           const counts = await sails.helpers.campaign.countHelper(
             electionTerm,
             electionDate ? electionDate : new Date().toISOString().slice(0, 10),
