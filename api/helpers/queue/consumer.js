@@ -97,7 +97,7 @@ async function handleMessage(message) {
 
 async function handlePathToVictory(message) {
   //create or update each election and position
-  const {
+  let {
     campaignId,
     officeName,
     electionDate,
@@ -302,27 +302,27 @@ async function handlePathToVictory(message) {
         // and prevent race conditions.
         try {
           campaign = await Campaign.findOne({ id: campaignId });
+
+          await Campaign.updateOne({
+            id: campaign.id,
+          }).set({
+            data: {
+              ...campaign.data,
+              pathToVictory: {
+                totalRegisteredVoters: pathToVictoryResponse.counts.total,
+                republicans: pathToVictoryResponse.counts.republican,
+                democrats: pathToVictoryResponse.counts.democrat,
+                indies: pathToVictoryResponse.counts.independent,
+                averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+                projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+                winNumber: pathToVictoryResponse.counts.winNumber,
+                voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+              },
+            },
+          });
         } catch (e) {
           console.log('error getting campaign', e);
         }
-
-        await Campaign.updateOne({
-          id: campaign.id,
-        }).set({
-          data: {
-            ...campaign.data,
-            pathToVictory: {
-              totalRegisteredVoters: pathToVictoryResponse.counts.total,
-              republicans: pathToVictoryResponse.counts.republican,
-              democrats: pathToVictoryResponse.counts.democrat,
-              indies: pathToVictoryResponse.counts.independent,
-              averageTurnout: pathToVictoryResponse.counts.averageTurnout,
-              projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
-              winNumber: pathToVictoryResponse.counts.winNumber,
-              voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
-            },
-          },
-        });
 
         // set the p2vStatus to 'Complete' and email the user.
         await completePathToVictory(slug);
