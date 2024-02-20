@@ -155,6 +155,8 @@ async function getCampaignDbMessage(queueMessage, campaign) {
 }
 
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
+  const { data } = campaign;
+
   const row = await getRaceById(raceId);
   console.log('row', row);
 
