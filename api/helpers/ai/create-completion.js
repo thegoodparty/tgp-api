@@ -67,14 +67,11 @@ module.exports = {
 
       // i
 
-      let model = 'gpt-3.5-turbo-16k';
-      if (appBase === 'https://dev.goodparty.org') {
-        model = 'gpt-4-turbo-preview'; // gpt-4-0125-preview
-      }
+      const model = 'gpt-4-turbo-preview';
 
       console.log('creating chat completion....');
       completion = await openai.createChatCompletion({
-        model: model,
+        model,
         messages: messages,
         max_tokens: maxTokens,
         top_p: topP,
