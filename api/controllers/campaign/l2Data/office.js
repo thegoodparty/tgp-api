@@ -6,7 +6,10 @@ module.exports = {
   inputs: {
     campaignId: {
       type: 'string',
-      required: true,
+    },
+    runAll: {
+      type: 'boolean',
+      default: false,
     },
   },
 
@@ -24,15 +27,25 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       // this view is just for testing the enqueuePathToVictory function
-      const { campaignId } = inputs;
-
-      let campaign = await Campaign.findOne({
-        id: campaignId,
-      });
-
-      await sails.helpers.queue.enqueuePathToVictory(campaign);
+      const { campaignId, runAll } = inputs;
 
       await sails.helpers.queue.consumer();
+
+      if (runAll === true) {
+        await sails.helpers.campaign.processVictory();
+      } else {
+        if (!campaignId) {
+          return exits.badRequest({
+            error: true,
+            message: 'Campaign ID is required',
+          });
+        }
+        let campaign = await Campaign.findOne({
+          id: campaignId,
+        });
+
+        await sails.helpers.queue.enqueuePathToVictory(campaign);
+      }
 
       return exits.success({
         success: true,
