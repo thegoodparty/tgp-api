@@ -28,8 +28,9 @@ module.exports = {
 
       await sails.helpers.queue.consumer();
 
-      const rows = campaigns.rows;
-      for (const row in rows) {
+      const rows = campaigns?.rows;
+      console.log('rows', rows.length);
+      for (const row of rows) {
         let campaign = await Campaign.findOne({
           id: row.id,
         });
