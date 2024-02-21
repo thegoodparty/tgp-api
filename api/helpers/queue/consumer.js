@@ -161,6 +161,7 @@ async function handlePathToVictory(message) {
     sails.helpers.log(slug, 'electionTypes', electionTypes);
     sails.helpers.log(slug, 'electionDistricts', electionDistricts);
 
+    const attempts = 0;
     if (electionTypes && electionTypes.length > 0) {
       for (let electionType of electionTypes) {
         // for now we only try the top district in the list.
@@ -195,7 +196,6 @@ async function handlePathToVictory(message) {
           district,
           partisanType,
         );
-
         sails.helpers.log(slug, 'counts', counts);
 
         if (counts && counts?.total && counts.total > 0) {
@@ -204,6 +204,12 @@ async function handlePathToVictory(message) {
           pathToVictoryResponse.electionDistrict = district;
           pathToVictoryResponse.counts = counts;
           await saveL2Counts(counts, electionType, district);
+          break;
+        }
+        attempts++;
+        if (attempts > 10) {
+          // we now limit electionTypes to 10.
+          break;
         }
       }
     }
