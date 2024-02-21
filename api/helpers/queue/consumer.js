@@ -272,7 +272,6 @@ async function sendSlackMessage(
   `;
 
   if (
-    pathToVictoryResponse?.electionType &&
     pathToVictoryResponse?.counts?.total &&
     pathToVictoryResponse.counts.total > 0 &&
     pathToVictoryResponse.counts.projectedTurnout > 0
