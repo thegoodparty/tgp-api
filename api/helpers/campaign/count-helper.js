@@ -97,6 +97,7 @@ module.exports = {
       ) {
         partisanRace = true;
       }
+      console.log('partisanRace', partisanRace);
       if (partisanRace) {
         // update the electionDate to the first Tuesday of November.
         let year = electionDate.split('-')[0];
@@ -114,6 +115,7 @@ module.exports = {
           columns,
           partisanRace,
         );
+        console.log('columnResults', columnResults);
         if (columnResults?.column) {
           foundColumns.push(columnResults);
         }
@@ -332,11 +334,12 @@ function determineHistoryColumn(
 ) {
   let turnoutDateObj = new Date(electionDate);
   turnoutDateObj.setFullYear(turnoutDateObj.getFullYear() - yearOffset);
-
   if (partisanRace) {
     // partisan races are easy we use the General Election
+    let adjustedYear = turnoutDateObj.getFullYear();
+    let electionYear = `EG_${adjustedYear}`;
     return {
-      column: 'EG_' + turnoutDateObj.getFullYear() - yearOffset,
+      column: electionYear,
       type: 'General Election',
     };
   }
