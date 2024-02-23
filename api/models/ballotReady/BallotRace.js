@@ -25,7 +25,7 @@ module.exports = {
 
     electionDate: {
       type: 'number',
-      description: 'A JS timestamp (epoch ms)',
+      description: 'A JS timestamp (epoch ms).',
       example: 1502844074211,
     },
 
