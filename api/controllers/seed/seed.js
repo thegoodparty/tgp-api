@@ -13,7 +13,7 @@ module.exports = {
         where: {
           or: [{ positionSlug: null }, { positionSlug: '' }],
         },
-      }).limit(10000);
+      }).limit(50000);
       for (const race of races) {
         try {
           if (
