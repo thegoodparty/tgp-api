@@ -13,6 +13,9 @@ module.exports = {
       required: true,
       unique: true,
     },
+    positionSlug: {
+      type: 'string',
+    },
     state: {
       type: 'string',
       required: true,
@@ -22,7 +25,7 @@ module.exports = {
 
     electionDate: {
       type: 'number',
-      description: 'A JS timestamp (epoch ms)',
+      description: 'A JS timestamp (epoch ms).',
       example: 1502844074211,
     },
 
