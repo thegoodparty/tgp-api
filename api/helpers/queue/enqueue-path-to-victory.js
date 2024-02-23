@@ -179,7 +179,12 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
   const level = row?.position?.level.toLowerCase();
-  const electionLevel = getRaceLevel(level);
+  let electionLevel = getRaceLevel(level);
+  if (electionLevel === 'city' && locationData?.county) {
+    // because 'local' is recoded as city.
+    // if the ai extracts a county, then we should use that.
+    electionLevel = 'county';
+  }
   const partisanType = row?.position?.partisanType;
   const subAreaName =
     row?.position?.subAreaName && row.position.subAreaName !== 'null'

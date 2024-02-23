@@ -60,7 +60,7 @@ module.exports = {
         subAreaValue,
       } = inputs;
 
-      if (officeName === 'President of the United States') {
+      if (officeName.includes('President of the United States')) {
         return exits.success({
           // President is a special case.
           electionTypes: [{ column: '', value: '' }],
@@ -68,8 +68,7 @@ module.exports = {
         });
       }
 
-      let searchColumns = determineSearchColumns(electionLevel, officeName);
-
+      let searchColumns = [];
       let foundMiscDistricts = [];
       foundMiscDistricts = searchMiscDistricts(officeName);
 
@@ -85,35 +84,61 @@ module.exports = {
         subAreaValue,
       );
 
-      let formattedDistrictValue = districtValue;
-      if (districtValue && districtValue.length === 1) {
-        formattedDistrictValue = `0${districtValue}`;
-      }
+      // let formattedDistrictValue = districtValue;
+      // if (districtValue && districtValue.length === 1) {
+      //   formattedDistrictValue = `0${districtValue}`;
+      // }
 
       // STEP 2: Figure out the main search column (City, County, etc.) and value
       // This also applies to the miscellaneous districts.
-      let electionSearch;
-      let electionSearch2;
-      if (foundMiscDistricts.length > 0 && districtValue) {
-        electionSearch = formattedDistrictValue;
-      } else if (electionLevel === 'county' && electionCounty) {
-        electionSearch = electionCounty;
-      } else if (electionLevel === 'city' && electionMunicipality) {
-        electionSearch = electionMunicipality;
-      } else {
-        // Note: we may want to search for the long AND short state to maximize match.
-        electionSearch = electionState; // await sails.helpers.zip.shortToLongState(electionState);
-        electionSearch2 = formattedDistrictValue;
+      let electionTypes = [];
+
+      // let electionSearch;
+      // let electionSearch2;
+      // First, we try
+      let searchString = getSearchString(
+        officeName,
+        subAreaName,
+        subAreaValue,
+        electionCounty,
+        electionMunicipality,
+        electionState,
+      );
+      if (searchColumns.length > 0) {
+        // electionSearch = formattedDistrictValue;
+        electionTypes = await getSearchColumn(
+          searchColumns,
+          electionState,
+          searchString,
+        );
       }
 
-      console.log('searching for', electionSearch);
-      let electionTypes = await getSearchColumn(
-        searchColumns,
-        electionState,
-        electionSearch,
-        electionSearch2,
-      );
+      // If we don't find a misc district we fall back to state/county/city.
+      if (electionTypes.length === 0) {
+        // if (electionLevel === 'county' && electionCounty) {
+        //   electionSearch = electionCounty;
+        // } else if (electionLevel === 'city' && electionMunicipality) {
+        //   electionSearch = electionMunicipality;
+        // } else {
+        //   // Note: we may want to search for the long AND short state to maximize match.
+        //   electionSearch = electionState; // await sails.helpers.zip.shortToLongState(electionState);
+        //   electionSearch2 = formattedDistrictValue;
+        // }
+        let searchColumns = determineSearchColumns(electionLevel, officeName);
 
+        if (searchColumns.length > 0) {
+          electionTypes = await getSearchColumn(
+            searchColumns,
+            electionState,
+            searchString,
+          );
+        } else {
+          // when we have a state position that doesn't match house or senate
+          // and doesn't match any misc district.
+          // we can return all results for the state.
+          electionTypes = [{ column: '', value: '' }];
+        }
+      }
       console.log('electionTypes', electionTypes);
 
       let electionDistricts = {};
@@ -129,7 +154,8 @@ module.exports = {
         electionDistricts = await determineElectionDistricts(
           electionTypes,
           electionState,
-          districtValue,
+          searchString,
+          //districtValue,
         );
       }
 
@@ -147,7 +173,7 @@ module.exports = {
 async function determineElectionDistricts(
   electionTypes,
   electionState,
-  districtValue,
+  searchString,
 ) {
   let electionDistricts = {};
 
@@ -170,10 +196,11 @@ async function determineElectionDistricts(
   for (const column of electionTypes) {
     if (districtMap[column.column]) {
       console.log('searching for sub columns', districtMap[column.column]);
+
       let subColumns = await getSearchColumn(
         districtMap[column.column],
         electionState,
-        districtValue,
+        searchString,
         column.value, // ie: 'CA##RIVERSIDE CITY'
       );
       if (subColumns.length > 0) {
@@ -189,16 +216,20 @@ async function determineElectionDistricts(
 function determineSearchColumns(electionLevel, officeName) {
   let searchColumns = [];
   if (electionLevel === 'federal') {
-    if (officeName === 'President of the United States') {
+    if (officeName.includes('President of the United States')) {
       searchColumns = [''];
     } else {
       searchColumns = ['US_Congressional_District'];
     }
   } else if (electionLevel === 'state') {
     // searchColumns = ['Borough', 'Township', 'Town_District', 'Village'];
-    if (officeName.includes('Senate')) {
+    if (officeName.includes('Senate') || officeName.includes('Senator')) {
       searchColumns = ['State_Senate_District'];
-    } else if (officeName.includes('House')) {
+    } else if (
+      officeName.includes('House') ||
+      officeName.includes('Assembly') ||
+      officeName.includes('Representative')
+    ) {
       searchColumns = ['State_House_District'];
     }
   } else if (electionLevel === 'county') {
@@ -384,6 +415,62 @@ async function querySearchColumn(searchColumn, electionState) {
   return searchValues;
 }
 
+async function matchSearchValues(searchValues, searchString) {
+  let messages = [
+    {
+      role: 'system',
+      content: `
+      you are a helpful political assistant whose job is to find the label that most closely matches the input. You will return only the matching label in your response and nothing else. If none of the labels are a good match then you will return "".
+        `,
+    },
+    {
+      role: 'user',
+      content: `find the label that matches the following office: "${searchString}.\n\nLabels: ${searchValues}"`,
+    },
+  ];
+
+  const completion = await sails.helpers.ai.createCompletion(
+    messages,
+    100,
+    0.1,
+    0.1,
+  );
+
+  const content = completion.content;
+  console.log('ai search result', content);
+  if (content && content !== '') {
+    return content.replace(/"/g, '');
+  } else {
+    return '';
+  }
+}
+function getSearchString(
+  officeName,
+  subAreaName,
+  subAreaValue,
+  electionCounty,
+  electionMunicipality,
+  electionState,
+) {
+  let searchString = officeName;
+  if (subAreaName) {
+    searchString += `- ${subAreaName}`;
+  }
+  if (subAreaValue) {
+    searchString += `- ${subAreaValue}`;
+  }
+  if (electionCounty) {
+    searchString += `- ${electionCounty}`;
+  }
+  if (electionMunicipality) {
+    searchString += `- ${electionMunicipality}`;
+  }
+  if (electionState) {
+    searchString += `- ${electionState}`;
+  }
+  return searchString;
+}
+
 async function getSearchColumn(
   searchColumns,
   electionState,
@@ -394,27 +481,41 @@ async function getSearchColumn(
   //   console.log('searchColumns', searchColumns);
   //   console.log('searchString', searchString);
   //   console.log('searchString2', searchString2);
+  let search = searchString;
+  if (searchString2) {
+    search = `${searchString} ${searchString2}`;
+  }
   for (const searchColumn of searchColumns) {
-    console.log(
-      `querying ${searchColumn} for ${searchString} - ${searchString2}`,
-    );
+    console.log(`querying ${searchColumn} for ${search}`);
     let searchValues = await querySearchColumn(searchColumn, electionState);
-    // console.log('searchValues', searchValues);
-    for (const searchValue of searchValues) {
-      if (searchValue.toLowerCase().includes(searchString.toLowerCase())) {
-        // console.log(`found (searchValue) ${searchValue} for ${searchString}`);
-        if (searchString2) {
-          if (searchValue.toLowerCase().includes(searchString2.toLowerCase())) {
-            // console.log(
-            //   `found (searchValue2) ${searchValue} for ${searchString2}`,
-            // );
-            foundColumns.push({ column: searchColumn, value: searchValue });
-          }
-        } else {
-          foundColumns.push({ column: searchColumn, value: searchValue });
-        }
+    // strip out any searchValues that are a blank string ""
+    searchValues = searchValues.filter((value) => value !== '');
+    console.log('searchValues', searchValues.length);
+    if (searchValues.length > 0) {
+      const match = await matchSearchValues(searchValues.join('\n'), search);
+      if (match && match !== '') {
+        foundColumns.push({
+          column: searchColumn,
+          value: match.replaceAll('"', ''),
+        });
       }
     }
+
+    // for (const searchValue of searchValues) {
+    //   if (searchValue.toLowerCase().includes(searchString.toLowerCase())) {
+    //     // console.log(`found (searchValue) ${searchValue} for ${searchString}`);
+    //     if (searchString2) {
+    //       if (searchValue.toLowerCase().includes(searchString2.toLowerCase())) {
+    //         // console.log(
+    //         //   `found (searchValue2) ${searchValue} for ${searchString2}`,
+    //         // );
+    //         foundColumns.push({ column: searchColumn, value: searchValue });
+    //       }
+    //     } else {
+    //       foundColumns.push({ column: searchColumn, value: searchValue });
+    //     }
+    //   }
+    // }
   }
 
   return foundColumns;
