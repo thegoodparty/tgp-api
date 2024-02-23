@@ -9,7 +9,11 @@ module.exports = {
     let count = 0;
     let errors = [];
     try {
-      const races = await BallotRace.find();
+      const races = await BallotRace.find({
+        where: {
+          or: [{ positionSlug: null }, { positionSlug: '' }],
+        },
+      }).limit(10000);
       for (const race of races) {
         try {
           if (
