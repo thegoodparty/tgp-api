@@ -35,6 +35,10 @@ module.exports = {
           errors.push(e);
         }
       }
+      await sails.helpers.slack.errorLoggerHelper(
+        `updated ${count} races`,
+        errors,
+      );
       return exits.success({
         message: `updated ${count} races`,
         errors,
