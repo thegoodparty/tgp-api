@@ -2,11 +2,20 @@ const slugify = require('slugify');
 
 module.exports = {
   inputs: {
-    id: {
+    state: {
       type: 'string',
-      required: true,
-      minLength: 5,
-      maxLength: 10,
+    },
+    county: {
+      type: 'string',
+    },
+    city: {
+      type: 'string',
+    },
+    positionSlug: {
+      type: 'string',
+    },
+    id: {
+      type: 'string', // old for redirects
     },
   },
 
@@ -28,10 +37,58 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { id } = inputs;
-      const race = await BallotRace.findOne({ hashId: id })
-        .populate('municipality')
-        .populate('county');
+      const { state, county, city, positionSlug, id } = inputs;
+      if (id) {
+        const race = await BallotRace.findOne({
+          where: { hashId: id },
+          select: ['positionSlug', 'data'],
+        })
+          .populate('municipality')
+          .populate('county');
+        race.state = race.data.state;
+        delete race.data;
+        return exits.success({ race });
+      }
+      let countyRecord;
+      let cityRecord;
+      if (county) {
+        const slug = `${slugify(state, { lower: true })}/${slugify(county, {
+          lower: true,
+        })}`;
+        countyRecord = await County.findOne({ slug });
+      }
+      if (city && countyRecord) {
+        const slug = `${slugify(state, { lower: true })}/${slugify(county, {
+          lower: true,
+        })}/${slugify(city, {
+          lower: true,
+        })}`;
+        cityRecord = await Municipality.findOne({
+          slug,
+        });
+      }
+      const query = {
+        state: state.toUpperCase(),
+        positionSlug,
+      };
+      if (city && cityRecord) {
+        query.municipality = cityRecord.id;
+      } else if (countyRecord) {
+        query.county = countyRecord.id;
+      }
+
+      const races = await BallotRace.find(query);
+      const race = races[0];
+      let positions = [];
+      for (let i = 0; i < races.length; i++) {
+        positions.push(races[i].data.position_name);
+      }
+
+      race.municipality = cityRecord;
+      race.county = countyRecord;
+      // .populate('municipality')
+      // .populate('county');
+
       const { name, level } = await sails.helpers.ballotready.extractLocation(
         race.data,
       );
@@ -40,26 +97,30 @@ module.exports = {
       if (race.municipality) {
         otherRaces = await BallotRace.find({
           where: { municipality: race.municipality.id },
-          select: ['data', 'hashId'],
+          select: ['data', 'hashId', 'positionSlug'],
         });
       } else if (race.county) {
         otherRaces = await BallotRace.find({
           where: { county: race.county.id },
-          select: ['data', 'hashId'],
+          select: ['data', 'hashId', 'positionSlug'],
         });
       }
-      otherRaces = otherRaces.map((race) => {
-        return {
-          name: race.data.position_name,
-          hashId: race.hashId,
-        };
+      const dedups = {};
+      otherRaces = otherRaces.map((OtherRace) => {
+        if (!dedups[OtherRace.positionSlug]) {
+          dedups[OtherRace.positionSlug] = true;
+          return {
+            name: OtherRace.data.normalized_position_name,
+            slug: OtherRace.positionSlug,
+          };
+        }
       });
 
       const {
         election_name,
         position_name,
         election_day,
-        state,
+        // state,
         partisan_type,
         salary,
         employment_type,
@@ -78,7 +139,6 @@ module.exports = {
       } = race.data;
 
       const filtered = {
-        id,
         hashId: race.hashId,
         positionName: position_name,
         locationName: name,
@@ -114,10 +174,11 @@ module.exports = {
       return exits.success({
         race: filtered,
         otherRaces,
+        positions,
       });
     } catch (e) {
       console.log('error at races/by-city', e);
-      return exits.success({
+      return exits.badRequest({
         error: true,
         e,
       });
