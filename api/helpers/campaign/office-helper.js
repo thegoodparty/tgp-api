@@ -125,6 +125,14 @@ module.exports = {
         //   electionSearch2 = formattedDistrictValue;
         // }
         let searchColumns = determineSearchColumns(electionLevel, officeName);
+        if (
+          (electionLevel === 'federal' && officeName.includes('Senate')) ||
+          officeName.includes('Governor')
+        ) {
+          // make sure it runs as State and not Federal.
+          searchColumns = [''];
+          electionLevel = 'state';
+        }
 
         if (searchColumns.length > 0) {
           electionTypes = await getSearchColumn(
