@@ -13,7 +13,7 @@ module.exports = {
         where: {
           or: [{ positionSlug: null }, { positionSlug: '' }],
         },
-      }).limit(10000);
+      }).limit(50000);
       for (const race of races) {
         try {
           if (
@@ -35,6 +35,10 @@ module.exports = {
           errors.push(e);
         }
       }
+      await sails.helpers.slack.errorLoggerHelper(
+        `updated ${count} races`,
+        errors,
+      );
       return exits.success({
         message: `updated ${count} races`,
         errors,
