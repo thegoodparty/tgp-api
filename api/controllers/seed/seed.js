@@ -1,4 +1,4 @@
-const appBase = sails.config.custom.appBase || sails.config.appBase;
+const slugify = require('slugify');
 
 module.exports = {
   inputs: {},
@@ -9,42 +9,30 @@ module.exports = {
     let count = 0;
     let errors = [];
     try {
-      const users = await User.find({
-        or: [
-          { firstName: '' }, // Matches users with an empty string as firstName
-          { firstName: null }, // Matches users with null as firstName
-        ],
-      });
-      for (const user of users) {
+      const races = await BallotRace.find();
+      for (const race of races) {
         try {
-          const { name } = user;
-          console.log('name', name);
-          if (!name || name === '') {
-            continue;
+          if (
+            !race.normalizedPositionName ||
+            race.normalizedPositionName === ''
+          ) {
+            const { data } = race;
+            if (data.normalized_position_name) {
+              await BallotRace.updateOne({ id: race.id }).set({
+                positionSlug: slugify(data.normalized_position_name, {
+                  lower: true,
+                }),
+              });
+            }
+            count++;
           }
-          const prompt = `Given a name, split it into first name and last name and return the result in JSON format. For example, if the name is "John Doe", the output should be exactly as follows:
-          {"firstName": "John", "lastName": "Doe"}
-          Please provide the JSON object only, without any additional text or explanation.
-          Name: ${name}`;
-          let messages = [{ role: 'user', content: prompt }];
-          const completion = await sails.helpers.ai.createCompletion(messages);
-          aiResponse = completion.content;
-          const parsedName = JSON.parse(aiResponse);
-          if (parsedName.firstName && parsedName.lastName) {
-            await User.updateOne({ id: user.id }).set({
-              firstName: parsedName.firstName,
-              lastName: parsedName.lastName,
-            });
-          }
-          console.log('aiResponse', aiResponse, typeof aiResponse);
-          count++;
         } catch (e) {
           console.log('Error in seed', e);
           errors.push(e);
         }
       }
       return exits.success({
-        message: `updated ${count} users`,
+        message: `updated ${count} races`,
         errors,
       });
     } catch (e) {

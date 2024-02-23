@@ -13,6 +13,9 @@ module.exports = {
       required: true,
       unique: true,
     },
+    positionSlug: {
+      type: 'string',
+    },
     state: {
       type: 'string',
       required: true,
