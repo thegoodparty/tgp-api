@@ -77,26 +77,38 @@ module.exports = {
           municipality: municipalityRecord.id,
           electionDate: { '<': new Date(nextYear) },
         },
-        select: ['hashId', 'data'],
+        select: ['hashId', 'positionSlug', 'data'],
         limit: viewAll ? undefined : 10,
       }).sort('electionDate ASC');
 
+      // Deduplicate based on positionSlug
+      const uniqueRaces = new Map();
+
       races.forEach((race) => {
-        const { data } = race;
-        const {
-          election_name,
-          election_day,
-          position_name,
-          position_description,
-          level,
-        } = data;
-        race.electionName = election_name;
-        race.date = election_day;
-        race.positionName = position_name;
-        race.positionDescription = position_description;
-        race.level = level;
-        delete race.data;
+        if (!uniqueRaces.has(race.positionSlug)) {
+          const { data, positionSlug } = race;
+          const {
+            election_name,
+            election_day,
+            normalized_position_name,
+            position_description,
+            level,
+          } = data;
+          race.electionName = election_name;
+          race.date = election_day;
+          race.normalizedPositionName = normalized_position_name;
+          race.positionDescription = position_description;
+          race.level = level;
+          race.positionSlug = positionSlug;
+          race.state = state;
+          race.county = county;
+          race.city = city;
+          delete race.data;
+          uniqueRaces.set(race.positionSlug, race);
+        }
       });
+      // Convert the Map values back to an array for the final deduplicated list
+      const deduplicatedRaces = Array.from(uniqueRaces.values());
 
       const {
         population,
@@ -116,8 +128,9 @@ module.exports = {
         county_name,
         city: municipalityRecord.data.city,
       };
+
       return exits.success({
-        races,
+        races: deduplicatedRaces,
         municipality: shortCity,
       });
     } catch (e) {
