@@ -2,6 +2,8 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 const csv = require('csv-parser');
 const AWS = require('aws-sdk');
 const crypto = require('crypto');
+const slugify = require('slugify');
+
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
@@ -115,6 +117,7 @@ async function insertIntoDatabase(row) {
       sub_area_value,
       filing_periods,
       election_day,
+      normalized_position_name,
     } = row;
     const isPrimary = is_primary && is_primary.toLowerCase() === 'true';
     const isJudicial = is_judicial && is_judicial.toLowerCase() === 'true';
@@ -159,6 +162,9 @@ async function insertIntoDatabase(row) {
             subAreaName: sub_area_name,
             subAreaValue: sub_area_value,
             electionDate,
+            positionSlug: slugify(normalized_position_name, {
+              lower: true,
+            }),
           });
           count++;
         }
@@ -174,6 +180,9 @@ async function insertIntoDatabase(row) {
           subAreaName: sub_area_name,
           subAreaValue: sub_area_value,
           electionDate,
+          positionSlug: slugify(normalized_position_name, {
+            lower: true,
+          }),
         });
         count++;
       } else {
@@ -194,6 +203,9 @@ async function insertIntoDatabase(row) {
             subAreaName: sub_area_name,
             subAreaValue: sub_area_value,
             electionDate,
+            positionSlug: slugify(normalized_position_name, {
+              lower: true,
+            }),
           });
           count++;
         }
