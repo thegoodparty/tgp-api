@@ -36,7 +36,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { county, viewAll } = inputs;
+      const { county } = inputs;
       const inputState = inputs.state;
       const slug = `${slugify(inputState, { lower: true })}/${slugify(county, {
         lower: true,
@@ -67,7 +67,6 @@ module.exports = {
           electionDate: { '<': new Date(nextYear) },
         },
         select: ['hashId', 'positionSlug', 'data'],
-        limit: viewAll ? undefined : 10,
       }).sort('electionDate ASC');
 
       // Deduplicate based on positionSlug
