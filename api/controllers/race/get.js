@@ -1,4 +1,5 @@
 const slugify = require('slugify');
+const moment = require('moment');
 
 module.exports = {
   inputs: {
@@ -82,7 +83,6 @@ module.exports = {
       } else if (countyRecord) {
         query.county = countyRecord.id;
       }
-
       const races = await BallotRace.find(query).sort('electionDate ASC');
       const race = races[0];
       let positions = [];
