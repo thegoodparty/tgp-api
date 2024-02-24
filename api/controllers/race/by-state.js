@@ -7,9 +7,6 @@ module.exports = {
       minLength: 2,
       maxLength: 2,
     },
-    viewAll: {
-      type: 'boolean',
-    },
   },
 
   exits: {
@@ -26,7 +23,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const inputState = inputs.state;
-      const { viewAll } = inputs;
       const state = inputState.toUpperCase();
       const counties = await County.find({
         where: { state },
@@ -47,7 +43,6 @@ module.exports = {
           electionDate: { '<': new Date(nextYear) },
         },
         select: ['hashId', 'positionSlug', 'data'],
-        limit: viewAll ? undefined : 10,
       }).sort('electionDate ASC');
 
       // Deduplicate based on positionSlug

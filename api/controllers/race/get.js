@@ -1,4 +1,5 @@
 const slugify = require('slugify');
+const moment = require('moment');
 
 module.exports = {
   inputs: {
@@ -67,17 +68,22 @@ module.exports = {
           slug,
         });
       }
+      const nextYear = moment()
+        .startOf('year')
+        .add(1, 'year')
+        .format('M D, YYYY');
+
       const query = {
         state: state.toUpperCase(),
         positionSlug,
+        electionDate: { '<': new Date(nextYear) },
       };
       if (city && cityRecord) {
         query.municipality = cityRecord.id;
       } else if (countyRecord) {
         query.county = countyRecord.id;
       }
-
-      const races = await BallotRace.find(query);
+      const races = await BallotRace.find(query).sort('electionDate ASC');
       const race = races[0];
       let positions = [];
       for (let i = 0; i < races.length; i++) {
