@@ -16,7 +16,7 @@ module.exports = {
       type: 'string',
     },
     id: {
-      type: 'string', // old for redirects
+      type: 'string', // old for redirects.
     },
   },
 
