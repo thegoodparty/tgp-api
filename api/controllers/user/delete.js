@@ -26,6 +26,7 @@ module.exports = {
 
       await ShareCandidate.destroy({ user: user.id });
       await Application.destroy({ user: user.id });
+      await Campaign.destroy({ user: user.id });
       await User.destroyOne({ id: user.id });
       return exits.success({
         message: 'deleted successfully',

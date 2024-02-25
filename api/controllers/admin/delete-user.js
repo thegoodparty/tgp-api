@@ -33,6 +33,7 @@ module.exports = {
           message: 'User not found',
         });
       }
+      await Campaign.destroy({ user: id });
       await User.destroyOne({ id });
       return exits.success({
         message: 'deleted successfully',

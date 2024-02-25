@@ -23,7 +23,9 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const campaigns = await Campaign.find().populate('user');
+      const campaigns = await Campaign.find({
+        where: { user: { '!=': null } },
+      }).populate('user');
 
       return exits.success({
         campaigns,
