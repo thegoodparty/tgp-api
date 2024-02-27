@@ -106,7 +106,8 @@ module.exports = {
           [
             {
               associationCategory: 'HUBSPOT_DEFINED',
-              associationTypeId: hubspot.AssociationTypes.companyToContact,
+              associationTypeId:
+                hubspot.AssociationTypes.primaryCompanyToContact, //companyToContact
               // AssociationTypes contains the most popular HubSpot defined association types
             },
           ],
