@@ -18,6 +18,7 @@ module.exports.routes = {
   'GET    /api/v1/ballot-ready': 'seed/ballot-ready',
   'GET    /api/v1/seed/counties': 'seed/counties',
   'GET    /api/v1/seed/municipalities': 'seed/municipalities',
+  'GET    /api/v1/seed/locations': 'seed/locations',
   'GET    /api/v1/seed/split': 'seed/split-large-csv',
   'GET    /api/v1/seed/reduce': 'seed/reduce-large-csv',
   'GET    /api/v1/seed/races': 'seed/races',
