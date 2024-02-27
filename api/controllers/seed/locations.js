@@ -53,20 +53,20 @@ async function searchLocations(row) {
     if (type === 'County') {
       let countyName = cleanupName(name);
       // console.log('checking county', countyName);
-      const exists = await County.findOne({
+      const counties = await County.find({
         name: countyName,
       });
-      if (!exists) {
+      if (!counties || counties.length === 0) {
         countyCount++;
         // console.log('could not find county', countyName);
       }
     } else if (type === 'City') {
       let cityName = cleanupName(name);
       // console.log('checking city', cityName);
-      const exists = await Municipality.findOne({
+      const cities = await Municipality.find({
         name: cityName,
       });
-      if (!exists) {
+      if (!cities || cities.length === 0) {
         cityCount++;
         // console.log('could not find city', cityName);
       }
