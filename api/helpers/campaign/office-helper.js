@@ -60,14 +60,19 @@ module.exports = {
         subAreaValue,
       } = inputs;
 
-      if (officeName.includes('President of the United States')) {
-        return exits.success({
-          // President is a special case.
-          electionTypes: [{ column: '', value: '' }],
-          electionDistricts: {},
-        });
+      if (electionLevel === 'federal') {
+        if (
+          officeName.includes('President of the United States') ||
+          officeName.includes('Senate') ||
+          officeName.includes('Governor')
+        ) {
+          return exits.success({
+            // Handle special case where we want the entire state or country.
+            electionTypes: [{ column: '', value: '' }],
+            electionDistricts: {},
+          });
+        }
       }
-
       let searchColumns = [];
       let foundMiscDistricts = [];
       foundMiscDistricts = searchMiscDistricts(officeName);
@@ -93,9 +98,6 @@ module.exports = {
       // This also applies to the miscellaneous districts.
       let electionTypes = [];
 
-      // let electionSearch;
-      // let electionSearch2;
-      // First, we try
       let searchString = getSearchString(
         officeName,
         subAreaName,
@@ -125,15 +127,6 @@ module.exports = {
         //   electionSearch2 = formattedDistrictValue;
         // }
         let searchColumns = determineSearchColumns(electionLevel, officeName);
-        if (
-          (electionLevel === 'federal' && officeName.includes('Senate')) ||
-          officeName.includes('Governor')
-        ) {
-          // make sure it runs as State and not Federal.
-          searchColumns = [''];
-          electionLevel = 'state';
-        }
-
         if (searchColumns.length > 0) {
           electionTypes = await getSearchColumn(
             searchColumns,
@@ -187,18 +180,20 @@ async function determineElectionDistricts(
 
   let districtMap = {
     Borough: ['Borough_Ward'],
-    City: ['City_Ward', 'City_Council_Commissioner_District'],
-    County: [
-      'County_Commissioner_District',
-      'County_Legislative_District',
-      'County_Supervisorial_District',
-      'Residence_Addresses_CensusTract',
-      'Precinct',
-    ],
-    Town: ['Town_Ward', 'Town_District'],
+    City:
+      officeName.includes('Commission') || officeName.includes('Council')
+        ? ['City_Council_Commissioner_District', 'City_Ward']
+        : ['City_Ward'],
+    County: officeName.includes('Supervisor')
+      ? ['County_Supervisorial_District']
+      : officeName.includes('Commissioner')
+      ? ['County_Commissioner_District', 'County_Legislative_District']
+      : officeName.includes('Precinct') || officeName.includes()
+      ? ['Precinct']
+      : ['County_Commissioner_District'],
+    Town_District: ['Town_Ward'],
     Township: ['Township_Ward'],
     Village: ['Village_Ward'],
-    Hamlet: ['Hamlet_Community_Area'],
   };
 
   for (const column of electionTypes) {
@@ -214,6 +209,7 @@ async function determineElectionDistricts(
       if (subColumns.length > 0) {
         console.log('found sub columns', subColumns);
         electionDistricts[column.column] = subColumns;
+        break;
       }
     }
   }
@@ -230,7 +226,6 @@ function determineSearchColumns(electionLevel, officeName) {
       searchColumns = ['US_Congressional_District'];
     }
   } else if (electionLevel === 'state') {
-    // searchColumns = ['Borough', 'Township', 'Town_District', 'Village'];
     if (officeName.includes('Senate') || officeName.includes('Senator')) {
       searchColumns = ['State_Senate_District'];
     } else if (
@@ -243,7 +238,25 @@ function determineSearchColumns(electionLevel, officeName) {
   } else if (electionLevel === 'county') {
     searchColumns = ['County'];
   } else if (electionLevel === 'city' || electionLevel === 'local') {
-    searchColumns = ['City', 'Town', 'Township', 'Village', 'Hamlet'];
+    if (officeName.includes('Township') || officeName.includes('TWP')) {
+      searchColumns = ['Township', 'Town_District', 'Town_Council'];
+    } else if (officeName.includes('Village') || officeName.includes('VLG')) {
+      searchColumns = ['Village', 'City', 'Town_District'];
+    } else if (officeName.includes('Hamlet')) {
+      searchColumns = ['Hamlet_Community_Area', 'City', 'Town_District'];
+    } else if (officeName.includes('Borough')) {
+      searchColumns = ['Borough', 'City', 'Town_District'];
+    } else {
+      searchColumns = [
+        'City',
+        'Town_District',
+        'Town_Council',
+        'Hamlet_Community_Area',
+        'Village',
+        'Borough',
+        'Township',
+      ];
+    }
   } else {
     return exits.badRequest({
       error: true,
@@ -428,7 +441,7 @@ async function matchSearchValues(searchValues, searchString) {
     {
       role: 'system',
       content: `
-      you are a helpful political assistant whose job is to find the label that most closely matches the input. You will return only the matching label in your response and nothing else. If none of the labels are a good match then you will return "".
+      you are a helpful political assistant whose job is to find the label that most closely matches the input. You will return only the matching label in your response and nothing else. If none of the labels are a good match then you will return "". If there is a good match return the entire label including any hashtags. 
         `,
     },
     {
@@ -501,7 +514,7 @@ async function getSearchColumn(
     console.log('searchValues', searchValues.length);
     if (searchValues.length > 0) {
       const match = await matchSearchValues(searchValues.join('\n'), search);
-      if (match && match !== '') {
+      if (match && match !== '' && match !== `${electionState}##`) {
         foundColumns.push({
           column: searchColumn,
           value: match.replaceAll('"', ''),

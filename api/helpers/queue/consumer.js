@@ -161,7 +161,7 @@ async function handlePathToVictory(message) {
     sails.helpers.log(slug, 'electionTypes', electionTypes);
     sails.helpers.log(slug, 'electionDistricts', electionDistricts);
 
-    const attempts = 0;
+    let attempts = 0;
     if (electionTypes && electionTypes.length > 0) {
       for (let electionType of electionTypes) {
         // for now we only try the top district in the list.
@@ -392,9 +392,14 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
     const { user } = campaign;
-    const name = await sails.helpers.user.name(user);
+    let name;
+    if (user) {
+      name = await sails.helpers.user.name(user);
+    } else {
+      console.log('no user found for campaign', slug);
+    }
     const variables = JSON.stringify({
-      name,
+      name: name ? name : 'Friend',
       link: `${appBase}/dashboard`,
     });
 
@@ -418,13 +423,16 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       },
     });
 
-    await sails.helpers.mailgun.mailgunTemplateSender(
-      user.email,
-      'Exciting News: Your Customized Campaign Plan is Updated!',
-      'candidate-victory-ready',
-      variables,
-      'jared@goodparty.org',
-    );
+    if (appBase === 'https://goodparty.org') {
+      console.log('sending email to user', user.email);
+      await sails.helpers.mailgun.mailgunTemplateSender(
+        user.email,
+        'Exciting News: Your Customized Campaign Plan is Updated!',
+        'candidate-victory-ready',
+        variables,
+        'jared@goodparty.org',
+      );
+    }
   } catch (e) {
     console.log('error updating campaign', e);
   }
