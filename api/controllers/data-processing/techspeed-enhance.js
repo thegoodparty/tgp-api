@@ -12,7 +12,7 @@ let localFilePath = path.join(
 
 let outputFilePath = path.join(
   __dirname,
-  '../../../data/temp/tech-speed-id.txt',
+  '../../../data/temp/tech-speed-id1.txt',
 );
 
 const processedRows = [];
@@ -93,11 +93,16 @@ async function processRowAsync(row) {
     state,
   });
   if (munRecord && electionDay) {
+    console.log('electionDay', electionDay, typeof electionDay);
+    console.log(
+      'new Date(electionDay).getTime()',
+      new Date(electionDay).getTime(),
+    );
     const races = await BallotRace.find({
       municipality: munRecord.id,
-      electionDate: new Date(electionDay).getTime(),
+      // electionDate: new Date(electionDay).getTime(),
       // electionDate: 1730764900000,
-    });
+    }).limit(1);
     if (races.length > 0) {
       const race = races[0].data;
       isPrimary = race.is_primary;
