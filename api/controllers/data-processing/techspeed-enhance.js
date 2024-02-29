@@ -55,6 +55,10 @@ module.exports = {
       console.log('writing to file');
       fs.writeFileSync(outputFilePath, outputStr);
       console.log('writing to file compelte');
+      await sails.helpers.slack.errorLoggerHelper(
+        'compelted techspeed-enhance',
+        {},
+      );
 
       return exits.success(outputStr);
     } catch (e) {
@@ -94,13 +98,13 @@ async function processRowAsync(row) {
   let isPrimary = '';
   let partisanType = '';
 
-  const munRecord = await Municipality.findOne({
+  const munRecord = await Municipality.find({
     name: municipality,
     state,
-  });
-  if (munRecord && electionDay) {
+  }).limit(2);
+  if (munRecord.length > 0 && electionDay) {
     const races = await BallotRace.find({
-      municipality: munRecord.id,
+      municipality: munRecord[0].id,
       // electionDate: new Date(electionDay).getTime(),
       // electionDate: 1730764900000,
     }).limit(2);
