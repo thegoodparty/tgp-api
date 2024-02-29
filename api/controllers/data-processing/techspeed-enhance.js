@@ -10,6 +10,11 @@ let localFilePath = path.join(
   '../../../data/temp/tech-speed-id.csv',
 );
 
+let outputFilePath = path.join(
+  __dirname,
+  '../../../data/temp/tech-speed-id.txt',
+);
+
 const processedRows = [];
 
 module.exports = {
@@ -28,6 +33,14 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      let txtOutput;
+      try {
+        txtOutput = fs.readFileSync(outputFilePath, 'utf8');
+        if (txtOutput) {
+          console.log('success');
+          return exits.success(txtOutput);
+        }
+      } catch (e) {}
       await processAndSaveCSV(localFilePath);
 
       let outputStr = '';
@@ -35,6 +48,7 @@ module.exports = {
         outputStr += `${Object.values(row).join(',')}
         <br/>`;
       }
+      fs.writeFileSync(outputFilePath, outputStr);
 
       return exits.success(outputStr);
     } catch (e) {
