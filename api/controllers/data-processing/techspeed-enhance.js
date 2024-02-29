@@ -12,7 +12,7 @@ let localFilePath = path.join(
 
 let outputFilePath = path.join(
   __dirname,
-  '../../../data/temp/tech-speed-id1.txt',
+  '../../../data/temp/tech-speed-id2.txt',
 );
 
 const processedRows = [];
@@ -37,22 +37,28 @@ module.exports = {
       try {
         txtOutput = fs.readFileSync(outputFilePath, 'utf8');
         if (txtOutput) {
-          console.log('success');
+          console.log('success from cache');
           return exits.success(txtOutput);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.log('error reading from cache', e);
+      }
+      console.log('processign file');
       await processAndSaveCSV(localFilePath);
 
+      console.log('processing complete');
       let outputStr = '';
       for (let row of processedRows) {
         outputStr += `${Object.values(row).join(',')}
         <br/>`;
       }
+      console.log('writing to file');
       fs.writeFileSync(outputFilePath, outputStr);
+      console.log('writing to file compelte');
 
       return exits.success(outputStr);
     } catch (e) {
-      console.log('error at data-processing/ballot-s3');
+      console.log('error at data-processing/techspeed-enhance');
       console.log(e);
       await sails.helpers.slack.errorLoggerHelper(
         'data-processing/techspeed-enhance',
@@ -93,11 +99,6 @@ async function processRowAsync(row) {
     state,
   });
   if (munRecord && electionDay) {
-    console.log('electionDay', electionDay, typeof electionDay);
-    console.log(
-      'new Date(electionDay).getTime()',
-      new Date(electionDay).getTime(),
-    );
     const races = await BallotRace.find({
       municipality: munRecord.id,
       // electionDate: new Date(electionDay).getTime(),
