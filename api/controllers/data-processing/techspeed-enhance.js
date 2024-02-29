@@ -103,7 +103,7 @@ async function processRowAsync(row) {
       municipality: munRecord.id,
       // electionDate: new Date(electionDay).getTime(),
       // electionDate: 1730764900000,
-    }).limit(1);
+    }).limit(2);
     if (races.length > 0) {
       const race = races[0].data;
       isPrimary = race.is_primary;
