@@ -94,35 +94,42 @@ async function processAndSaveCSV(inputFilePath) {
 }
 
 async function processRowAsync(row) {
-  const { state, municipality, electionDay } = row;
-  let isPrimary = '';
-  let partisanType = '';
+  try {
+    const { state, municipality, electionDay } = row;
+    let isPrimary = '';
+    let partisanType = '';
 
-  const munRecord = await Municipality.find({
-    name: municipality,
-    state,
-  }).limit(2);
-  if (munRecord.length > 0 && electionDay) {
-    const races = await BallotRace.find({
-      municipality: munRecord[0].id,
-      // electionDate: new Date(electionDay).getTime(),
-      // electionDate: 1730764900000,
+    const munRecord = await Municipality.find({
+      name: municipality,
+      state,
     }).limit(2);
-    if (races.length > 0) {
-      const race = races[0].data;
-      isPrimary = race.is_primary;
-      partisanType = race.partisan_type;
+    if (munRecord.length > 0 && electionDay) {
+      const races = await BallotRace.find({
+        municipality: munRecord[0].id,
+        // electionDate: new Date(electionDay).getTime(),
+        // electionDate: 1730764900000,
+      }).limit(2);
+      if (races.length > 0) {
+        const race = races[0].data;
+        isPrimary = race.is_primary;
+        partisanType = race.partisan_type;
+      }
     }
-  }
 
-  const updated = {
-    state,
-    municipality,
-    electionDay,
-    isPrimary,
-    partisanType,
-  };
-  // console.log('updated', updated);
-  // Add the modified row to the rows array
-  return updated;
+    const updated = {
+      state,
+      municipality,
+      electionDay,
+      isPrimary,
+      partisanType,
+    };
+    // console.log('updated', updated);
+    // Add the modified row to the rows array
+    return updated;
+  } catch (e) {
+    console.log('error at processRowAsync');
+    console.log(e);
+    await sails.helpers.slack.errorLoggerHelper('error at processRowAsync', e);
+    return row;
+  }
 }
