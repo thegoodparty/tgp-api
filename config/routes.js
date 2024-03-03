@@ -193,6 +193,7 @@ module.exports.routes = {
 
   'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
   'GET   /api/v1/techspeed-enhance': 'data-processing/techspeed-enhance',
+  'GET   /api/v1/candidate-enhance': 'data-processing/candidate-enhance',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',

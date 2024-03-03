@@ -46,6 +46,7 @@
     "node-forge": "^1.2.1",
     "nodemon": "^2.0.15",
     "openai": "^3.3.0",
+    "peopledatalabs": "^7.0.5",
     "pg-connection-string": "^2.6.2",
     "puppeteer": "^19.11.1",
     "reading-time": "^1.5.0",
