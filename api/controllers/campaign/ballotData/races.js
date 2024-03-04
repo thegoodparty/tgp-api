@@ -60,7 +60,6 @@ module.exports = {
                     node {
                       id
                       name
-                      # Add other measure fields you want to retrieve
                     }
                   }
                 }
@@ -72,44 +71,15 @@ module.exports = {
               position {  # Include the 'position' field here to get position data
                 id
                 appointed
-                description
-                eligibilityRequirements
-                employmentType
-                filingAddress
-                filingPhone
-                filingRequirements
-                geoId
-                hasMajorityVotePrimary
-                hasPrimary
-                hasRankedChoiceGeneral
-                hasRankedChoicePrimary
-                hasUnknownBoundaries
-                judicial
                 level
-                maximumFilingFee
-                minimumAge
-                mtfcc
-                mustBeRegisteredVoter
-                mustBeResident
-                mustHaveProfessionalExperience
                 name
-                paperworkInstructions
-                partisanType
-                rankedChoiceMaxVotesGeneral
-                rankedChoiceMaxVotesPrimary
-                retention
-                rowOrder
-                runningMateStyle
                 salary
-                seats
-                selectionsAllowed
-                staggeredTerm
                 state
                 subAreaName
                 subAreaValue
-                tier
-                updatedAt
-                
+                electionFrequencies {
+                  frequency
+                }
               }
             }
           }
@@ -133,11 +103,11 @@ module.exports = {
           existingPosition[id] = true;
           cleanRaces.push(edge.node);
 
-          const queueMessage = {
-            type: 'saveBallotReadyRace',
-            data: edge,
-          };
-          await sails.helpers.queue.enqueue(queueMessage);
+          // const queueMessage = {
+          //   type: 'saveBallotReadyRace',
+          //   data: edge,
+          // };
+          // await sails.helpers.queue.enqueue(queueMessage);
         }
         // use queue to dave these to our db
       }
