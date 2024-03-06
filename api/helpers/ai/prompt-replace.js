@@ -70,6 +70,10 @@ module.exports = {
           replace: campaign.details.zip,
         },
         {
+          find: 'website',
+          replace: campaign.details.website,
+        },
+        {
           find: 'party',
           replace: party,
         },
@@ -234,6 +238,47 @@ module.exports = {
           {
             find: 'budgetHigh',
             replace: budgetHigh,
+          },
+        );
+      }
+      if (campaign.campaignPlan) {
+        const {
+          aboutMe,
+          communicationStrategy,
+          messageBox,
+          mobilizing,
+          policyPlatform,
+          slogan,
+          why,
+        } = campaign.campaignPlan;
+        replaceArr.push(
+          {
+            find: 'slogan',
+            replace: slogan,
+          },
+          {
+            find: 'why',
+            replace: why,
+          },
+          {
+            find: 'about',
+            replace: aboutMe,
+          },
+          {
+            find: 'myPolicies',
+            replace: policyPlatform,
+          },
+          {
+            find: 'commStart',
+            replace: communicationStrategy,
+          },
+          {
+            find: 'mobilizing',
+            replace: mobilizing,
+          },
+          {
+            find: 'positioning',
+            replace: messageBox,
           },
         );
       }
