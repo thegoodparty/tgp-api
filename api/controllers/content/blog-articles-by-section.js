@@ -56,7 +56,7 @@ module.exports = {
       } else {
         const sections = await Content.find({ key: 'blogSections' });
         const heroObj = await Content.find({ key: 'blogArticles' })
-          .sort('id ASC')
+          .sort('id DESC')
           .limit(1);
         const { id, title, mainImage, publishDate, slug, summary } =
           heroObj[0].data;
