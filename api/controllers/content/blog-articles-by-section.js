@@ -79,6 +79,7 @@ module.exports = {
           }
           result.push(section);
         }
+        result.sort((a, b) => a.fields.order - b.fields.order);
         return exits.success({
           sections: result,
           sectionIndex,
