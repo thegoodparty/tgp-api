@@ -84,7 +84,16 @@ module.exports = {
         query.county = countyRecord.id;
       }
       const races = await BallotRace.find(query).sort('electionDate ASC');
-      const race = races[0];
+      let race = races[0];
+      // if race doesn't have locationName and others do, select those.
+      if (race.level === 'local' && !race.locationName) {
+        for (let i = 0; i < races.length; i++) {
+          if (races[i].locationName) {
+            race = races[i];
+            break;
+          }
+        }
+      }
       let positions = [];
       for (let i = 0; i < races.length; i++) {
         positions.push(races[i].data.position_name);
