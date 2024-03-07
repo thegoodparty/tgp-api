@@ -57,8 +57,6 @@ module.exports = {
         if (!uniqueStateRaces.has(race.positionSlug)) {
           const { positionSlug } = race;
           let stateRace = {};
-          stateRace.positionSlug = positionSlug;
-          stateRace.level = 'state';
           stateRace.slug = `${inputState.toLowerCase()}/${positionSlug}`;
           uniqueStateRaces.set(race.positionSlug, stateRace);
         }
@@ -69,7 +67,6 @@ module.exports = {
       const countyRaces = await BallotRace.find({
         where: {
           state,
-          level: 'county',
           county: { '!=': null },
           municipality: null,
           electionDate: { '<': new Date(nextYear) },
@@ -84,8 +81,6 @@ module.exports = {
         if (!uniqueStateRaces.has(race.positionSlug)) {
           const { positionSlug, county } = race;
           let countyRace = {};
-          countyRace.positionSlug = positionSlug;
-          countyRace.level = 'county';
           countyRace.slug = `${county.slug}/${positionSlug}`;
           uniqueCountyRaces.set(race.positionSlug, countyRace);
         }
@@ -111,8 +106,6 @@ module.exports = {
         if (!uniqueStateRaces.has(race.positionSlug)) {
           const { positionSlug, municipality } = race;
           let cityRace = {};
-          cityRace.positionSlug = positionSlug;
-          cityRace.level = 'county';
           cityRace.slug = `${municipality.slug}/${positionSlug}`;
           uniqueCityRaces.set(race.positionSlug, cityRace);
         }
