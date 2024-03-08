@@ -457,12 +457,17 @@ async function matchSearchValues(searchValues, searchString) {
     0.1,
   );
 
-  const content = completion.content;
+  const content = completion?.content;
+  const tokens = completion?.tokens;
   console.log('ai search result', content);
+  if (!tokens || tokens === 0) {
+    // ai failed. throw an error here, we catch it in consumer.
+    // and re-throw it so we can try again via the SQS queue.
+    throw new Error('no response from AI');
+  }
+
   if (content && content !== '') {
     return content.replace(/"/g, '');
-  } else {
-    return '';
   }
 }
 function getSearchString(
