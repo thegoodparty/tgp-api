@@ -231,6 +231,11 @@ async function handlePathToVictory(message) {
     );
   } catch (e) {
     sails.helpers.log(slug, 'error in consumer/handlePathToVictory', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error in consumer/handlePathToVictory',
+      e,
+    );
+    throw new Error('error in consumer/handlePathToVictory');
   }
 }
 
