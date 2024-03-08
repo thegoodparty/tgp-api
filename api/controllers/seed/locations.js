@@ -6,9 +6,6 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
 const { Client } = require('@googlemaps/google-maps-services-js');
-const {
-  of,
-} = require('@hubspot/api-client/lib/codegen/communication_preferences/rxjsStub');
 
 let csvFilePath = path.join(__dirname, '../../../data/locations.csv');
 
@@ -229,22 +226,23 @@ async function geocodeLocation(location, state, type) {
       let foundMatch = false;
       let foundCounty;
       for (const component of result.address_components) {
-        console.log('found match', location);
-        console.log('types', component.types);
-        foundMatch = true;
+        if (matchLocation(component, location, type)) {
+          console.log('found match', location);
+          console.log('types', component.types);
+          foundMatch = true;
+        }
+        if (component.types.includes('postal_code')) {
+          console.log('found postal code', component.long_name);
+          postalCodes.add(component.long_name);
+        }
+        if (
+          component.long_name.includes('County') ||
+          component.types.includes('administrative_area_level_2')
+        ) {
+          console.log('found county', component.long_name);
+          foundCounty = component.long_name;
+        }
       }
-      if (component.types.includes('postal_code')) {
-        console.log('found postal code', component.long_name);
-        postalCodes.add(component.long_name);
-      }
-      if (
-        component.long_name.includes('County') ||
-        component.types.includes('administrative_area_level_2')
-      ) {
-        console.log('found county', component.long_name);
-        foundCounty = component.long_name;
-      }
-
       if (foundMatch && foundCounty) {
         // see if we can find more postalCodes
         const lat = result.geometry.location.lat;
