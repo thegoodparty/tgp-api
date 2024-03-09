@@ -71,9 +71,9 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
   const { office, state, city, district } = details;
   const appBase = sails.config.custom.appBase || sails.config.appBase;
 
-  const resolvedName = user.firstName
+  const resolvedName = user?.firstName
     ? `${user.firstName} ${user.lastName}`
-    : user.name || '/n/a';
+    : user?.name || '/n/a';
 
   const slackMessage = {
     text: `Onboarding Alert!`,

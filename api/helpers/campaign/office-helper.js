@@ -153,6 +153,7 @@ module.exports = {
         districtValue
       ) {
         electionDistricts = await determineElectionDistricts(
+          officeName,
           electionTypes,
           electionState,
           searchString,
@@ -172,6 +173,7 @@ module.exports = {
 };
 
 async function determineElectionDistricts(
+  officeName,
   electionTypes,
   electionState,
   searchString,
