@@ -96,11 +96,11 @@ module.exports = {
         for (let i = 0; i < races.edges.length; i++) {
           const edge = races.edges[i];
 
-          const id = edge?.node?.position?.id;
-          if (existingPosition[id]) {
+          const name = edge?.node?.position?.name;
+          if (existingPosition[name]) {
             continue;
           }
-          existingPosition[id] = true;
+          existingPosition[name] = true;
           cleanRaces.push(edge.node);
 
           // const queueMessage = {

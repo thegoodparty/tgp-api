@@ -392,19 +392,14 @@ function getDistrictValue(officeName, subAreaName, subAreaValue) {
 
   let districtValue;
   if (subAreaName || subAreaValue) {
-    console.log('subAreaName', subAreaName);
-    console.log('subAreaValue', subAreaValue);
-
     if (!subAreaValue && !isNaN(subAreaValue)) {
       for (const word of districtWords) {
         if (officeName.includes(word)) {
           const regex = new RegExp(`${word} ([0-9]+)`);
           const match = officeName.match(regex);
           if (match) {
-            console.log('found district number in office name:', match);
             districtNumber = match[1];
           } else {
-            console.log('did not find district number in office name');
             // could not find a district number in officeName, it's probably a word like a county.
             districtValue = subAreaValue;
           }
@@ -418,7 +413,6 @@ function getDistrictValue(officeName, subAreaName, subAreaValue) {
   if (districtValue) {
     districtValue = districtValue.trim();
   }
-  console.log('districtValue', districtValue);
 
   return districtValue;
 }
@@ -427,7 +421,6 @@ async function querySearchColumn(searchColumn, electionState) {
   let searchValues = [];
   try {
     let searchUrl = `https://api.l2datamapping.com/api/v2/customer/application/column/values/1OSR/VM_${electionState}/${searchColumn}?id=1OSR&apikey=${l2ApiKey}`;
-    console.log('searchUrl', searchUrl);
     const response = await axios.get(searchUrl);
     if (response?.data?.values && response.data.values.length > 0) {
       searchValues = response.data.values;
@@ -461,7 +454,6 @@ async function matchSearchValues(searchValues, searchString) {
 
   const content = completion?.content;
   const tokens = completion?.tokens;
-  console.log('ai search result', content);
   if (!tokens || tokens === 0) {
     // ai failed. throw an error here, we catch it in consumer.
     // and re-throw it so we can try again via the SQS queue.
@@ -514,11 +506,9 @@ async function getSearchColumn(
     search = `${searchString} ${searchString2}`;
   }
   for (const searchColumn of searchColumns) {
-    console.log(`querying ${searchColumn} for ${search}`);
     let searchValues = await querySearchColumn(searchColumn, electionState);
     // strip out any searchValues that are a blank string ""
     searchValues = searchValues.filter((value) => value !== '');
-    console.log('searchValues', searchValues.length);
     if (searchValues.length > 0) {
       const match = await matchSearchValues(searchValues.join('\n'), search);
       if (match && match !== '' && match !== `${electionState}##`) {
