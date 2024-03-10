@@ -50,12 +50,33 @@ module.exports = {
         return exits.success({
           status: 'candidate',
           profile: campaign.slug,
-          pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
+          // pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
         });
       }
+      let step = 1;
+      if (campaign?.details?.phone) {
+        step = 2;
+      }
+      if (
+        campaign?.details?.runForOffice ||
+        campaign?.details?.campaignCommittee
+      ) {
+        step = 3;
+      }
+      if (campaign?.details?.party || campaign?.details?.otherParty) {
+        step = 4;
+      }
+      if (campaign?.details?.zip) {
+        step = 5;
+      }
+      if (campaign?.details?.office) {
+        step = 6;
+      }
+
       return exits.success({
         status: 'onboarding',
         slug: campaign.slug,
+        step,
       });
     } catch (e) {
       console.log('error at campaign status', e);
