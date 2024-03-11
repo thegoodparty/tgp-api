@@ -58,7 +58,7 @@ module.exports = {
       const municipalityRecord = await Municipality.findOne({
         slug,
       });
-      if (!countyRecord | !municipalityRecord) {
+      if (!countyRecord || !municipalityRecord) {
         return exits.notFound();
       }
 

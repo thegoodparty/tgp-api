@@ -189,6 +189,7 @@ module.exports.routes = {
   'GET   /api/v1/race/all-state': 'race/all-state',
   'GET   /api/v1/race/by-county': 'race/by-county',
   'GET   /api/v1/race/by-city': 'race/by-city',
+  'GET   /api/v1/race/proximity-cities': 'race/proximity-cities',
   'GET   /api/v1/race': 'race/get',
   'GET   /api/v1/race/csv': 'race/races-csv',
 
