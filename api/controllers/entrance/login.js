@@ -46,7 +46,7 @@ module.exports = {
       if (!user) {
         // register
         const user = await User.create({
-          email,
+          email: lowerCaseEmail,
           password,
         }).fetch();
 
