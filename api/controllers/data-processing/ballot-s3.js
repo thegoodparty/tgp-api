@@ -156,7 +156,7 @@ async function parseFile(filePath) {
             const url = JSON.parse(validJSON);
             let parsedUrl = '';
             url.forEach((u) => {
-              parsedUrl += `${u.website}. `;
+              parsedUrl += `${u.website} `;
             });
             row.urls = parsedUrl;
           } catch (e) {
