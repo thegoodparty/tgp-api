@@ -149,6 +149,21 @@ async function parseFile(filePath) {
             row.parties = match[1];
           }
         }
+        // modify urls columns
+        if (row.urls) {
+          try {
+            const validJSON = row.urls.replace(/=>/g, ':');
+            const url = JSON.parse(validJSON);
+            let parsedUrl = '';
+            url.forEach((u) => {
+              parsedUrl += `${u.website}. `;
+            });
+            row.urls = parsedUrl;
+          } catch (e) {
+            console.log('error parsing urls', e);
+            row.urls = '';
+          }
+        }
         if (row.parties !== 'Democratic' && row.parties !== 'Republican') {
           const { name } = await sails.helpers.ballotready.extractLocation(row);
           row.parsedLocation = name ? name.replace(/\"+/g, '') : ''; //remove quotes

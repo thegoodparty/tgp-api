@@ -1,6 +1,3 @@
-const slugify = require('slugify');
-const moment = require('moment');
-
 module.exports = {
   inputs: {
     state: {
