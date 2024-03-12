@@ -56,23 +56,68 @@ module.exports = {
       const parsed = JSON.parse(cities);
 
       const municipalityRecord1 = await Municipality.findOne({
-        name: parsed[0],
-        state,
+        where: {
+          name: city,
+          state,
+        },
+        select: ['id', 'slug', 'name'],
       });
-      const municipalityRecord2 = await Municipality.findOne({
-        name: parsed[1],
-        state,
-      });
-      if (!municipalityRecord1 && !municipalityRecord2) {
-        return exits.notFound();
+
+      if (municipalityRecord1) {
+        const racesCount = await BallotRace.count({
+          municipality: municipalityRecord1.id,
+        });
+        municipalityRecord1.openElections = racesCount;
+        municipalityRecord1.state = state;
+      }
+
+      let municipalityRecord2;
+      let municipalityRecord3;
+
+      if (parsed.length > 0) {
+        municipalityRecord2 = await Municipality.findOne({
+          where: {
+            name: parsed[0],
+            state,
+          },
+          select: ['id', 'slug', 'name'],
+        });
+        if (municipalityRecord2) {
+          const racesCount = await BallotRace.count({
+            municipality: municipalityRecord2.id,
+          });
+          municipalityRecord2.openElections = racesCount;
+          municipalityRecord2.state = state;
+        }
+      }
+      if (parsed.length > 1) {
+        municipalityRecord3 = await Municipality.findOne({
+          where: {
+            name: parsed[1],
+            state,
+          },
+          select: ['id', 'slug', 'name'],
+        });
+        if (municipalityRecord3) {
+          const racesCount = await BallotRace.count({
+            municipality: municipalityRecord3.id,
+          });
+          municipalityRecord3.openElections = racesCount;
+          municipalityRecord3.state = state;
+        }
+      }
+
+      if (
+        !municipalityRecord1 &&
+        !municipalityRecord2 &&
+        !municipalityRecord3
+      ) {
+        return exits.success({ cities: [] });
       }
 
       return exits.success({
-        message: 'ok',
-        cities,
+        cities: [municipalityRecord1, municipalityRecord2, municipalityRecord3],
         parsed,
-        municipalityRecord1,
-        municipalityRecord2,
       });
     } catch (e) {
       console.log('error at races/proximity-cities', e);
