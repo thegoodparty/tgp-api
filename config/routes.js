@@ -60,6 +60,7 @@ module.exports.routes = {
   'PUT    /api/v1/admin/candidate/reactivate': 'admin/candidate/reactivate',
   'PUT    /api/v1/admin/deactivate-candidate-by-campaign':
     'admin/candidate/deactivate-candidate-by-campaign',
+  'POST   /api/v1/admin/candidate-enhance': 'admin/candidate-enhance',
 
   // New Candidates
   // 'POST   /api/v1/new-candidate': 'newCandidates/create',
@@ -195,7 +196,6 @@ module.exports.routes = {
 
   'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
   'GET   /api/v1/techspeed-enhance': 'data-processing/techspeed-enhance',
-  'GET   /api/v1/candidate-enhance': 'data-processing/candidate-enhance',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
