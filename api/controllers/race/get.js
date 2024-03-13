@@ -73,10 +73,12 @@ module.exports = {
         .add(1, 'year')
         .format('M D, YYYY');
 
+      const now = moment().format('M D, YYYY');
+
       const query = {
         state: state.toUpperCase(),
         positionSlug,
-        electionDate: { '<': new Date(nextYear) },
+        electionDate: { '<': new Date(nextYear), '>': new Date(now) },
       };
       if (city && cityRecord) {
         query.municipality = cityRecord.id;
@@ -84,6 +86,11 @@ module.exports = {
         query.county = countyRecord.id;
       }
       const races = await BallotRace.find(query).sort('electionDate ASC');
+      if (races.length === 0) {
+        return exits.success({
+          race: false,
+        });
+      }
       let race = races[0];
       // if race doesn't have locationName and others do, select those.
       if (race.level === 'local' && !race.locationName) {
@@ -192,7 +199,7 @@ module.exports = {
         positions,
       });
     } catch (e) {
-      console.log('error at races/by-city', e);
+      console.log('error at races/get', e);
       return exits.badRequest({
         error: true,
         e,
