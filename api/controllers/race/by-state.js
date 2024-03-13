@@ -34,13 +34,15 @@ module.exports = {
         .add(1, 'year')
         .format('M D, YYYY');
 
+      const now = moment().format('M D, YYYY');
+
       const races = await BallotRace.find({
         where: {
           state,
           level: 'state',
           county: null,
           municipality: null,
-          electionDate: { '<': new Date(nextYear), '>': new Date() },
+          electionDate: { '<': new Date(nextYear), '>': new Date(now) },
         },
         select: ['hashId', 'positionSlug', 'data'],
       }).sort('electionDate ASC');
