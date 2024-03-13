@@ -63,7 +63,7 @@ module.exports = {
           uniqueStateRaces.set(race.positionSlug, stateRace);
         }
       });
-      // Convert the Map values back to an array for the final deduplicated list
+      // Convert the Map values back to an array for the final deduplicated list.
       const dedupStateRaces = Array.from(uniqueStateRaces.values());
 
       const countyRaces = await BallotRace.find({
