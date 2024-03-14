@@ -109,6 +109,7 @@ async function handlePathToVictory(message) {
     subAreaName,
     subAreaValue,
     partisanType,
+    priorElectionDates,
   } = message;
 
   let pathToVictoryResponse = {
@@ -195,6 +196,7 @@ async function handlePathToVictory(message) {
           electionType.value,
           district,
           partisanType,
+          priorElectionDates,
         );
         sails.helpers.log(slug, 'counts', counts);
 
