@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const { isBuffer } = require('lodash');
 
 module.exports = {
   friendlyName: 'S3 Uploader',
@@ -45,7 +44,7 @@ module.exports = {
       return new Promise((resolve, reject) => {
         s3Bucket.putObject(data, function(err, data2) {
           if (err) {
-            console.log('error uploading to s3', err);
+            console.error('error uploading to s3', err);
             reject();
           } else {
             return exits.success();
