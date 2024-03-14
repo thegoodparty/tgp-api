@@ -19,9 +19,18 @@ module.exports = {
         email: user.email,
       }).populate('campaign');
       invitations.forEach((invitation) => {
+        const { firstName, lastName } = invitation.campaign.data;
+        const { city, state, office, otherOffice, party, district } =
+          invitation.campaign.data.details;
         invitation.campaign = {
-          ...invitation.campaign.data.details,
-          ...invitation.campaign.data.goals,
+          firstName,
+          lastName,
+          city,
+          state,
+          office,
+          otherOffice,
+          party,
+          district,
         };
       });
 

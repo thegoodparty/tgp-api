@@ -4,9 +4,12 @@ module.exports = {
   description: 'update name and email for a logged in user.',
 
   inputs: {
-    name: {
-      description: 'Full Name',
-      example: 'John Smith',
+    firstName: {
+      required: false,
+      type: 'string',
+      maxLength: 120,
+    },
+    lastName: {
       required: false,
       type: 'string',
       maxLength: 120,
@@ -67,12 +70,23 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const reqUser = this.req.user;
-      const { name, email, feedback, phone, zip, displayName, pronouns } =
-        inputs;
+      const {
+        firstName,
+        lastName,
+        email,
+        feedback,
+        phone,
+        zip,
+        displayName,
+        pronouns,
+      } = inputs;
 
       const updateFields = {};
-      if (name) {
-        updateFields.name = name;
+      if (firstName) {
+        updateFields.firstName = firstName;
+      }
+      if (lastName) {
+        updateFields.lastName = lastName;
       }
       if (feedback) {
         updateFields.feedback = feedback;
@@ -96,21 +110,6 @@ module.exports = {
 
       if (pronouns) {
         updateFields.pronouns = pronouns;
-      }
-
-      // this one is for profile settings where they can remove email/phone/display name
-      // name and zip are the required fields
-      if (name && zip) {
-        if (!displayName) {
-          updateFields.displayName = '';
-        }
-        // only one is required.
-        if (email && !phone) {
-          updateFields.phone = '';
-        }
-        if (phone && !email) {
-          updateFields.email = '';
-        }
       }
 
       const user = await User.updateOne({ id: reqUser.id }).set(updateFields);

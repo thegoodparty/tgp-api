@@ -47,10 +47,7 @@ module.exports = {
         role,
       });
 
-      let name = '';
-      if (campaign?.data?.details) {
-        name = `${campaign.data.details.firstName} ${campaign.data.details.lastName}`;
-      }
+      let name = `${user.firstName} ${user.lastName}`;
 
       const existingUser = await User.findOne({ email });
       const nextMonth = moment().add(1, 'month').format('YYYY-MM-DD');

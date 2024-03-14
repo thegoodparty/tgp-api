@@ -28,7 +28,8 @@ module.exports = {
         users.push({
           email: volunteer.user.email,
           phone: volunteer.user.phone,
-          name: volunteer.user.name,
+          firstName: volunteer.user.firstName,
+          lastName: volunteer.user.lastName,
           id: volunteer.user.id,
           role: volunteer.role,
         });
