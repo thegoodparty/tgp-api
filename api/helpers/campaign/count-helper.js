@@ -32,6 +32,9 @@ module.exports = {
     partisanType: {
       type: 'string',
     },
+    priorElectionDates: {
+      type: 'json',
+    },
   },
 
   exits: {
@@ -53,6 +56,7 @@ module.exports = {
         electionLocation,
         electionDistrict,
         partisanType,
+        priorElectionDates,
       } = inputs;
 
       console.log(`countHelper invoked with ${JSON.stringify(inputs)}`);
@@ -98,26 +102,49 @@ module.exports = {
         partisanRace = true;
       }
       console.log('partisanRace', partisanRace);
+      let electionDates;
       if (partisanRace) {
         // update the electionDate to the first Tuesday of November.
         let year = electionDate.split('-')[0];
         const electionDateObj = getFirstTuesdayOfNovember(year);
         electionDate = electionDateObj.toISOString().slice(0, 10);
         console.log('updated electionDate to GE date:', electionDate);
+      } else {
+        electionDates = priorElectionDates;
       }
 
       let foundColumns = [];
-      for (let y = 0; y < numberOfElections; y++) {
-        let columnResults = determineHistoryColumn(
-          electionDate,
-          electionState,
-          electionTerm * (y + 1),
-          columns,
-          partisanRace,
-        );
-        console.log('columnResults', columnResults);
-        if (columnResults?.column) {
-          foundColumns.push(columnResults);
+      if (electionDates && electionDates.length > 0) {
+        for (let y = 0; y < electionDates.length; y++) {
+          // if we know the prior election Dates we use those,
+          let columnResults = determineHistoryColumn(
+            electionDate,
+            electionState,
+            electionTerm * (y + 1),
+            columns,
+            partisanRace,
+            electionDates[y],
+          );
+          console.log('columnResults', columnResults);
+          if (columnResults?.column) {
+            foundColumns.push(columnResults);
+          }
+        }
+      } else {
+        for (let y = 0; y < numberOfElections; y++) {
+          // otherwise we have to guess on the prior election dates.
+          let columnResults = determineHistoryColumn(
+            electionDate,
+            electionState,
+            electionTerm * (y + 1),
+            columns,
+            partisanRace,
+            undefined,
+          );
+          console.log('columnResults', columnResults);
+          if (columnResults?.column) {
+            foundColumns.push(columnResults);
+          }
         }
       }
       console.log('foundColumns', foundColumns);
@@ -325,26 +352,10 @@ function getElectionClassification(electionKeyType) {
   }
 }
 
-function determineHistoryColumn(
-  electionDate,
-  electionState,
-  yearOffset,
-  columns,
-  partisanRace,
-) {
+function getTurnoutDates(electionDate, yearOffset) {
+  // otherwise we have to guess on the prior election dates.
   let turnoutDateObj = new Date(electionDate);
   turnoutDateObj.setFullYear(turnoutDateObj.getFullYear() - yearOffset);
-  if (partisanRace) {
-    // partisan races are easy we use the General Election
-    let adjustedYear = turnoutDateObj.getFullYear();
-    let electionYear = `EG_${adjustedYear}`;
-    return {
-      column: electionYear,
-      type: 'General Election',
-    };
-  }
-
-  // otherwise we have to guess on the prior election dates.
   let turnoutDates = [];
   turnoutDates.push(
     turnoutDateObj.toISOString().slice(0, 10).replace(/-/g, ''),
@@ -363,6 +374,39 @@ function determineHistoryColumn(
     turnoutDates.push(
       turnoutDateObjAfter.toISOString().slice(0, 10).replace(/-/g, ''),
     );
+  }
+  return turnoutDates;
+}
+
+function determineHistoryColumn(
+  electionDate,
+  electionState,
+  yearOffset,
+  columns,
+  partisanRace,
+  priorElectionDate,
+) {
+  let turnoutDateObj = new Date(electionDate);
+  turnoutDateObj.setFullYear(turnoutDateObj.getFullYear() - yearOffset);
+  if (partisanRace) {
+    // partisan races are easy we use the General Election
+    let adjustedYear = turnoutDateObj.getFullYear();
+    let electionYear = `EG_${adjustedYear}`;
+    return {
+      column: electionYear,
+      type: 'General Election',
+    };
+  }
+
+  let turnoutDates = [];
+  if (priorElectionDate) {
+    // we know the exact election date so we do not have to guess.
+    let priorElectionDateObj = new Date(priorElectionDate);
+    turnoutDates.push(
+      priorElectionDateObj.toISOString().slice(0, 10).replace(/-/g, ''),
+    );
+  } else {
+    turnoutDates = getTurnoutDates(electionDate, yearOffset);
   }
 
   let yearColumn;
@@ -393,7 +437,8 @@ function determineHistoryColumn(
           }
           for (let x = 0; x < turnoutDates.length; x++) {
             let turnoutDate = turnoutDates[x];
-            // since there is no way to know the exact date of the election,
+            // if using turnoutDates (not electionDates)
+            // there is no way to know the exact date of the election,
             // we prioritize elections that are closer to the electionDate
             if (turnoutDate === electionKeyDate) {
               if (!yearIndex || x < yearIndex) {

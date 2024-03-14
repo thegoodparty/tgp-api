@@ -190,7 +190,7 @@ async function determineElectionDistricts(
       ? ['County_Supervisorial_District']
       : officeName.includes('Commissioner')
       ? ['County_Commissioner_District', 'County_Legislative_District']
-      : officeName.includes('Precinct') || officeName.includes()
+      : officeName.includes('Precinct')
       ? ['Precinct']
       : ['County_Commissioner_District'],
     Town_District: ['Town_Ward'],
@@ -511,7 +511,12 @@ async function getSearchColumn(
     searchValues = searchValues.filter((value) => value !== '');
     if (searchValues.length > 0) {
       const match = await matchSearchValues(searchValues.join('\n'), search);
-      if (match && match !== '' && match !== `${electionState}##`) {
+      if (
+        match &&
+        match !== '' &&
+        match !== `${electionState}##` &&
+        match !== `${electionState}####`
+      ) {
         foundColumns.push({
           column: searchColumn,
           value: match.replaceAll('"', ''),

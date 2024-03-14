@@ -210,6 +210,18 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   queueMessage.data.subAreaValue = subAreaValue;
   queueMessage.data.partisanType = partisanType;
 
+  let priorElectionDates = [];
+  if (partisanType !== 'partisan') {
+    priorElectionDates = await sails.helpers.ballotready.getElectionDates(
+      officeName,
+      data.details.zip,
+      data.details.ballotLevel,
+    );
+  }
+  console.log('priorElectionDates', priorElectionDates);
+
+  queueMessage.data.priorElectionDates = priorElectionDates;
+
   // update the Campaign details
   if (data.details) {
     await Campaign.updateOne({ id: campaign.id }).set({
@@ -225,6 +237,8 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
           city: locationData?.city ?? data.details.city,
           district: subAreaValue ?? data.details.district,
           partisanType: partisanType ?? data.details.partisanType,
+          priorElectionDates:
+            priorElectionDates ?? data.details.priorElectionDates,
         },
       },
     });
