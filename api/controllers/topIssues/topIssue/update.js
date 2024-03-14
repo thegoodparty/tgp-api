@@ -1,25 +1,3 @@
-const svgUploader = async (fileName, bucketName, svgData) => {
-  console.log(`fileName, bucketName, svgData =>`, fileName, bucketName, svgData)
-  const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
-  const bucketPath = `${assetsBase}/${bucketName}`
-
-  try {
-    await sails.helpers.s3Uploader(
-      {
-        Key: fileName,
-        ContentType: `image/svg+xml`,
-        CacheControl: 'max-age=31536000',
-        Body: svgData
-      },
-      bucketPath
-    );
-    return `https://${bucketPath}/${fileName}`
-  } catch (e) {
-    console.error(new Error(e))
-    return e
-  }
-}
-
 module.exports = {
   friendlyName: 'edit topIssue',
 
