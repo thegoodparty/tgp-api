@@ -86,6 +86,12 @@ async function reduceCsvFile() {
     header: headers,
   });
 
+  const date2023 = new Date('1/1/2024');
+  const dateQ1 = new Date('4/1/2024');
+  const dateQ2 = new Date('7/1/2024');
+  const dateQ3 = new Date('10/1/2024');
+  const dateQ4 = new Date('1/1/2025');
+
   // Create a read stream
   const readStream = fs.createReadStream(inputFilePath);
 

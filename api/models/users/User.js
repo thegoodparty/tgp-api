@@ -177,6 +177,12 @@ module.exports = {
       via: 'user',
     },
 
+    // one to many
+    campaignVolunteers: {
+      collection: 'campaignVolunteer',
+      via: 'user',
+    },
+
     // has many to itself - a user can invite many users.
     crew: {
       collection: 'user',
