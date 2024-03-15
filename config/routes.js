@@ -217,4 +217,9 @@ module.exports.routes = {
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
   'GET   /api/v1/job': 'jobs/get',
+
+  // doorKnocking
+  'POST   /api/v1/campaign/door-knocking': 'campaign/doorKnocking/create',
+  'GET   /api/v1/campaign/door-knockings': 'campaign/doorKnocking/list',
+  'GET   /api/v1/campaign/door-knocking': 'campaign/doorKnocking/get',
 };

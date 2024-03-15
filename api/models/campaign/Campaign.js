@@ -47,6 +47,12 @@ module.exports = {
       via: 'campaign',
     },
 
+    // one to many
+    doorKnockingCampaigns: {
+      collection: 'doorKnockingCampaign',
+      via: 'campaign',
+    },
+
     //many to many
     positions: {
       collection: 'position',
