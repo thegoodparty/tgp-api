@@ -7,8 +7,8 @@ module.exports = {
       required: true,
     },
     icon: {
-      type: 'string'
-    }
+      type: 'string',
+    },
   },
 
   exits: {
@@ -25,19 +25,21 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const { name, icon } = inputs;
-      const {id} = await TopIssue.create({
-        name
+      const { id } = await TopIssue.create({
+        name,
       }).fetch();
 
+      const s3Icon = await sails.helpers.svgUploader(
+        `${id}-topissue-icon.svg`,
+        'top-issue-icons',
+        icon,
+      );
+
       await TopIssue.updateOne({
-        id
+        id,
       }).set({
-        icon: await sails.helpers.svgUploader(
-          `${id}-topissue-icon.svg`,
-          'top-issue-icons',
-          icon
-        )
-      })
+        icon: s3Icon,
+      });
 
       return exits.success({
         message: 'created',
