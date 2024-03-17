@@ -25,6 +25,13 @@ module.exports = {
       const issue = await TopIssue.findOne({ id })
         .populate('positions')
         .populate('candidates');
+      const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase
+      const {icon} = issue
+
+      icon && await sails.helpers.s3DeleteFile(
+        `${assetsBase}/top-issue-icons`,
+        `top-issue-icons/${id}-topissue-icon.svg`,
+      )
 
       for (let i = 0; i < issue.positions.length; i++) {
         const positionId = issue.positions[i].id;

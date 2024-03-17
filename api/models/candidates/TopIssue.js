@@ -9,6 +9,11 @@ module.exports = {
       unique: true,
     },
 
+    icon: {
+      type: 'string',
+      allowNull: true
+    },
+
     positions: {
       collection: 'position',
       via: 'topIssue',

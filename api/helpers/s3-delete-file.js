@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk');
 
 module.exports = {
-  friendlyName: 'S3 Uploader',
+  friendlyName: 'S3 Delete File',
 
   description:
-    'Send email via mailgun. https://github.com/auth0/node-jsonwebtoken',
+    'Delete a file in an S3 bucket',
 
   inputs: {
     bucketName: {
