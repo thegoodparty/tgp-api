@@ -23,10 +23,8 @@ module.exports = {
       const campaigns = await DoorKnockingCampaign.find({
         campaign: campaign.id,
       });
-      console.log('campaigns', campaigns);
 
       const dkCampaigns = campaigns.map((campaign) => campaign.data);
-      console.log('dkCampaigns', dkCampaigns);
 
       return exits.success({
         dkCampaigns,
