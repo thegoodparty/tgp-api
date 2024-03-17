@@ -83,17 +83,20 @@ module.exports = {
       for (const voter of voterData) {
         let voterObj = {};
         voterObj.voterId = voter.LALVOTERID;
-        voterObj.data = voter;
         voterObj.address = voter.Residence_Addresses_AddressLine;
         voterObj.party = voter.Parties_Description;
         voterObj.state = voter.Residence_Addresses_State;
         voterObj.city = voter.Residence_Addresses_City;
         voterObj.zip = voter.Residence_Addresses_Zip;
 
-        // TODO: calculate these using google api.
-        voterObj.lat = '';
-        voterObj.lng = '';
-        voterObj.geoHash = '';
+        const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
+        const loc = await sails.helpers.geocoding.geocodeAddress(address);
+        const { lat, lng, full, geoHash } = loc;
+        voterObj.data = { ...voter, geoLocation: full };
+
+        voterObj.lat = lat;
+        voterObj.lng = lng;
+        voterObj.geoHash = geoHash;
         voterObjs.push(voterObj);
       }
       console.log('Adding voters to db. Total voters:', voterObjs.length);

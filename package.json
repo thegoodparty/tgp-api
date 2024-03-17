@@ -42,6 +42,7 @@
     "mailgun.js": "9.3.0",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
+    "ngeohash": "^0.6.3",
     "node-fetch": ">=2.6.7",
     "node-forge": "^1.2.1",
     "nodemon": "^2.0.15",

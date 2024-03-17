@@ -26,7 +26,7 @@ module.exports = {
       // Convert the records to CSV format
       let csvContent = '';
       csvContent +=
-        'FirstName,LastName,NameSuffix,LandlineFormatted,CellPhoneFormatted,AddressLine,ExtraAddressLine,City,State,Zip,Age,Parties_Description\n'; // CSV header
+        'FirstName,LastName,NameSuffix,LandlineFormatted,CellPhoneFormatted,AddressLine,ExtraAddressLine,City,State,Zip,Age,Parties_Description,lat,lng,geoHash\n'; // CSV header
 
       voters.forEach((voter) => {
         const {
@@ -43,7 +43,8 @@ module.exports = {
           Voters_Age,
           Parties_Description,
         } = voter.data || {};
-        csvContent += `${Voters_FirstName},${Voters_LastName},${Voters_NameSuffix},${VoterTelephones_LandlineFormatted},${VoterTelephones_CellPhoneFormatted},${Residence_Addresses_AddressLine},${Residence_Addresses_ExtraAddressLine},${Residence_Addresses_City},${Residence_Addresses_State},${Residence_Addresses_Zip},${Voters_Age},${Parties_Description}\n`;
+        const { lat, lng, geoHash } = voter;
+        csvContent += `${Voters_FirstName},${Voters_LastName},${Voters_NameSuffix},${VoterTelephones_LandlineFormatted},${VoterTelephones_CellPhoneFormatted},${Residence_Addresses_AddressLine},${Residence_Addresses_ExtraAddressLine},${Residence_Addresses_City},${Residence_Addresses_State},${Residence_Addresses_Zip},${Voters_Age},${Parties_Description},${lat},${lng},${geoHash}\n`;
       });
 
       // Set the headers to instruct the browser to download the file

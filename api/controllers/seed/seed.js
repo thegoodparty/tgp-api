@@ -1,5 +1,3 @@
-const slugify = require('slugify');
-
 module.exports = {
   inputs: {},
 
@@ -9,36 +7,18 @@ module.exports = {
     let count = 0;
     let errors = [];
     try {
-      const races = await BallotRace.find({
-        where: {
-          or: [{ positionSlug: null }, { positionSlug: '' }],
-        },
-      }).limit(50000);
-      for (const race of races) {
-        try {
-          if (
-            !race.normalizedPositionName ||
-            race.normalizedPositionName === ''
-          ) {
-            const { data } = race;
-            if (data.normalized_position_name) {
-              await BallotRace.updateOne({ id: race.id }).set({
-                positionSlug: slugify(data.normalized_position_name, {
-                  lower: true,
-                }),
-              });
-            }
-            count++;
-          }
-        } catch (e) {
-          console.log('Error in seed', e);
-          errors.push(e);
-        }
+      const voters = await Voter.find().limit(1000);
+      for (let i = 0; i < voters.length; i++) {
+        const address = `${voters[i].address} ${voters[i].city}, ${voters[i].state} ${voters[i].zip}`;
+        const loc = await sails.helpers.geocoding.geocodeAddress(address);
+        const { lat, lng, full, geoHash } = loc;
+        await Voter.updateOne({ id: voters[i].id }).set({
+          lat,
+          lng,
+          data: { ...voters[i].data, geoLocation: full },
+          geoHash,
+        });
       }
-      await sails.helpers.slack.errorLoggerHelper(
-        `updated ${count} races`,
-        errors,
-      );
       return exits.success({
         message: `updated ${count} races`,
         errors,
