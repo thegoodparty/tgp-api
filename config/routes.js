@@ -199,6 +199,7 @@ module.exports.routes = {
   'GET   /api/v1/voter-data/office': 'voterData/office',
   'POST  /api/v1/voter-data/path-to-victory': 'voterData/path-to-victory',
   'POST  /api/v1/voter-data/voter-file': 'voterData/voterFile/create',
+  'GET  /api/v1/voter-data/voter-file': 'voterData/voterFile/get',
 
   // test ai
   'POST   /api/v1/ai/test': 'ai/test',
