@@ -22,16 +22,15 @@ module.exports.policies = {
   'newCandidates/create': ['isAuthenticated', 'isAdmin'],
   'newCandidates/delete': ['isAuthenticated', 'isAdmin'],
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
-  'campaign/onboarding/test': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/admin-delete': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/cancel-launch-request': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/list': ['isAuthenticated', 'isAdmin'],
-  'campaign/onboarding/by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   'topIssues/byLocation/find': ['isAuthenticated'],
   'ai/test': ['isAuthenticated', 'isAdmin'],
   'ai/load': ['isAuthenticated', 'isAdmin'],
+  'voterData/*': ['isAuthenticated', 'isAdmin'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,
@@ -40,7 +39,6 @@ module.exports.policies = {
   'newCandidates/find': true,
   'candidate/find': true,
   'candidate/list': true,
-  'newCandidates/homepage-candidates': true,
   'newCandidates/list': true,
   'declare/list': true,
   'seed/*': true,
@@ -51,8 +49,6 @@ module.exports.policies = {
   'topIssues/candidatePosition/find-by-campaign': true,
   'visit/*': true,
   'newCandidates/application/upload-image': true, // for guest applications
-  'socialListening/*': true,
-  'campaign/claim/claim': true,
   'user/notification/cron/*': true,
   'messaging/*': true,
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.

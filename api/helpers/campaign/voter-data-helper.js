@@ -1,7 +1,13 @@
 const axios = require('axios');
 const fastCsv = require('fast-csv');
+const { max } = require('lodash');
 
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+let maxRecords = 100000;
+if (appBase !== 'https://goodparty.org') {
+  maxRecords = 10000;
+}
 
 module.exports = {
   friendlyName: 'Voter Data Helper',
@@ -132,6 +138,11 @@ module.exports = {
         );
       }
 
+      const updated = await Campaign.findOne({ id: campaignId });
+      await Campaign.updateOne({ id: campaignId }).set({
+        data: { ...updated.data, hasVoterFile: true },
+      });
+
       return exits.success('ok');
     } catch (e) {
       console.log('error at voter-data-helper', e);
@@ -228,7 +239,10 @@ async function getTotalRecords(searchUrl, filters) {
 }
 
 async function canProceedWithSearch(totalRecords, limitApproved, campaign) {
-  if (totalRecords > 100000 && !limitApproved) {
+  if (totalRecords > maxRecords && !limitApproved) {
+    console.log(
+      `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}`,
+    );
     await sendSlackNotification(
       'Voter Data',
       `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}. Campaign: ${campaign.slug}. Approval is required.`,

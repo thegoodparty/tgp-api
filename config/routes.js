@@ -195,8 +195,10 @@ module.exports.routes = {
   // ballotData
   'GET   /api/v1/ballot-data/races': 'campaign/ballotData/races',
 
-  // l2Data
-  'GET   /api/v1/l2-data/office': 'campaign/l2Data/office',
+  // voterData l2Data
+  'GET   /api/v1/voter-data/office': 'voterData/office',
+  'POST  /api/v1/voter-data/path-to-victory': 'voterData/path-to-victory',
+  'POST  /api/v1/voter-data/voter-file': 'voterData/voterFile/create',
 
   // test ai
   'POST   /api/v1/ai/test': 'ai/test',

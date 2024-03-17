@@ -424,6 +424,8 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
           projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
           winNumber: pathToVictoryResponse.counts.winNumber,
           voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+          electionType: pathToVictoryResponse.electionType,
+          electionLocation: pathToVictoryResponse.electionLocation,
         },
         p2vCompleteDate: moment().format('YYYY-MM-DD'),
         p2vStatus: 'Complete',
