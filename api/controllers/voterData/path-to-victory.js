@@ -24,7 +24,7 @@ module.exports = {
       campaign.data.p2vStatus = 'Waiting';
       await Campaign.updateOne({ slug }).set({ data: campaign.data });
       await sails.helpers.slack.errorLoggerHelper(
-        'TA: running p2v for campaign',
+        'TA: running p2v for campaign.',
         {
           slug,
         },
@@ -37,7 +37,9 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({ message: 'Error registering candidate.' });
+      await sails.helpers.slack.errorLoggerHelper('Error path-to-victory', e);
+
+      return exits.badRequest({ message: 'Error path-to-victory.' });
     }
   },
 };
