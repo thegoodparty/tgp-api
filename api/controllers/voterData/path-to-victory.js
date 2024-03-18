@@ -23,6 +23,13 @@ module.exports = {
       const campaign = await Campaign.findOne({ slug });
       campaign.data.p2vStatus = 'Waiting';
       await Campaign.updateOne({ slug }).set({ data: campaign.data });
+      await sails.helpers.slack.errorLoggerHelper(
+        'TA: running p2v for campaign',
+        {
+          slug,
+        },
+      );
+
       await sails.helpers.queue.enqueuePathToVictory(campaign);
 
       return exits.success({

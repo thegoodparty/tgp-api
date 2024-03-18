@@ -48,12 +48,17 @@ module.exports = {
         startDate,
         endDate,
       } = inputs;
+      await sails.helpers.queue.consumer();
 
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
+      if (!campaign.hasVoterFile) {
+        return exits.badRequest('No voter file');
+      }
+
       const slug = `${campaign.slug}-${slugify(startDate, { lower: true })}`;
       await DoorKnockingCampaign.create({
         slug,
@@ -67,7 +72,18 @@ module.exports = {
           slug,
         },
         campaign: campaign.id,
-      });
+      }).fetch();
+
+      // const queueMessage = {
+      //   type: 'calculateDkRoutes',
+      //   data: {
+      //     campaignId: campaign.id,
+      //     minHousesPerRoute,
+      //     maxHousesPerRoute,
+      //   },
+      // };
+
+      // await sails.helpers.queue.enqueue(queueMessage);
 
       return exits.success({
         slug,

@@ -92,11 +92,22 @@ async function handleMessage(message) {
     case 'pathToVictory':
       await handlePathToVictory(data);
       break;
+    case 'calculateDkRoutes':
+      await sails.helpers.geocoding.calculateRoutes(
+        data.campaignId,
+        data.minHousesPerRoute,
+        data.maxHousesPerRoute,
+      );
+      break;
   }
 }
 
 async function handlePathToVictory(message) {
   //create or update each election and position
+  await sails.helpers.slack.errorLoggerHelper(
+    'TA: handlePathToVictory in queue consumer',
+    message,
+  );
   let {
     campaignId,
     officeName,
@@ -149,6 +160,10 @@ async function handlePathToVictory(message) {
       subAreaValue,
     );
     sails.helpers.log(slug, 'officeResponse', officeResponse);
+    await sails.helpers.slack.errorLoggerHelper(
+      'TA: officeResponse',
+      officeResponse,
+    );
 
     let electionTypes;
     let electionDistricts;
@@ -364,6 +379,11 @@ async function sendSlackMessage(
 }
 
 async function saveL2Counts(counts, electionType, district) {
+  await sails.helpers.slack.errorLoggerHelper('TA: saveL2Counts', {
+    counts,
+    electionType,
+    district,
+  });
   if (electionType && electionType?.column && electionType.column !== '') {
     try {
       const existingObj = await l2Count.findOne({

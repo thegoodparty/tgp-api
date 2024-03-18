@@ -54,6 +54,10 @@ module.exports = {
       }
 
       console.log('queueMessage', queueMessage);
+      await sails.helpers.slack.errorLoggerHelper(
+        'TA: p2v queueMessage',
+        queueMessage,
+      );
 
       sails.helpers.log(slug, 'queueing Message', queueMessage);
       await sails.helpers.queue.enqueue(queueMessage);
