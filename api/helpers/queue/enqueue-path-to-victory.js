@@ -52,25 +52,20 @@ module.exports = {
           slug,
           'campaign does not have race_id. skipping p2v...',
         );
-        await sendVictoryIssuesSlackMessage(campaign, user);
+        if (user) {
+          await sendVictoryIssuesSlackMessage(campaign, user);
+        }
         return exits.success({ message: 'ok' });
       }
 
       console.log('queueMessage', queueMessage);
-      await sails.helpers.slack.errorLoggerHelper(
-        'TA: p2v queueMessage',
-        queueMessage,
-      );
 
       sails.helpers.log(slug, 'queueing Message', queueMessage);
       await sails.helpers.queue.enqueue(queueMessage);
       return exits.success({ message: 'ok' });
     } catch (e) {
       console.log('error at enqueue', e);
-      await sails.helpers.slack.errorLoggerHelper(
-        'TA: error at enqueue p2v',
-        e,
-      );
+      await sails.helpers.slack.errorLoggerHelper('error at enqueue p2v', e);
       return exits.success({ message: 'not ok', e });
     }
   },
@@ -167,17 +162,9 @@ async function getCampaignDbMessage(queueMessage, campaign) {
 
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   const { data } = campaign;
-  await sails.helpers.slack.errorLoggerHelper(
-    'TA: getBallotReadyApiMessage',
-    queueMessage,
-  );
 
   const row = await getRaceById(raceId);
   console.log('row', row);
-  await sails.helpers.slack.errorLoggerHelper(
-    'TA: getBallotReadyApiMessage row',
-    row,
-  );
 
   const officeName = row?.position?.name;
   const locationData = await sails.helpers.ballotready.extractLocationAi(
