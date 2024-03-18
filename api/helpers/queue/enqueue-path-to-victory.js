@@ -22,6 +22,8 @@ module.exports = {
       //   return;
       // }
       const { campaign } = inputs;
+
+      await sails.helpers.slack.errorLoggerHelper('TA: enqueue p2v', campaign);
       const { data, slug } = campaign;
       const { details } = data;
 
@@ -160,9 +162,17 @@ async function getCampaignDbMessage(queueMessage, campaign) {
 
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   const { data } = campaign;
+  await sails.helpers.slack.errorLoggerHelper(
+    'TA: getBallotReadyApiMessage',
+    queueMessage,
+  );
 
   const row = await getRaceById(raceId);
   console.log('row', row);
+  await sails.helpers.slack.errorLoggerHelper(
+    'TA: getBallotReadyApiMessage row',
+    row,
+  );
 
   const officeName = row?.position?.name;
   const locationData = await sails.helpers.ballotready.extractLocationAi(
