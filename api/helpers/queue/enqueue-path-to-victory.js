@@ -21,6 +21,7 @@ module.exports = {
       // if (appBase !== 'https://goodparty.org') {
       //   return;
       // }
+      await sails.helpers.slack.errorLoggerHelper('TA: enqueue p2v1', {});
       const { campaign } = inputs;
 
       await sails.helpers.slack.errorLoggerHelper('TA: enqueue p2v', campaign);
@@ -66,6 +67,10 @@ module.exports = {
       return exits.success({ message: 'ok' });
     } catch (e) {
       console.log('error at enqueue', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'TA: error at enqueue p2v',
+        e,
+      );
       return exits.success({ message: 'not ok', e });
     }
   },
