@@ -258,7 +258,8 @@ async function getTotalRecords(searchUrl, filters) {
     let totalRecords = 0;
     if (estimateResponse?.data) {
       await sails.helpers.slack.errorLoggerHelper('estimateResponse.data', {
-        response: estimateResponse.data,
+        responseData: estimateResponse.data,
+        response: estimateResponse,
       });
       totalRecords = estimateResponse.data.reduce(
         (acc, item) => acc + (item?.__COUNT || 0),

@@ -154,10 +154,10 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating contact', e);
-          await sails.helpers.slack.errorLoggerHelper(
-            'Error updating hubspot contact',
-            e,
-          );
+          // await sails.helpers.slack.errorLoggerHelper(
+          //   'Error updating hubspot contact',
+          //   e,
+          // );
         }
       } else {
         try {
