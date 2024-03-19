@@ -32,10 +32,9 @@ module.exports = {
     let iconUrl = null
     try {
       const { id, name, icon } = inputs;
-
       if (icon?.startsWith('http')) {
         iconUrl = icon
-      } else {
+      } else if (icon) {
         iconUrl = await sails.helpers.svgUploader(
           `topissue-icon-${id}-${md5(icon)}.svg`,
           'top-issue-icons',
