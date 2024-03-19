@@ -16,5 +16,11 @@ module.exports = {
     user: {
       model: 'user',
     },
+
+    // has many
+    routes: {
+      collection: 'doorKnockingRoute',
+      via: 'volunteer',
+    },
   },
 };

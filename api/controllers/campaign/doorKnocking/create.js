@@ -10,14 +10,15 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    housesPerRoute: {
+    minHousesPerRoute: {
       type: 'number',
       required: true,
     },
-    minutesPerHouse: {
+    maxHousesPerRoute: {
       type: 'number',
       required: true,
     },
+
     startDate: {
       type: 'string',
       required: true,
@@ -43,8 +44,8 @@ module.exports = {
       const {
         name,
         type,
-        housesPerRoute,
-        minutesPerHouse,
+        minHousesPerRoute,
+        maxHousesPerRoute,
         startDate,
         endDate,
       } = inputs;
@@ -55,18 +56,22 @@ module.exports = {
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
-      if (!campaign.hasVoterFile) {
+      if (!campaign.data.hasVoterFile) {
         return exits.badRequest('No voter file');
       }
 
-      const slug = `${campaign.slug}-${slugify(startDate, { lower: true })}`;
-      await DoorKnockingCampaign.create({
+      const randomString = generateRandomString(5);
+
+      const slug = `${campaign.slug}-${slugify(startDate, {
+        lower: true,
+      })}-${slugify(randomString, { lower: true })}`;
+      const dkCampaign = await DoorKnockingCampaign.create({
         slug,
         data: {
           name,
           type,
-          housesPerRoute,
-          minutesPerHouse,
+          minHousesPerRoute,
+          maxHousesPerRoute,
           startDate,
           endDate,
           slug,
@@ -74,16 +79,17 @@ module.exports = {
         campaign: campaign.id,
       }).fetch();
 
-      // const queueMessage = {
-      //   type: 'calculateDkRoutes',
-      //   data: {
-      //     campaignId: campaign.id,
-      //     minHousesPerRoute,
-      //     maxHousesPerRoute,
-      //   },
-      // };
+      const queueMessage = {
+        type: 'calculateDkRoutes',
+        data: {
+          campaignId: campaign.id,
+          dkCampaignId: dkCampaign.id,
+          minHousesPerRoute,
+          maxHousesPerRoute,
+        },
+      };
 
-      // await sails.helpers.queue.enqueue(queueMessage);
+      await sails.helpers.queue.enqueue(queueMessage);
 
       return exits.success({
         slug,
@@ -94,3 +100,12 @@ module.exports = {
     }
   },
 };
+
+function generateRandomString(length) {
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}

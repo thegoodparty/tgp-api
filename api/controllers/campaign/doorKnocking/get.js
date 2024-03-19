@@ -28,21 +28,15 @@ module.exports = {
       const dkCampaign = await DoorKnockingCampaign.findOne({
         slug,
         campaign: campaign.id,
-      });
+      }).populate('routes');
+
       if (!dkCampaign) {
         return exits.badRequest('No campaign');
-      }
-      if (!dkCampaign.data.slug) {
-        await DoorKnockingCampaign.updateOne({ id: dkCampaign.id }).set({
-          data: {
-            ...dkCampaign.data,
-            slug,
-          },
-        });
       }
 
       return exits.success({
         dkCampaign: dkCampaign.data,
+        routes: dkCampaign.routes,
       });
     } catch (e) {
       console.log('Error at doorKnocking/create', e);

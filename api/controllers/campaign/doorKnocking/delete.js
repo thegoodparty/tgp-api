@@ -1,10 +1,15 @@
 // create campaignVolunteer via accepting VolunteerInvitation
 module.exports = {
-  inputs: {},
+  inputs: {
+    slug: {
+      type: 'string',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
-      description: 'found',
+      description: 'deleted',
       responseType: 'ok',
     },
     badRequest: {
@@ -15,22 +20,24 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
+      const { slug } = inputs;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
-      const campaigns = await DoorKnockingCampaign.find({
+      const dkCampaign = await DoorKnockingCampaign.findOne({
+        slug,
         campaign: campaign.id,
       });
-
-      const dkCampaigns = campaigns.map((campaign) => campaign.data);
+      await DoorKnockingRoute.destroy({ dkCampaign: dkCampaign.id });
+      await DoorKnockingCampaign.destroyOne({ id: dkCampaign.id });
 
       return exits.success({
-        dkCampaigns,
+        message: 'Campaign deleted',
       });
     } catch (e) {
-      console.log('Error at doorKnocking/create', e);
-      return exits.badRequest({ message: 'Error creating campaign.' });
+      console.log('Error at doorKnocking/delete', e);
+      return exits.badRequest({ message: 'Error deleting campaign.' });
     }
   },
 };

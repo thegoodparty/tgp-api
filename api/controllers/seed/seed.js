@@ -16,7 +16,7 @@ module.exports = {
       //   voterObj.geoHash = loc.geoHash;
       //   await Voter.create(voterObj);
       // }
-      const res = await sails.helpers.geocoding.calculateRoutes(1, 10, 24);
+      const res = await sails.helpers.geocoding.calculateRoutes(1, 1, 5, 12);
       return exits.success({
         res,
       });
