@@ -29,17 +29,19 @@ module.exports = {
   },
 
   async fn(inputs, exits) {
+    let iconUrl = null
     try {
       const { id, name, icon } = inputs;
-      const iconUrl = !icon ?
-        null :
-        icon.startsWith('http') ?
-          icon :
-          await sails.helpers.svgUploader(
-            `topissue-icon-${id}-${md5(icon)}.svg`,
-            'top-issue-icons',
-            icon
-          )
+
+      if (icon?.startsWith('http')) {
+        iconUrl = icon
+      } else {
+        iconUrl = await sails.helpers.svgUploader(
+          `topissue-icon-${id}-${md5(icon)}.svg`,
+          'top-issue-icons',
+          icon
+        )
+      }
 
       await TopIssue.updateOne({ id }).set({
         name,
