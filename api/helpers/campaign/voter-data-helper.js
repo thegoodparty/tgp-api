@@ -265,6 +265,10 @@ async function getTotalRecords(searchUrl, filters) {
     return totalRecords;
   } catch (e) {
     console.log('error at getVoterData estimate', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error at getVoterData estimate',
+      e,
+    );
     return 0;
   }
 }
