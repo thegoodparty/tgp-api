@@ -19,7 +19,12 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       console.log('starting voterFiler/create');
+
       const { slug } = inputs;
+      await sails.helpers.slack.errorLoggerHelper(
+        'Purchasing voter file.',
+        slug,
+      );
       const campaign = await Campaign.findOne({ slug });
       const { data } = campaign;
 
@@ -28,6 +33,10 @@ module.exports = {
         !data.pathToVictory?.electionLocation ||
         data.hasVoterFile
       ) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Purchasing voter file error: Path to Victory is not set',
+          slug,
+        );
         return exits.badRequest({ message: 'Path to Victory is not set.' });
       }
 
@@ -63,7 +72,11 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({ message: 'Error registering candidate.' });
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error purchasing voter file.',
+        e,
+      );
+      return exits.badRequest({ message: 'Error purchasing voter file.' });
     }
   },
 };

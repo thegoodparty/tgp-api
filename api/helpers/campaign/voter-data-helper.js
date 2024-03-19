@@ -39,9 +39,6 @@ module.exports = {
     success: {
       description: 'OK',
     },
-    badRequest: {
-      description: 'Error',
-    },
   },
 
   fn: async function (inputs, exits) {
@@ -55,12 +52,14 @@ module.exports = {
         limitApproved,
       } = inputs;
 
+      await sails.helpers.slack.errorLoggerHelper('voter data helper.', inputs);
+
       let campaign;
       try {
         campaign = await Campaign.findOne({ id: campaignId });
       } catch (e) {
         console.log('error finding campaign in voter-data-helper', e);
-        return exits.badRequest('error');
+        return exits.success('error');
       }
 
       console.log(`voterDataHelper invoked with ${JSON.stringify(inputs)}`);
@@ -100,6 +99,12 @@ module.exports = {
         voterObjs.push(voterObj);
       }
       console.log('Adding voters to db. Total voters:', voterObjs.length);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Adding voters to db. Total voters:',
+        {
+          totalVoters: voterObjs.length,
+        },
+      );
 
       // createEach wont work because we need to find it first to see if it exists.
       // const voters = await Voter.createEach(voterObjs)
@@ -128,6 +133,10 @@ module.exports = {
               },
             );
           } catch (e) {
+            await sails.helpers.slack.errorLoggerHelper(
+              'Error adding voters',
+              e,
+            );
             console.log('error at voter-data-helper', e);
           }
         }
@@ -149,7 +158,11 @@ module.exports = {
       return exits.success('ok');
     } catch (e) {
       console.log('error at voter-data-helper', e);
-      return exits.badRequest('error');
+      await sails.helpers.slack.errorLoggerHelper(
+        'error at voter-data-helper.',
+        e,
+      );
+      return exits.success('error');
     }
   },
 };
@@ -187,21 +200,36 @@ async function getVoterData(
   campaign,
   limitApproved,
 ) {
-  const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+  try {
+    const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
 
-  const filters = createFilters(l2ColumnName, l2ColumnValue, additionalFilters);
+    const filters = createFilters(
+      l2ColumnName,
+      l2ColumnValue,
+      additionalFilters,
+    );
 
-  if (isFilterEmpty(filters)) {
+    if (isFilterEmpty(filters)) {
+      return;
+    }
+
+    const totalRecords = await getTotalRecords(searchUrl, filters);
+    await sails.helpers.slack.errorLoggerHelper('got total records', {
+      totalRecords,
+    });
+    if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
+      await sails.helpers.slack.errorLoggerHelper('cant proceed with search', {
+        totalRecords,
+      });
+      return;
+    }
+
+    const job = await initiateSearch(searchUrl, filters);
+    return await waitForSearchCompletion(job, campaign);
+  } catch (e) {
+    await sails.helpers.slack.errorLoggerHelper('error at getVoterData', e);
     return;
   }
-
-  const totalRecords = await getTotalRecords(searchUrl, filters);
-  if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
-    return;
-  }
-
-  const job = await initiateSearch(searchUrl, filters);
-  return await waitForSearchCompletion(job, campaign);
 }
 
 function createFilters(l2ColumnName, l2ColumnValue, additionalFilters) {
