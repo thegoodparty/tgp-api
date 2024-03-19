@@ -4,23 +4,23 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    slug: {
-      type: 'string',
-      required: true,
-      unique: true,
-    },
     data: {
       type: 'json',
     },
-
-    campaign: {
-      model: 'campaign',
+    status: {
+      type: 'string',
+      isIn: ['not-claimed', 'claimed', 'in progress', 'completed'],
+      defaultsTo: 'not-claimed',
     },
 
-    // has many
-    routes: {
-      collection: 'doorKnockingRoute',
-      via: 'dkCampaign',
+    // has one
+
+    dkCampaign: {
+      model: 'DoorKnockingCampaign',
+    },
+
+    volunteer: {
+      model: 'campaignVolunteer',
     },
   },
 };
