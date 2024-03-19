@@ -14,7 +14,6 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      console.log('doorKnocking/list');
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
