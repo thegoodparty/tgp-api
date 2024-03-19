@@ -82,6 +82,10 @@ module.exports = {
       return exits.success({ groupedVoters });
     } catch (err) {
       console.log('error at geocode-address', err);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Calculating route error',
+        err,
+      );
       return exits.success(false);
     }
   },
@@ -117,6 +121,10 @@ async function generateOptimizedRoute(addressesWithId) {
     }
     return false;
   } catch (err) {
+    await sails.helpers.slack.errorLoggerHelper(
+      'error at generateOptimizedRoute',
+      err,
+    );
     console.log('error at generateOptimizedRoute', err);
     return false;
   }
