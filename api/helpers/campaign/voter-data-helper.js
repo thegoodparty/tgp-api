@@ -249,10 +249,6 @@ function isFilterEmpty(filters) {
 
 async function getTotalRecords(searchUrl, filters) {
   try {
-    await sails.helpers.slack.errorLoggerHelper('TA: getTotalRecords', {
-      searchUrl,
-      filters,
-    });
     let estimateResponse;
     try {
       estimateResponse = await axios.post(searchUrl, {
@@ -260,26 +256,12 @@ async function getTotalRecords(searchUrl, filters) {
         filters,
         columns: ['Parties_Description'],
       });
-      console.log('estimateResponse', estimateResponse);
-      // await sails.helpers.slack.errorLoggerHelper(
-      //   'TA: estimateResponse',
-      //   estimateResponse,
-      // );
     } catch (e) {
       console.log('error at getVoterData estimateResponse', e);
-      // await sails.helpers.slack.errorLoggerHelper(
-      //   'TA: axios estimateResponse error',
-      //   e,
-      // );
     }
 
     let totalRecords = 0;
     if (estimateResponse?.data) {
-      await sails.helpers.slack.errorLoggerHelper('TA: estimateResponse.data', {
-        responseData: estimateResponse.data,
-        response: estimateResponse,
-      });
-      console.log('estimateResponse.data', estimateResponse.data);
       totalRecords = estimateResponse.data.reduce(
         (acc, item) => acc + (item?.__COUNT || 0),
         0,

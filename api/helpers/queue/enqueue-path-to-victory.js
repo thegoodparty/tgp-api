@@ -17,14 +17,8 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      // TODO: add this back when we go to production.
-      // if (appBase !== 'https://goodparty.org') {
-      //   return;
-      // }
-      await sails.helpers.slack.errorLoggerHelper('TA: enqueue p2v1', {});
       const { campaign } = inputs;
 
-      await sails.helpers.slack.errorLoggerHelper('TA: enqueue p2v', campaign);
       const { data, slug } = campaign;
       const { details } = data;
 
