@@ -42,18 +42,13 @@ module.exports = {
 
       const filters = {
         Parties_Description: [
-          // 'Conservative',
           'American Independent',
-          'Constitution',
           'Non-Partisan',
           'Green',
           'Other',
+          'Peace and Freedom',
           'Natural Law',
-          'Socialist',
           'Libertarian',
-          'Working Family Party',
-          'Prohibition',
-          'Rainbow',
           'Reform',
         ],
       };
