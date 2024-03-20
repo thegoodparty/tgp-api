@@ -249,15 +249,27 @@ function isFilterEmpty(filters) {
 
 async function getTotalRecords(searchUrl, filters) {
   try {
-    const estimateResponse = await axios.post(searchUrl, {
-      format: 'counts',
+    await sails.helpers.slack.errorLoggerHelper('TA: getTotalRecords', {
+      searchUrl,
       filters,
-      columns: ['Parties_Description'],
     });
-    await sails.helpers.slack.errorLoggerHelper(
-      'TA: estimateResponse',
-      estimateResponse,
-    );
+    let estimateResponse;
+    try {
+      estimateResponse = await axios.post(searchUrl, {
+        format: 'counts',
+        filters,
+        columns: ['Parties_Description'],
+      });
+      await sails.helpers.slack.errorLoggerHelper(
+        'TA: estimateResponse',
+        estimateResponse,
+      );
+    } catch (e) {
+      await sails.helpers.slack.errorLoggerHelper(
+        'TA: axios estimateResponse error',
+        e,
+      );
+    }
 
     let totalRecords = 0;
     if (estimateResponse?.data) {
