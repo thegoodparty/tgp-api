@@ -42,7 +42,7 @@ module.exports = {
 
       const filters = {
         Parties_Description: [
-          'Conservative',
+          // 'Conservative',
           'American Independent',
           'Constitution',
           'Non-Partisan',
