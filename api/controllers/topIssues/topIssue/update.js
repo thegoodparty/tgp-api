@@ -1,3 +1,4 @@
+const { md5 } = require('request/lib/helpers');
 module.exports = {
   friendlyName: 'edit topIssue',
 
@@ -11,7 +12,8 @@ module.exports = {
       required: true,
     },
     icon: {
-      type: 'string'
+      type: 'string',
+      allowNull: true
     }
   },
 
@@ -27,19 +29,28 @@ module.exports = {
   },
 
   async fn(inputs, exits) {
+    let iconUrl = null
     try {
       const { id, name, icon } = inputs;
-      await TopIssue.updateOne({ id }).set({
-        name,
-        icon: await sails.helpers.svgUploader(
-          `${id}-topissue-icon.svg`,
+      if (icon?.startsWith('http')) {
+        iconUrl = icon
+      } else if (icon) {
+        iconUrl = await sails.helpers.svgUploader(
+          `topissue-icon-${id}-${md5(icon)}.svg`,
           'top-issue-icons',
           icon
         )
+      }
+
+      await TopIssue.updateOne({ id }).set({
+        name,
+        icon: iconUrl
       });
 
       return exits.success({
-        message: 'updated',
+        id,
+        name,
+        icon: iconUrl
       });
     } catch (e) {
       console.log('error at topIssue/update', e);

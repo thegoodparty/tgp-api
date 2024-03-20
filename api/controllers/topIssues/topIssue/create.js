@@ -1,3 +1,4 @@
+const { md5 } = require('request/lib/helpers');
 module.exports = {
   friendlyName: 'create a',
 
@@ -8,6 +9,7 @@ module.exports = {
     },
     icon: {
       type: 'string',
+      allowNull: true
     },
   },
 
@@ -29,20 +31,22 @@ module.exports = {
         name,
       }).fetch();
 
-      const s3Icon = await sails.helpers.svgUploader(
-        `${id}-topissue-icon.svg`,
+      const iconUrl = icon ? await sails.helpers.svgUploader(
+        `topissue-icon-${id}-${md5(icon)}.svg`,
         'top-issue-icons',
         icon,
-      );
+      ) : null
 
       await TopIssue.updateOne({
         id,
       }).set({
-        icon: s3Icon,
+        icon: iconUrl,
       });
 
       return exits.success({
-        message: 'created',
+        id,
+        name,
+        icon: iconUrl
       });
     } catch (e) {
       console.log('error at issue topIssue/create', e);
