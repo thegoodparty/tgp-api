@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fastCsv = require('fast-csv');
-const { max } = require('lodash');
+const { max, isArray } = require('lodash');
 
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -260,15 +260,17 @@ async function getTotalRecords(searchUrl, filters) {
         filters,
         columns: ['Parties_Description'],
       });
-      await sails.helpers.slack.errorLoggerHelper(
-        'TA: estimateResponse',
-        estimateResponse,
-      );
+      console.log('estimateResponse', estimateResponse);
+      // await sails.helpers.slack.errorLoggerHelper(
+      //   'TA: estimateResponse',
+      //   estimateResponse,
+      // );
     } catch (e) {
-      await sails.helpers.slack.errorLoggerHelper(
-        'TA: axios estimateResponse error',
-        e,
-      );
+      console.log('error at getVoterData estimateResponse', e);
+      // await sails.helpers.slack.errorLoggerHelper(
+      //   'TA: axios estimateResponse error',
+      //   e,
+      // );
     }
 
     let totalRecords = 0;
@@ -277,6 +279,7 @@ async function getTotalRecords(searchUrl, filters) {
         responseData: estimateResponse.data,
         response: estimateResponse,
       });
+      console.log('estimateResponse.data', estimateResponse.data);
       totalRecords = estimateResponse.data.reduce(
         (acc, item) => acc + (item?.__COUNT || 0),
         0,
