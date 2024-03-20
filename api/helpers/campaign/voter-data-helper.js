@@ -254,10 +254,14 @@ async function getTotalRecords(searchUrl, filters) {
       filters,
       columns: ['Parties_Description'],
     });
+    await sails.helpers.slack.errorLoggerHelper(
+      'TA: estimateResponse',
+      estimateResponse,
+    );
 
     let totalRecords = 0;
     if (estimateResponse?.data) {
-      await sails.helpers.slack.errorLoggerHelper('estimateResponse.data.', {
+      await sails.helpers.slack.errorLoggerHelper('TA: estimateResponse.data', {
         responseData: estimateResponse.data,
         response: estimateResponse,
       });
