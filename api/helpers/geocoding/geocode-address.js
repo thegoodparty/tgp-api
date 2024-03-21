@@ -49,8 +49,6 @@ module.exports = {
       if (data.Results.length === 0) {
         return exits.success(false);
       } else {
-        console.log('data.Results', data.Results);
-        console.log('data.Results', JSON.stringify(data.Results));
         // Assuming the response data structure has the latitude and longitude
         const lat = data.Results[0].Place.Geometry.Point[1];
         const lng = data.Results[0].Place.Geometry.Point[0];

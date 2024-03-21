@@ -36,10 +36,10 @@ module.exports = {
     try {
       const { campaignId, maxHousesPerRoute, minHousesPerRoute, dkCampaignId } =
         inputs;
-      console.log('campaignId', campaignId);
-      await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
-        campaignId,
-      });
+      // console.log('campaignId', campaignId);
+      // await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
+      //   campaignId,
+      // });
       const voters = await Voter.find()
         .populate('campaigns', {
           where: { id: campaignId },
@@ -50,8 +50,9 @@ module.exports = {
         minHousesPerRoute,
         maxHousesPerRoute,
       );
+      const maxRoutes = Math.min(Object.keys(groupedVoters).length, 10);
 
-      for (let i = 0; i < Object.keys(groupedVoters).length; i++) {
+      for (let i = 0; i < maxRoutes; i++) {
         const hash = Object.keys(groupedVoters)[i];
         const addresses = groupedVoters[hash].map((voter) => {
           return {
@@ -61,10 +62,10 @@ module.exports = {
             lng: voter.lng,
           };
         });
-        console.log('addresses', addresses);
-        await sails.helpers.slack.errorLoggerHelper('Calculating route', {
-          addresses,
-        });
+        // console.log('addresses', addresses);
+        // await sails.helpers.slack.errorLoggerHelper('Calculating route', {
+        //   addresses,
+        // });
         const route = await generateOptimizedRoute(addresses);
         console.log('returned route', route);
         if (route) {
