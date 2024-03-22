@@ -50,9 +50,10 @@ module.exports = {
         minHousesPerRoute,
         maxHousesPerRoute,
       );
-      const maxRoutes = Math.min(Object.keys(groupedVoters).length, 10);
+      const routesCount = Object.keys(groupedVoters).length;
+      const maxRoutes = Math.min(routesCount, 10);
 
-      for (let i = 0; i < maxRoutes; i++) {
+      for (let i = 0; i < routesCount; i++) {
         const hash = Object.keys(groupedVoters)[i];
         const addresses = groupedVoters[hash].map((voter) => {
           return {
@@ -66,16 +67,26 @@ module.exports = {
         // await sails.helpers.slack.errorLoggerHelper('Calculating route', {
         //   addresses,
         // });
-        const route = await generateOptimizedRoute(addresses);
-        console.log('returned route', route);
-        if (route) {
-          await sails.helpers.slack.errorLoggerHelper(
-            'Calculating route successful',
-            {},
-          );
+        if (i < maxRoutes) {
+          const route = await generateOptimizedRoute(addresses);
+          console.log('returned route', route);
+          if (route) {
+            await sails.helpers.slack.errorLoggerHelper(
+              'Calculating route successful',
+              {},
+            );
+            await DoorKnockingRoute.create({
+              data: route,
+              dkCampaign: dkCampaignId,
+            });
+          }
+        } else {
           await DoorKnockingRoute.create({
-            data: route,
+            data: {
+              groupedRoute: addresses,
+            },
             dkCampaign: dkCampaignId,
+            status: 'not-calculated',
           });
         }
       }

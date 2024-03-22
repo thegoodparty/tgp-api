@@ -13,6 +13,12 @@ module.exports = {
       type: 'json',
     },
 
+    status: {
+      type: 'string',
+      isIn: ['active', 'archived', 'completed'],
+      defaultsTo: 'active',
+    },
+
     campaign: {
       model: 'campaign',
     },

@@ -1,6 +1,15 @@
 // create campaignVolunteer via accepting VolunteerInvitation
 module.exports = {
-  inputs: {},
+  inputs: {
+    slug: {
+      type: 'string',
+      required: true,
+    },
+    id: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -15,34 +24,31 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
+      const { slug, id } = inputs;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
-      const campaigns = await DoorKnockingCampaign.find({
+      const dkCampaign = await DoorKnockingCampaign.findOne({
+        slug,
         campaign: campaign.id,
-      }).populate('routes', {
-        where: { status: { '!=': 'not-calculated' } },
       });
 
-      const dkCampaigns = campaigns.map((campaign) => {
-        let firstBounds = false;
-        if (
-          campaign.routes?.length > 0 &&
-          campaign.routes[0].data?.response?.routes?.length > 0
-        ) {
-          firstBounds = campaign.routes[0].data?.response?.routes[0].bounds;
-        }
-        return {
-          ...campaign.data,
-          hasRoutes: campaign.routes?.length > 0,
-          bounds: firstBounds,
-          routesCount: campaign.routes?.length || 0,
-        };
+      if (!dkCampaign) {
+        return exits.badRequest('No campaign');
+      }
+      const route = await DoorKnockingRoute.findOne({
+        id,
+        dkCampaign: dkCampaign.id,
       });
+
+      if (!route) {
+        return exits.badRequest('No campaign');
+      }
 
       return exits.success({
-        dkCampaigns,
+        dkCampaign: dkCampaign.data,
+        route,
       });
     } catch (e) {
       console.log('Error at doorKnocking/create', e);

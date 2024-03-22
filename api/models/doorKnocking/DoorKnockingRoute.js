@@ -9,7 +9,13 @@ module.exports = {
     },
     status: {
       type: 'string',
-      isIn: ['not-claimed', 'claimed', 'in-progress', 'completed'],
+      isIn: [
+        'not-claimed',
+        'claimed',
+        'in-progress',
+        'completed',
+        'not-calculated',
+      ],
       defaultsTo: 'not-claimed',
     },
 
