@@ -2,6 +2,9 @@
 
 const moment = require('moment');
 
+const isPOTUSorVPOTUSNode = ({position}) =>
+  position?.level === 'FEDERAL' && position?.name?.toLowerCase().includes('president')
+
 module.exports = {
   friendlyName: 'Health',
 
@@ -85,7 +88,7 @@ module.exports = {
           }
         }
       }
-      
+
       `;
 
       const { races } = await sails.helpers.graphql.queryHelper(query);
@@ -94,14 +97,16 @@ module.exports = {
       // group races by level
       if (races?.edges) {
         for (let i = 0; i < races.edges.length; i++) {
-          const edge = races.edges[i];
-
-          const name = edge?.node?.position?.name;
-          if (existingPosition[name]) {
+          const { node } = races.edges[i] || {};
+          const name = node?.position?.name;
+          if (
+            existingPosition[name] ||
+            (node && isPOTUSorVPOTUSNode(node))
+          ) {
             continue;
           }
           existingPosition[name] = true;
-          cleanRaces.push(edge.node);
+          cleanRaces.push(node);
 
           // const queueMessage = {
           //   type: 'saveBallotReadyRace',
@@ -109,7 +114,7 @@ module.exports = {
           // };
           // await sails.helpers.queue.enqueue(queueMessage);
         }
-        // use queue to dave these to our db
+        // TODO: Use queue to save these to our db
       }
 
       cleanRaces.sort(sortRaces);
