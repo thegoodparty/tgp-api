@@ -35,8 +35,12 @@ module.exports = {
       const data = campaign.data;
       data.id = campaign.id;
 
+      const campaignObj = { ...campaign };
+      delete campaignObj.data;
+
       return exits.success({
         campaign: data,
+        campaignObj,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

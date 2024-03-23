@@ -121,6 +121,7 @@ module.exports.routes = {
 
   'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
   'DELETE   /api/v1/campaign': 'campaign/onboarding/admin-delete',
+  'PUT   /api/v1/campaign-admin': 'campaign/onboarding/admin-update',
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
   'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
   'GET   /api/v1/campaign/onboarding/by-user':

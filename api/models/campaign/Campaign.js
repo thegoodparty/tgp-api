@@ -15,6 +15,18 @@ module.exports = {
       type: 'json',
     },
 
+    isVerified: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+    isPro: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+    didWin: {
+      type: 'boolean',
+    },
+
     user: {
       model: 'user',
     },
