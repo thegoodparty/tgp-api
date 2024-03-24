@@ -19,7 +19,7 @@ module.exports = {
         email: user.email,
       }).populate('campaign');
       invitations.forEach((invitation) => {
-        const { firstName, lastName } = invitation.campaign.data;
+        const { firstName, lastName, slug } = invitation.campaign.data;
         const { city, state, office, otherOffice, party, district } =
           invitation.campaign.data.details;
         invitation.campaign = {
@@ -31,6 +31,7 @@ module.exports = {
           otherOffice,
           party,
           district,
+          slug,
         };
       });
 
