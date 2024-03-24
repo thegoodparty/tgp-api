@@ -25,14 +25,16 @@ module.exports = {
 
       const users = [];
       volunteers.forEach((volunteer) => {
-        users.push({
-          email: volunteer.user.email,
-          phone: volunteer.user.phone,
-          firstName: volunteer.user.firstName,
-          lastName: volunteer.user.lastName,
-          id: volunteer.user.id,
-          role: volunteer.role,
-        });
+        if (volunteer.user) {
+          users.push({
+            email: volunteer.user.email,
+            phone: volunteer.user.phone,
+            firstName: volunteer.user.firstName,
+            lastName: volunteer.user.lastName,
+            id: volunteer.user.id,
+            role: volunteer.role,
+          });
+        }
       });
 
       return exits.success({
