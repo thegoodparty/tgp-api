@@ -62,10 +62,13 @@ module.exports = {
     county: {
       model: 'county',
     },
-
     // belongs to (one to many)
     municipality: {
       model: 'municipality',
+    },
+    candidates: {
+      collection: 'ballotCandidate',
+      via: 'races',
     },
   },
 };
