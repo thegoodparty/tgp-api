@@ -106,6 +106,7 @@ module.exports.routes = {
 
   // campaignVolunteer
   'GET   /api/v1/campaign/volunteers': 'campaign/volunteer/list',
+  'GET   /api/v1/campaign/volunteer-by-user': 'campaign/volunteer/list-by-user',
   'POST   /api/v1/campaign/volunteer': 'campaign/volunteer/create',
 
   // campaignUpdateHistory
@@ -230,4 +231,7 @@ module.exports.routes = {
 
   'GET   /api/v1/campaign/door-knocking/route':
     'campaign/doorKnocking/route/get',
+
+  // volunteer routes
+  'GET   /api/v1/campaign/volunteer/routes': 'campaign/volunteer/route/list',
 };
