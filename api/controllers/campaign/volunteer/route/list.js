@@ -21,7 +21,6 @@ module.exports = {
     try {
       const user = this.req.user;
       const { slug } = inputs;
-      console.log('slug', slug);
 
       const campaign = await Campaign.findOne({
         slug,
@@ -54,13 +53,11 @@ module.exports = {
         });
       });
 
-      console.log('nonClaimedRoutes', nonClaimedRoutes);
-
       return exits.success({
         routes: nonClaimedRoutes,
       });
     } catch (e) {
-      console.log('Error at volunteer/routes/get', e);
+      console.log('Error at volunteer/routes/list', e);
       return exits.badRequest({ message: 'Error getting routes' });
     }
   },
