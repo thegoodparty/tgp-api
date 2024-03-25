@@ -12,9 +12,12 @@ module.exports = {
     data: {
       type: 'json',
     },
-
     ballotElection: {
       model: 'ballotElection',
+    },
+    candidates: {
+      collection: 'ballotCandidate',
+      via: 'positions',
     },
   },
 };

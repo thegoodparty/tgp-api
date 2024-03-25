@@ -11,16 +11,58 @@ module.exports = {
   exits: {},
 
   fn: async function (inputs, exits) {
-    // Run the raw SQL query to add composite indexes
     console.log('creating votersearch.l2ColumnIndex');
-    await sails.getDatastore().sendNativeQuery(`
+    // voterSearch indexes
+    try {
+      // composite index
+      await sails.getDatastore().sendNativeQuery(`
           CREATE INDEX l2ColumnIndex ON public.votersearch ("l2ColumnName", "l2ColumnValue")
         `);
+    } catch (error) {
+      console.log('l2ColumnIndex already exists');
+    }
 
+    // l2Count indexes
     console.log('creating l2count.l2CountIndex');
-    await sails.getDatastore().sendNativeQuery(`
+    // composite index
+    try {
+      await sails.getDatastore().sendNativeQuery(`
         CREATE INDEX l2CountIndex ON public.l2count ("electionType", "electionLocation", "electionDistrict")
       `);
+    } catch (error) {
+      console.log('l2CountIndex already exists');
+    }
+
+    // BallotCandidate indexes
+    console.log('creating sparse index on BallotCandidate.email');
+    // sparse index
+    try {
+      await sails.getDatastore().sendNativeQuery(`
+        CREATE UNIQUE INDEX emailIndex ON public.ballotcandidate (email) WHERE email IS NOT NULL
+      `);
+    } catch (error) {
+      console.log('emailIndex already exists');
+    }
+
+    console.log('creating sparse index on BallotCandidate.candidateId');
+    // sparse index
+    try {
+      await sails.getDatastore().sendNativeQuery(`
+        CREATE UNIQUE INDEX candidateIdIndex ON public.ballotcandidate ("candidateId") WHERE "candidateId" IS NOT NULL
+      `);
+    } catch (error) {
+      console.log('candidateIdIndex already exists');
+    }
+
+    console.log('creating sparse index on BallotCandidate.phone');
+    // sparse index
+    try {
+      await sails.getDatastore().sendNativeQuery(`
+        CREATE UNIQUE INDEX phoneIndex ON public.ballotcandidate (phone) WHERE phone IS NOT NULL
+      `);
+    } catch (error) {
+      console.log('phoneIndex already exists');
+    }
 
     // Report back to Sails that the migration was successful
     return exits.success();
