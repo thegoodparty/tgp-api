@@ -235,4 +235,8 @@ module.exports.routes = {
   // volunteer routes
   'GET   /api/v1/campaign/volunteer/routes': 'campaign/volunteer/route/list',
   'GET   /api/v1/campaign/volunteer/route': 'campaign/volunteer/route/get',
+  'PUT   /api/v1/campaign/volunteer/route/claim':
+    'campaign/volunteer/route/claim',
+  'PUT   /api/v1/campaign/volunteer/route/unclaim':
+    'campaign/volunteer/route/unclaim',
 };
