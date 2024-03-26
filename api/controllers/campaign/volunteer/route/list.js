@@ -47,13 +47,16 @@ module.exports = {
       let claimedRoutes = [];
       dkCampaigns.forEach((dkCampaign) => {
         dkCampaign.routes.forEach((route) => {
-          if (!route.volunteer) {
-            route.type = dkCampaign.data.type;
-            nonClaimedRoutes.push(route);
-          }
-          if (route.volunteer === user.id) {
-            route.type = dkCampaign.data.type;
-            claimedRoutes.push(route);
+          const { optimizedAddresses } = route.data;
+          if (optimizedAddresses && optimizedAddresses.length > 0) {
+            if (!route.volunteer) {
+              route.type = dkCampaign.data.type;
+              nonClaimedRoutes.push(route);
+            }
+            if (route.volunteer === user.id) {
+              route.type = dkCampaign.data.type;
+              claimedRoutes.push(route);
+            }
           }
         });
       });
