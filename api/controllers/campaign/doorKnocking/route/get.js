@@ -40,6 +40,7 @@ module.exports = {
       const route = await DoorKnockingRoute.findOne({
         id,
         dkCampaign: dkCampaign.id,
+        status: { '!=': 'not-calculated' },
       });
 
       if (!route) {

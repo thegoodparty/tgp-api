@@ -27,7 +27,7 @@ module.exports = {
       });
       const dkCampaigns = await DoorKnockingCampaign.find({
         where: { campaign: campaign.id, status: 'active' },
-      }).populate('routes');
+      }).populate('routes', { where: { status: { '!=': 'not-calculated' } } });
 
       if (!dkCampaigns.length === 0) {
         return exits.badRequest('No campaign');

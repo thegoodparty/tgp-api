@@ -63,13 +63,19 @@ module.exports = {
             lng: voter.lng,
           };
         });
+        if (addresses.length === 0) {
+          await sails.helpers.slack.errorLoggerHelper('Getting empty routes', {
+            campaignId,
+            groupedVoters,
+          });
+          continue;
+        }
         // console.log('addresses', addresses);
         // await sails.helpers.slack.errorLoggerHelper('Calculating route', {
         //   addresses,
         // });
         if (i < maxRoutes) {
           const route = await generateOptimizedRoute(addresses);
-          console.log('returned route', route);
           if (route) {
             await sails.helpers.slack.errorLoggerHelper(
               'Calculating route successful',
@@ -215,6 +221,7 @@ function groupVotersByHash(voters, precision) {
   return votersByGeoHash;
 }
 
+/*
 const res = {
   geocoded_waypoints: [
     {
@@ -722,3 +729,4 @@ const res = {
   ],
   status: 'OK',
 };
+*/
