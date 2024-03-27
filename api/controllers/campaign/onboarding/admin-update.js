@@ -8,6 +8,8 @@ module.exports = {
     },
     isVerified: {
       type: 'boolean',
+      defaultsTo: null,
+      allowNull: true
     },
     isPro: {
       type: 'boolean',
