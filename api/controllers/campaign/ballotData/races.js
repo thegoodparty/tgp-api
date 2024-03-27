@@ -5,15 +5,20 @@ const moment = require('moment');
 const isPOTUSorVPOTUSNode = ({position}) =>
   position?.level === 'FEDERAL' && position?.name?.toLowerCase().includes('president')
 
-const sortRacesGroupedByYear = (elections = {}) => Object
-.keys(elections)
-.reduce(
-  (agg, electionYear) => ({
-    ...agg,
-    [electionYear]: elections[electionYear].sort(sortRacesByLevel)
-  }),
-  {}
-)
+const sortRacesGroupedByYear = (elections = {}) => {
+  const electionYears = Object
+    .keys(elections)
+  return electionYears.reduce(
+    (aggregate, electionYear) => {
+      const electionsSortedByYear = elections[electionYear].sort(sortRacesByLevel)
+      return ({
+        ...aggregate,
+        [electionYear]: electionsSortedByYear,
+      });
+    },
+    {},
+  );
+}
 
 module.exports = {
   friendlyName: 'Health',
@@ -128,7 +133,8 @@ module.exports = {
         // TODO: Use queue to save these to our db
       }
 
-      return exits.success(sortRacesGroupedByYear(electionsByYear));
+      const racesGroupedByYearAndSorted = sortRacesGroupedByYear(electionsByYear)
+      return exits.success(racesGroupedByYearAndSorted);
     } catch (e) {
       console.log('error at ballotData/get', e);
       return exits.success({
