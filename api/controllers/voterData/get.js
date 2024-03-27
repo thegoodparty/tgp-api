@@ -29,6 +29,8 @@ module.exports = {
       console.log('campaignVolunteers.length', campaignVolunteers.length);
       const voter = await Voter.findOne({ id }).populate('campaigns');
 
+      console.log('voter.campaigns', voter.campaigns);
+
       if (!campaignVolunteers.length === 0 || !voter) {
         console.log('no campaignVolunteers or voter');
         return exits.badRequest('You do not have access to this voter.');
