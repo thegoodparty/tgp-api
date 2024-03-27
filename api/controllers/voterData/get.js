@@ -29,8 +29,6 @@ module.exports = {
       console.log('campaignVolunteers.length', campaignVolunteers.length);
       const voter = await Voter.findOne({ id }).populate('campaigns');
 
-      console.log('voter', voter);
-
       if (!campaignVolunteers.length === 0 || !voter) {
         console.log('no campaignVolunteers or voter');
         return exits.badRequest('You do not have access to this voter.');
@@ -40,6 +38,11 @@ module.exports = {
       let campaign = false;
       for (let i = 0; i < campaignVolunteers.length; i++) {
         for (let j = 0; j < voter.campaigns.length; j++) {
+          console.log(
+            `in loop i: ${i} j: ${j}.  `,
+            campaignVolunteers[i].campaign,
+            voter.campaigns[j].id,
+          );
           if (campaignVolunteers[i].campaign === voter.campaigns[j].id) {
             campaign = voter.campaigns[j];
             break;
