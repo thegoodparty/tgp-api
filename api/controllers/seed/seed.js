@@ -4,21 +4,13 @@ module.exports = {
   exits: {},
 
   async fn(inputs, exits) {
-    let count = 0;
-    let errors = [];
     try {
-      // for (let i = 0; i < files.length; i++) {
-      //   const voterObj = files[i];
-      //   const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
-      //   const loc = await sails.helpers.geocoding.geocodeAddress(address);
-      //   voterObj.lat = loc.lat;
-      //   voterObj.lng = loc.lng;
-      //   voterObj.geoHash = loc.geoHash;
-      //   await Voter.create(voterObj);
-      // }
-      const res = await sails.helpers.geocoding.calculateRoutes(1, 1, 5, 12);
+      const voter = await Voter.find();
+      for (let i = 0; i < voter.length; i++) {
+        await Campaign.addToCollection(1, 'voters', voter[i].id);
+      }
       return exits.success({
-        res,
+        message: `updated ${voter.length} voters`,
       });
     } catch (e) {
       console.log('Error in seed', e);
