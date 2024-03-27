@@ -21,13 +21,18 @@ module.exports = {
     try {
       const user = this.req.user;
       const { id } = inputs;
+      console.log('in voterdata/get', id, user.id);
 
       const campaignVolunteers = await CampaignVolunteer.find({
         user: user.id,
       });
+      console.log('campaignVolunteers.length', campaignVolunteers.length);
       const voter = await Voter.findOne({ id }).populate('campaigns');
 
+      console.log('voter', voter);
+
       if (!campaignVolunteers.length === 0 || !voter) {
+        console.log('no campaignVolunteers or voter');
         return exits.badRequest('You do not have access to this voter.');
       }
 
@@ -41,7 +46,9 @@ module.exports = {
           }
         }
       }
+      console.log('campaign', campaign);
       if (!campaign) {
+        console.log('no campaign');
         return exits.badRequest('You do not have access to this voter.');
       }
 
@@ -54,6 +61,8 @@ module.exports = {
         .populate('position')
         .populate('topIssue');
 
+      console.log('positions', positions);
+
       const cleanPositions = positions.map((position) => {
         return {
           order: position.order,
@@ -64,6 +73,8 @@ module.exports = {
       });
 
       voter.campaign.positions = cleanPositions;
+
+      console.log('final voter', voter);
 
       return exits.success({
         voter,
