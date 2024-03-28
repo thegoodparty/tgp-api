@@ -79,6 +79,9 @@ module.exports = {
     electionDay: {
       type: 'string',
     },
+    electionResult: {
+      type: 'string',
+    },
     level: {
       type: 'string',
     },
@@ -86,22 +89,19 @@ module.exports = {
       type: 'string',
     },
     isJudicial: {
-      type: 'string',
+      type: 'boolean',
     },
     isRetention: {
-      type: 'string',
+      type: 'boolean',
     },
     isPrimary: {
-      type: 'string',
+      type: 'boolean',
     },
     isRunoff: {
-      type: 'string',
+      type: 'boolean',
     },
     isUnexpired: {
-      type: 'string',
-    },
-    electionResult: {
-      type: 'string',
+      type: 'boolean',
     },
   },
 };

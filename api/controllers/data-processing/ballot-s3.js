@@ -127,6 +127,41 @@ async function addNewCandidate(row) {
       `BallotRace not found for race ${row.race_id}`,
       'bot-dev',
     );
+
+    // console.log('getting race', row.race_id);
+    // // TODO: the row.race_id is the Database ID but the ballotready API uses the hashed ID
+    // // so we need to store the hashed id in data json and rework this to use the hashed id
+    // const race = await sails.helpers.ballotready.getRace(row.race_id);
+    // console.log('got race', race);
+
+    // let filingPeriods = [];
+    // for (const fp of race.filingPeriods) {
+    //   filingPeriods.push({
+    //     start_on: fp.startOn,
+    //     end_on: fp.endOn,
+    //   });
+    // }
+    // // for now we match the format of the existing filing_periods field (from csv parse in seed/races)
+    // // but we may want to change this to an array of objects in the future
+    // // would need to fix it here and in seed/races and truncate/rerun the seed.
+    // let fpString = JSON.stringify(filingPeriods);
+    // fpString = fpString.replace(/"/g, '\\"').replace(/:/g, '=>');
+
+    // let raceData = {
+    //   position_name: race.position.name,
+    //   state: race.position.state,
+    //   race_id: race.databaseId,
+    //   is_primary: race.isPrimary,
+    //   is_judicial: race.position.judicial,
+    //   sub_area_name: race.position.subAreaName,
+    //   sub_area_value: race.position.subAreaValue,
+    //   filing_periods: fpString,
+    //   election_day: race.election.electionDay,
+    //   normalized_position_name: race.position.normalizedPosition.name,
+    // };
+
+    // console.log('adding race', raceData);
+    // await sails.helpers.ballotready.addRace(raceData);
   }
 
   let campaign;
@@ -186,6 +221,15 @@ async function addNewCandidate(row) {
     candidacyUpdatedAt: row.candidacy_updated_at,
   };
 
+  const isPrimary = row.is_primary && row.is_primary.toLowerCase() === 'true';
+  const isJudicial =
+    row.is_judicial && row.is_judicial.toLowerCase() === 'true';
+  const isRetention =
+    row.is_retention && row.is_retention.toLowerCase() === 'true';
+  const isRunoff = row.is_runoff && row.is_runoff.toLowerCase() === 'true';
+  const isUnexpired =
+    row.is_unexpired && row.is_unexpired.toLowerCase() === 'true';
+
   // fields we may wish to search, sort, filter on.
   candidateData = {
     firstName: row.first_name,
@@ -207,11 +251,11 @@ async function addNewCandidate(row) {
     positionName: row.position_name,
     level: row.level,
     tier: row.tier,
-    isJudicial: row.is_judicial,
-    isRetention: row.is_retention,
-    isPrimary: row.is_primary,
-    isRunoff: row.is_runoff,
-    isUnexpired: row.is_unexpired,
+    isJudicial: isJudicial,
+    isRetention: isRetention,
+    isPrimary: isPrimary,
+    isRunoff: isRunoff,
+    isUnexpired: isUnexpired,
   };
 
   // add relationships
