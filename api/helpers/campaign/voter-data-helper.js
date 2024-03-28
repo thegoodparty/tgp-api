@@ -152,7 +152,7 @@ module.exports = {
 
       const updated = await Campaign.findOne({ id: campaignId });
       await Campaign.updateOne({ id: campaignId }).set({
-        data: { ...updated.data, hasVoterFile: true },
+        data: { ...updated.data, hasVoterFile: 'completed' },
       });
 
       return exits.success('ok');

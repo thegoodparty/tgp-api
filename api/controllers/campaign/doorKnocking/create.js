@@ -56,7 +56,7 @@ module.exports = {
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
-      if (!campaign.data.hasVoterFile) {
+      if (campaign.data.hasVoterFile !== 'completed') {
         return exits.badRequest('No voter file');
       }
 

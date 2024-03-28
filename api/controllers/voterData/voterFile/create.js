@@ -29,6 +29,9 @@ module.exports = {
       ) {
         return exits.badRequest({ message: 'Path to Victory is not set.' });
       }
+      await Campaign.updateOne({ id: campaignId }).set({
+        data: { ...campaign.data, hasVoterFile: 'processing' },
+      });
 
       const filters = {
         Parties_Description: [
