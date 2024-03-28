@@ -14,10 +14,14 @@ module.exports = {
     data: {
       type: 'json',
     },
-
     isVerified: {
       type: 'boolean',
       allowNull: true
+    },
+    tier:{
+      type: 'string',
+      allowNull: true,
+      isIn: ['WIN', 'LOSE', 'TOSSUP']
     },
     isPro: {
       type: 'boolean',
