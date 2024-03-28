@@ -17,7 +17,7 @@ module.exports = {
 
     isVerified: {
       type: 'boolean',
-      defaultsTo: false,
+      allowNull: true
     },
     isPro: {
       type: 'boolean',
