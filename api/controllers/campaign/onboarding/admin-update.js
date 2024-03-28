@@ -8,8 +8,12 @@ module.exports = {
     },
     isVerified: {
       type: 'boolean',
-      defaultsTo: null,
       allowNull: true
+    },
+    tier:{
+      type: 'string',
+      allowNull: true,
+      isIn: ['WIN', 'LOSE', 'TOSSUP']
     },
     isPro: {
       type: 'boolean',
@@ -32,7 +36,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const { slug, isVerified, isPro, didWin } = inputs;
+      const { slug, isVerified, isPro, didWin, tier } = inputs;
       const attributes = {};
       if (typeof isVerified !== 'undefined') {
         attributes.isVerified = isVerified;
@@ -42,6 +46,9 @@ module.exports = {
       }
       if (typeof didWin !== 'undefined') {
         attributes.didWin = didWin;
+      }
+      if(typeof tier !== 'undefined') {
+        attributes.tier = tier;
       }
 
       await Campaign.updateOne({ slug }).set(attributes);
