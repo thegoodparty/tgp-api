@@ -23,8 +23,9 @@ module.exports = {
       const { id } = inputs;
 
       const route = await DoorKnockingRoute.findOne({ id });
+      const volunteer = await CampaignVolunteer.findOne({ user: user.id });
 
-      if (route.volunteer === user.id) {
+      if (route.volunteer === volunteer.id) {
         await DoorKnockingRoute.updateOne({ id }).set({
           volunteer: null,
           status: 'not-claimed',

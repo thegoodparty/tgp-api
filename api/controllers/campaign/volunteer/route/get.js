@@ -5,6 +5,10 @@ module.exports = {
       type: 'number',
       required: true,
     },
+    dkSlug: {
+      type: 'string',
+      required: true,
+    },
   },
 
   exits: {
@@ -20,7 +24,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { id } = inputs;
+      const { id, dkSlug } = inputs;
 
       const route = await DoorKnockingRoute.findOne({ id });
 
@@ -30,7 +34,11 @@ module.exports = {
 
       const dkCampaign = await DoorKnockingCampaign.findOne({
         id: route.dkCampaign,
+        slug: dkSlug,
       });
+      if (!dkCampaign) {
+        return exits.badRequest('You do not have access to this route.');
+      }
 
       const campaignVolunteer = await CampaignVolunteer.findOne({
         user: user.id,
@@ -40,6 +48,8 @@ module.exports = {
       if (!campaignVolunteer) {
         return exits.badRequest('You do not have access to this route');
       }
+
+      route.claimedByUser = campaignVolunteer.id === route.volunteer;
 
       return exits.success({
         route,

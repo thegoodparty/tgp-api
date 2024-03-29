@@ -24,10 +24,6 @@ module.exports = {
 
       const route = await DoorKnockingRoute.findOne({ id });
 
-      if (route.volunteer === user.id) {
-        return exits.success({ message: 'claimed' });
-      }
-
       const dkCampaign = await DoorKnockingCampaign.findOne({
         id: route.dkCampaign,
       });
@@ -41,8 +37,12 @@ module.exports = {
         return exits.badRequest('You do not have access to this route');
       }
 
+      if (route.volunteer === campaignVolunteer.id) {
+        return exits.success({ message: 'claimed' });
+      }
+
       await DoorKnockingRoute.updateOne({ id }).set({
-        volunteer: user.id,
+        volunteer: campaignVolunteer.id,
         status: 'claimed',
       });
 

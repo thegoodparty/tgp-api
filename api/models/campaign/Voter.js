@@ -37,6 +37,12 @@ module.exports = {
     geoHash: {
       type: 'string',
     },
+    // has many
+    surveys: {
+      collection: 'survey',
+      via: 'voter',
+    },
+
     // many to many
     campaigns: {
       collection: 'campaign',

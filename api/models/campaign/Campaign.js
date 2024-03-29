@@ -16,12 +16,12 @@ module.exports = {
     },
     isVerified: {
       type: 'boolean',
-      allowNull: true
+      allowNull: true,
     },
-    tier:{
+    tier: {
       type: 'string',
       allowNull: true,
-      isIn: ['WIN', 'LOSE', 'TOSSUP']
+      isIn: ['WIN', 'LOSE', 'TOSSUP'],
     },
     isPro: {
       type: 'boolean',
@@ -66,6 +66,12 @@ module.exports = {
     // one to many
     doorKnockingCampaigns: {
       collection: 'doorKnockingCampaign',
+      via: 'campaign',
+    },
+
+    // one to many
+    surveys: {
+      collection: 'survey',
       via: 'campaign',
     },
 

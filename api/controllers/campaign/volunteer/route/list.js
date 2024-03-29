@@ -51,10 +51,12 @@ module.exports = {
           if (optimizedAddresses && optimizedAddresses.length > 0) {
             if (!route.volunteer) {
               route.type = dkCampaign.data.type;
+              route.dkCampaignSlug = dkCampaign.slug;
               nonClaimedRoutes.push(route);
             }
             if (route.volunteer === user.id) {
               route.type = dkCampaign.data.type;
+              route.dkCampaignSlug = dkCampaign.slug;
               claimedRoutes.push(route);
             }
           }

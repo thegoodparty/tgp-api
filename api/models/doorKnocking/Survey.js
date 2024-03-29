@@ -4,29 +4,33 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
 
-    role: {
+    data: {
+      type: 'json',
+    },
+    type: {
       type: 'string',
-      isIn: ['volunteer', 'staff'],
+    },
+
+    // has one
+
+    voter: {
+      model: 'Voter',
     },
 
     campaign: {
       model: 'campaign',
     },
 
-    user: {
-      model: 'user',
+    dkCampaign: {
+      model: 'DoorKnockingCampaign',
     },
 
-    // has many
-    routes: {
-      collection: 'doorKnockingRoute',
-      via: 'volunteer',
+    route: {
+      model: 'DoorKnockingRoute',
     },
 
-    // one to many
-    surveys: {
-      collection: 'survey',
-      via: 'volunteer',
+    volunteer: {
+      model: 'campaignVolunteer',
     },
   },
 };

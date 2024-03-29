@@ -242,4 +242,8 @@ module.exports.routes = {
 
   //voter data - volunteer
   'GET  /api/v1/voter': 'voterData/get',
+
+  // survey
+  'POST   /api/v1/campaign/door-knocking/survey':
+    'campaign/doorKnocking/survey/create',
 };

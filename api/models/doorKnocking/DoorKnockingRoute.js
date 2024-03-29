@@ -28,5 +28,11 @@ module.exports = {
     volunteer: {
       model: 'campaignVolunteer',
     },
+
+    // one to many
+    surveys: {
+      collection: 'survey',
+      via: 'route',
+    },
   },
 };

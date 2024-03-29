@@ -23,6 +23,12 @@ module.exports = {
       model: 'campaign',
     },
 
+    // one to many
+    surveys: {
+      collection: 'survey',
+      via: 'dkCampaign',
+    },
+
     // has many
     routes: {
       collection: 'doorKnockingRoute',
