@@ -2,23 +2,21 @@
 
 const moment = require('moment');
 
-const isPOTUSorVPOTUSNode = ({position}) =>
-  position?.level === 'FEDERAL' && position?.name?.toLowerCase().includes('president')
+const isPOTUSorVPOTUSNode = ({ position }) =>
+  position?.level === 'FEDERAL' &&
+  position?.name?.toLowerCase().includes('president');
 
 const sortRacesGroupedByYear = (elections = {}) => {
-  const electionYears = Object
-    .keys(elections)
-  return electionYears.reduce(
-    (aggregate, electionYear) => {
-      const electionsSortedByYear = elections[electionYear].sort(sortRacesByLevel)
-      return ({
-        ...aggregate,
-        [electionYear]: electionsSortedByYear,
-      });
-    },
-    {},
-  );
-}
+  const electionYears = Object.keys(elections);
+  return electionYears.reduce((aggregate, electionYear) => {
+    const electionsSortedByYear =
+      elections[electionYear].sort(sortRacesByLevel);
+    return {
+      ...aggregate,
+      [electionYear]: electionsSortedByYear,
+    };
+  }, {});
+};
 
 module.exports = {
   friendlyName: 'Health',
@@ -108,14 +106,14 @@ module.exports = {
 
       const { races } = await sails.helpers.graphql.queryHelper(query);
       const existingPositions = {};
-      const electionsByYear = {}
+      const electionsByYear = {};
       // group races by year and level
       if (races?.edges) {
         for (let i = 0; i < races.edges.length; i++) {
           const { node } = races.edges[i] || {};
-          const { electionDay } = node?.election || {}
-          const { name } = node?.position || {}
-          const electionYear = (new Date(electionDay)).getFullYear()
+          const { electionDay } = node?.election || {};
+          const { name } = node?.position || {};
+          const electionYear = new Date(electionDay).getFullYear();
 
           if (
             existingPositions[`${name}|${electionYear}`] ||
@@ -126,14 +124,15 @@ module.exports = {
 
           existingPositions[`${name}|${electionYear}`] = true;
 
-          electionsByYear[electionYear] ?
-            electionsByYear[electionYear].push(node) :
-            electionsByYear[electionYear] = [node]
+          electionsByYear[electionYear]
+            ? electionsByYear[electionYear].push(node)
+            : (electionsByYear[electionYear] = [node]);
         }
         // TODO: Use queue to save these to our db
       }
 
-      const racesGroupedByYearAndSorted = sortRacesGroupedByYear(electionsByYear)
+      const racesGroupedByYearAndSorted =
+        sortRacesGroupedByYear(electionsByYear);
       return exits.success(racesGroupedByYearAndSorted);
     } catch (e) {
       console.log('error at ballotData/get', e);
