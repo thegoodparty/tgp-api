@@ -1,15 +1,15 @@
 module.exports = {
   inputs: {
-    data: {
-      type: 'json',
-      required: true,
-    },
     routeId: {
       type: 'number',
       required: true,
     },
     voterId: {
       type: 'number',
+      required: true,
+    },
+    data: {
+      type: 'json',
       required: true,
     },
   },
@@ -26,7 +26,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { data, routeId, voterId } = inputs;
+      const { routeId, voterId, data } = inputs;
 
       const user = this.req.user;
       const route = await DoorKnockingRoute.findOne({ id: routeId }).populate(
@@ -43,44 +43,54 @@ module.exports = {
 
       await verifyVoterBelongsToCampaign(voterId, dkCampaign.campaign);
 
-      const survey = await Survey.findOrCreate(
-        {
-          route: route.id,
-          dkCampaign: dkCampaign.id,
-          campaign: dkCampaign.campaign,
-          volunteer: route.volunteer.id,
-          type: dkCampaign.type,
-          voter: voterId,
-        },
-        {
-          route: route.id,
-          dkCampaign: dkCampaign.id,
-          data,
-          campaign: dkCampaign.campaign,
-          volunteer: route.volunteer.id,
-          type: dkCampaign.type,
-          voter: voterId,
-        },
-      );
-
-      const updatedData = {
-        ...survey.data,
-        ...data,
-      };
-
-      // update data in case it was already created
-      await Survey.updateOne({ id: survey.id }).set({
-        data: updatedData,
+      const survey = await Survey.findOne({
+        route: route.id,
+        dkCampaign: dkCampaign.id,
+        campaign: dkCampaign.campaign,
+        volunteer: route.volunteer.id,
+        type: dkCampaign.type,
+        voter: voterId,
       });
 
-      if (route.status !== 'in-progress') {
+      await Survey.updateOne({ id: survey.id }).set({
+        data: { ...survey.data, ...data, status: 'completed' },
+      });
+
+      // update route to complete of all addresses are completed
+      const addresses = route.data.optimizedAddresses;
+      let nextVoter = null;
+      let completeCount = 0;
+      for (let i = 0; i < addresses.length; i++) {
+        const address = addresses[i];
+        const survey = await Survey.findOne({
+          voter: address.voterId,
+          route: route.id,
+          volunteer: route.volunteer.id,
+        });
+        if (survey) {
+          if (survey.data?.status === 'completed') {
+            completeCount++;
+          } else {
+            nextVoter = address.voterId;
+            break;
+          }
+        } else {
+          nextVoter = address.voterId;
+          break;
+        }
+      }
+      if (completeCount === addresses.length) {
+        await DoorKnockingRoute.updateOne({ id }).set({
+          status: 'completed',
+        });
+      } else {
         await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'in-progress',
         });
       }
 
       return exits.success({
-        survey: updatedData,
+        nextVoter,
       });
     } catch (e) {
       console.log('Error at doorKnocking/survey/create', e);

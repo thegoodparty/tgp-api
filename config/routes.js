@@ -246,4 +246,8 @@ module.exports.routes = {
   // survey
   'POST   /api/v1/campaign/door-knocking/survey':
     'campaign/doorKnocking/survey/create',
+  'GET   /api/v1/campaign/door-knocking/survey':
+    'campaign/doorKnocking/survey/get',
+  'PUT   /api/v1/campaign/door-knocking/complete-survey':
+    'campaign/doorKnocking/survey/complete',
 };
