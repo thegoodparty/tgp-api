@@ -36,6 +36,14 @@ module.exports = {
 
       const campaignRecord = await sails.helpers.campaign.byUser(user);
       if (!campaignRecord) {
+        // check if the user is a volunteer
+        const volunteer = await CampaignVolunteer.findOne({ user: user.id });
+        if (volunteer) {
+          return exits.success({
+            status: 'volunteer',
+            // profile: volunteer.campaign,
+          });
+        }
         return exits.success({
           status: false,
         });
