@@ -45,6 +45,9 @@ module.exports = {
             if (survey.data?.status === 'completed') {
               completeCount++;
               address.status = 'completed';
+            } else if (survey.data?.status === 'skipped') {
+              completeCount++;
+              address.status = 'skipped';
             } else {
               address.status = 'in-progress';
             }

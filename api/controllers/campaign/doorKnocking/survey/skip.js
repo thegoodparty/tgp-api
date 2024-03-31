@@ -43,7 +43,7 @@ module.exports = {
 
       await verifyVoterBelongsToCampaign(voterId, dkCampaign.campaign);
 
-      const survey = await Survey.findOne({
+      let survey = await Survey.findOne({
         route: route.id,
         dkCampaign: dkCampaign.id,
         campaign: dkCampaign.campaign,
@@ -52,11 +52,23 @@ module.exports = {
         voter: voterId,
       });
 
+      if (!survey) {
+        // skipping the voter no voter before a survey created
+        survey = await Survey.create({
+          route: route.id,
+          dkCampaign: dkCampaign.id,
+          data,
+          campaign: dkCampaign.campaign,
+          volunteer: route.volunteer.id,
+          type: dkCampaign.type,
+          voter: voterId,
+        }).fetch();
+      }
+
       await Survey.updateOne({ id: survey.id }).set({
-        data: { ...survey.data, ...data, status: 'completed' },
+        data: { ...survey.data, ...data, status: 'skipped' },
       });
 
-      // update route to complete of all addresses are completed
       const addresses = route.data.optimizedAddresses;
       let nextVoter = null;
       let isRouteCompleted = false;
@@ -72,23 +84,20 @@ module.exports = {
           if (survey.data?.status === 'completed') {
             completeCount++;
           } else {
+            if (address.voterId !== voterId) {
+              nextVoter = address.voterId;
+              break;
+            }
+          }
+        } else {
+          if (address.voterId !== voterId) {
             nextVoter = address.voterId;
             break;
           }
-        } else {
-          nextVoter = address.voterId;
-          break;
         }
       }
       if (completeCount === addresses.length) {
-        await DoorKnockingRoute.updateOne({ id }).set({
-          status: 'completed',
-        });
         isRouteCompleted = true;
-      } else {
-        await DoorKnockingRoute.updateOne({ id: route.id }).set({
-          status: 'in-progress',
-        });
       }
 
       return exits.success({

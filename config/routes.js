@@ -250,4 +250,6 @@ module.exports.routes = {
     'campaign/doorKnocking/survey/get',
   'PUT   /api/v1/campaign/door-knocking/complete-survey':
     'campaign/doorKnocking/survey/complete',
+  'PUT   /api/v1/campaign/door-knocking/skip-survey':
+    'campaign/doorKnocking/survey/skip',
 };
