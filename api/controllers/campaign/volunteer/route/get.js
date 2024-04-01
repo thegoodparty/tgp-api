@@ -59,6 +59,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error at volunteer/routes/get', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error at volunteer/route/get.',
+        e,
+      );
       return exits.badRequest({ message: 'Error getting routes' });
     }
   },
