@@ -40,6 +40,10 @@ module.exports = {
         slug: dkSlug,
       });
       if (!dkCampaign) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'error at volunteer/route/get.',
+          { message: 'You do not have access to this route', dkCampaign },
+        );
         return exits.badRequest('You do not have access to this route.');
       }
 
@@ -47,10 +51,6 @@ module.exports = {
         user: user.id,
         campaign: dkCampaign.campaign,
       });
-
-      if (!campaignVolunteer) {
-        return exits.badRequest('You do not have access to this route');
-      }
 
       route.claimedByUser = campaignVolunteer.id === route.volunteer;
 
