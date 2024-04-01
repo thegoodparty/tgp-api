@@ -37,15 +37,17 @@ module.exports = {
       if (!dkCampaign) {
         return exits.badRequest('No campaign');
       }
-      const route = await DoorKnockingRoute.findOne({
+      let route = await DoorKnockingRoute.findOne({
         id,
         dkCampaign: dkCampaign.id,
         status: { '!=': 'not-calculated' },
-      });
+      }).populate('volunteer');
 
       if (!route) {
         return exits.badRequest('No campaign');
       }
+
+      route = await sails.helpers.doorKnocking.routeStatus(route);
 
       return exits.success({
         dkCampaign: dkCampaign.data,

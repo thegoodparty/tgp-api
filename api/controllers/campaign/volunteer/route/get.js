@@ -26,39 +26,11 @@ module.exports = {
       const user = this.req.user;
       const { id, dkSlug } = inputs;
 
-      const route = await DoorKnockingRoute.findOne({ id }).populate(
-        'volunteer',
-      );
+      let route = await DoorKnockingRoute.findOne({ id }).populate('volunteer');
 
       if (route.volunteer.user === user.id) {
         // set the status of each address based on the voter survey
-        const addresses = route.data.optimizedAddresses;
-        let completeCount = 0;
-        for (let i = 0; i < addresses.length; i++) {
-          const address = addresses[i];
-          const survey = await Survey.findOne({
-            voter: address.voterId,
-            route: route.id,
-            volunteer: route.volunteer.id,
-          });
-          if (survey) {
-            if (survey.data?.status === 'completed') {
-              completeCount++;
-              address.status = 'completed';
-            } else if (survey.data?.status === 'skipped') {
-              completeCount++;
-              address.status = 'skipped';
-            } else {
-              address.status = 'in-progress';
-            }
-          }
-        }
-        if (completeCount === addresses.length) {
-          await DoorKnockingRoute.updateOne({ id }).set({
-            status: 'completed',
-          });
-          route.status = 'completed';
-        }
+        route = await sails.helpers.doorKnocking.routeStatus(route);
         route.claimedByUser = true;
         return exits.success({ route });
       }
