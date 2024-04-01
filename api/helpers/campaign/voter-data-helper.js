@@ -257,6 +257,10 @@ async function getTotalRecords(searchUrl, filters) {
         columns: ['Parties_Description'],
       });
     } catch (e) {
+      await sails.helpers.slack.errorLoggerHelper(
+        'error searching for voter data. getTotalRecords estimateResponse',
+        { e, filters, searchUrl },
+      );
       console.log('error at getVoterData estimateResponse', e);
     }
 
