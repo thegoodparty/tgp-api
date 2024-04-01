@@ -28,7 +28,7 @@ module.exports = {
 
       let route = await DoorKnockingRoute.findOne({ id }).populate('volunteer');
 
-      if (route.volunteer.user === user.id) {
+      if (route.volunteer?.user === user.id) {
         // set the status of each address based on the voter survey
         route = await sails.helpers.doorKnocking.routeStatus(route);
         route.claimedByUser = true;
