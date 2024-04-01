@@ -264,6 +264,10 @@ async function getTotalRecords(searchUrl, filters) {
       console.log('error at getVoterData estimateResponse', e);
     }
 
+    await sails.helpers.slack.errorLoggerHelper('estimateResponse?.data', {
+      estimateResponseData: estimateResponse?.data,
+    });
+
     let totalRecords = 0;
     if (estimateResponse?.data) {
       totalRecords = estimateResponse.data.reduce(
