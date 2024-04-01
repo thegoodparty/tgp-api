@@ -10,6 +10,11 @@ module.exports = {
       type: 'boolean',
       allowNull: true
     },
+    dateVerified: {
+      type: 'string',
+      columnType: 'date',
+      allowNull: true
+    },
     tier:{
       type: 'string',
       allowNull: true,
@@ -40,6 +45,8 @@ module.exports = {
       const attributes = {};
       if (typeof isVerified !== 'undefined') {
         attributes.isVerified = isVerified;
+        attributes.dateVerified =  isVerified === null ?
+          null : new Date();
       }
       if (typeof isPro !== 'undefined') {
         attributes.isPro = isPro;
