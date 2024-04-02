@@ -18,6 +18,11 @@ module.exports = {
       type: 'boolean',
       allowNull: true,
     },
+    dateVerified: {
+      type: 'string',
+      columnType: 'date',
+      allowNull: true
+    },
     tier: {
       type: 'string',
       allowNull: true,
@@ -30,7 +35,6 @@ module.exports = {
     didWin: {
       type: 'boolean',
     },
-
     user: {
       model: 'user',
     },

@@ -58,14 +58,6 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      /*
-socialId: id,
-      socialProvider: provider,
-      socialPic,
-      name,
-      email,
-      socialToken: idToken,
-      */
       const { email, socialPic, socialToken, socialProvider, socialId, name } =
         inputs;
       const lowerCaseEmail = email.toLowerCase();
