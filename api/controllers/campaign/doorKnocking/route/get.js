@@ -47,7 +47,7 @@ module.exports = {
         return exits.badRequest('No campaign');
       }
 
-      route = await sails.helpers.doorKnocking.routeStatus(route);
+      ({ route } = await sails.helpers.doorKnocking.routeStatus(route, true));
 
       return exits.success({
         dkCampaign: dkCampaign.data,

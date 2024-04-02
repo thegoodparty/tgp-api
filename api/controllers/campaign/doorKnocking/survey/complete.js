@@ -69,7 +69,10 @@ module.exports = {
           volunteer: route.volunteer.id,
         });
         if (survey) {
-          if (survey.data?.status === 'completed') {
+          if (
+            survey.data?.status === 'completed' ||
+            survey.data?.status === 'skipped'
+          ) {
             completeCount++;
           } else {
             nextVoter = address.voterId;

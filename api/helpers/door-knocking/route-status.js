@@ -4,6 +4,9 @@ module.exports = {
       type: 'json',
       required: true,
     },
+    calculateTotals: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -14,7 +17,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { route } = inputs;
+      const { route, calculateTotals } = inputs;
       if (
         !route ||
         !route.data ||
@@ -26,6 +29,13 @@ module.exports = {
       }
       const addresses = route.data.optimizedAddresses;
       let completeCount = 0;
+      const totals = {
+        surveyed: 0,
+        completed: 0,
+        skipped: 0,
+        inProgress: 0,
+        likelyVoters: 0,
+      };
       for (let i = 0; i < addresses.length; i++) {
         const address = addresses[i];
         const survey = await Survey.findOne({
@@ -37,10 +47,13 @@ module.exports = {
           if (survey.data?.status === 'completed') {
             completeCount++;
             address.status = 'completed';
+            totals.completed++;
           } else if (survey.data?.status === 'skipped') {
             completeCount++;
+            totals.skipped++;
             address.status = 'skipped';
           } else {
+            totals.inProgress++;
             address.status = 'in-progress';
           }
         }
@@ -51,7 +64,7 @@ module.exports = {
         });
         route.status = 'completed';
       }
-      return exits.success(route);
+      return exits.success({ route });
     } catch (err) {
       console.log('error at helpers/door-knocking/route-status', err);
 

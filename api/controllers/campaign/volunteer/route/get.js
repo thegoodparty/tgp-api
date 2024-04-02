@@ -30,7 +30,7 @@ module.exports = {
 
       if (route.volunteer?.user === user.id) {
         // set the status of each address based on the voter survey
-        route = await sails.helpers.doorKnocking.routeStatus(route);
+        ({ route } = await sails.helpers.doorKnocking.routeStatus(route));
         route.claimedByUser = true;
         return exits.success({ route });
       }
