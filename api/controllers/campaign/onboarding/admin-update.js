@@ -58,7 +58,8 @@ module.exports = {
         attributes.tier = tier;
       }
 
-      await Campaign.updateOne({ slug }).set(attributes);
+      const updatedCampaign = await Campaign.updateOne({ slug }).set(attributes);
+      await sails.helpers.crm.updateCampaign(updatedCampaign);
 
       return exits.success({
         message: 'updated',

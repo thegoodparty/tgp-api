@@ -3,6 +3,7 @@ const hubspot = require('@hubspot/api-client');
 const {
   of,
 } = require('@hubspot/api-client/lib/codegen/communication_preferences/rxjsStub');
+const moment = require('moment');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
@@ -30,24 +31,23 @@ module.exports = {
         return exits.success('no api key');
       }
 
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      if (appBase === 'http://localhost:4000') {
-        console.log('crm helpers disabled on localhost');
-        return exits.success('crm helpers disabled on localhost');
-      }
+      // const appBase = sails.config.custom.appBase || sails.config.appBase;
+      // if (appBase === 'http://localhost:4000') {
+      //   console.log('crm helpers disabled on localhost');
+      //   return exits.success('crm helpers disabled on localhost');
+      // }
 
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
       const { campaign } = inputs;
-      const { data, isActive } = campaign;
-      let { lastStepDate, name } = data;
+      console.log(`inputs =>`, inputs)
+      const { data, isActive, isVerified, dateVerified } = campaign || {};
+      let { lastStepDate, name } = data || {};
       const dataDetails = data?.details;
       const goals = data?.goals;
       const currentStep = data?.currentStep || '';
       const electionDate = goals?.electionDate || undefined;
 
-      // console.log('dataDetails', dataDetails);
-      // console.log('lastStepDate', lastStepDate);
       const {
         zip,
         party,
@@ -69,7 +69,7 @@ module.exports = {
         name = `${dataDetails?.firstName} ${dataDetails?.lastName}`;
       }
       if (!name) {
-        // the name is on hte user (old records)
+        // the name is on the user (old records)
         const user = await User.findOne({ id: campaign.user });
         name = await sails.helpers.user.name(user);
         data.name = name;
@@ -80,6 +80,12 @@ module.exports = {
       const longState = state
         ? await sails.helpers.zip.shortToLongState(state)
         : undefined;
+
+      const verifiedCandidate = isVerified ? 'Yes' : 'No';
+
+      const formattedDate = dateVerified !== null ?
+        moment(new Date(dateVerified)).format('YYYY-MM-DD') : null
+
       const companyObj = {
         properties: {
           name,
@@ -107,6 +113,16 @@ module.exports = {
             ? Object.keys(data.aiContent).length
             : 0,
           filed_candidate: campaignCommittee ? 'yes' : 'no',
+          ...(
+            isVerified !== null ?
+              { verified_candidates: verifiedCandidate } :
+              {}
+          ),
+          ...(
+            formattedDate !== null ?
+              { date_verified: formattedDate } :
+              {}
+          ),
         },
       };
 
