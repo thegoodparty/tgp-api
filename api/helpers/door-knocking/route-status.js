@@ -29,11 +29,11 @@ module.exports = {
       const addresses = route.data.optimizedAddresses;
       let completeCount = 0;
       const totals = {
-        surveyed: 0,
         completed: 0,
         skipped: 0,
-        inProgress: 0,
+        refusal: 0,
         likelyVoters: 0,
+        positiveExperience: 0,
       };
       for (let i = 0; i < addresses.length; i++) {
         const address = addresses[i];
@@ -43,11 +43,32 @@ module.exports = {
           volunteer: route.volunteer.id,
         });
         if (survey) {
-          if (survey.data?.status === 'completed') {
+          const { data } = survey;
+          if (!data) {
+            continue;
+          }
+          if (
+            data.resolution === 'Engaging' ||
+            data.resolution === 'Informative'
+          ) {
+            totals.positiveExperience++;
+          }
+          if (
+            data.voteLikelihood === 'Likely' ||
+            data.voteLikelihood === 'Strong yes'
+          ) {
+            totals.likelyVoters++;
+          }
+
+          if (data.resolution === 'Refused to Engage') {
+            totals.refusal++;
+          }
+
+          if (data?.status === 'completed') {
             completeCount++;
             address.status = 'completed';
             totals.completed++;
-          } else if (survey.data?.status === 'skipped') {
+          } else if (data?.status === 'skipped') {
             completeCount++;
             totals.skipped++;
             address.status = 'skipped';
@@ -62,6 +83,9 @@ module.exports = {
           status: 'completed',
         });
         route.status = 'completed';
+      }
+      if (calculateTotals) {
+        route.data.totals = totals;
       }
       return exits.success({ route });
     } catch (err) {
