@@ -24,8 +24,7 @@ module.exports = {
         !route.data.optimizedAddresses ||
         !route.volunteer
       ) {
-        console.log('error - cannot find add status to route');
-        return exits.success(route);
+        return exits.success({ route });
       }
       const addresses = route.data.optimizedAddresses;
       let completeCount = 0;
@@ -68,7 +67,7 @@ module.exports = {
     } catch (err) {
       console.log('error at helpers/door-knocking/route-status', err);
 
-      return exits.success(inputs.route);
+      return exits.success({ route: inputs.route });
     }
   },
 };
