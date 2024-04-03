@@ -45,23 +45,29 @@ module.exports = {
       // we need to filter the routes that are claimed but also include routes that claimed by the user.
       let nonClaimedRoutes = [];
       let claimedRoutes = [];
-      dkCampaigns.forEach((dkCampaign) => {
-        dkCampaign.routes.forEach((route) => {
+      for (let i = 0; i < dkCampaigns.length; i++) {
+        const dkCampaign = dkCampaigns[i];
+        for (let j = 0; j < dkCampaign.routes.length; j++) {
+          const route = dkCampaign.routes[j];
           const { optimizedAddresses } = route.data;
           if (optimizedAddresses && optimizedAddresses.length > 0) {
             if (!route.volunteer) {
               route.type = dkCampaign.data.type;
               route.dkCampaignSlug = dkCampaign.slug;
               nonClaimedRoutes.push(route);
-            }
-            if (route.volunteer === user.id) {
-              route.type = dkCampaign.data.type;
-              route.dkCampaignSlug = dkCampaign.slug;
-              claimedRoutes.push(route);
+            } else {
+              const volunteer = await CampaignVolunteer.findOne({
+                id: route.volunteer,
+              });
+              if (volunteer && volunteer.user === user.id) {
+                route.type = dkCampaign.data.type;
+                route.dkCampaignSlug = dkCampaign.slug;
+                claimedRoutes.push(route);
+              }
             }
           }
-        });
-      });
+        }
+      }
 
       return exits.success({
         unclaimedRoutes: nonClaimedRoutes,
