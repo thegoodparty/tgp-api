@@ -49,16 +49,15 @@ module.exports = {
         return exits.badRequest('Voter does not belong to campaign');
       }
 
-      let survey = await Survey.findOne({
+      const surveys = await Survey.find({
         route: route.id,
         dkCampaign: dkCampaign.id,
         campaign: dkCampaign.campaign,
         volunteer: route.volunteer.id,
-        type: dkCampaign.type,
         voter: voterId,
       });
-
-      if (!survey) {
+      let survey;
+      if (surveys.length === 0) {
         // skipping the voter no voter before a survey created
         survey = await Survey.create({
           route: route.id,
@@ -66,14 +65,14 @@ module.exports = {
           data,
           campaign: dkCampaign.campaign,
           volunteer: route.volunteer.id,
-          type: dkCampaign.type,
           voter: voterId,
         }).fetch();
+      } else {
+        survey = surveys[0];
+        await Survey.updateOne({ id: survey.id }).set({
+          data: { ...survey.data, ...data, status: 'skipped' },
+        });
       }
-
-      await Survey.updateOne({ id: survey.id }).set({
-        data: { ...survey.data, ...data, status: 'skipped' },
-      });
 
       const addresses = route.data.optimizedAddresses;
       let nextVoter = null;
@@ -81,11 +80,15 @@ module.exports = {
       let completeCount = 0;
       for (let i = 0; i < addresses.length; i++) {
         const address = addresses[i];
-        const survey = await Survey.findOne({
+        const surveys = await Survey.find({
           voter: address.voterId,
           route: route.id,
           volunteer: route.volunteer.id,
         });
+        let survey;
+        if (surveys.length > 0) {
+          survey = surveys[0];
+        }
         if (survey) {
           if (survey.data?.status === 'completed') {
             completeCount++;

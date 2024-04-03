@@ -49,14 +49,17 @@ module.exports = {
         return exits.badRequest('Voter does not belong to campaign');
       }
 
-      const survey = await Survey.findOne({
+      const surveys = await Survey.find({
         route: route.id,
         dkCampaign: dkCampaign.id,
         campaign: dkCampaign.campaign,
         volunteer: route.volunteer.id,
-        type: dkCampaign.type,
         voter: voterId,
       });
+      if (surveys.length === 0) {
+        return exits.badRequest('No survey found');
+      }
+      const survey = surveys[0];
 
       await Survey.updateOne({ id: survey.id }).set({
         data: { ...survey.data, ...data, status: 'completed' },

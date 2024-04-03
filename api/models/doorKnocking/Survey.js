@@ -7,9 +7,6 @@ module.exports = {
     data: {
       type: 'json',
     },
-    type: {
-      type: 'string',
-    },
 
     // has one
 
