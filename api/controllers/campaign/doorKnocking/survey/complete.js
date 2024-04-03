@@ -94,7 +94,7 @@ module.exports = {
         }
       }
       if (completeCount === addresses.length) {
-        await DoorKnockingRoute.updateOne({ id }).set({
+        await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'completed',
         });
         isRouteCompleted = true;
