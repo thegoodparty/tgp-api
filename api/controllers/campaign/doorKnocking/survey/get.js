@@ -45,13 +45,14 @@ module.exports = {
         return exits.badRequest('Voter does not belong to campaign');
       }
 
-      const survey = await Survey.findOne({
+      const surveys = await Survey.find({
         route: route.id,
         dkCampaign: dkCampaign.id,
         campaign: dkCampaign.campaign,
         volunteer: route.volunteer.id,
         voter: voterId,
       });
+      const survey = surveys.length > 0 ? surveys[0] : null;
       if (!survey) {
         return exits.success(false);
       }
