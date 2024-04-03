@@ -111,7 +111,7 @@ module.exports = {
         isRouteCompleted,
       });
     } catch (e) {
-      console.log('Error at doorKnocking/survey/create', e);
+      console.log('Error at doorKnocking/survey/skip', e);
       return exits.badRequest({ message: 'Error skipping survey.' });
     }
   },

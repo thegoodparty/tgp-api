@@ -49,45 +49,51 @@ module.exports = {
         return exits.badRequest('Voter does not belong to campaign');
       }
 
-      const survey = await Survey.findOrCreate(
-        {
-          route: route.id,
-          dkCampaign: dkCampaign.id,
-          campaign: dkCampaign.campaign,
-          volunteer: route.volunteer.id,
-          type: dkCampaign.type,
-          voter: voterId,
-        },
-        {
-          route: route.id,
-          dkCampaign: dkCampaign.id,
-          data,
-          campaign: dkCampaign.campaign,
-          volunteer: route.volunteer.id,
-          type: dkCampaign.type,
-          voter: voterId,
-        },
-      );
-
-      const updatedData = {
-        ...survey.data,
-        ...data,
-      };
-
-      // update data in case it was already created
-      await Survey.updateOne({ id: survey.id }).set({
-        data: updatedData,
-      });
-
       if (route.status !== 'in-progress') {
         await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'in-progress',
         });
       }
 
-      return exits.success({
-        survey: updatedData,
+      // findOrCreate failed here since somehow we had more than one survey for the same voter
+      let survey;
+      const surveys = await Survey.find({
+        route: route.id,
+        dkCampaign: dkCampaign.id,
+        campaign: dkCampaign.campaign,
+        volunteer: route.volunteer.id,
+        voter: voterId,
       });
+
+      if (surveys.length > 0) {
+        survey = surveys[0];
+        const updatedData = {
+          ...survey.data,
+          ...data,
+        };
+
+        // update data in case it was already created
+        await Survey.updateOne({ id: survey.id }).set({
+          data: updatedData,
+        });
+
+        return exits.success({
+          survey: updatedData,
+        });
+      } else {
+        survey = await Survey.create({
+          route: route.id,
+          dkCampaign: dkCampaign.id,
+          campaign: dkCampaign.campaign,
+          volunteer: route.volunteer.id,
+          voter: voterId,
+          data,
+        }).fetch();
+
+        return exits.success({
+          survey: data,
+        });
+      }
     } catch (e) {
       console.log('Error at doorKnocking/survey/create', e);
       return exits.badRequest({ message: 'Error creating survey.' });
