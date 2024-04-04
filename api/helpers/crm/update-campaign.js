@@ -52,6 +52,8 @@ module.exports = {
         zip,
         party,
         office,
+        ballotLevel,
+        level,
         state,
         pledged,
         campaignCommittee,
@@ -125,6 +127,8 @@ module.exports = {
               {}
           ),
           ...(website ? { website } : {}),
+          ...(level ? { ai_office_level: level } : {}),
+          ...(ballotLevel ? { office_level: ballotLevel } : {}),
         },
       };
 
