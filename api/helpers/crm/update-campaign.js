@@ -58,6 +58,7 @@ module.exports = {
         otherOffice,
         district,
         city,
+        website
       } = dataDetails || {};
 
       //UNIX formatted timestamps in milliseconds
@@ -123,12 +124,12 @@ module.exports = {
               { date_verified: formattedDate } :
               {}
           ),
+          ...(website ? { website } : {}),
         },
       };
 
       const existingId = data.hubspotId;
       if (existingId) {
-        // console.log('updating existing company in hubspot', existingId);
         try {
           await hubspotClient.crm.companies.basicApi.update(
             existingId,
