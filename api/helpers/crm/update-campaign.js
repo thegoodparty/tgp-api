@@ -40,8 +40,7 @@ module.exports = {
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
       const { campaign } = inputs;
-      console.log(`inputs =>`, inputs)
-      const { data, isActive, isVerified, dateVerified } = campaign || {};
+      const { data, isActive, isVerified, dateVerified, isPro } = campaign || {};
       let { lastStepDate, name } = data || {};
       const dataDetails = data?.details;
       const goals = data?.goals;
@@ -116,6 +115,7 @@ module.exports = {
             ? Object.keys(data.aiContent).length
             : 0,
           filed_candidate: campaignCommittee ? 'yes' : 'no',
+          pro_candidate: isPro ? 'Yes' : 'No',
           ...(
             isVerified !== null ?
               { verified_candidates: verifiedCandidate } :
