@@ -59,7 +59,8 @@ module.exports = {
         otherOffice,
         district,
         city,
-        website
+        website,
+        runForOffice
       } = dataDetails || {};
 
       //UNIX formatted timestamps in milliseconds
@@ -129,6 +130,7 @@ module.exports = {
           ...(website ? { website } : {}),
           ...(level ? { ai_office_level: level } : {}),
           ...(ballotLevel ? { office_level: ballotLevel } : {}),
+          ...(runForOffice ? { running: runForOffice } : {})
         },
       };
 
