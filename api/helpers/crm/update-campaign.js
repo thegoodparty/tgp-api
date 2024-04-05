@@ -31,11 +31,11 @@ module.exports = {
         return exits.success('no api key');
       }
 
-      // const appBase = sails.config.custom.appBase || sails.config.appBase;
-      // if (appBase === 'http://localhost:4000') {
-      //   console.log('crm helpers disabled on localhost');
-      //   return exits.success('crm helpers disabled on localhost');
-      // }
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      if (appBase === 'http://localhost:4000') {
+        console.log('crm helpers disabled on localhost');
+        return exits.success('crm helpers disabled on localhost');
+      }
 
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
