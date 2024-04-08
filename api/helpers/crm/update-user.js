@@ -38,22 +38,6 @@ module.exports = {
       const { user, loginEvent, updateEvent } = inputs;
       const { id, firstName, lastName, email, phone, uuid, zip } = user;
 
-      // const userCrew = await User.findOne({ id }).populate('crew');
-      // const crew = userCrew.crew;
-      // crew.sort((a, b) => b.id - a.id);
-      // const applicationApproved = await Application.count({
-      //   user: id,
-      //   status: 'approved',
-      // });
-      // const applicationDeclined = await Application.count({
-      //   user: id,
-      //   status: 'rejected',
-      // });
-      // const applicationSubmitted = await Application.find({
-      //   user: id,
-      //   status: 'in review',
-      // });
-
       const campaigns = await Campaign.find({
         user: id,
       });
@@ -68,17 +52,11 @@ module.exports = {
           lastname: lastName,
           email,
           phone,
-          // type: applicationApproved > 0 ? 'Campaign' : 'User',
           type: campaign ? 'Campaign' : 'User',
           lifecyclestage: campaign ? 'customer' : 'opportunity',
           active_candidate: campaign ? 'Yes' : 'No',
           live_candidate: campaign && campaign?.launchStatus === 'launched',
           source: 'Good Party Site',
-          // all_endorsements: allEndorsements,
-          // recent_endorsement:
-          //   supports.length > 0
-          //     ? `${supports[0].candidate.firstName} ${supports[0].candidate.lastName}`
-          //     : '',
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
         },
@@ -94,6 +72,7 @@ module.exports = {
 
       let contactId;
       let profile_updated_count = 0;
+      console.dir(user, {colors: true, depth: 4})
       if (user.metaData) {
         const metaData = JSON.parse(user.metaData);
         if (metaData.hubspotId) {
@@ -119,7 +98,6 @@ module.exports = {
       }
 
       if (!contactId) {
-        // console.log('getting hubspotId for user', email);
         try {
           const contact = await hubspotClient.crm.contacts.basicApi.getById(
             email,
@@ -131,7 +109,6 @@ module.exports = {
           );
           contactId = contact.id;
           const hubspotId = contactId;
-          // console.log('updating meta.hubspotId');
           await updateMeta(user, hubspotId, profile_updated_count);
         } catch (e) {
           // this is not really an error, it just indicates that the user has never filled a form.
@@ -139,10 +116,6 @@ module.exports = {
             'could not find contact by email. user has never filled a form!',
             e,
           );
-          // await sails.helpers.slack.errorLoggerHelper(
-          //   'Error getting hubspot contact',
-          //   e,
-          // );
         }
       }
 
@@ -154,10 +127,6 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating contact', e);
-          // await sails.helpers.slack.errorLoggerHelper(
-          //   'Error updating hubspot contact',
-          //   e,
-          // );
         }
       } else {
         try {
@@ -200,7 +169,6 @@ module.exports = {
           err,
         );
       }
-      // console.log('hubspot error', e);
       return exits.success('not ok');
     }
   },
@@ -224,5 +192,3 @@ async function updateMeta(user, hubspotId, profile_updated_count) {
     metaData: JSON.stringify(metaData),
   });
 }
-
-const formatDate = (date) => moment(date).format('YYYY-MM-DD');

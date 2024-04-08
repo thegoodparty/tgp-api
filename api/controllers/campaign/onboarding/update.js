@@ -49,7 +49,6 @@ module.exports = {
       }
 
       // setting last_step_date for the crm
-      // moment().format('YYYY-MM-DD'),
       if (campaign.currentStep !== existing?.data?.currentStep) {
         campaign.lastStepDate = moment().format('YYYY-MM-DD');
       }

@@ -49,6 +49,7 @@ module.exports.routes = {
   'POST   /api/v1/upload-base64-image': 'user/upload-base64-image',
 
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
+  'PUT    /api/v1/admin/candidates/mass-crm-companies-refresh': 'admin/mass-crm-companies-refresh',
   'GET    /api/v1/admin/hidden-candidates': 'admin/candidate/hidden-list',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/user': 'admin/delete-user',

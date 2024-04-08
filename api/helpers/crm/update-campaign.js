@@ -1,9 +1,6 @@
-// https://developers.hubspot.com/docs/api/crm/contacts
+// https://developers.hubspot.com/docs/api/crm/companies
 const hubspot = require('@hubspot/api-client');
-const {
-  of,
-} = require('@hubspot/api-client/lib/codegen/communication_preferences/rxjsStub');
-const moment = require('moment');
+const { getCRMCompanyObject } = require('../../util/get-crm-company-object');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
@@ -38,101 +35,10 @@ module.exports = {
       }
 
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
       const { campaign } = inputs;
-      const { data, isActive, isVerified, dateVerified, isPro } = campaign || {};
-      let { lastStepDate, name } = data || {};
-      const dataDetails = data?.details;
-      const goals = data?.goals;
-      const currentStep = data?.currentStep || '';
-      const electionDate = goals?.electionDate || undefined;
-
-      const {
-        zip,
-        party,
-        office,
-        ballotLevel,
-        level,
-        state,
-        pledged,
-        campaignCommittee,
-        otherOffice,
-        district,
-        city,
-        website,
-        runForOffice
-      } = dataDetails || {};
-
-      //UNIX formatted timestamps in milliseconds
-      const electionDateMs = electionDate
-        ? new Date(electionDate).getTime()
-        : undefined;
-
-      if (!name && dataDetails?.firstName && dataDetails?.lastName) {
-        name = `${dataDetails?.firstName} ${dataDetails?.lastName}`;
-      }
-      if (!name) {
-        // the name is on the user (old records)
-        const user = await User.findOne({ id: campaign.user });
-        name = await sails.helpers.user.name(user);
-        data.name = name;
-      }
-
-      const resolvedOffice = office === 'Other' ? otherOffice : office;
-
-      const longState = state
-        ? await sails.helpers.zip.shortToLongState(state)
-        : undefined;
-
-      const verifiedCandidate = isVerified ? 'Yes' : 'No';
-
-      const formattedDate = dateVerified !== null ?
-        moment(new Date(dateVerified)).format('YYYY-MM-DD') : null
-
-      const companyObj = {
-        properties: {
-          name,
-          candidate_party: party,
-          candidate_office: resolvedOffice,
-          state: longState,
-          candidate_state: longState,
-          candidate_district: district,
-          lifecyclestage: 'customer',
-          city,
-          type: 'CAMPAIGN',
-          last_step: currentStep,
-          last_step_date: lastStepDate || undefined,
-          zip,
-          pledge_status: pledged ? 'yes' : 'no',
-          is_active: !!name,
-          live_candidate: isActive,
-          p2v_complete_date: data?.p2vCompleteDate || undefined,
-          p2v_status: data?.p2vStatus || 'Locked',
-          election_date: electionDateMs,
-          doors_knocked: data?.reportedVoterGoals?.doorKnocking || 0,
-          calls_made: data?.reportedVoterGoals?.calls || 0,
-          online_impressions: data?.reportedVoterGoals?.digital || 0,
-          my_content_pieces_created: data?.aiContent
-            ? Object.keys(data.aiContent).length
-            : 0,
-          filed_candidate: campaignCommittee ? 'yes' : 'no',
-          pro_candidate: isPro ? 'Yes' : 'No',
-          ...(
-            isVerified !== null ?
-              { verified_candidates: verifiedCandidate } :
-              {}
-          ),
-          ...(
-            formattedDate !== null ?
-              { date_verified: formattedDate } :
-              {}
-          ),
-          ...(website ? { website } : {}),
-          ...(level ? { ai_office_level: level } : {}),
-          ...(ballotLevel ? { office_level: ballotLevel } : {}),
-          ...(runForOffice ? { running: runForOffice } : {})
-        },
-      };
+      const { data } = campaign || {};
+      const companyObj = await getCRMCompanyObject(campaign);
+      const name = companyObj.properties.name
 
       const existingId = data.hubspotId;
       if (existingId) {
@@ -160,11 +66,9 @@ module.exports = {
           );
         }
 
-        // console.log('apiResp', apiResp);
         return exits.success(existingId);
       } else {
         // update user record with the id from the crm
-        // console.log('creating new company in hubspot');
         let createCompanyResponse;
         try {
           createCompanyResponse =
@@ -186,18 +90,16 @@ module.exports = {
         }
 
         const userId = campaign.user;
-        // console.log('userId', userId);
         const user = await User.findOne({ id: userId });
         const hubspotId = createCompanyResponse.id;
         data.hubspotId = hubspotId;
         await Campaign.updateOne({ id: campaign.id }).set({
-          data,
+          data: {...data, name},
         });
         // make sure we refresh campaign object so we have hubspotId.
         const campaignObj = await Campaign.findOne({ id: campaign.id });
 
         // associate the Contact with the Company in Hubspot
-        // console.log('associating user with company in hubspot');
         try {
           await sails.helpers.crm.associateUserCampaign(
             user,
@@ -211,7 +113,6 @@ module.exports = {
             e,
           );
         }
-        // console.log('apiResp', apiResp);
         try {
           await sails.helpers.crm.updateUser(user);
         } catch (e) {

@@ -54,7 +54,6 @@ module.exports = {
         // it would be smart if this returned an id instead of a success message.
         await sails.helpers.crm.updateUser(user);
         // make sure we pull the latest user object with the hubspotId.
-        // console.log('refreshing user', user.id);
         user = await User.findOne({ id: user.id });
         if (user.metaData) {
           const metaData = JSON.parse(user.metaData);
