@@ -71,15 +71,21 @@ module.exports = {
         );
       }
 
-      let launchP2V = false;
-      if (
-        campaign?.details?.pledged &&
-        campaign.details.pledged === true &&
+      const incomingCampaignDetails = campaign?.details;
+      const { zip: incomingZip} = incomingCampaignDetails || {}
+      const { zip: existingZip } = existing?.data?.details || {}
+
+      const launchP2V = (
+        incomingCampaignDetails?.pledged &&
+        incomingCampaignDetails.pledged === true &&
         (!campaign?.p2vStatus || campaign?.p2vStatus === 'Locked')
-      ) {
+      )
+
+      const zipChanged = incomingZip && incomingZip !== existingZip
+
+      if (launchP2V || zipChanged) {
         sails.helpers.log(slug, 'launching p2v...');
         campaign.p2vStatus = 'Waiting';
-        launchP2V = true;
         await sails.helpers.queue.consumer();
       }
 
@@ -103,13 +109,7 @@ module.exports = {
 
       sails.helpers.log(slug, 'launchP2V', launchP2V);
       // Launch the Path to Victory queue
-      if (launchP2V) {
-        // sails.helpers.log(slug, 'sending p2v slack message');
-        // try {
-        //   await sendSlackMessage(campaign, user);
-        // } catch (e) {
-        //   sails.helpers.log(slug, 'error sending slack message', e);
-        // }
+      if (launchP2V || zipChanged) {
         sails.helpers.log(slug, 'enqueuing p2v');
         try {
           await sails.helpers.queue.enqueuePathToVictory(updated);

@@ -40,8 +40,7 @@ module.exports = {
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
       const { campaign } = inputs;
-      console.log(`inputs =>`, inputs)
-      const { data, isActive, isVerified, dateVerified } = campaign || {};
+      const { data, isActive, isVerified, dateVerified, isPro } = campaign || {};
       let { lastStepDate, name } = data || {};
       const dataDetails = data?.details;
       const goals = data?.goals;
@@ -52,12 +51,16 @@ module.exports = {
         zip,
         party,
         office,
+        ballotLevel,
+        level,
         state,
         pledged,
         campaignCommittee,
         otherOffice,
         district,
         city,
+        website,
+        runForOffice
       } = dataDetails || {};
 
       //UNIX formatted timestamps in milliseconds
@@ -113,6 +116,7 @@ module.exports = {
             ? Object.keys(data.aiContent).length
             : 0,
           filed_candidate: campaignCommittee ? 'yes' : 'no',
+          pro_candidate: isPro ? 'Yes' : 'No',
           ...(
             isVerified !== null ?
               { verified_candidates: verifiedCandidate } :
@@ -123,12 +127,15 @@ module.exports = {
               { date_verified: formattedDate } :
               {}
           ),
+          ...(website ? { website } : {}),
+          ...(level ? { ai_office_level: level } : {}),
+          ...(ballotLevel ? { office_level: ballotLevel } : {}),
+          ...(runForOffice ? { running: runForOffice } : {})
         },
       };
 
       const existingId = data.hubspotId;
       if (existingId) {
-        // console.log('updating existing company in hubspot', existingId);
         try {
           await hubspotClient.crm.companies.basicApi.update(
             existingId,
