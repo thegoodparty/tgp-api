@@ -3,6 +3,21 @@ const hubspot = require('@hubspot/api-client');
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
+const generateCompanyProperties = (fields) => async (campaign) => {
+  const id = campaign.data?.hubspotId;
+  const companyObject = await getCRMCompanyObject(campaign);
+  const properties = fields.reduce(
+    (aggregate, field) => ({
+      ...aggregate,
+      ...(
+        companyObject.properties[field] || companyObject.properties[field] === null ?
+          {[field]: companyObject.properties[field]} : {}
+      )
+    }), {}
+  );
+  return {id, properties};
+};
+
 module.exports = {
   friendlyName: 'Mass CRM Companies Refresh',
 
@@ -27,31 +42,15 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
+    let companyUpdateObjects = [];
     try {
       const {fields} = inputs;
       const campaigns = await Campaign.find();
       const existingCRMCompanies = campaigns.filter(({data}) => data?.hubspotId);
 
-      const companyUpdateObjects = await Promise.all(
+      companyUpdateObjects = await Promise.all(
         existingCRMCompanies.map(
-          async campaign => {
-            const id = campaign.data?.hubspotId;
-            const companyObject = await getCRMCompanyObject(campaign);
-            return fields.reduce(
-              (aggregate, field) => {
-                return {
-                  ...aggregate,
-                  properties: {
-                    ...aggregate.properties,
-                    ...(
-                      companyObject.properties[field] || companyObject.properties[field] === null ?
-                        {[field]: companyObject.properties[field]} : {}
-                    )
-                  }
-                };
-              }, {id, properties: {}}
-            );
-          }
+          generateCompanyProperties(fields)
         )
       );
     } catch (e) {
@@ -62,7 +61,6 @@ module.exports = {
     }
 
     const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
 
     let updates;
     try {
@@ -78,6 +76,5 @@ module.exports = {
     }
 
     return exits.success(`OK: ${updates?.results?.length} companies updated`);
-
   },
 };
