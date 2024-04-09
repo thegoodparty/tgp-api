@@ -72,7 +72,6 @@ module.exports = {
 
       let contactId;
       let profile_updated_count = 0;
-      console.dir(user, {colors: true, depth: 4})
       if (user.metaData) {
         const metaData = JSON.parse(user.metaData);
         if (metaData.hubspotId) {
