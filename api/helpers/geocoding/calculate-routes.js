@@ -75,12 +75,10 @@ module.exports = {
         //   addresses,
         // });
         if (i < maxRoutes) {
-          const route = await generateOptimizedRoute(addresses);
+          const route = await sails.helpers.geocoding.generateOptimizedRoute(
+            addresses,
+          );
           if (route) {
-            await sails.helpers.slack.errorLoggerHelper(
-              'Calculating route successful',
-              {},
-            );
             await DoorKnockingRoute.create({
               data: route,
               dkCampaign: dkCampaignId,
@@ -108,45 +106,6 @@ module.exports = {
     }
   },
 };
-
-async function generateOptimizedRoute(addressesWithId) {
-  try {
-    if (!addressesWithId || addressesWithId.length === 0) {
-      return false;
-    }
-    const addresses = addressesWithId.map((address) => address.address);
-    const request = {
-      params: {
-        key: googleApiKey,
-        optimize: true,
-        waypoints: addresses,
-        origin: addresses[0],
-        destination: addresses[0],
-        mode: 'walking',
-      },
-    };
-    console.log(request.params);
-    const response = await client.directions(request);
-    if (response.data.status === 'OK') {
-      const waypoints = response.data.routes[0].waypoint_order;
-      const optimizedAddresses = waypoints.map(
-        (waypoint) => addressesWithId[waypoint],
-      );
-      return {
-        optimizedAddresses,
-        response: response.data,
-      };
-    }
-    return false;
-  } catch (err) {
-    await sails.helpers.slack.errorLoggerHelper(
-      'error at generateOptimizedRoute',
-      err,
-    );
-    console.log('error at generateOptimizedRoute', err);
-    return false;
-  }
-}
 
 function generateVoterGroups(voters, minHousesPerRoute, maxHousesPerRoute) {
   const votersByGeoHash = groupAndSplitByGeoHash(
