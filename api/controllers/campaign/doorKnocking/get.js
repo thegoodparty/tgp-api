@@ -37,9 +37,36 @@ module.exports = {
         return exits.badRequest('No campaign');
       }
 
+      let totals = {
+        completed: 0,
+        skipped: 0,
+        refusal: 0,
+        likelyVoters: 0,
+        positiveExperience: 0,
+        totalAddresses: 0,
+      };
+      for (let i = 0; i < dkCampaign.routes.length; i++) {
+        const route = dkCampaign.routes[i];
+        if (!route || !route.data || !route.data.optimizedAddresses) {
+          continue;
+        }
+        totals.totalAddresses += route.data.optimizedAddresses.length;
+
+        const { route: updatedRoute } =
+          await sails.helpers.doorKnocking.routeStatus(route, true);
+        if (updatedRoute.data.totals) {
+          totals.completed += updatedRoute.data.totals.completed;
+          totals.skipped += updatedRoute.data.totals.skipped;
+          totals.refusal += updatedRoute.data.totals.refusal;
+          totals.likelyVoters += updatedRoute.data.totals.likelyVoters;
+          totals.positiveExperience +=
+            updatedRoute.data.totals.positiveExperience;
+        }
+      }
       return exits.success({
         dkCampaign: dkCampaign.data,
         routes: dkCampaign.routes,
+        totals,
       });
     } catch (e) {
       console.log('Error at doorKnocking/create', e);
