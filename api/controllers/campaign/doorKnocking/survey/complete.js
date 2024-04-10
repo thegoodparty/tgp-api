@@ -56,10 +56,20 @@ module.exports = {
         volunteer: route.volunteer.id,
         voter: voterId,
       });
+      let survey;
       if (surveys.length === 0) {
-        return exits.badRequest('No survey found');
+        // return exits.badRequest('No survey found');
+        survey = await Survey.create({
+          route: route.id,
+          dkCampaign: dkCampaign.id,
+          campaign: dkCampaign.campaign,
+          volunteer: route.volunteer.id,
+          voter: voterId,
+          data,
+        }).fetch();
+      } else {
+        survey = surveys[0];
       }
-      const survey = surveys[0];
 
       await Survey.updateOne({ id: survey.id }).set({
         data: { ...survey.data, ...data, status: 'completed' },
