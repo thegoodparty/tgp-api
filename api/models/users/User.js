@@ -228,10 +228,7 @@ module.exports = {
         } else {
           values.isAdmin = false;
         }
-      }
 
-      if (values.email) {
-        // const token = await sails.helpers.strings.random('url-friendly');
         const token = Math.floor(100000 + Math.random() * 900000) + '';
         values.emailConfToken = token;
         values.emailConfTokenDateCreated = Date.now();
