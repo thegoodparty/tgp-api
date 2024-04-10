@@ -1,6 +1,5 @@
 // https://developers.hubspot.com/docs/api/crm/companies
 const hubspot = require('@hubspot/api-client');
-const { getCRMCompanyObject } = require('../../util/get-crm-company-object');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
@@ -37,7 +36,7 @@ module.exports = {
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
       const { campaign } = inputs;
       const { data } = campaign || {};
-      const companyObj = await getCRMCompanyObject(campaign);
+      const companyObj = await sails.helpers.crm.getCrmCompanyObject(campaign);
       const name = companyObj.properties.name
 
       const existingId = data.hubspotId;

@@ -1,11 +1,10 @@
-const { getCRMCompanyObject } = require('../../util/get-crm-company-object');
 const hubspot = require('@hubspot/api-client');
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
 const generateCompanyProperties = (fields) => async (campaign) => {
   const id = campaign.data?.hubspotId;
-  const companyObject = await getCRMCompanyObject(campaign);
+  const companyObject = await sails.helpers.crm.getCrmCompanyObject(campaign);
   const properties = fields.reduce(
     (aggregate, field) => ({
       ...aggregate,

@@ -15,7 +15,8 @@ const determineName = async (data, campaignUserId) => {
   return await sails.helpers.user.name(user)
 }
 
-const getCRMCompanyObject = async (campaign) => {
+const getCrmCompanyObject = async (inputs, exits) => {
+  const { campaign } = inputs;
   const { data, isActive, isVerified, dateVerified, isPro } = campaign || {};
   const {
     lastStepDate,
@@ -61,7 +62,7 @@ const getCRMCompanyObject = async (campaign) => {
   const formattedDate = dateVerified !== null ?
     moment(new Date(dateVerified)).format('YYYY-MM-DD') : null
 
-  return {
+  exits.success({
     properties: {
       name,
       candidate_party: party,
@@ -104,9 +105,21 @@ const getCRMCompanyObject = async (campaign) => {
       ...(ballotLevel ? { office_level: ballotLevel } : {}),
       ...(runForOffice ? { running: runForOffice } : {})
     },
-  }
+  })
 }
 
 module.exports = {
-  getCRMCompanyObject
+  inputs: {
+    campaign: {
+      type: 'ref',
+      description: 'The campaign object to generate a CRM company object for',
+      required: true
+    }
+  },
+  exits: {
+    success: {
+      description: 'Successfully generated CRM company object',
+    }
+  },
+  fn: getCrmCompanyObject
 }
