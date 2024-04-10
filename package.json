@@ -6,7 +6,7 @@
   "keywords": [],
   "dependencies": {
     "@contentful/rich-text-plain-text-renderer": "^15.12.1",
-    "@google-cloud/recaptcha-enterprise": "^3.1.0",
+    "@google-cloud/recaptcha-enterprise": "^5.6.0",
     "@googlemaps/google-maps-services-js": "^3.3.42",
     "@hubspot/api-client": "^8.9.0",
     "@mailchimp/mailchimp_marketing": "^3.0.15",
@@ -26,7 +26,7 @@
     "fs": "^0.0.1-security",
     "global": "^4.4.0",
     "google-auth-library": "^8.9.0",
-    "google-gax": "^3.6.1",
+    "google-gax": "^4.3.2",
     "googleapis": "^126.0.1",
     "gpt-3-encoder": "^1.1.4",
     "gpt-tokenizer": "^2.1.1",
