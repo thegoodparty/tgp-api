@@ -1,3 +1,5 @@
+const MIN_ROUTES = 9; // if routes are less than this number, create more routes
+
 module.exports = {
   inputs: {
     routeId: {
@@ -49,14 +51,27 @@ module.exports = {
         return exits.badRequest('Voter does not belong to campaign');
       }
 
-      const survey = await Survey.findOne({
+      const surveys = await Survey.find({
         route: route.id,
         dkCampaign: dkCampaign.id,
         campaign: dkCampaign.campaign,
         volunteer: route.volunteer.id,
-        type: dkCampaign.type,
         voter: voterId,
       });
+      let survey;
+      if (surveys.length === 0) {
+        // return exits.badRequest('No survey found');
+        survey = await Survey.create({
+          route: route.id,
+          dkCampaign: dkCampaign.id,
+          campaign: dkCampaign.campaign,
+          volunteer: route.volunteer.id,
+          voter: voterId,
+          data,
+        }).fetch();
+      } else {
+        survey = surveys[0];
+      }
 
       await Survey.updateOne({ id: survey.id }).set({
         data: { ...survey.data, ...data, status: 'completed' },
@@ -69,11 +84,12 @@ module.exports = {
       let completeCount = 0;
       for (let i = 0; i < addresses.length; i++) {
         const address = addresses[i];
-        const survey = await Survey.findOne({
+        const surveys = await Survey.find({
           voter: address.voterId,
           route: route.id,
           volunteer: route.volunteer.id,
         });
+        const survey = surveys.length > 0 ? surveys[0] : null;
         if (survey) {
           if (
             survey.data?.status === 'completed' ||
@@ -90,15 +106,19 @@ module.exports = {
         }
       }
       if (completeCount === addresses.length) {
-        await DoorKnockingRoute.updateOne({ id }).set({
+        await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'completed',
         });
         isRouteCompleted = true;
+        await createMoreRoutes(dkCampaign.id);
       } else {
         await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'in-progress',
         });
       }
+
+      //temp
+      await createMoreRoutes(dkCampaign.id);
 
       return exits.success({
         nextVoter,
@@ -110,3 +130,38 @@ module.exports = {
     }
   },
 };
+
+// we need to create 10 more routes if only 3 are left
+
+async function createMoreRoutes(dkCampaignId) {
+  const notCompleted = await DoorKnockingRoute.count({
+    dkCampaign: dkCampaignId,
+    status: { '!=': ['not-calculated', 'completed'] },
+  });
+  if (notCompleted <= MIN_ROUTES) {
+    // see if there are routes that are not calculated
+    const notCalculated = await DoorKnockingRoute.find({
+      dkCampaign: dkCampaignId,
+      status: 'not-calculated',
+    }).limit(10);
+
+    if (notCalculated.length > 0) {
+      // there are routes that are not calculated, we can just calculate them
+      for (let i = 0; i < notCalculated.length; i++) {
+        const route = notCalculated[i];
+        if (route.data.groupedRoute) {
+          const calculatedRoute =
+            await sails.helpers.geocoding.generateOptimizedRoute(
+              route.data.groupedRoute,
+            );
+          if (calculatedRoute) {
+            await DoorKnockingRoute.updateOne({ id: route.id }).set({
+              data: calculatedRoute,
+              status: 'not-claimed',
+            });
+          }
+        }
+      }
+    }
+  }
+}
