@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { isBoolean } = require('lodash');
 const slugify = require('slugify');
 
 module.exports = {
@@ -21,136 +22,165 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     const { row } = inputs;
-    await insertIntoDatabase(row);
+
+    try {
+      const {
+        position_name,
+        state,
+        race_id,
+        is_primary,
+        is_judicial,
+        sub_area_name,
+        sub_area_value,
+        filing_periods,
+        election_day,
+        normalized_position_name,
+      } = row;
+
+      let isPrimary = false;
+      if (isBoolean(is_primary)) {
+        isPrimary = is_primary;
+      } else {
+        isPrimary = is_primary && is_primary.toLowerCase() === 'true';
+      }
+
+      let isJudicial = false;
+      if (isBoolean(is_judicial)) {
+        isJudicial = is_judicial;
+      } else {
+        isJudicial = is_judicial && is_judicial.toLowerCase() === 'true';
+      }
+
+      console.log(`inserting ${position_name} into db`);
+
+      const { name, level } = await sails.helpers.ballotready.extractLocation(
+        row,
+      );
+
+      console.log(`extracted name: ${name}, level: ${level}`);
+
+      // if (name === '') {
+      //   console.log('position_name', position_name);
+      //   console.log('original level', row.level);
+      //   console.log('name', name);
+      //   console.log('level', level);
+      //   console.log('---');
+      // }
+      const exists = await BallotRace.findOne({
+        ballotId: race_id,
+      });
+      if (!exists && name !== '') {
+        console.log('ballotRace does not exist. adding it...');
+        const hashId = await randomHash();
+        const ballotHashId = await sails.helpers.ballotready.encodeId(
+          race_id,
+          'PositionElection',
+        );
+
+        const dates = extractDates(filing_periods);
+        if (dates) {
+          row.filing_date_start = dates.startDate;
+          row.filing_date_end = dates.endDate;
+        }
+        const electionDate = election_day
+          ? new Date(election_day).getTime()
+          : 0;
+
+        if (level === 'county') {
+          const countyExists = await County.findOne({
+            name,
+            state,
+          });
+          if (countyExists) {
+            console.log('county exists. adding ballotRace');
+            await BallotRace.create({
+              hashId,
+              ballotId: race_id,
+              ballotHashId,
+              state,
+              data: row,
+              county: countyExists.id,
+              level,
+              isPrimary,
+              isJudicial,
+              subAreaName: sub_area_name,
+              subAreaValue: sub_area_value,
+              electionDate,
+              positionSlug: slugify(normalized_position_name, {
+                lower: true,
+              }),
+            });
+            count++;
+          } else {
+            console.log('county does not exist. skipping!');
+            await sails.helpers.slack.errorLoggerHelper(
+              `county does not exist. skipping! name: ${name}, state: ${state}`,
+              {},
+            );
+          }
+        } else if (level === 'state' || level === 'federal') {
+          await BallotRace.create({
+            hashId,
+            ballotId: race_id,
+            ballotHashId,
+            state,
+            data: row,
+            level,
+            isPrimary,
+            isJudicial,
+            subAreaName: sub_area_name,
+            subAreaValue: sub_area_value,
+            electionDate,
+            positionSlug: slugify(normalized_position_name, {
+              lower: true,
+            }),
+          });
+          count++;
+        } else {
+          const municipalityExists = await Municipality.findOne({
+            name,
+            state,
+          });
+          if (municipalityExists) {
+            console.log('municipality exists. adding ballotRace');
+            await BallotRace.create({
+              hashId,
+              ballotId: race_id,
+              ballotHashId,
+              state,
+              data: row,
+              municipality: municipalityExists.id,
+              level,
+              isPrimary,
+              isJudicial,
+              subAreaName: sub_area_name,
+              subAreaValue: sub_area_value,
+              electionDate,
+              positionSlug: slugify(normalized_position_name, {
+                lower: true,
+              }),
+            });
+            count++;
+          } else {
+            console.log('municipality does not exist. skipping!');
+            await sails.helpers.slack.errorLoggerHelper(
+              `municipality does not exist. skipping! name: ${name}, state: ${state}`,
+              {},
+            );
+          }
+        }
+      }
+    } catch (e) {
+      console.log('error in add-race', e);
+      return exits.badRequest({
+        message: 'Error in addRace',
+        error: JSON.stringify(e),
+      });
+    }
+
+    return exits.success({ message: 'done' });
   },
 };
-
-async function insertIntoDatabase(row) {
-  console.log('entered insertIntoDatabase', row);
-
-  try {
-    const {
-      position_name,
-      state,
-      race_id,
-      is_primary,
-      is_judicial,
-      sub_area_name,
-      sub_area_value,
-      filing_periods,
-      election_day,
-      normalized_position_name,
-    } = row;
-    const isPrimary = is_primary && is_primary.toLowerCase() === 'true';
-    const isJudicial = is_judicial && is_judicial.toLowerCase() === 'true';
-
-    console.log(`inserting ${position_name} into db`);
-
-    const { name, level } = await sails.helpers.ballotready.extractLocation(
-      row,
-    );
-
-    console.log(`extracted name: ${name}, level: ${level}`);
-
-    // if (name === '') {
-    //   console.log('position_name', position_name);
-    //   console.log('original level', row.level);
-    //   console.log('name', name);
-    //   console.log('level', level);
-    //   console.log('---');
-    // }
-    const exists = await BallotRace.findOne({
-      ballotId: race_id,
-    });
-    if (!exists && name !== '') {
-      console.log('ballotRace does not exist. adding it...');
-      const hashId = await randomHash();
-      const dates = extractDates(filing_periods);
-      if (dates) {
-        row.filing_date_start = dates.startDate;
-        row.filing_date_end = dates.endDate;
-      }
-      const electionDate = election_day ? new Date(election_day).getTime() : 0;
-
-      if (level === 'county') {
-        const countyExists = await County.findOne({
-          name,
-          state,
-        });
-        if (countyExists) {
-          console.log('county exists. adding ballotRace');
-          await BallotRace.create({
-            hashId,
-            ballotId: race_id,
-            state,
-            data: row,
-            county: countyExists.id,
-            level,
-            isPrimary,
-            isJudicial,
-            subAreaName: sub_area_name,
-            subAreaValue: sub_area_value,
-            electionDate,
-            positionSlug: slugify(normalized_position_name, {
-              lower: true,
-            }),
-          });
-          count++;
-        } else {
-          console.log('county does not exist. skipping!');
-        }
-      } else if (level === 'state' || level === 'federal') {
-        await BallotRace.create({
-          hashId,
-          ballotId: race_id,
-          state,
-          data: row,
-          level,
-          isPrimary,
-          isJudicial,
-          subAreaName: sub_area_name,
-          subAreaValue: sub_area_value,
-          electionDate,
-          positionSlug: slugify(normalized_position_name, {
-            lower: true,
-          }),
-        });
-        count++;
-      } else {
-        const municipalityExists = await Municipality.findOne({
-          name,
-          state,
-        });
-        if (municipalityExists) {
-          console.log('municipality exists. adding ballotRace');
-          await BallotRace.create({
-            hashId,
-            ballotId: race_id,
-            state,
-            data: row,
-            municipality: municipalityExists.id,
-            level,
-            isPrimary,
-            isJudicial,
-            subAreaName: sub_area_name,
-            subAreaValue: sub_area_value,
-            electionDate,
-            positionSlug: slugify(normalized_position_name, {
-              lower: true,
-            }),
-          });
-          count++;
-        } else {
-          console.log('municipality does not exist. skipping!');
-        }
-      }
-    }
-  } catch (e) {
-    console.log('error in insertIntoDb', e);
-  }
-
-  return exits.success({ message: 'done' });
-}
 
 async function randomHash() {
   const hashId = crypto.randomBytes(3).toString('hex').substr(0, 8);
