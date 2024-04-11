@@ -1,5 +1,3 @@
-const MIN_ROUTES = 9; // if routes are less than this number, create more routes
-
 module.exports = {
   inputs: {
     routeId: {
@@ -117,9 +115,6 @@ module.exports = {
         });
       }
 
-      //temp
-      await createMoreRoutes(dkCampaign.id);
-
       return exits.success({
         nextVoter,
         isRouteCompleted,
@@ -130,38 +125,3 @@ module.exports = {
     }
   },
 };
-
-// we need to create 10 more routes if only 3 are left
-
-async function createMoreRoutes(dkCampaignId) {
-  const notCompleted = await DoorKnockingRoute.count({
-    dkCampaign: dkCampaignId,
-    status: { '!=': ['not-calculated', 'completed'] },
-  });
-  if (notCompleted <= MIN_ROUTES) {
-    // see if there are routes that are not calculated
-    const notCalculated = await DoorKnockingRoute.find({
-      dkCampaign: dkCampaignId,
-      status: 'not-calculated',
-    }).limit(10);
-
-    if (notCalculated.length > 0) {
-      // there are routes that are not calculated, we can just calculate them
-      for (let i = 0; i < notCalculated.length; i++) {
-        const route = notCalculated[i];
-        if (route.data.groupedRoute) {
-          const calculatedRoute =
-            await sails.helpers.geocoding.generateOptimizedRoute(
-              route.data.groupedRoute,
-            );
-          if (calculatedRoute) {
-            await DoorKnockingRoute.updateOne({ id: route.id }).set({
-              data: calculatedRoute,
-              status: 'not-claimed',
-            });
-          }
-        }
-      }
-    }
-  }
-}
