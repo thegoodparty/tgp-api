@@ -324,6 +324,11 @@ async function addNewCandidate(row) {
   const isUnexpired =
     row.is_unexpired && row.is_unexpired.toLowerCase() === 'true';
 
+  const candidateHashId = await sails.helpers.ballotready.encodeId(
+    row.candidate_id,
+    'Candidate',
+  );
+
   // fields we may wish to search, sort, filter on.
   candidateData = {
     firstName: row.first_name,
@@ -335,6 +340,7 @@ async function addNewCandidate(row) {
     parties: row.parties,
     email: row?.email ? row.email : '',
     phone: row?.phone ? row.phone : '',
+    ballotHashId: candidateHashId,
     candidateId: row.candidate_id,
     positionId: row.position_id,
     electionId: row.election_id,
@@ -343,7 +349,7 @@ async function addNewCandidate(row) {
     electionDay: row.election_day,
     electionResult: row.election_result,
     positionName: row.position_name,
-    level: row.level,
+    level: row?.level ? row.level : '',
     tier: row.tier,
     isJudicial: isJudicial,
     isRetention: isRetention,
@@ -362,38 +368,55 @@ async function addNewCandidate(row) {
   try {
     candidate = await BallotCandidate.create(candidateData).fetch();
   } catch (e) {
-    console.log('error creating candidate', e);
-    await sendSlackNotification(
-      'Error creating candidate',
-      `Error creating candidate ${row.candidate_id}. ${e}`,
-      'dev',
-    );
+    // check if error is due to unique constraint
+    if (e.code === 'E_UNIQUE') {
+      console.log('candidate already exists');
+      // can the m2m associations below get duplicated ?
+      // if so we should return here.
+      // return;
+    } else {
+      console.log('error creating candidate', e);
+      await sendSlackNotification(
+        'Error creating candidate',
+        `Error creating candidate ${row.candidate_id}. ${e}`,
+        'dev',
+      );
+    }
   }
 
   if (candidate && candidate?.id) {
-    // add relationships
     if (ballotElection) {
-      await BallotCandidate.addToCollection(
-        candidate.id,
-        'elections',
-        ballotElection.id,
-      );
+      try {
+        await BallotCandidate.addToCollection(
+          candidate.id,
+          'elections',
+          ballotElection.id,
+        );
+      } catch (e) {
+        console.log('error making election relationship', e);
+      }
     }
     if (ballotPosition) {
-      // candidateData.positions = [ballotPosition.id];
-      await BallotCandidate.addToCollection(
-        candidate.id,
-        'positions',
-        ballotPosition.id,
-      );
+      try {
+        await BallotCandidate.addToCollection(
+          candidate.id,
+          'positions',
+          ballotPosition.id,
+        );
+      } catch (e) {
+        console.log('error making position relationship', e);
+      }
     }
     if (ballotRace) {
-      // candidateData.races = [ballotRace.id];
-      await BallotCandidate.addToCollection(
-        candidate.id,
-        'races',
-        ballotRace.id,
-      );
+      try {
+        await BallotCandidate.addToCollection(
+          candidate.id,
+          'races',
+          ballotRace.id,
+        );
+      } catch (e) {
+        console.log('error making race relationship', e);
+      }
     }
   }
 }

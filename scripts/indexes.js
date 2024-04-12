@@ -101,7 +101,7 @@ module.exports = {
     // sparse index
     try {
       await sails.getDatastore().sendNativeQuery(`
-        CREATE UNIQUE INDEX emailIndex ON public.ballotcandidate (email) WHERE email IS NOT NULL
+        CREATE UNIQUE INDEX emailindex ON public.ballotcandidate (email) WHERE email <> ''
       `);
     } catch (error) {
       console.log('emailIndex already exists');
@@ -111,7 +111,7 @@ module.exports = {
     // sparse index
     try {
       await sails.getDatastore().sendNativeQuery(`
-        CREATE UNIQUE INDEX candidateIdIndex ON public.ballotcandidate ("candidateId") WHERE "candidateId" IS NOT NULL
+        CREATE UNIQUE INDEX candidateidindex ON public.ballotcandidate ("candidateId") WHERE "candidateId" <> ''
       `);
     } catch (error) {
       console.log('candidateIdIndex already exists');
@@ -121,10 +121,10 @@ module.exports = {
     // sparse index
     try {
       await sails.getDatastore().sendNativeQuery(`
-        CREATE UNIQUE INDEX phoneIndex ON public.ballotcandidate (phone) WHERE phone IS NOT NULL
+        CREATE UNIQUE INDEX phoneindex ON public.ballotcandidate (phone) WHERE phone <> ''
       `);
     } catch (error) {
-      console.log('phoneIndex already exists');
+      console.log('phoneindex already exists');
     }
 
     // Report back to Sails that the migration was successful
