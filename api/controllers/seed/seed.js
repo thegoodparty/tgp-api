@@ -18,15 +18,13 @@ module.exports = {
         const positionId = campaign.data?.details?.positionId;
         if (positionId) {
           console.log('positionId', positionId);
-          const position = await BallotPosition.findOne({
-            ballotId: positionId,
-          });
-          if (position?.data?.hasPrimary) {
-            console.log('querying for positionId', positionId);
-            const res = await getPrimaryElectionDate(positionId);
-            console.log('ballotready res', res);
-            if (res) {
-              const { level, partisanType, races } = res;
+
+          console.log('querying for positionId', positionId);
+          const res = await getPrimaryElectionDate(positionId);
+          if (res) {
+            const { level, partisanType, races, hasPrimary } = res;
+            if (hasPrimary) {
+              console.log('hasPrimary level', level);
               const positionName = res.name;
               const electionEdges = races.edges;
               console.log('edges count', electionEdges.length);
