@@ -363,32 +363,38 @@ async function addNewCandidate(row) {
     candidate = await BallotCandidate.create(candidateData).fetch();
   } catch (e) {
     console.log('error creating candidate', e);
-    // await sendSlackNotification(
-    //   'Error creating candidate',
-    //   `Error creating candidate ${row.candidate_id}`,
-    //   'dev',
-    // );
+    await sendSlackNotification(
+      'Error creating candidate',
+      `Error creating candidate ${row.candidate_id}. ${e}`,
+      'dev',
+    );
   }
 
-  // add relationships
-  if (ballotElection) {
-    await BallotCandidate.addToCollection(
-      candidate.id,
-      'elections',
-      ballotElection.id,
-    );
-  }
-  if (ballotPosition) {
-    // candidateData.positions = [ballotPosition.id];
-    await BallotCandidate.addToCollection(
-      candidate.id,
-      'positions',
-      ballotPosition.id,
-    );
-  }
-  if (ballotRace) {
-    // candidateData.races = [ballotRace.id];
-    await BallotCandidate.addToCollection(candidate.id, 'races', ballotRace.id);
+  if (candidate && candidate?.id) {
+    // add relationships
+    if (ballotElection) {
+      await BallotCandidate.addToCollection(
+        candidate.id,
+        'elections',
+        ballotElection.id,
+      );
+    }
+    if (ballotPosition) {
+      // candidateData.positions = [ballotPosition.id];
+      await BallotCandidate.addToCollection(
+        candidate.id,
+        'positions',
+        ballotPosition.id,
+      );
+    }
+    if (ballotRace) {
+      // candidateData.races = [ballotRace.id];
+      await BallotCandidate.addToCollection(
+        candidate.id,
+        'races',
+        ballotRace.id,
+      );
+    }
   }
 }
 
