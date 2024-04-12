@@ -17,7 +17,7 @@ module.exports = {
             ballotId: positionId,
           });
           if (position?.data?.hasPrimary) {
-            csvRows += `\n${campaign.id},${campaign.slug},${campaign.data?.name},${position.id},${campaign?.data?.details?.electionId},${campaign?.data?.details?.raceId},${campaign?.data?.details?.electionDate},${campaign?.data?.details?.state},${campaign?.data?.details?.otherOffice}\n`;
+            csvRows += `\n${campaign.id},${campaign.slug},${campaign.data?.name},${position.id},${campaign?.data?.details?.electionId},${campaign?.data?.details?.raceId},${campaign?.data?.details?.electionDate},${campaign?.data?.details?.state},${campaign?.data?.details?.otherOffice}<br/>`;
           }
         }
       }
