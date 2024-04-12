@@ -11,11 +11,13 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const campaigns = await Campaign.find({ isActive: true });
+      console.log('getting campaings', campaigns.length);
       let csvRows = `campaignId,campaignSlug,candidateName,positionElectionDate,DbElectionDate,ballotLevel,electionName,positionName,partisanType,positionId,electionId,raceId,state,otherOffice<br/>`;
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
         const positionId = campaign.data?.details?.positionId;
         if (positionId) {
+          console.log('positionId', positionId);
           const position = await BallotPosition.findOne({
             ballotId: positionId,
           });
