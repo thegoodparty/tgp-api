@@ -20,16 +20,20 @@ module.exports = {
             ballotId: positionId,
           });
           if (position?.data?.hasPrimary) {
+            console.log('querying for positionId', positionId);
             const res = await getPrimaryElectionDate(positionId);
+            console.log('ballotready res', res);
             if (res) {
               const { level, partisanType, races } = res;
               const positionName = res.name;
               const electionEdges = races.edges;
+              console.log('edges count', electionEdges.length);
               for (let i = 0; i < electionEdges.length; i++) {
                 const { node } = electionEdges[i];
                 const { electionDay, name } = node.election;
                 // csvRows += `${level},${name},${partisanType},${electionDay},${state}<br/>`;
                 const date = moment(electionDay);
+                console.log('date', date);
                 if (date > today && date < future) {
                   csvRows += `${campaign?.id},${campaign?.slug},${campaign.data?.name},${electionDay},${campaign?.data?.details?.electionDate},${level},${name},${positionName},${partisanType},${positionId},${campaign?.data?.details?.electionId},${campaign?.data?.details?.raceId},${campaign?.data?.details?.state},${campaign?.data?.details?.otherOffice}<br/>`;
                 }
