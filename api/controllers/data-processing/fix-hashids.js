@@ -32,6 +32,7 @@ module.exports = {
             ballotHashId: hashid,
           });
           updated++;
+          offset++;
           console.log(
             `updated race ${race.id} with hashid ${hashid}. updated: ${updated}`,
           );
