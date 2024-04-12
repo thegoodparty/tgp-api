@@ -8,7 +8,7 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const campaigns = await Campaign.find({ isActive: true });
-      let csvRows = `campaignId,positionId,electionId,raceId,electionDate,state,otherOffice<br/>`;
+      let csvRows = `campaignId,campaignSlug,candidateName,positionId,electionId,raceId,electionDate,state,otherOffice<br/>`;
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
         const positionId = campaign.data?.details?.positionId;
@@ -16,9 +16,8 @@ module.exports = {
           const position = await BallotPosition.findOne({
             ballotId: positionId,
           });
-          console.log('position', position?.data?.hasPrimary);
           if (position?.data?.hasPrimary) {
-            csvRows += `\n${campaign.id},${position.id},${campaign?.data?.details?.electionId},${campaign?.data?.details?.raceId},${campaign?.data?.details?.electionDate},${campaign?.data?.details?.state},${campaign?.data?.details?.otherOffice}\n`;
+            csvRows += `\n${campaign.id},${campaign.slug},${campaign.data?.name},${position.id},${campaign?.data?.details?.electionId},${campaign?.data?.details?.raceId},${campaign?.data?.details?.electionDate},${campaign?.data?.details?.state},${campaign?.data?.details?.otherOffice}\n`;
           }
         }
       }
