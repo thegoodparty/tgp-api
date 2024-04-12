@@ -33,6 +33,69 @@ module.exports = {
       console.log('l2CountIndex already exists');
     }
 
+    // // BallotElection indexes
+    // console.log('creating sparse index on BallotElection.ballotId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX ballotIdIndex ON public.ballotelection (ballotId) WHERE ballotId IS NOT NULL
+    //   `);
+    // } catch (error) {
+    //   console.log('ballotIdIndex already exists');
+    // }
+
+    // console.log('creating sparse index on BallotElection.ballotHashId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX ballotHashIdIndex ON public.ballotelection (ballotHashId) WHERE ballotHashId IS NOT NULL
+    //   `);
+    // } catch (error) {
+    //   console.log('ballotHashIdIndex already exists');
+    // }
+
+    // // BallotPosition indexes
+    // console.log('creating sparse index on BallotPosition.ballotId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX ballotIdIndex ON public.ballotposition (ballotId) WHERE ballotId IS NOT NULL
+    //   `);
+    // } catch (error) {
+    //   console.log('ballotIdIndex already exists');
+    // }
+
+    // console.log('creating sparse index on BallotPosition.ballotHashId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX ballotHashIdIndex ON public.ballotposition (ballotHashId) WHERE ballotHashId IS NOT NULL
+    //   `);
+    // } catch (error) {
+    //   console.log('ballotHashIdIndex already exists');
+    // }
+
+    // // BallotRace indexes
+    // console.log('creating sparse index on BallotRace.ballotId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX ballotIdIndex ON public.ballotrace (ballotId) WHERE ballotId IS NOT NULL
+    //   `);
+    // } catch (error) {
+    //   console.log('ballotIdIndex already exists');
+    // }
+
+    // console.log('creating sparse index on BallotRace.ballotHashId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX ballotHashIdIndex ON public.ballotrace (ballotHashId) WHERE ballotHashId IS NOT NULL
+    //   `);
+    // } catch (error) {
+    //   console.log('ballotHashIdIndex already exists');
+    // }
+
     // BallotCandidate indexes
     console.log('creating sparse index on BallotCandidate.email');
     // sparse index

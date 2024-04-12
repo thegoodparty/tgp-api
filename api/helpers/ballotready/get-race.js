@@ -59,6 +59,9 @@ async function getRaceById(raceId) {
                         frequency
                     }
                     hasPrimary
+                    normalizedPosition {
+                      name
+                  }
                 }
                 filingPeriods {
                     endOn

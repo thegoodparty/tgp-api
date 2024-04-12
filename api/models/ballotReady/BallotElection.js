@@ -4,11 +4,15 @@ module.exports = {
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
     ballotId: {
+      // consider creating a unique sparse index in scripts/indexes.js
+      // tomer has suggested making up a random unique ballotId instead
       type: 'string',
       required: true,
       unique: true,
     },
-
+    ballotHashId: {
+      type: 'string',
+    },
     electionDate: {
       type: 'number',
       required: true,

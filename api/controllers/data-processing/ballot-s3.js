@@ -40,6 +40,10 @@ module.exports = {
       type: 'boolean',
       defaultsTo: true,
     },
+    allFiles: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
 
   exits: {
@@ -55,24 +59,42 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const files = await getLatestFiles(s3Bucket, 200);
-      const objectKey = findLatestCandidatesFile(files);
-      const localFilePath = `${csvFilePath}/${objectKey}`;
-      await downloadFile(s3Bucket, objectKey, localFilePath);
-      let rows = await parseFile(localFilePath);
+      let files = [];
+      if (inputs.allFiles === true) {
+        files = getAllCandidateFiles(s3Bucket, 200);
+        for (const file of files) {
+          const objectKey = file?.Key;
+          const localFilePath = `${csvFilePath}/${objectKey}`;
+          await downloadFile(s3Bucket, objectKey, localFilePath);
+          let rows = await parseFile(localFilePath);
+          if (rows) {
+            console.log(`rows: ${rows.length}`);
+            await writeDb(rows);
+          }
+        }
+      } else {
+        files = await getLatestFiles(s3Bucket, 200);
+        const objectKey = findLatestCandidatesFile(files);
+        const localFilePath = `${csvFilePath}/${objectKey}`;
+        await downloadFile(s3Bucket, objectKey, localFilePath);
+        let rows = await parseFile(localFilePath);
 
-      if (inputs.addToSheets === true && appBase === 'https://goodparty.org') {
-        const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
-        await sails.helpers.google.uploadSheets(
-          localFilePath,
-          sheetId,
-          objectKey,
-        );
-      }
+        if (
+          inputs.addToSheets === true &&
+          appBase === 'https://goodparty.org'
+        ) {
+          const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
+          await sails.helpers.google.uploadSheets(
+            localFilePath,
+            sheetId,
+            objectKey,
+          );
+        }
 
-      if (rows) {
-        console.log(`rows: ${rows.length}`);
-        await writeDb(rows);
+        if (rows) {
+          console.log(`rows: ${rows.length}`);
+          await writeDb(rows);
+        }
       }
 
       return exits.success({
@@ -93,75 +115,147 @@ module.exports = {
 };
 
 async function addNewCandidate(row) {
-  const ballotElection = await BallotElection.findOne({
-    ballotId: row.election_id,
-  });
+  let ballotElection;
+
+  try {
+    ballotElection = await BallotElection.findOne({
+      ballotId: row.election_id,
+    });
+  } catch (e) {
+    console.log('error finding ballotElection', e);
+  }
   if (!ballotElection) {
     console.log('ballotElection not found');
+    const encodedElectionId = await sails.helpers.ballotready.encodeId(
+      row.election_id,
+      'Election',
+    );
+    const election = await sails.helpers.ballotready.getElection(
+      encodedElectionId,
+    );
+    console.log('got election', election);
+    let electionData = {
+      electionId: election.databaseId,
+      electionDay: election.electionDay,
+      state: election.state,
+      data: { ...election },
+    };
+
+    console.log('adding election', electionData);
+    await sails.helpers.ballotready.addElection(electionData);
+
+    ballotElection = await BallotElection.findOne({
+      ballotId: row.election_id,
+    });
+  }
+
+  if (!ballotElection) {
     await sendSlackNotification(
       'BallotElection not found',
       `BallotElection not found for election ${row.election_id}`,
-      'bot-dev',
+      'dev',
     );
   }
 
-  const ballotPosition = await BallotPosition.findOne({
-    ballotId: row.position_id,
-  });
+  let ballotPosition;
+  let positionId = row.position_id;
+  try {
+    ballotPosition = await BallotPosition.findOne({
+      ballotId: positionId,
+    });
+  } catch (e) {
+    console.log('error finding ballotPosition', e);
+  }
   if (!ballotPosition) {
     console.log('ballotPosition not found');
+
+    const encodedPositionId = await sails.helpers.ballotready.encodeId(
+      positionId,
+      'Position',
+    );
+    const position = await sails.helpers.ballotready.getPosition(
+      encodedPositionId,
+    );
+    console.log('got position', position);
+    let positionData = {
+      positionId: position.databaseId,
+      electionId: ballotElection.id,
+      state: position.state,
+      ballotElection: ballotElection.id,
+      data: { ...position },
+    };
+
+    console.log('adding position', positionData);
+    await sails.helpers.ballotready.addPosition(positionData);
+
+    ballotPosition = await BallotPosition.findOne({
+      ballotId: positionId,
+    });
+  }
+
+  if (!ballotPosition) {
     await sendSlackNotification(
       'BallotPosition not found',
       `BallotPosition not found for position ${row.position_id}`,
-      'bot-dev',
+      'dev',
     );
   }
 
-  const ballotRace = await BallotRace.findOne({
+  let ballotRace = await BallotRace.findOne({
     ballotId: row.race_id,
   });
   if (!ballotRace) {
     console.log('ballotRace not found');
+    // console.log('getting race', row.race_id);
+    // the row.race_id is the Database ID but the ballotready API uses the hashed ID
+    const raceId = row.race_id;
+    const encodedRaceId = await sails.helpers.ballotready.encodeId(
+      raceId,
+      'PositionElection',
+    );
+    const race = await sails.helpers.ballotready.getRace(encodedRaceId);
+    console.log('got race data from ballotReady api', race);
+
+    let filingPeriods = [];
+    for (const fp of race.filingPeriods) {
+      filingPeriods.push({
+        start_on: fp.startOn,
+        end_on: fp.endOn,
+      });
+    }
+    // for now we match the format of the existing filing_periods field (from csv parse in seed/races)
+    // but we may want to change this to an array of objects in the future
+    // would need to fix it here and in seed/races and truncate/rerun the seed.
+    let fpString = JSON.stringify(filingPeriods);
+    fpString = fpString.replace(/"/g, '\\"').replace(/:/g, '=>');
+
+    let raceData = {
+      position_name: race.position.name,
+      state: race.position.state,
+      race_id: race.databaseId,
+      is_primary: race.isPrimary,
+      is_judicial: race.position.judicial,
+      sub_area_name: race.position.subAreaName,
+      sub_area_value: race.position.subAreaValue,
+      filing_periods: fpString,
+      election_day: race.election.electionDay,
+      normalized_position_name: race.position.normalizedPosition.name,
+    };
+
+    console.log('adding race', raceData);
+    await sails.helpers.ballotready.addRace(raceData);
+
+    ballotRace = await BallotRace.findOne({
+      ballotId: row.race_id,
+    });
+  }
+
+  if (!ballotRace) {
     await sendSlackNotification(
       'BallotRace not found',
       `BallotRace not found for race ${row.race_id}`,
-      'bot-dev',
+      'dev',
     );
-
-    // console.log('getting race', row.race_id);
-    // // TODO: the row.race_id is the Database ID but the ballotready API uses the hashed ID
-    // // so we need to store the hashed id in data json and rework this to use the hashed id
-    // const race = await sails.helpers.ballotready.getRace(row.race_id);
-    // console.log('got race', race);
-
-    // let filingPeriods = [];
-    // for (const fp of race.filingPeriods) {
-    //   filingPeriods.push({
-    //     start_on: fp.startOn,
-    //     end_on: fp.endOn,
-    //   });
-    // }
-    // // for now we match the format of the existing filing_periods field (from csv parse in seed/races)
-    // // but we may want to change this to an array of objects in the future
-    // // would need to fix it here and in seed/races and truncate/rerun the seed.
-    // let fpString = JSON.stringify(filingPeriods);
-    // fpString = fpString.replace(/"/g, '\\"').replace(/:/g, '=>');
-
-    // let raceData = {
-    //   position_name: race.position.name,
-    //   state: race.position.state,
-    //   race_id: race.databaseId,
-    //   is_primary: race.isPrimary,
-    //   is_judicial: race.position.judicial,
-    //   sub_area_name: race.position.subAreaName,
-    //   sub_area_value: race.position.subAreaValue,
-    //   filing_periods: fpString,
-    //   election_day: race.election.electionDay,
-    //   normalized_position_name: race.position.normalizedPosition.name,
-    // };
-
-    // console.log('adding race', raceData);
-    // await sails.helpers.ballotready.addRace(raceData);
   }
 
   let campaign;
@@ -191,7 +285,7 @@ async function addNewCandidate(row) {
         await sendSlackNotification(
           'Error finding campaign',
           `Error finding campaign for user ${user.id}`,
-          'bot-dev',
+          'dev',
         );
       }
     }
@@ -239,8 +333,8 @@ async function addNewCandidate(row) {
     parsedLocation: row.parsedLocation,
     normalizedPositionName: row.normalized_position_name,
     parties: row.parties,
-    email: row.email,
-    phone: row.phone,
+    email: row?.email ? row.email : '',
+    phone: row?.phone ? row.phone : '',
     candidateId: row.candidate_id,
     positionId: row.position_id,
     electionId: row.election_id,
@@ -258,29 +352,43 @@ async function addNewCandidate(row) {
     isUnexpired: isUnexpired,
   };
 
-  // add relationships
-  if (ballotElection) {
-    candidateData.elections = [ballotElection.id];
-  }
-  if (ballotPosition) {
-    candidateData.positions = [ballotPosition.id];
-  }
-  if (ballotRace) {
-    candidateData.races = [ballotRace.id];
-  }
   if (campaign) {
     candidateData.campaign = campaign.id;
   }
 
+  console.log('candidateData', candidateData);
+
+  let candidate;
   try {
-    await BallotCandidate.create(candidateData);
+    candidate = await BallotCandidate.create(candidateData).fetch();
   } catch (e) {
     console.log('error creating candidate', e);
-    await sendSlackNotification(
-      'Error creating candidate',
-      `Error creating candidate ${row.candidate_id}`,
-      'bot-dev',
+    // await sendSlackNotification(
+    //   'Error creating candidate',
+    //   `Error creating candidate ${row.candidate_id}`,
+    //   'dev',
+    // );
+  }
+
+  // add relationships
+  if (ballotElection) {
+    await BallotCandidate.addToCollection(
+      candidate.id,
+      'elections',
+      ballotElection.id,
     );
+  }
+  if (ballotPosition) {
+    // candidateData.positions = [ballotPosition.id];
+    await BallotCandidate.addToCollection(
+      candidate.id,
+      'positions',
+      ballotPosition.id,
+    );
+  }
+  if (ballotRace) {
+    // candidateData.races = [ballotRace.id];
+    await BallotCandidate.addToCollection(candidate.id, 'races', ballotRace.id);
   }
 }
 
@@ -304,7 +412,7 @@ async function writeDb(rows) {
       await sendSlackNotification(
         'Error finding candidate',
         `Error finding candidate ${row.candidate_id}`,
-        'bot-dev',
+        'dev',
       );
     }
     if (existingCandidate) {
@@ -316,6 +424,34 @@ async function writeDb(rows) {
       console.log('adding new candidate', row.candidate_id);
       await addNewCandidate(row);
     }
+  }
+}
+
+async function getAllCandidateFiles(bucket, maxKeys) {
+  try {
+    const params = {
+      Bucket: bucket,
+      MaxKeys: maxKeys,
+    };
+
+    const data = await s3.listObjectsV2(params).promise();
+
+    // Sort the files by LastModified date
+    const sortedFiles = data.Contents.sort((a, b) => {
+      return new Date(b.LastModified) - new Date(a.LastModified);
+    });
+
+    candidateFiles = [];
+    for (let i = 0; i < sortedFiles.length; i++) {
+      const key = sortedFiles[i]?.Key;
+      if (key?.startsWith('candidacies_v3')) {
+        candidateFiles.push(key);
+      }
+    }
+    return candidateFiles;
+  } catch (error) {
+    console.error('Error fetching files: ', error);
+    throw error;
   }
 }
 
