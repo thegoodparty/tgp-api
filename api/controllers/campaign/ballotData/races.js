@@ -63,6 +63,7 @@ module.exports = {
           edges {
             node {
               id
+              isPrimary
               election {
                 id
                 electionDay
@@ -87,6 +88,7 @@ module.exports = {
               position {  # Include the 'position' field here to get position data
                 id
                 appointed
+                hasPrimary
                 level
                 name
                 salary
@@ -107,28 +109,50 @@ module.exports = {
       const { races } = await sails.helpers.graphql.queryHelper(query);
       const existingPositions = {};
       const electionsByYear = {};
+      const primaryElectionDates = {}; // key - positionId, value - electionDay and raceId (primary election date)
       // group races by year and level
+      // a position with primary will have 2 races. One for primary and one for general
       if (races?.edges) {
         for (let i = 0; i < races.edges.length; i++) {
           const { node } = races.edges[i] || {};
+          const { isPrimary } = node || {};
           const { electionDay } = node?.election || {};
-          const { name } = node?.position || {};
+          const { name, hasPrimary } = node?.position || {};
           const electionYear = new Date(electionDay).getFullYear();
 
           if (
-            existingPositions[`${name}|${electionYear}`] ||
+            // skip primary if the we have primary in that race
+            (hasPrimary && isPrimary) ||
             (node && isPOTUSorVPOTUSNode(node))
           ) {
+            primaryElectionDates[`${node.position.id}|${electionYear}`] = {
+              electionDay,
+              primaryElectionId: node?.election?.id,
+            };
             continue;
           }
-
           existingPositions[`${name}|${electionYear}`] = true;
 
           electionsByYear[electionYear]
             ? electionsByYear[electionYear].push(node)
             : (electionsByYear[electionYear] = [node]);
         }
-        // TODO: Use queue to save these to our db
+        // iterate over the races again and save the primary election date to the general election
+        // the position id will be the same for both primary and general election
+        for (let i = 0; i < races.edges.length; i++) {
+          const { node } = races.edges[i] || {};
+          const { isPrimary } = node || {};
+          const { hasPrimary, id } = node?.position || {};
+          const { electionDay } = node?.election || {};
+          const electionYear = new Date(electionDay).getFullYear();
+          const primaryElectionDate =
+            primaryElectionDates[`${id}|${electionYear}`];
+          if (id && hasPrimary && !isPrimary && primaryElectionDate) {
+            node.election.primaryElectionDate = primaryElectionDate.electionDay;
+            node.election.primaryElectionId =
+              primaryElectionDate.primaryElectionId;
+          }
+        }
       }
 
       const racesGroupedByYearAndSorted =
