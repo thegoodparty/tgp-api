@@ -82,6 +82,10 @@ module.exports = {
           replace: campaign.details.state,
         },
         {
+          find: 'primaryElectionDate',
+          replace: campaign.goals.primaryElectionDate,
+        },
+        {
           find: 'district',
           replace: campaign.details.district,
         },
