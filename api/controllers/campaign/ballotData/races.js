@@ -89,6 +89,7 @@ module.exports = {
                 id
                 appointed
                 hasPrimary
+                partisanType
                 level
                 name
                 salary
@@ -117,7 +118,7 @@ module.exports = {
           const { node } = races.edges[i] || {};
           const { isPrimary } = node || {};
           const { electionDay } = node?.election || {};
-          const { name, hasPrimary } = node?.position || {};
+          const { name, hasPrimary, partisanType } = node?.position || {};
           const electionYear = new Date(electionDay).getFullYear();
 
           if (
@@ -139,10 +140,14 @@ module.exports = {
         }
         // iterate over the races again and save the primary election date to the general election
         // the position id will be the same for both primary and general election
+        // is partisanType is 'partisan' we can ignore the primary election date
         for (let i = 0; i < races.edges.length; i++) {
           const { node } = races.edges[i] || {};
           const { isPrimary } = node || {};
-          const { hasPrimary, id } = node?.position || {};
+          const { hasPrimary, id, partisanType } = node?.position || {};
+          if (partisanType === 'partisan') {
+            continue;
+          }
           const { electionDay } = node?.election || {};
           const electionYear = new Date(electionDay).getFullYear();
           const primaryElectionDate =
