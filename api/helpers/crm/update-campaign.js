@@ -37,7 +37,7 @@ module.exports = {
       const { campaign } = inputs;
       const { data } = campaign || {};
       const companyObj = await sails.helpers.crm.getCrmCompanyObject(campaign);
-      const name = companyObj.properties.name
+      const name = companyObj.properties.name;
 
       const existingId = data.hubspotId;
       if (existingId) {
@@ -93,7 +93,7 @@ module.exports = {
         const hubspotId = createCompanyResponse.id;
         data.hubspotId = hubspotId;
         await Campaign.updateOne({ id: campaign.id }).set({
-          data: {...data, name},
+          data: { ...data, name },
         });
         // make sure we refresh campaign object so we have hubspotId.
         const campaignObj = await Campaign.findOne({ id: campaign.id });

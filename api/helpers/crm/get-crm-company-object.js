@@ -1,9 +1,6 @@
 const moment = require('moment/moment');
 const determineName = async (data, campaignUserId) => {
-  const {
-    name,
-    details
-  } = data
+  const { name, details } = data;
 
   if (name) {
     return name;
@@ -12,8 +9,8 @@ const determineName = async (data, campaignUserId) => {
   }
 
   const user = await User.findOne({ id: campaignUserId });
-  return await sails.helpers.user.name(user)
-}
+  return await sails.helpers.user.name(user);
+};
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
@@ -26,9 +23,9 @@ const getCrmCompanyObject = async (inputs, exits) => {
     aiContent,
     reportedVoterGoals,
     p2vStatus,
-    p2vCompleteDate
+    p2vCompleteDate,
   } = data || {};
-  const electionDate = goals?.electionDate || undefined
+  const electionDate = goals?.electionDate || undefined;
   const {
     zip,
     party,
@@ -42,7 +39,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     district,
     city,
     website,
-    runForOffice
+    runForOffice,
+    primaryElectionDate,
   } = details || {};
   const name = await determineName(data, campaign.user);
 
@@ -51,16 +49,22 @@ const getCrmCompanyObject = async (inputs, exits) => {
     ? new Date(electionDate).getTime()
     : undefined;
 
+  const primaryElectionDateMs = electionDate
+    ? new Date(primaryElectionDate).getTime()
+    : undefined;
+
   const resolvedOffice = office === 'Other' ? otherOffice : office;
 
   const longState = state
     ? await sails.helpers.zip.shortToLongState(state)
     : undefined;
 
-  const verifiedCandidate = isVerified ? 'Yes' : 'No'
+  const verifiedCandidate = isVerified ? 'Yes' : 'No';
 
-  const formattedDate = dateVerified !== null ?
-    moment(new Date(dateVerified)).format('YYYY-MM-DD') : null
+  const formattedDate =
+    dateVerified !== null
+      ? moment(new Date(dateVerified)).format('YYYY-MM-DD')
+      : null;
 
   exits.success({
     properties: {
@@ -82,6 +86,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
       p2v_complete_date: p2vCompleteDate || undefined,
       p2v_status: p2vStatus || 'Locked',
       election_date: electionDateMs,
+      primary_date: primaryElectionDateMs,
       doors_knocked: reportedVoterGoals?.doorKnocking || 0,
       calls_made: reportedVoterGoals?.calls || 0,
       online_impressions: reportedVoterGoals?.digital || 0,
@@ -90,36 +95,30 @@ const getCrmCompanyObject = async (inputs, exits) => {
         : 0,
       filed_candidate: campaignCommittee ? 'yes' : 'no',
       pro_candidate: isPro ? 'Yes' : 'No',
-      ...(
-        isVerified !== null ?
-          { verified_candidates: verifiedCandidate } :
-          {}
-      ),
-      ...(
-        formattedDate !== null ?
-          { date_verified: formattedDate } :
-          {}
-      ),
+      ...(isVerified !== null
+        ? { verified_candidates: verifiedCandidate }
+        : {}),
+      ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
       ...(website ? { website } : {}),
       ...(level ? { ai_office_level: level } : {}),
       ...(ballotLevel ? { office_level: ballotLevel } : {}),
-      ...(runForOffice ? { running: runForOffice } : {})
+      ...(runForOffice ? { running: runForOffice } : {}),
     },
-  })
-}
+  });
+};
 
 module.exports = {
   inputs: {
     campaign: {
       type: 'ref',
       description: 'The campaign object to generate a CRM company object for',
-      required: true
-    }
+      required: true,
+    },
   },
   exits: {
     success: {
       description: 'Successfully generated CRM company object',
-    }
+    },
   },
-  fn: getCrmCompanyObject
-}
+  fn: getCrmCompanyObject,
+};
