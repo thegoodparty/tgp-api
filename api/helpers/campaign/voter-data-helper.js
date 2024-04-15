@@ -269,10 +269,15 @@ async function getTotalRecords(searchUrl, filters) {
     });
 
     let totalRecords = 0;
-    if (estimateResponse?.data) {
+    if (estimateResponse?.data && isArray(estimateResponse.data)) {
       totalRecords = estimateResponse.data.reduce(
         (acc, item) => acc + (item?.__COUNT || 0),
         0,
+      );
+    } else {
+      await sails.helpers.slack.errorLoggerHelper(
+        'unexpected response in getVoterData estimate',
+        estimateResponse,
       );
     }
     return totalRecords;
