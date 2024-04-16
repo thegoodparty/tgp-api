@@ -49,7 +49,7 @@ module.exports = {
                 if (!isPrimary) {
                   continue;
                 }
-                const { electionDay } = node.election;
+                const { electionDay, id } = node.election;
                 const date = moment(electionDay);
                 console.log('date', date);
                 if (date > today && date < future) {
@@ -60,6 +60,8 @@ module.exports = {
                       details: {
                         ...campaign.data.details,
                         primaryElectionDate: electionDay,
+                        electionDay: campaign.data?.goals?.electionDay,
+                        primaryElectionId: id,
                       },
                     },
                   });
@@ -96,6 +98,7 @@ async function getPrimaryElectionDate(positionId) {
               node {
                 isPrimary
                 election {
+                  id
                   electionDay
                   name
                   
