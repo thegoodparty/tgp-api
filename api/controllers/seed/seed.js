@@ -19,9 +19,6 @@ module.exports = {
     try {
       const { start, count } = inputs;
       const campaigns = await Campaign.find({ isActive: true });
-      console.log('getting campaings', campaigns.length);
-      let csvRows = `campaignId,campaignSlug,candidateName,positionElectionDate,DbElectionDate,ballotLevel,electionName,positionName,partisanType,positionId,electionId,raceId,state,otherOffice<br/>`;
-
       if (start > campaigns.length) {
         return exits.success('No more campaigns');
       }
@@ -29,6 +26,7 @@ module.exports = {
 
       for (let i = start; i < end; i++) {
         const campaign = campaigns[i];
+        console.log('campaign', campaign.slug);
         const positionId = campaign.data?.details?.positionId;
         if (positionId) {
           console.log('positionId', positionId);
@@ -36,20 +34,35 @@ module.exports = {
           console.log('querying for positionId', positionId);
           const res = await getPrimaryElectionDate(positionId);
           if (res) {
-            const { level, partisanType, races, hasPrimary } = res;
-            if (hasPrimary) {
-              console.log('hasPrimary level', level);
-              const positionName = res.name;
+            const { partisanType, races, hasPrimary } = res;
+            console.log('partisanType', partisanType);
+            console.log('hasPrimary', hasPrimary);
+
+            if (hasPrimary && partisanType === 'nonpartisan') {
+              console.log('hasPrimary level');
               const electionEdges = races.edges;
               console.log('edges count', electionEdges.length);
               for (let i = 0; i < electionEdges.length; i++) {
                 const { node } = electionEdges[i];
-                const { electionDay, name } = node.election;
-                // csvRows += `${level},${name},${partisanType},${electionDay},${state}<br/>`;
+                const { isPrimary } = node;
+                console.log('isPrimary', isPrimary);
+                if (!isPrimary) {
+                  continue;
+                }
+                const { electionDay } = node.election;
                 const date = moment(electionDay);
                 console.log('date', date);
                 if (date > today && date < future) {
-                  csvRows += `${campaign?.id},${campaign?.slug},${campaign.data?.name},${electionDay},${campaign?.data?.details?.electionDate},${level},${name},${positionName},${partisanType},${positionId},${campaign?.data?.details?.electionId},${campaign?.data?.details?.raceId},${campaign?.data?.details?.state},${campaign?.data?.details?.otherOffice}<br/>`;
+                  console.log('found primary date', electionDay);
+                  await Campaign.updateOne({ id: campaign.id }).set({
+                    data: {
+                      ...campaign.data,
+                      details: {
+                        ...campaign.data.details,
+                        primaryElectionDate: electionDay,
+                      },
+                    },
+                  });
                 }
               }
             }
@@ -57,7 +70,7 @@ module.exports = {
         }
       }
 
-      return exits.success(csvRows);
+      return exits.success('Done');
     } catch (e) {
       console.log('Error in seed', e);
       return exits.success({
@@ -78,9 +91,10 @@ async function getPrimaryElectionDate(positionId) {
           level
           name
           partisanType
-          races {
+          races {            
             edges {
               node {
+                isPrimary
                 election {
                   electionDay
                   name
