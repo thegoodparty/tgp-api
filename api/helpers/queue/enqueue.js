@@ -50,6 +50,10 @@ module.exports = {
         if (err) {
           console.log('error at enqueue', err);
           await sails.helpers.slack.errorLoggerHelper('error at enqueue', err);
+          await sails.helpers.slack.errorLoggerHelper(
+            'original message',
+            message,
+          );
           return exits.success({ message: 'not ok', e: err });
         } else {
           console.log('Success', data.MessageId);
