@@ -82,8 +82,8 @@ module.exports = {
         const localFilePath = `${csvFilePath}/${objectKey}`;
         await downloadFile(s3Bucket, objectKey, localFilePath);
         let rows = await parseFile(localFilePath);
-        if (maxRows && maxRows > 0) {
-          rows = rows.slice(0, maxRows);
+        if (inputs?.maxRows && inputs.maxRows > 0) {
+          rows = rows.slice(0, inputs.maxRows);
         }
 
         if (
