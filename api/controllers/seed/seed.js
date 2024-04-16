@@ -4,16 +4,30 @@ const today = moment();
 const future = moment().add(1, 'year');
 
 module.exports = {
-  inputs: {},
+  inputs: {
+    start: {
+      type: 'number',
+    },
+    count: {
+      type: 'number',
+    },
+  },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
+      const { start, count } = inputs;
       const campaigns = await Campaign.find({ isActive: true });
       console.log('getting campaings', campaigns.length);
       let csvRows = `campaignId,campaignSlug,candidateName,positionElectionDate,DbElectionDate,ballotLevel,electionName,positionName,partisanType,positionId,electionId,raceId,state,otherOffice<br/>`;
-      for (let i = 0; i < campaigns.length; i++) {
+
+      if (start > campaigns.length) {
+        return exits.success('No more campaigns');
+      }
+      const end = Math.min(start + count, campaigns.length);
+
+      for (let i = start; i < end; i++) {
         const campaign = campaigns[i];
         const positionId = campaign.data?.details?.positionId;
         if (positionId) {
