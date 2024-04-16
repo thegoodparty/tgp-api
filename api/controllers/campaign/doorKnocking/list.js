@@ -41,6 +41,12 @@ module.exports = {
         };
       });
 
+      dkCampaigns.sort((a, b) => {
+        const aStartDate = new Date(a.startDate);
+        const bStartDate = new Date(b.startDate);
+        return aStartDate - bStartDate;
+      });
+
       return exits.success({
         dkCampaigns,
       });
