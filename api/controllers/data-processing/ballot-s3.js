@@ -240,6 +240,7 @@ async function addNewCandidate(row) {
       filing_periods: fpString,
       election_day: race.election.electionDay,
       normalized_position_name: race.position.normalizedPosition.name,
+      level: race.position.level,
     };
 
     console.log('adding race', raceData);
@@ -422,6 +423,7 @@ async function addNewCandidate(row) {
 }
 
 async function writeDb(rows) {
+  console.log('total rows', rows.length);
   for (const row of rows) {
     let searchCriteria = {
       or: [{ candidateId: row.candidate_id }],
@@ -451,8 +453,18 @@ async function writeDb(rows) {
       continue;
     } else {
       console.log('adding new candidate', row.candidate_id);
-      await addNewCandidate(row);
+      try {
+        await addNewCandidate(row);
+      } catch (e) {
+        console.log('uncaught error adding candidate', e);
+        await sendSlackNotification(
+          'Uncaught Error adding candidate',
+          `Uncaught Error adding candidate ${row.candidate_id}`,
+          'dev',
+        );
+      }
     }
+    await sleep(5000);
   }
 }
 

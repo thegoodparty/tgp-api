@@ -79,6 +79,8 @@ module.exports = {
 
         const dates = extractDates(filing_periods);
         if (dates) {
+          console.log('dates.startDate', dates.startDate);
+          console.log('dates.endDate', dates.endDate);
           row.filing_date_start = dates.startDate;
           row.filing_date_end = dates.endDate;
         }
@@ -137,6 +139,7 @@ module.exports = {
           });
           count++;
         } else {
+          console.log('municipality level', level);
           const municipalityExists = await Municipality.findOne({
             name,
             state,
@@ -200,6 +203,7 @@ function extractDates(str) {
   }
   try {
     let validJsonString = str.replace(/=>/g, ':');
+    validJsonString = validJsonString.replace(/\\\"/g, '"');
     validJsonString = validJsonString.replace(/nil/g, 'null');
 
     // Parse the string as JSON
@@ -211,7 +215,7 @@ function extractDates(str) {
 
     return { startDate, endDate };
   } catch (e) {
-    console.log('error', e);
+    console.log(`error parsing dates. str: ${str}.`, e);
     return false;
   }
 }
