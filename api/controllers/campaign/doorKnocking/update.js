@@ -12,6 +12,10 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    startDate: {
+      type: 'string',
+      required: true,
+    },
   },
 
   exits: {
@@ -26,7 +30,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { name, endDate, slug } = inputs;
+      const { name, endDate, startDate, slug } = inputs;
 
       const user = this.req.user;
 
@@ -44,6 +48,7 @@ module.exports = {
           ...dkCampaign.data,
           name,
           endDate,
+          startDate,
         },
       });
 
