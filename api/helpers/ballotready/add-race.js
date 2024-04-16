@@ -112,7 +112,6 @@ module.exports = {
                 lower: true,
               }),
             });
-            count++;
           } else {
             console.log('county does not exist. skipping!');
             await sails.helpers.slack.errorLoggerHelper(
@@ -137,7 +136,6 @@ module.exports = {
               lower: true,
             }),
           });
-          count++;
         } else {
           console.log('municipality level', level);
           const municipalityExists = await Municipality.findOne({
@@ -163,13 +161,70 @@ module.exports = {
                 lower: true,
               }),
             });
-            count++;
           } else {
-            console.log('municipality does not exist. skipping!');
+            console.log(
+              'municipality does not exist. using ai to refine municipality name',
+            );
             await sails.helpers.slack.errorLoggerHelper(
-              `municipality does not exist. skipping! name: ${name}, state: ${state}`,
+              `municipality does not exist. office: ${position_name} name: ${name}, state: ${state}. using ai to refine municipality name`,
               {},
             );
+
+            const locationData =
+              await sails.helpers.ballotready.extractLocationAi(position_name);
+            if (locationData) {
+              const cityName = locationData?.city;
+              const countyName = locationData?.county;
+              if (countyName) {
+                await sails.helpers.slack.errorLoggerHelper(
+                  `ai found county where city was expected! skipping! office: ${position_name} name: ${countyName}, state: ${state}`,
+                  {},
+                );
+                return exits.badRequest({
+                  message: 'ai found county where city was expected! skipping!',
+                });
+              }
+
+              const aiMunicipalityExists = await Municipality.findOne({
+                name: cityName,
+                state,
+              });
+              if (aiMunicipalityExists) {
+                console.log('ai municipality exists. adding ballotRace');
+                await sails.helpers.slack.errorLoggerHelper(
+                  `ai found found a matching municipality! office: ${position_name} name: ${cityName}, state: ${state}. adding race!`,
+                  {},
+                );
+
+                await BallotRace.create({
+                  hashId,
+                  ballotId: race_id,
+                  ballotHashId,
+                  state,
+                  data: row,
+                  municipality: aiMunicipalityExists.id,
+                  level,
+                  isPrimary,
+                  isJudicial,
+                  subAreaName: sub_area_name,
+                  subAreaValue: sub_area_value,
+                  electionDate,
+                  positionSlug: slugify(normalized_position_name, {
+                    lower: true,
+                  }),
+                });
+              } else {
+                console.log('ai municipality does not exist. skipping!');
+                // todo: if the municipality looks correct, then add them to the db.
+                await sails.helpers.slack.errorLoggerHelper(
+                  `ai municipality does not exist. skipping! office: ${position_name} ai city name: ${cityName}, state: ${state}`,
+                  {},
+                );
+                return exits.badRequest({
+                  message: 'ai municipality does not exist. skipping!',
+                });
+              }
+            }
           }
         }
       }

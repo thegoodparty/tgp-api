@@ -44,6 +44,10 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
     },
+    maxRows: {
+      type: 'number',
+      defaultsTo: 0,
+    },
   },
 
   exits: {
@@ -78,6 +82,9 @@ module.exports = {
         const localFilePath = `${csvFilePath}/${objectKey}`;
         await downloadFile(s3Bucket, objectKey, localFilePath);
         let rows = await parseFile(localFilePath);
+        if (maxRows && maxRows > 0) {
+          rows = rows.slice(0, maxRows);
+        }
 
         if (
           inputs.addToSheets === true &&
@@ -458,8 +465,8 @@ async function writeDb(rows) {
       } catch (e) {
         console.log('uncaught error adding candidate', e);
         await sendSlackNotification(
-          'Uncaught Error adding candidate',
-          `Uncaught Error adding candidate ${row.candidate_id}`,
+          `Uncaught Error adding candidate. error: ${e}`,
+          `Uncaught Error adding candidate ${row.candidate_id}. error: ${e}`,
           'dev',
         );
       }
