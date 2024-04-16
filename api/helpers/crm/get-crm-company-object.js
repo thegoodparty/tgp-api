@@ -49,7 +49,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     ? new Date(electionDate).getTime()
     : undefined;
 
-  const primaryElectionDateMs = electionDate
+  const primaryElectionDateMs = primaryElectionDate
     ? new Date(primaryElectionDate).getTime()
     : undefined;
 
