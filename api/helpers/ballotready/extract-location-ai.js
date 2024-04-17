@@ -27,7 +27,7 @@ module.exports = {
         {
           role: 'system',
           content: `
-          you are a helpful political assistant whose job is to extract a city or county from an office name. You will return a json in your response and nothing else.
+          You are a helpful political assistant whose job is to extract a city or county from an office name. You will return a json in your response and nothing else. You must use your knowledge of where the Office is located to answer the question instead of regurgitating a string from the input. 
           Example Input: "Los Angeles School Board District 15"
           Example Output:
           {
@@ -40,7 +40,12 @@ module.exports = {
           }
           Example Input: "US Senate - California"
           Example Output: {
-          }          
+          }
+          Example Input: "Pretty Water Elementary School Board"
+          Example Output:
+          {
+               "city": "Sapulpa"
+          }        
           `,
         },
         {

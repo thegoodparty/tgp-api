@@ -171,7 +171,9 @@ module.exports = {
             );
 
             const locationData =
-              await sails.helpers.ballotready.extractLocationAi(position_name);
+              await sails.helpers.ballotready.extractLocationAi(
+                position_name + ' - ' + state,
+              );
             if (locationData) {
               const cityName = locationData?.city;
               const countyName = locationData?.county;
