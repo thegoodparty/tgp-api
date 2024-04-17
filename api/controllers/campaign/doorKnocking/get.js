@@ -64,7 +64,7 @@ module.exports = {
         }
       }
       return exits.success({
-        dkCampaign: dkCampaign.data,
+        dkCampaign: { ...dkCampaign.data, status: dkCampaign.status },
         routes: dkCampaign.routes,
         totals,
       });
