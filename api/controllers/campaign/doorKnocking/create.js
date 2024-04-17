@@ -10,10 +10,6 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    minHousesPerRoute: {
-      type: 'number',
-      required: true,
-    },
     maxHousesPerRoute: {
       type: 'number',
       required: true,
@@ -41,14 +37,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const {
-        name,
-        type,
-        minHousesPerRoute,
-        maxHousesPerRoute,
-        startDate,
-        endDate,
-      } = inputs;
+      const { name, type, maxHousesPerRoute, startDate, endDate } = inputs;
       await sails.helpers.queue.consumer();
 
       const user = this.req.user;
@@ -70,7 +59,6 @@ module.exports = {
         data: {
           name,
           type,
-          minHousesPerRoute,
           maxHousesPerRoute,
           startDate,
           endDate,
@@ -84,7 +72,6 @@ module.exports = {
         data: {
           campaignId: campaign.id,
           dkCampaignId: dkCampaign.id,
-          minHousesPerRoute,
           maxHousesPerRoute,
         },
       };

@@ -96,7 +96,6 @@ async function handleMessage(message) {
       await sails.helpers.geocoding.calculateRoutes(
         data.campaignId,
         data.dkCampaignId,
-        data.minHousesPerRoute,
         data.maxHousesPerRoute,
       );
       break;

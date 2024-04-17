@@ -5,7 +5,8 @@ const client = new googleMaps.Client({});
 const googleApiKey =
   sails.config.custom.googleApiKey || sails.config.googleApiKey;
 
-const geoHashSize = 5;
+const GEO_HASH_SIZE = 5;
+const MIN_HOUSES_PER_ROUTE = 10;
 module.exports = {
   inputs: {
     campaignId: {
@@ -16,10 +17,7 @@ module.exports = {
       type: 'number',
       required: true,
     },
-    minHousesPerRoute: {
-      type: 'number',
-      required: true,
-    },
+
     maxHousesPerRoute: {
       type: 'number',
       required: true,
@@ -34,8 +32,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { campaignId, maxHousesPerRoute, minHousesPerRoute, dkCampaignId } =
-        inputs;
+      const { campaignId, maxHousesPerRoute, dkCampaignId } = inputs;
       // console.log('campaignId', campaignId);
       // await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
       //   campaignId,
@@ -47,7 +44,7 @@ module.exports = {
         .sort('geoHash ASC');
       const groupedVoters = generateVoterGroups(
         voters,
-        minHousesPerRoute,
+        MIN_HOUSES_PER_ROUTE,
         maxHousesPerRoute,
       );
       const routesCount = Object.keys(groupedVoters).length;
@@ -110,7 +107,7 @@ module.exports = {
 function generateVoterGroups(voters, minHousesPerRoute, maxHousesPerRoute) {
   const votersByGeoHash = groupAndSplitByGeoHash(
     voters,
-    geoHashSize,
+    GEO_HASH_SIZE,
     maxHousesPerRoute,
   );
   const combined = combineEntries(votersByGeoHash, minHousesPerRoute);
