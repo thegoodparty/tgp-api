@@ -43,6 +43,12 @@ module.exports = {
       });
 
       dkCampaigns.sort((a, b) => {
+        if (a.status === 'archived' && b.status !== 'archived') {
+          return 1;
+        }
+        if (a.status !== 'archived' && b.status === 'archived') {
+          return -1;
+        }
         const aStartDate = new Date(a.startDate);
         const bStartDate = new Date(b.startDate);
         return aStartDate - bStartDate;
