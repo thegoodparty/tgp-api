@@ -38,6 +38,7 @@ module.exports = {
           hasRoutes: campaign.routes?.length > 0,
           bounds: firstBounds,
           routesCount: campaign.routes?.length || 0,
+          status: campaign.status,
         };
       });
 
