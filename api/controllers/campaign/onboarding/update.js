@@ -44,7 +44,7 @@ module.exports = {
       const existing = await Campaign.findOne({
         slug,
       });
-      if (campaign.name) {
+      if (!campaign.name) {
         campaign.name = await sails.helpers.user.name(user);
       }
 
@@ -71,16 +71,15 @@ module.exports = {
       }
 
       const incomingCampaignDetails = campaign?.details;
-      const { zip: incomingZip} = incomingCampaignDetails || {}
-      const { zip: existingZip } = existing?.data?.details || {}
+      const { zip: incomingZip } = incomingCampaignDetails || {};
+      const { zip: existingZip } = existing?.data?.details || {};
 
-      const launchP2V = (
+      const launchP2V =
         incomingCampaignDetails?.pledged &&
         incomingCampaignDetails.pledged === true &&
-        (!campaign?.p2vStatus || campaign?.p2vStatus === 'Locked')
-      )
+        (!campaign?.p2vStatus || campaign?.p2vStatus === 'Locked');
 
-      const zipChanged = incomingZip && incomingZip !== existingZip
+      const zipChanged = incomingZip && incomingZip !== existingZip;
 
       if (launchP2V || zipChanged) {
         sails.helpers.log(slug, 'launching p2v...');
