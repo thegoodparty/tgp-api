@@ -49,6 +49,16 @@ module.exports = {
 
       ({ route } = await sails.helpers.doorKnocking.routeStatus(route, true));
 
+      const campaignVolunteer = await CampaignVolunteer.findOne({
+        user: user.id,
+        campaign: campaign.id,
+      });
+      console.log('campaignVolunteer', campaignVolunteer);
+      console.log('route.volunteer', route.volunteer);
+      if (campaignVolunteer) {
+        route.claimedByUser = campaignVolunteer.id === route.volunteer?.id;
+      }
+
       return exits.success({
         dkCampaign: dkCampaign.data,
         route,
