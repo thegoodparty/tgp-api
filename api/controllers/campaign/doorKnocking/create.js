@@ -78,6 +78,19 @@ module.exports = {
 
       await sails.helpers.queue.enqueue(queueMessage);
 
+      // Create a volunteer for the user if they don't already have one
+      await CampaignVolunteer.findOrCreate(
+        {
+          user: user.id,
+          campaign: campaign.id,
+        },
+        {
+          user: user.id,
+          campaign: campaign.id,
+          role: 'candidate',
+        },
+      );
+
       return exits.success({
         slug,
       });
