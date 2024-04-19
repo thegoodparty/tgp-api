@@ -45,7 +45,8 @@ module.exports = {
         slug,
       });
       if (!campaign.name) {
-        campaign.name = await sails.helpers.user.name(user);
+        const campaignUser = await User.findOne({ id: campaign.user });
+        campaign.name = await sails.helpers.user.name(campaignUser);
       }
 
       // setting last_step_date for the crm
