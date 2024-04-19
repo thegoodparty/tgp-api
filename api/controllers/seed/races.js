@@ -1,8 +1,6 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 const csv = require('csv-parser');
 const AWS = require('aws-sdk');
-const crypto = require('crypto');
-const slugify = require('slugify');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -49,6 +47,7 @@ module.exports = {
         await sails.helpers.slack.errorLoggerHelper('processing file', {
           fileName: s3Key,
         });
+
         await readAndProcessCSV(s3Key);
       }
       await sails.helpers.slack.errorLoggerHelper(
