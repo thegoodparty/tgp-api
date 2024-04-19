@@ -14,6 +14,21 @@ module.exports = {
     data: {
       type: 'json',
     },
+    dataCopy: {
+      type: 'json',
+    },
+    details: {
+      type: 'json',
+    },
+    campaignPlan: {
+      type: 'json',
+    },
+    aiContent: {
+      type: 'json',
+    },
+    pathToVictory: {
+      type: 'json',
+    },
     isVerified: {
       type: 'boolean',
       allowNull: true,
@@ -21,7 +36,7 @@ module.exports = {
     dateVerified: {
       type: 'string',
       columnType: 'date',
-      allowNull: true
+      allowNull: true,
     },
     tier: {
       type: 'string',
