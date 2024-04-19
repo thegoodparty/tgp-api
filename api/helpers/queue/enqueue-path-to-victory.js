@@ -162,7 +162,7 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
 
   const officeName = row?.position?.name;
   const locationData = await sails.helpers.ballotready.extractLocationAi(
-    officeName,
+    officeName + ' - ' + state,
   );
 
   // extractLocation was deprecated in favor of extractLocationAi

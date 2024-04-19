@@ -3,10 +3,6 @@ const slugify = require('slugify');
 const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
-let csvFilePath = path.join(
-  __dirname,
-  '../../../data/geoPoliticalEntities/dec23/uscounties_v1.73_short.csv',
-);
 
 if (
   appBase === 'https://goodparty.org' ||
@@ -20,11 +16,25 @@ if (
 
 let count = 0;
 module.exports = {
-  inputs: {},
+  inputs: {
+    loadAll: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+  },
 
   exits: {},
 
   async fn(inputs, exits) {
+    let { loadAll } = inputs;
+
+    if (loadAll) {
+      csvFilePath = path.join(
+        __dirname,
+        '../../../data/geoPoliticalEntities/dec23/uscounties_v1.73.csv',
+      );
+    }
+
     try {
       readAndProcessCSV(csvFilePath);
       return exits.success({

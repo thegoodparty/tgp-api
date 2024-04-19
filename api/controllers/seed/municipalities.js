@@ -15,23 +15,35 @@ module.exports = {
     partNumber: {
       type: 'number',
     },
+    loadAll: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
 
   exits: {},
 
   async fn(inputs, exits) {
     try {
-      const { partNumber } = inputs;
+      const { partNumber, loadAll } = inputs;
       if (
         appBase === 'https://goodparty.org' ||
-        appBase === 'https://qa.goodparty.org'
+        appBase === 'https://qa.goodparty.org' ||
+        loadAll === true
       ) {
         csvFilePath = path.join(
           __dirname,
           `../../../data/geoPoliticalEntities/dec23/cities/cities_part${partNumber}.csv`,
         );
       }
-      readAndProcessCSV(csvFilePath);
+      let count = 0;
+      let rows = await readAndProcessCSV(csvFilePath);
+      for (const row of rows) {
+        await insertCityIntoDatabase(row);
+        count++;
+      }
+
+      console.log('finished inserting cities');
       return exits.success({
         message: `inserted ${count} cities`,
       });
@@ -46,18 +58,24 @@ module.exports = {
   },
 };
 
-function readAndProcessCSV(filePath) {
+async function readAndProcessCSV(filePath) {
+  let rows = [];
+  let finished = false;
   fs.createReadStream(filePath)
     .pipe(csv())
     .on('data', (row) => {
-      // Immediately invoked async function to handle each row
-      (async () => {
-        await insertCityIntoDatabase(row);
-      })();
+      rows.push(row);
     })
     .on('end', () => {
       console.log('CSV file successfully processed');
+      finished = true;
     });
+
+  while (finished === false) {
+    console.log('waiting for file to finish processing');
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  return rows;
 }
 
 async function insertCityIntoDatabase(row) {
@@ -72,36 +90,84 @@ async function insertCityIntoDatabase(row) {
       type = 'town';
     }
 
-    const county = await County.findOne({
+    let county = await County.findOne({
       name: county_name,
       state: state_id,
     });
     if (county) {
-      const slug = `${slugify(state_id, {
-        lower: true,
-      })}/${slugify(county_name, {
-        lower: true,
-      })}/${slugify(city, {
-        lower: true,
-      })}`;
-
-      const exists = await Municipality.findOne({
-        type,
-        slug,
-      });
-      if (!exists) {
-        await Municipality.create({
-          name: city,
-          type,
-          state: state_id,
-          county: county.id,
-          data: row,
-          slug,
-        });
-        count++;
+      await addCity(row, city, county, state_id, county_name, type);
+    } else {
+      console.log(
+        'county does not exist. adding county',
+        county_name,
+        state_id,
+      );
+      county = await addCounty(county_name, state_id, row);
+      if (county) {
+        await addCity(row, city, county, state_id, county_name, type);
       }
     }
   } catch (e) {
     console.log('error in insertIntoDb', e);
+  }
+}
+
+async function addCounty(county_name, state_id, row) {
+  const slug = `${slugify(state_id, {
+    lower: true,
+  })}/${slugify(county_name, {
+    lower: true,
+  })}`;
+
+  let { county_fips } = row;
+
+  console.log(
+    `adding county: ${county_name}, state: ${state_id}. slug: ${slug}`,
+  );
+
+  let county;
+  try {
+    county = await County.create({
+      name: county_name,
+      state: state_id,
+      slug,
+      data: { county: county_name, county_fips },
+    }).fetch();
+  } catch (e) {
+    console.log('error in addCounty', e);
+  }
+  return county;
+}
+
+async function addCity(row, city, county, state_id, county_name, type) {
+  const slug = `${slugify(state_id, {
+    lower: true,
+  })}/${slugify(county_name, {
+    lower: true,
+  })}/${slugify(city, {
+    lower: true,
+  })}`;
+
+  console.log(
+    `adding city: ${city}, county: ${county_name}, state: ${state_id}. slug: ${slug}`,
+  );
+
+  const exists = await Municipality.findOne({
+    type,
+    slug,
+  });
+  if (!exists) {
+    try {
+      await Municipality.create({
+        name: city,
+        type,
+        state: state_id,
+        county: county.id,
+        data: row,
+        slug,
+      });
+    } catch (e) {
+      console.log('error in addCity', e);
+    }
   }
 }
