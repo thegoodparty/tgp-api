@@ -158,7 +158,7 @@ module.exports = {
             name,
             state,
           });
-          if (municipalityExists) {
+          if (municipalities) {
             let muni = municipalities[0];
             console.log('municipality exists. adding ballotRace');
             try {
