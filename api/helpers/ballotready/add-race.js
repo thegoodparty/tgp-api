@@ -165,9 +165,15 @@ module.exports = {
             console.log(
               'municipality does not exist. using ai to refine municipality name',
             );
+
+            let electionLevel = sails.helpers.ballotready.getRaceLevel(
+              level.toLowerCase(),
+            );
+
             const locationData =
               await sails.helpers.ballotready.extractLocationAi(
                 position_name + ' - ' + state,
+                electionLevel,
               );
             if (locationData) {
               const cityName = locationData?.city;
