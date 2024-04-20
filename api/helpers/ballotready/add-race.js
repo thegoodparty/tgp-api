@@ -105,8 +105,8 @@ module.exports = {
               level,
               isPrimary,
               isJudicial,
-              subAreaName: sub_area_name,
-              subAreaValue: sub_area_value,
+              subAreaName: sub_area_name ? sub_area_name : '',
+              subAreaValue: sub_area_value ? sub_area_value : '',
               electionDate,
               positionSlug: slugify(normalized_position_name, {
                 lower: true,
@@ -129,8 +129,8 @@ module.exports = {
             level,
             isPrimary,
             isJudicial,
-            subAreaName: sub_area_name,
-            subAreaValue: sub_area_value,
+            subAreaName: sub_area_name ? sub_area_name : '',
+            subAreaValue: sub_area_value ? sub_area_value : '',
             electionDate,
             positionSlug: slugify(normalized_position_name, {
               lower: true,
@@ -154,8 +154,8 @@ module.exports = {
               level,
               isPrimary,
               isJudicial,
-              subAreaName: sub_area_name,
-              subAreaValue: sub_area_value,
+              subAreaName: sub_area_name ? sub_area_name : '',
+              subAreaValue: sub_area_value ? sub_area_value : '',
               electionDate,
               positionSlug: slugify(normalized_position_name, {
                 lower: true,
@@ -165,14 +165,15 @@ module.exports = {
             console.log(
               'municipality does not exist. using ai to refine municipality name',
             );
-            await sails.helpers.slack.errorLoggerHelper(
-              `municipality does not exist. office: ${position_name} name: ${name}, state: ${state}. using ai to refine municipality name`,
-              {},
+
+            let electionLevel = sails.helpers.ballotready.getRaceLevel(
+              level.toLowerCase(),
             );
 
             const locationData =
               await sails.helpers.ballotready.extractLocationAi(
                 position_name + ' - ' + state,
+                electionLevel,
               );
             if (locationData) {
               const cityName = locationData?.city;
@@ -182,7 +183,7 @@ module.exports = {
                   `ai found county where city was expected! skipping! office: ${position_name} name: ${countyName}, state: ${state}`,
                   {},
                 );
-                return exits.badRequest({
+                return exits.success({
                   message: 'ai found county where city was expected! skipping!',
                 });
               }
@@ -193,11 +194,6 @@ module.exports = {
               });
               if (aiMunicipalityExists) {
                 console.log('ai municipality exists. adding ballotRace');
-                await sails.helpers.slack.errorLoggerHelper(
-                  `ai found found a matching municipality! office: ${position_name} name: ${cityName}, state: ${state}. adding race!`,
-                  {},
-                );
-
                 await BallotRace.create({
                   hashId,
                   ballotId: race_id,
@@ -208,8 +204,8 @@ module.exports = {
                   level,
                   isPrimary,
                   isJudicial,
-                  subAreaName: sub_area_name,
-                  subAreaValue: sub_area_value,
+                  subAreaName: sub_area_name ? sub_area_name : '',
+                  subAreaValue: sub_area_value ? sub_area_value : '',
                   electionDate,
                   positionSlug: slugify(normalized_position_name, {
                     lower: true,
@@ -219,10 +215,10 @@ module.exports = {
                 console.log('ai municipality does not exist. skipping!');
                 // todo: if the municipality looks correct, then add them to the db.
                 await sails.helpers.slack.errorLoggerHelper(
-                  `ai municipality does not exist. skipping! office: ${position_name} ai city name: ${cityName}, state: ${state}`,
+                  `municipality does not exist. skipping! office: ${position_name} ai city name: ${cityName}, state: ${state}`,
                   {},
                 );
-                return exits.badRequest({
+                return exits.success({
                   message: 'ai municipality does not exist. skipping!',
                 });
               }

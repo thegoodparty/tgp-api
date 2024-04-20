@@ -160,31 +160,13 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   const row = await getRaceById(raceId);
   console.log('row', row);
 
-  const officeName = row?.position?.name;
-  const locationData = await sails.helpers.ballotready.extractLocationAi(
-    officeName + ' - ' + state,
-  );
-
-  // extractLocation was deprecated in favor of extractLocationAi
-  // const locationData = {
-  //   position_name: row?.position?.name,
-  //   state: row?.position?.state,
-  //   level: row?.position?.level,
-  // };
-  // const { name, level } = await sails.helpers.ballotready.extractLocation(
-  //   locationData,
-  // );
-
   const electionDate = row?.election?.electionDay;
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
   const level = row?.position?.level.toLowerCase();
-  let electionLevel = getRaceLevel(level);
-  if (electionLevel === 'city' && locationData?.county) {
-    // because 'local' is recoded as city.
-    // if the ai extracts a county, then we should use that.
-    electionLevel = 'county';
-  }
+  let electionLevel = sails.helpers.ballotready.getRaceLevel(level);
+
+  const officeName = row?.position?.name;
   const partisanType = row?.position?.partisanType;
   const subAreaName =
     row?.position?.subAreaName && row.position.subAreaName !== 'null'
@@ -195,6 +177,12 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
       ? row.position.subAreaValue
       : undefined;
   const electionState = row?.election?.state;
+
+  const locationData = await sails.helpers.ballotready.extractLocationAi(
+    officeName + ' - ' + electionState,
+    electionLevel,
+  );
+
   queueMessage.data.officeName = officeName;
   queueMessage.data.electionDate = electionDate;
   queueMessage.data.electionTerm = termLength;
@@ -334,31 +322,6 @@ async function getBallotReadyDbMessage(queueMessage, campaign, raceId) {
   });
 
   return queueMessage;
-}
-
-function getRaceLevel(level) {
-  // "level"
-  // "city"
-  // "county"
-  // "federal"
-  // "local"
-  // "regional"
-  // "state"
-  // "town"
-  // "township"
-  // "village"
-  // TODO: it might be advantageous to distinguish city from town, township, and village
-  // But for now they are consolidated to "city"
-  if (
-    level &&
-    level !== 'federal' &&
-    level !== 'state' &&
-    level !== 'county' &&
-    level !== 'city'
-  ) {
-    level = 'city';
-  }
-  return level;
 }
 
 async function getRaceDatabaseId(nodeId) {
