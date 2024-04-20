@@ -19,16 +19,17 @@ module.exports = {
     },
     details: {
       type: 'json',
+      columnType: 'jsonb',
     },
     campaignPlan: {
       type: 'json',
+      columnType: 'jsonb',
     },
     aiContent: {
       type: 'json',
+      columnType: 'jsonb',
     },
-    pathToVictory: {
-      type: 'json',
-    },
+
     isVerified: {
       type: 'boolean',
       allowNull: true,
@@ -52,6 +53,10 @@ module.exports = {
     },
     user: {
       model: 'user',
+    },
+
+    pathToVictory: {
+      model: 'pathToVictory',
     },
 
     campaignsUpdateHistories: {

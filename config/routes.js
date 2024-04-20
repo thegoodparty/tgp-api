@@ -64,15 +64,6 @@ module.exports.routes = {
     'admin/candidate/deactivate-candidate-by-campaign',
   'POST   /api/v1/admin/candidate-enhance': 'admin/candidate-enhance',
 
-  // New Candidates
-  // 'POST   /api/v1/new-candidate': 'newCandidates/create',
-  // 'GET    /api/v1/new-candidate': 'newCandidates/find',
-  // 'PUT    /api/v1/new-candidate': 'newCandidates/update',
-
-  // 'GET    /api/v1/new-candidates': 'newCandidates/list',
-  // 'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
-  // 'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
-
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
   'POST   /api/v1/visit': 'visit/create',
@@ -119,6 +110,9 @@ module.exports.routes = {
     'campaign/campaignUpdateHistory/list',
   'DELETE   /api/v1/campaign/update-history':
     'campaign/campaignUpdateHistory/delete',
+
+  // campaign
+  'PUT   /api/v1/campaign': 'campaign/update',
 
   // onboarding
 
@@ -171,11 +165,6 @@ module.exports.routes = {
     'topIssues/candidatePosition/find-by-candidate',
   'GET  /api/v1/campaign-position':
     'topIssues/candidatePosition/find-by-campaign',
-
-  // application
-
-  'POST   /api/v1/application/upload-image':
-    'newCandidates/application/upload-image',
 
   'GET   /api/v1/declares': 'declare/list',
 
