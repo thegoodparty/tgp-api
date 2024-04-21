@@ -95,23 +95,31 @@ module.exports = {
           });
           if (countyExists) {
             console.log('county exists. adding ballotRace');
-            await BallotRace.create({
-              hashId,
-              ballotId: race_id,
-              ballotHashId,
-              state,
-              data: row,
-              county: countyExists.id,
-              level,
-              isPrimary,
-              isJudicial,
-              subAreaName: sub_area_name ? sub_area_name : '',
-              subAreaValue: sub_area_value ? sub_area_value : '',
-              electionDate,
-              positionSlug: slugify(normalized_position_name, {
-                lower: true,
-              }),
-            });
+            try {
+              await BallotRace.create({
+                hashId,
+                ballotId: race_id,
+                ballotHashId,
+                state,
+                data: row,
+                county: countyExists.id,
+                level,
+                isPrimary,
+                isJudicial,
+                subAreaName: sub_area_name ? sub_area_name : '',
+                subAreaValue: sub_area_value ? sub_area_value : '',
+                electionDate,
+                positionSlug: slugify(normalized_position_name, {
+                  lower: true,
+                }),
+              });
+            } catch (e) {
+              console.log('error in ballotRace.create', e);
+              await sails.helpers.slack.errorLoggerHelper(
+                `error in ballotRace.create. name: ${name}, state: ${state}`,
+                {},
+              );
+            }
           } else {
             console.log('county does not exist. skipping!');
             await sails.helpers.slack.errorLoggerHelper(
@@ -120,37 +128,13 @@ module.exports = {
             );
           }
         } else if (level === 'state' || level === 'federal') {
-          await BallotRace.create({
-            hashId,
-            ballotId: race_id,
-            ballotHashId,
-            state,
-            data: row,
-            level,
-            isPrimary,
-            isJudicial,
-            subAreaName: sub_area_name ? sub_area_name : '',
-            subAreaValue: sub_area_value ? sub_area_value : '',
-            electionDate,
-            positionSlug: slugify(normalized_position_name, {
-              lower: true,
-            }),
-          });
-        } else {
-          console.log('municipality level', level);
-          const municipalityExists = await Municipality.findOne({
-            name,
-            state,
-          });
-          if (municipalityExists) {
-            console.log('municipality exists. adding ballotRace');
+          try {
             await BallotRace.create({
               hashId,
               ballotId: race_id,
               ballotHashId,
               state,
               data: row,
-              municipality: municipalityExists.id,
               level,
               isPrimary,
               isJudicial,
@@ -161,6 +145,47 @@ module.exports = {
                 lower: true,
               }),
             });
+          } catch (e) {
+            console.log('error in ballotRace.create', e);
+            await sails.helpers.slack.errorLoggerHelper(
+              `error in ballotRace.create. name: ${name}, state: ${state}`,
+              {},
+            );
+          }
+        } else {
+          console.log('municipality level', level);
+          const municipalities = await Municipality.find({
+            name,
+            state,
+          });
+          if (municipalities) {
+            let muni = municipalities[0];
+            console.log('municipality exists. adding ballotRace');
+            try {
+              await BallotRace.create({
+                hashId,
+                ballotId: race_id,
+                ballotHashId,
+                state,
+                data: row,
+                municipality: muni.id,
+                level,
+                isPrimary,
+                isJudicial,
+                subAreaName: sub_area_name ? sub_area_name : '',
+                subAreaValue: sub_area_value ? sub_area_value : '',
+                electionDate,
+                positionSlug: slugify(normalized_position_name, {
+                  lower: true,
+                }),
+              });
+            } catch (e) {
+              console.log('error in ballotRace.create', e);
+              await sails.helpers.slack.errorLoggerHelper(
+                `error in ballotRace.create. name: ${name}, state: ${state}`,
+                {},
+              );
+            }
           } else {
             console.log(
               'municipality does not exist. using ai to refine municipality name',
@@ -188,29 +213,38 @@ module.exports = {
                 });
               }
 
-              const aiMunicipalityExists = await Municipality.findOne({
+              const aiMunicipalities = await Municipality.find({
                 name: cityName,
                 state,
               });
-              if (aiMunicipalityExists) {
+              if (aiMunicipalities) {
                 console.log('ai municipality exists. adding ballotRace');
-                await BallotRace.create({
-                  hashId,
-                  ballotId: race_id,
-                  ballotHashId,
-                  state,
-                  data: row,
-                  municipality: aiMunicipalityExists.id,
-                  level,
-                  isPrimary,
-                  isJudicial,
-                  subAreaName: sub_area_name ? sub_area_name : '',
-                  subAreaValue: sub_area_value ? sub_area_value : '',
-                  electionDate,
-                  positionSlug: slugify(normalized_position_name, {
-                    lower: true,
-                  }),
-                });
+                let aiMunicipality = aiMunicipalities[0];
+                try {
+                  await BallotRace.create({
+                    hashId,
+                    ballotId: race_id,
+                    ballotHashId,
+                    state,
+                    data: row,
+                    municipality: aiMunicipality.id,
+                    level,
+                    isPrimary,
+                    isJudicial,
+                    subAreaName: sub_area_name ? sub_area_name : '',
+                    subAreaValue: sub_area_value ? sub_area_value : '',
+                    electionDate,
+                    positionSlug: slugify(normalized_position_name, {
+                      lower: true,
+                    }),
+                  });
+                } catch (e) {
+                  console.log('error in ballotRace.create', e);
+                  await sails.helpers.slack.errorLoggerHelper(
+                    `error in ballotRace.create. name: ${name}, state: ${state}`,
+                    {},
+                  );
+                }
               } else {
                 console.log('ai municipality does not exist. skipping!');
                 // todo: if the municipality looks correct, then add them to the db.
