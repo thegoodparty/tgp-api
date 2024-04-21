@@ -89,7 +89,7 @@ module.exports = {
           : 0;
 
         const electionLevel = sails.helpers.ballotready.getRaceLevel(
-          level.toLowerCase(),
+          row.level.toLowerCase(),
         );
 
         if (level === 'county') {
