@@ -13,8 +13,7 @@ module.exports = {
       required: true,
     },
     value: {
-      type: 'ref',
-      required: true,
+      type: 'ref', //not required to allow empty string
     },
   },
 

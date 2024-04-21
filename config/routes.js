@@ -115,6 +115,7 @@ module.exports.routes = {
   'POST   /api/v1/campaign': 'campaign/create',
   'PUT   /api/v1/campaign': 'campaign/update',
   'GET   /api/v1/campaign': 'campaign/get',
+  'POST   /api/v1/campaign/launch': 'campaign/launch',
 
   // onboarding
 
