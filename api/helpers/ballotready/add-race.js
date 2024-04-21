@@ -145,8 +145,13 @@ module.exports = {
                 });
               }
 
+              let formattedCountyName = countyName.replace(' County', '');
+              formattedCountyName = formattedCountyName.replace(' Parish', '');
+              formattedCountyName = formattedCountyName.replace(' Borough', '');
+              formattedCountyName = formattedCountyName.replace(' City', '');
+
               const aiCounties = await County.find({
-                name: countyName,
+                name: formattedCountyName,
                 state,
               });
               if (aiCounties && aiCounties.length > 0) {
@@ -256,7 +261,7 @@ module.exports = {
                 level,
               );
             if (locationData) {
-              const cityName = locationData?.city;
+              let cityName = locationData?.city;
               const countyName = locationData?.county;
               if (countyName) {
                 await sails.helpers.slack.errorLoggerHelper(
@@ -268,8 +273,13 @@ module.exports = {
                 });
               }
 
+              let formattedCityName = cityName.replace(' City', '');
+              formattedCityName = formattedCityName.replace(' Township', '');
+              formattedCityName = formattedCityName.replace(' Town', '');
+              formattedCityName = formattedCityName.replace(' Village', '');
+
               const aiMunicipalities = await Municipality.find({
-                name: cityName,
+                name: formattedCityName,
                 state,
               });
               if (aiMunicipalities && aiMunicipalities.length > 0) {
