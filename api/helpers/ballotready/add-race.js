@@ -88,6 +88,10 @@ module.exports = {
           ? new Date(election_day).getTime()
           : 0;
 
+        const electionLevel = sails.helpers.ballotready.getRaceLevel(
+          level.toLowerCase(),
+        );
+
         if (level === 'county') {
           const countyExists = await County.findOne({
             name,
@@ -121,11 +125,66 @@ module.exports = {
               );
             }
           } else {
-            console.log('county does not exist. skipping!');
-            await sails.helpers.slack.errorLoggerHelper(
-              `county does not exist. skipping! name: ${name}, state: ${state}`,
-              {},
-            );
+            // todo: we need to extract county using the ai.
+            // right here.
+            const locationData =
+              await sails.helpers.ballotready.extractLocationAi(
+                position_name + ' - ' + state,
+                electionLevel,
+              );
+            if (locationData) {
+              const cityName = locationData?.city;
+              const countyName = locationData?.county;
+              if (cityName) {
+                await sails.helpers.slack.errorLoggerHelper(
+                  `ai found city where county was expected! skipping! office: ${position_name} name: ${cityName}, state: ${state}`,
+                  {},
+                );
+                return exits.success({
+                  message: 'ai found city where county was expected! skipping!',
+                });
+              }
+
+              const aiCounties = await County.find({
+                name: countyName,
+                state,
+              });
+              if (aiCounties) {
+                console.log('ai county exists. adding ballotRace');
+                let aiCounty = aiCounties[0];
+                try {
+                  await BallotRace.create({
+                    hashId,
+                    ballotId: race_id,
+                    ballotHashId,
+                    state,
+                    data: row,
+                    county: aiCounty.id,
+                    level,
+                    isPrimary,
+                    isJudicial,
+                    subAreaName: sub_area_name ? sub_area_name : '',
+                    subAreaValue: sub_area_value ? sub_area_value : '',
+                    electionDate,
+                    positionSlug: slugify(normalized_position_name, {
+                      lower: true,
+                    }),
+                  });
+                } catch (e) {
+                  console.log('error in ballotRace.create', e);
+                  await sails.helpers.slack.errorLoggerHelper(
+                    `error in ballotRace.create. name: ${name}, state: ${state}`,
+                    {},
+                  );
+                }
+              } else {
+                console.log('county does not exist. skipping!');
+                await sails.helpers.slack.errorLoggerHelper(
+                  `county does not exist. skipping! name: ${countyName}, state: ${state}`,
+                  {},
+                );
+              }
+            }
           }
         } else if (level === 'state' || level === 'federal') {
           try {
@@ -189,10 +248,6 @@ module.exports = {
           } else {
             console.log(
               'municipality does not exist. using ai to refine municipality name',
-            );
-
-            let electionLevel = sails.helpers.ballotready.getRaceLevel(
-              level.toLowerCase(),
             );
 
             const locationData =
