@@ -48,7 +48,22 @@ module.exports = {
           fileName: s3Key,
         });
 
-        await readAndProcessCSV(s3Key);
+        let rows = await readAndProcessCSV(s3Key);
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        for (const row of rows) {
+          try {
+            await sails.helpers.ballotready.addRace(row);
+          } catch (error) {
+            console.log('uncaught error adding row', error);
+            await sails.helpers.slack.errorLoggerHelper(
+              'uncaught error adding race',
+              {
+                error,
+              },
+            );
+          }
+        }
       }
       await sails.helpers.slack.errorLoggerHelper(
         'completed races processing',
@@ -70,37 +85,30 @@ module.exports = {
   },
 };
 
-function readAndProcessCSV(s3Key) {
-  return new Promise((resolve, reject) => {
-    const s3Stream = s3
-      .getObject({ Bucket: s3Bucket, Key: s3Key })
-      .createReadStream();
+async function readAndProcessCSV(s3Key) {
+  let rows = [];
+  let finished = false;
+  const s3Stream = s3
+    .getObject({ Bucket: s3Bucket, Key: s3Key })
+    .createReadStream();
 
-    const promises = [];
+  s3Stream
+    .pipe(csv())
+    .on('data', (row) => {
+      rows.push(row);
+    })
+    .on('end', () => {
+      // Wait for all row processing to complete
+      console.log('CSV file successfully processed');
+      finished = true;
+    })
+    .on('error', (error) => {
+      console.log('error reading file', error);
+    }); // Handle any stream errors
 
-    s3Stream
-      .pipe(csv())
-      .on('data', (row) => {
-        // Push the promise of each row processing into an array
-        const processRow = async () => {
-          try {
-            // await insertIntoDatabase(row);
-            await sails.helpers.ballotready.addRace(row);
-          } catch (error) {
-            reject(error); // Reject the main promise on any error
-          }
-        };
-        promises.push(processRow());
-      })
-      .on('end', () => {
-        // Wait for all row processing to complete
-        Promise.all(promises)
-          .then(() => {
-            console.log('CSV file successfully processed');
-            resolve(); // Resolve the main promise after all rows are processed
-          })
-          .catch(reject); // Reject the main promise if any of the row processing fails
-      })
-      .on('error', reject); // Handle any stream errors
-  });
+  console.log('waiting for file to finish processing...');
+  while (finished === false) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  return rows;
 }

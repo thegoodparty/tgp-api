@@ -43,7 +43,7 @@ module.exports = {
       }
       return exits.success(level);
     } catch (e) {
-      console.log('error at encrypt-id', e);
+      console.log('error at get-race-level', e);
       return exits.success(false);
     }
   },
