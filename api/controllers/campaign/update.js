@@ -2,12 +2,12 @@ module.exports = {
   friendlyName: 'Update Campaign',
 
   inputs: {
-    key: {
-      type: 'string',
+    keys: {
+      type: 'json', // array of strings in the format of section.key
       required: true,
     },
-    value: {
-      type: 'ref', // ref can accept any type.
+    values: {
+      type: 'json', // array of values (any)
       required: true,
     },
   },
@@ -24,31 +24,40 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { key, value } = inputs;
+      const { keys, values } = inputs;
       const { user } = this.req;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
-      const keyArray = key.split('.');
-      if (keyArray.length <= 1 || keyArray.length > 2) {
-        return exits.badRequest('key must be in the format of section.key');
+
+      if (keys.length !== values.length) {
+        return exits.badRequest('keys and values must be the same length');
+      }
+      let updated = campaign;
+      for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const value = values[i];
+        const keyArray = key.split('.');
+        if (keyArray.length <= 1 || keyArray.length > 2) {
+          return exits.badRequest('key must be in the format of section.key');
+        }
+
+        const column = keyArray[0];
+        const columnKey = keyArray[1];
+        updated = await sails.helpers.campaign.patch(
+          campaign.id,
+          column,
+          columnKey,
+          value,
+        );
       }
 
-      const column = keyArray[0];
-      const columnKey = keyArray[1];
-      const updated = await sails.helpers.campaign.patch(
-        campaign.id,
-        column,
-        columnKey,
-        value,
-      );
-
-      try {
-        await sails.helpers.crm.updateCampaign(updated);
-      } catch (e) {
-        sails.helpers.log(slug, 'error updating crm', e);
-      }
+      // try {
+      //   await sails.helpers.crm.updateCampaign(updated);
+      // } catch (e) {
+      //   sails.helpers.log(slug, 'error updating crm', e);
+      // }
 
       return exits.success({
         campaign: updated,

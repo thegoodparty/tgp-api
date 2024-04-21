@@ -1,7 +1,3 @@
-/* eslint-disable object-shorthand */
-
-const appBase = sails.config.custom.appBase || sails.config.appBase;
-
 module.exports = {
   inputs: {
     id: {
@@ -33,23 +29,23 @@ module.exports = {
     try {
       const { id, column, key, value } = inputs;
       if (
-        column === 'details' &&
-        column === 'campaignPlan' &&
+        column === 'details' ||
+        column === 'campaignPlan' ||
         column === 'aiContent'
       ) {
+        // Construct the query to set the column to an empty object if it's null, then use jsonb_set
         const query = `
-        UPDATE "public.campaign"
-        SET "${column}" = jsonb_set("${column}", $1, $2, true)
-        WHERE "id" = $3
+        UPDATE "campaign"
+        SET "${column}" = COALESCE("${column}", '{}') -- Initialize to empty JSON if null
+        WHERE "id" = ${id};
+        -- Now update the specified path
+        UPDATE "campaign"
+        SET "${column}" = jsonb_set("${column}", '{${key}}', '"${value}"', true)
+        WHERE "id" = ${id};
       `;
-        const values = [
-          `{${key}}`, // JSON path
-          value, // New value
-          id, // Campaign ID
-        ];
 
         // Execute the raw query
-        await Campaign.getDatastore().sendNativeQuery(query, values);
+        await Campaign.getDatastore().sendNativeQuery(query);
         const updated = await Campaign.findOne({ id });
         return exits.success(updated);
       }
