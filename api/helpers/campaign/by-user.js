@@ -26,7 +26,7 @@ module.exports = {
 
       const campaigns = await Campaign.find({
         user: user.id,
-      });
+      }).populate('pathToVictory');
       let campaign = false;
       if (campaigns && campaigns.length > 0) {
         campaign = campaigns[0];

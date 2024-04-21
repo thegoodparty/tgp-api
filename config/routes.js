@@ -111,8 +111,10 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign/update-history':
     'campaign/campaignUpdateHistory/delete',
 
-  // campaign
+  // campaign without onboarding
+  'POST   /api/v1/campaign': 'campaign/create',
   'PUT   /api/v1/campaign': 'campaign/update',
+  'GET   /api/v1/campaign': 'campaign/get',
 
   // onboarding
 

@@ -35,13 +35,14 @@ module.exports = {
         return exits.badRequest('key must be in the format of section.key');
       }
 
-      campaign[keyArray[0]][keyArray[1]] = value;
-
-      const updated = await Campaign.updateOne({
-        id: campaign.id,
-      }).set({
-        [keyArray[0]]: campaign[keyArray[0]],
-      });
+      const column = keyArray[0];
+      const columnKey = keyArray[1];
+      const updated = await sails.helpers.campaign.patch(
+        campaign.id,
+        column,
+        columnKey,
+        value,
+      );
 
       try {
         await sails.helpers.crm.updateCampaign(updated);
