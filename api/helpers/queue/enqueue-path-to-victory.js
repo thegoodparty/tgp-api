@@ -164,7 +164,7 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
   const level = row?.position?.level.toLowerCase();
-  let electionLevel = sails.helpers.ballotready.getRaceLevel(level);
+  let electionLevel = await sails.helpers.ballotready.getRaceLevel(level);
 
   const officeName = row?.position?.name;
   const partisanType = row?.position?.partisanType;

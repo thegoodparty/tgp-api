@@ -53,7 +53,7 @@ module.exports = {
 
       console.log(`inserting ${position_name} into db`);
 
-      const { name, level } = await sails.helpers.ballotready.extractLocation(
+      let { name, level } = await sails.helpers.ballotready.extractLocation(
         row,
       );
 
@@ -88,7 +88,7 @@ module.exports = {
           ? new Date(election_day).getTime()
           : 0;
 
-        const electionLevel = sails.helpers.ballotready.getRaceLevel(
+        level = await sails.helpers.ballotready.getRaceLevel(
           row.level.toLowerCase(),
         );
 
@@ -130,7 +130,7 @@ module.exports = {
             const locationData =
               await sails.helpers.ballotready.extractLocationAi(
                 position_name + ' - ' + state,
-                electionLevel,
+                level,
               );
             if (locationData) {
               const cityName = locationData?.city;
@@ -149,7 +149,7 @@ module.exports = {
                 name: countyName,
                 state,
               });
-              if (aiCounties) {
+              if (aiCounties && aiCounties.length > 0) {
                 console.log('ai county exists. adding ballotRace');
                 let aiCounty = aiCounties[0];
                 try {
@@ -217,7 +217,7 @@ module.exports = {
             name,
             state,
           });
-          if (municipalities) {
+          if (municipalities && municipalities.length > 0) {
             let muni = municipalities[0];
             console.log('municipality exists. adding ballotRace');
             try {
@@ -249,11 +249,11 @@ module.exports = {
             console.log(
               'municipality does not exist. using ai to refine municipality name',
             );
-
+            console.log(`calling extractLocationAi with level ${level}`);
             const locationData =
               await sails.helpers.ballotready.extractLocationAi(
                 position_name + ' - ' + state,
-                electionLevel,
+                level,
               );
             if (locationData) {
               const cityName = locationData?.city;
@@ -272,7 +272,7 @@ module.exports = {
                 name: cityName,
                 state,
               });
-              if (aiMunicipalities) {
+              if (aiMunicipalities && aiMunicipalities.length > 0) {
                 console.log('ai municipality exists. adding ballotRace');
                 let aiMunicipality = aiMunicipalities[0];
                 try {
