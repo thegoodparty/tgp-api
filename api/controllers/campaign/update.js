@@ -57,11 +57,11 @@ module.exports = {
         }
       }
 
-      // try {
-      //   await sails.helpers.crm.updateCampaign(updated);
-      // } catch (e) {
-      //   sails.helpers.log(slug, 'error updating crm', e);
-      // }
+      try {
+        await sails.helpers.crm.updateCampaign(updated);
+      } catch (e) {
+        sails.helpers.log(slug, 'error updating crm', e);
+      }
 
       return exits.success({
         campaign: updated,
