@@ -154,9 +154,10 @@ module.exports = {
               formattedCountyName = formattedCountyName.replace(' City', '');
 
               const aiCounties = await County.find({
-                name: formattedCountyName,
+                or: [{ name: formattedCountyName }, { name: countyName }],
                 state,
               });
+
               if (aiCounties && aiCounties.length > 0) {
                 console.log('ai county exists. adding ballotRace');
                 let aiCounty = aiCounties[0];
@@ -288,7 +289,7 @@ module.exports = {
               formattedCityName = formattedCityName.replace(' Village', '');
 
               const aiMunicipalities = await Municipality.find({
-                name: formattedCityName,
+                or: [{ name: formattedCityName }, { name: cityName }],
                 state,
               });
               if (aiMunicipalities && aiMunicipalities.length > 0) {
