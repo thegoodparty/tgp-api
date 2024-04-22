@@ -61,7 +61,6 @@ module.exports = {
 
         const p2v = await PathToVictory.findOrCreate(
           {
-            data: updatedPathToVictory,
             campaign: campaign.id,
           },
           {

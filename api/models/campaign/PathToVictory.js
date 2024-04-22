@@ -6,7 +6,6 @@ module.exports = {
 
     data: {
       type: 'json',
-      columnType: 'jsonb',
     },
   },
 };

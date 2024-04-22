@@ -21,7 +21,7 @@ module.exports = {
       invitations.forEach((invitation) => {
         const { firstName, lastName, slug } = invitation.campaign.data;
         const { city, state, office, otherOffice, party, district } =
-          invitation.campaign.data.details;
+          invitation.campaign.details;
         invitation.campaign = {
           firstName,
           lastName,

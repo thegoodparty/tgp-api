@@ -19,8 +19,7 @@ module.exports = {
     try {
       const { campaign } = inputs;
 
-      const { data, slug } = campaign;
-      const { details } = data;
+      const { slug, details } = campaign;
 
       let queueMessage = {
         type: 'pathToVictory',
@@ -155,7 +154,7 @@ async function getCampaignDbMessage(queueMessage, campaign) {
 }
 
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
-  const { data } = campaign;
+  const { details } = campaign;
 
   const row = await getRaceById(raceId);
   console.log('row', row);
@@ -211,8 +210,8 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   if (partisanType !== 'partisan') {
     priorElectionDates = await sails.helpers.ballotready.getElectionDates(
       officeName,
-      data.details.zip,
-      data.details.ballotLevel,
+      details.zip,
+      details.ballotLevel,
     );
   }
   console.log('priorElectionDates', priorElectionDates);
@@ -220,23 +219,19 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   queueMessage.data.priorElectionDates = priorElectionDates;
 
   // update the Campaign details
-  if (data.details) {
+  if (details) {
     await Campaign.updateOne({ id: campaign.id }).set({
-      data: {
-        ...data,
-        details: {
-          ...data.details,
-          officeTermLength: termLength ?? data.details.officeTermLength,
-          electionDate: electionDate ?? data.details.electionDate,
-          level: electionLevel ?? data.details.level,
-          state: electionState ?? data.details.state,
-          county: locationData?.county ?? data.details.county,
-          city: locationData?.city ?? data.details.city,
-          district: subAreaValue ?? data.details.district,
-          partisanType: partisanType ?? data.details.partisanType,
-          priorElectionDates:
-            priorElectionDates ?? data.details.priorElectionDates,
-        },
+      details: {
+        ...details,
+        officeTermLength: termLength ?? details.officeTermLength,
+        electionDate: electionDate ?? details.electionDate,
+        level: electionLevel ?? details.level,
+        state: electionState ?? details.state,
+        county: locationData?.county ?? details.county,
+        city: locationData?.city ?? details.city,
+        district: subAreaValue ?? details.district,
+        partisanType: partisanType ?? details.partisanType,
+        priorElectionDates: priorElectionDates ?? details.priorElectionDates,
       },
     });
   }
@@ -290,24 +285,24 @@ async function getBallotReadyDbMessage(queueMessage, campaign, raceId) {
     console.log('Found term', term);
     if (match) {
       queueMessage.data.electionTerm = term;
-      campaign.data.details.officeTermLength = term;
+      campaign.details.officeTermLength = term;
     }
   }
   if (ballotRace.data?.election_day) {
     queueMessage.data.electionDate = ballotRace.data.election_day;
-    if (campaign.data.details.electionDate) {
-      campaign.data.details.electionDate = ballotRace.data.election_day;
+    if (campaign.details.electionDate) {
+      campaign.details.electionDate = ballotRace.data.election_day;
     }
   }
 
   if (ballotRace?.level) {
     queueMessage.data.electionLevel = ballotRace.level;
-    campaign.data.details.level = ballotRace.level;
+    campaign.details.level = ballotRace.level;
   }
   console.log('ballotRace.data?.partisan_type', ballotRace.data?.partisan_type);
   if (ballotRace.data?.partisan_type) {
     queueMessage.data.partisanType = ballotRace.data.partisan_type;
-    campaign.data.details.partisanType = ballotRace.data.partisan_type;
+    campaign.details.partisanType = ballotRace.data.partisan_type;
   }
   let subAreaName;
   let subAreaValue;

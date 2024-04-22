@@ -46,6 +46,7 @@ module.exports = {
         const column = keyArray[0];
         const columnKey = keyArray[1];
         if (column === 'pathToVictory') {
+          await handlePathToVictory(campaign, column, columnKey, value);
         } else {
           updated = await sails.helpers.campaign.patch(
             campaign.id,
@@ -72,3 +73,28 @@ module.exports = {
     }
   },
 };
+
+async function handlePathToVictory(campaign, column, columnKey, value) {
+  const p2v = await PathToVictory.findOrCreate(
+    {
+      campaign: campaign.id,
+    },
+    {
+      campaign: campaign.id,
+    },
+  );
+
+  const data = p2v.data || {};
+  const updatedData = {
+    ...data,
+    [columnKey]: value,
+  };
+  await PathToVictory.updateOne({ id: p2v.id }).set({
+    data: updatedData,
+  });
+  if (!campaign.pathToVictory) {
+    await Campaign.updateOne({ id: campaign.id }).set({
+      pathToVictory: p2v.id,
+    });
+  }
+}

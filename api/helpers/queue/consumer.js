@@ -2,6 +2,7 @@ const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
 const moment = require('moment');
+const PathToVictory = require('../../models/campaign/PathToVictory');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -417,23 +418,31 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       link: `${appBase}/dashboard`,
     });
 
-    await Campaign.updateOne({
-      id: campaign.id,
+    const p2v = await PathToVictory.findOrCreate(
+      {
+        campaign: campaign.id,
+      },
+      {
+        campaign: campaign.id,
+      },
+    );
+
+    const p2vData = p2v.data || {};
+    await PathToVictory.updateOne({
+      id: p2v.id,
     }).set({
       data: {
-        ...campaign.data,
-        pathToVictory: {
-          totalRegisteredVoters: pathToVictoryResponse.counts.total,
-          republicans: pathToVictoryResponse.counts.republican,
-          democrats: pathToVictoryResponse.counts.democrat,
-          indies: pathToVictoryResponse.counts.independent,
-          averageTurnout: pathToVictoryResponse.counts.averageTurnout,
-          projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
-          winNumber: pathToVictoryResponse.counts.winNumber,
-          voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
-          electionType: pathToVictoryResponse.electionType,
-          electionLocation: pathToVictoryResponse.electionLocation,
-        },
+        ...p2vData,
+        totalRegisteredVoters: pathToVictoryResponse.counts.total,
+        republicans: pathToVictoryResponse.counts.republican,
+        democrats: pathToVictoryResponse.counts.democrat,
+        indies: pathToVictoryResponse.counts.independent,
+        averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+        projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+        winNumber: pathToVictoryResponse.counts.winNumber,
+        voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+        electionType: pathToVictoryResponse.electionType,
+        electionLocation: pathToVictoryResponse.electionLocation,
         p2vCompleteDate: moment().format('YYYY-MM-DD'),
         p2vStatus: 'Complete',
       },
