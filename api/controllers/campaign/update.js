@@ -45,12 +45,15 @@ module.exports = {
 
         const column = keyArray[0];
         const columnKey = keyArray[1];
-        updated = await sails.helpers.campaign.patch(
-          campaign.id,
-          column,
-          columnKey,
-          value,
-        );
+        if (column === 'pathToVictory') {
+        } else {
+          updated = await sails.helpers.campaign.patch(
+            campaign.id,
+            column,
+            columnKey,
+            value,
+          );
+        }
       }
 
       // try {

@@ -38,8 +38,12 @@ module.exports = {
           formattedValue = `'${JSON.stringify(value)}'::jsonb`; // Convert JSON object to string and type cast
         } else if (typeof value === 'boolean') {
           formattedValue = value;
-        } else {
+        } else if (typeof value === 'string') {
           formattedValue = `'"${value}"'`; // Just a simple string wrapped in single quotes
+        } else if (value === null) {
+          formattedValue = 'null';
+        } else {
+          formattedValue = value;
         }
 
         console.log('formattedValue', formattedValue);
