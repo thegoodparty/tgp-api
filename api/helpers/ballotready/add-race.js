@@ -120,7 +120,7 @@ module.exports = {
             } catch (e) {
               console.log('error in ballotRace.create', e);
               await sails.helpers.slack.errorLoggerHelper(
-                `error in ballotRace.create. name: ${name}, state: ${state}`,
+                `error creating ballotRace with county. name: ${name}, state: ${state}`,
                 {},
               );
             }
@@ -178,14 +178,14 @@ module.exports = {
                 } catch (e) {
                   console.log('error in ballotRace.create', e);
                   await sails.helpers.slack.errorLoggerHelper(
-                    `error in ballotRace.create. name: ${name}, state: ${state}`,
+                    `error creating ballotRace with ai county. name: ${formattedCountyName}, state: ${state}`,
                     {},
                   );
                 }
               } else {
                 console.log('county does not exist. skipping!');
                 await sails.helpers.slack.errorLoggerHelper(
-                  `county does not exist. skipping! name: ${countyName}, state: ${state}`,
+                  `county does not exist. skipping! name: ${formattedCountyName}, state: ${state}`,
                   {},
                 );
               }
@@ -212,7 +212,7 @@ module.exports = {
           } catch (e) {
             console.log('error in ballotRace.create', e);
             await sails.helpers.slack.errorLoggerHelper(
-              `error in ballotRace.create. name: ${name}, state: ${state}`,
+              `error creating ballotRace for federal/state. state: ${state}`,
               {},
             );
           }
@@ -246,7 +246,7 @@ module.exports = {
             } catch (e) {
               console.log('error in ballotRace.create', e);
               await sails.helpers.slack.errorLoggerHelper(
-                `error in ballotRace.create. name: ${name}, state: ${state}`,
+                `error creating ballotRace for municipality. name: ${name}, state: ${state}`,
                 {},
               );
             }
@@ -306,7 +306,7 @@ module.exports = {
                 } catch (e) {
                   console.log('error in ballotRace.create', e);
                   await sails.helpers.slack.errorLoggerHelper(
-                    `error in ballotRace.create. name: ${name}, state: ${state}`,
+                    `error creating ballotRace with ai municipality. name: ${formattedCityName}, state: ${state}`,
                     {},
                   );
                 }
@@ -314,7 +314,7 @@ module.exports = {
                 console.log('ai municipality does not exist. skipping!');
                 // todo: if the municipality looks correct, then add them to the db.
                 await sails.helpers.slack.errorLoggerHelper(
-                  `municipality does not exist. skipping! office: ${position_name} ai city name: ${cityName}, state: ${state}`,
+                  `municipality does not exist. skipping! office: ${position_name} ai city name: ${formattedCityName}, state: ${state}`,
                   {},
                 );
                 return exits.success({
