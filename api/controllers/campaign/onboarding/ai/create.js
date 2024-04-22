@@ -49,8 +49,10 @@ module.exports = {
         user: user.id,
       });
       let campaign = false;
+      let campaignObj = false;
       if (campaigns && campaigns.length > 0) {
         campaign = campaigns[0].data;
+        campaignObj = campaigns[0];
       }
       if (
         !campaign.campaignPlanStatus ||
@@ -93,7 +95,7 @@ module.exports = {
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
       let prompt = cmsPrompts[keyNoDigits];
-      prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      prompt = await sails.helpers.ai.promptReplace(prompt, campaignObj);
       await sails.helpers.slack.aiLoggerHelper('prompt', {
         cmsPrompt: cmsPrompts[keyNoDigits],
         promptAfterReplace: prompt,

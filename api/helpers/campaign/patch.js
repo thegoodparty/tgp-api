@@ -32,6 +32,19 @@ module.exports = {
         column === 'campaignPlan' ||
         column === 'aiContent'
       ) {
+        // Check if the value is a JSON object
+        let formattedValue;
+        if (typeof value === 'object') {
+          formattedValue = `'${JSON.stringify(value)}'::jsonb`; // Convert JSON object to string and type cast
+        } else if (typeof value === 'boolean') {
+          formattedValue = value;
+        } else {
+          formattedValue = `'"${value}"'`; // Just a simple string wrapped in single quotes
+        }
+
+        console.log('formattedValue', formattedValue);
+        console.log('key', key);
+
         // Construct the query to set the column to an empty object if it's null, then use jsonb_set
         const query = `
         UPDATE "campaign"
@@ -39,9 +52,11 @@ module.exports = {
         WHERE "id" = ${id};
         -- Now update the specified path
         UPDATE "campaign"
-        SET "${column}" = jsonb_set("${column}", '{${key}}', '"${value}"', true)
+        SET "${column}" = jsonb_set("${column}", '{${key}}', ${formattedValue}, true)
         WHERE "id" = ${id};
       `;
+
+        console.log('query', query);
 
         // Execute the raw query
         await Campaign.getDatastore().sendNativeQuery(query);

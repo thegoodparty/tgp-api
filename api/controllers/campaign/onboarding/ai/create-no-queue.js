@@ -39,7 +39,7 @@ module.exports = {
       }
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       let prompt = cmsPrompts[key];
-      prompt = await sails.helpers.ai.promptReplace(prompt, campaign);
+      prompt = await sails.helpers.ai.promptReplace(prompt, campaigns[0]);
       let messages = [{ role: 'user', content: prompt }];
 
       const completion = await sails.helpers.ai.createCompletion(
