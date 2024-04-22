@@ -163,24 +163,9 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
   const level = row?.position?.level.toLowerCase();
-  let electionLevel = sails.helpers.ballotready.getRaceLevel(level);
+  let electionLevel = await sails.helpers.ballotready.getRaceLevel(level);
 
   const officeName = row?.position?.name;
-  const locationData = await sails.helpers.ballotready.extractLocationAi(
-    officeName + ' - ' + state,
-    electionLevel,
-  );
-
-  // extractLocation was deprecated in favor of extractLocationAi
-  // const locationData = {
-  //   position_name: row?.position?.name,
-  //   state: row?.position?.state,
-  //   level: row?.position?.level,
-  // };
-  // const { name, level } = await sails.helpers.ballotready.extractLocation(
-  //   locationData,
-  // );
-
   const partisanType = row?.position?.partisanType;
   const subAreaName =
     row?.position?.subAreaName && row.position.subAreaName !== 'null'
@@ -191,6 +176,12 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
       ? row.position.subAreaValue
       : undefined;
   const electionState = row?.election?.state;
+
+  const locationData = await sails.helpers.ballotready.extractLocationAi(
+    officeName + ' - ' + electionState,
+    electionLevel,
+  );
+
   queueMessage.data.officeName = officeName;
   queueMessage.data.electionDate = electionDate;
   queueMessage.data.electionTerm = termLength;

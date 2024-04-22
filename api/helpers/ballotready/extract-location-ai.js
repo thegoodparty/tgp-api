@@ -6,6 +6,9 @@ module.exports = {
     office: {
       type: 'string',
     },
+    level: {
+      type: 'string',
+    },
   },
 
   exits: {
