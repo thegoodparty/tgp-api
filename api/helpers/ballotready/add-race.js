@@ -69,7 +69,7 @@ module.exports = {
       const exists = await BallotRace.findOne({
         ballotId: race_id,
       });
-      if (!exists && name !== '') {
+      if (!exists) {
         console.log('ballotRace does not exist. adding it...');
         const hashId = await randomHash();
         const ballotHashId = await sails.helpers.ballotready.encodeId(
@@ -93,10 +93,13 @@ module.exports = {
         );
 
         if (level === 'county') {
-          const countyExists = await County.findOne({
-            name,
-            state,
-          });
+          let countyExists;
+          if (name !== '') {
+            countyExists = await County.findOne({
+              name,
+              state,
+            });
+          }
           if (countyExists) {
             console.log('county exists. adding ballotRace');
             try {
@@ -177,10 +180,13 @@ module.exports = {
                   });
                 } catch (e) {
                   console.log('error in ballotRace.create', e);
-                  await sails.helpers.slack.errorLoggerHelper(
-                    `error creating ballotRace with ai county. name: ${formattedCountyName}, state: ${state}`,
-                    {},
-                  );
+                  // if error code is E_UNIQUE then dont throw slack error.
+                  if (e.code !== 'E_UNIQUE') {
+                    await sails.helpers.slack.errorLoggerHelper(
+                      `error creating ballotRace with ai county. name: ${formattedCountyName}, state: ${state}`,
+                      {},
+                    );
+                  }
                 }
               } else {
                 console.log('county does not exist. skipping!');
@@ -218,10 +224,13 @@ module.exports = {
           }
         } else {
           console.log('municipality level', level);
-          const municipalities = await Municipality.find({
-            name,
-            state,
-          });
+          let municipalities;
+          if (name !== '') {
+            municipalities = await Municipality.find({
+              name,
+              state,
+            });
+          }
           if (municipalities && municipalities.length > 0) {
             let muni = municipalities[0];
             console.log('municipality exists. adding ballotRace');
