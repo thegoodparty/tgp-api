@@ -8,10 +8,7 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    subSectionKey: {
-      type: 'string',
-      required: true,
-    },
+
     regenerate: {
       type: 'boolean',
     },
@@ -40,32 +37,36 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const { key, subSectionKey, regenerate, editMode, chat, inputValues } =
-        inputs;
+      const { key, regenerate, editMode, chat, inputValues } = inputs;
 
       await sails.helpers.queue.consumer();
+      console.log(
+        'creating ai content',
+        key,
+        regenerate,
+        editMode,
+        chat,
+        inputValues,
+      );
 
-      const campaigns = await Campaign.find({
-        user: user.id,
-      });
-      let campaign = false;
-      let campaignObj = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
-        campaignObj = campaigns[0];
+      const campaignObj = await sails.helpers.campaign.byUser(user);
+      if (!campaignObj) {
+        return exits.badRequest('No campaign');
       }
-      if (
-        !campaign.campaignPlanStatus ||
-        typeof campaign.campaignPlanStatus === 'string'
-      ) {
-        campaign.campaignPlanStatus = {};
+      let { aiContent, slug, id } = campaignObj;
+      if (!aiContent) {
+        aiContent = {};
+      }
+
+      if (!aiContent.generationStatus) {
+        aiContent.generationStatus = {};
       }
 
       if (
         !regenerate &&
-        campaign.campaignPlanStatus[key] !== undefined &&
-        campaign.campaignPlanStatus[key].status !== undefined &&
-        campaign.campaignPlanStatus[key].status === 'processing'
+        aiContent.generationStatus[key] !== undefined &&
+        aiContent.generationStatus[key].status !== undefined &&
+        aiContent.generationStatus[key].status === 'processing'
       ) {
         return exits.success({
           status: 'processing',
@@ -73,24 +74,21 @@ module.exports = {
           key,
         });
       }
-      const existing = campaign[subSectionKey] && campaign[subSectionKey][key];
+      const existing = aiContent[key];
 
       if (
         !editMode &&
-        campaign.campaignPlanStatus[key] !== undefined &&
-        campaign.campaignPlanStatus[key].status === 'completed' &&
+        aiContent.generationStatus[key] !== undefined &&
+        aiContent.generationStatus[key].status === 'completed' &&
         existing
       ) {
         return exits.success({
           status: 'completed',
-          chatResponse: campaign[subSectionKey][key],
+          chatResponse: aiContent[key],
         });
       }
 
-      // generating a new campaign here
-      if (!campaign[subSectionKey]) {
-        campaign[subSectionKey] = {};
-      }
+      // generating a new ai content here
 
       const cmsPrompts = await sails.helpers.ai.getPrompts();
       const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
@@ -102,11 +100,10 @@ module.exports = {
       });
 
       const queueMessage = {
-        type: 'generateCampaignPlan',
+        type: 'generateAiContent',
         data: {
-          slug: campaign.slug,
+          slug,
           prompt,
-          subSectionKey,
           key,
           existingChat: chat || [],
           inputValues,
@@ -119,22 +116,18 @@ module.exports = {
         queueMessage,
       );
 
-      if (!campaign.campaignPlanStatus[key]) {
-        campaign.campaignPlanStatus[key] = {};
+      if (!aiContent.generationStatus[key]) {
+        aiContent.generationStatus[key] = {};
       }
-      campaign.campaignPlanStatus[key].status = 'processing';
-      campaign.campaignPlanStatus[key].createdAt = new Date().valueOf();
+      aiContent.generationStatus[key].status = 'processing';
+      aiContent.generationStatus[key].createdAt = new Date().valueOf();
 
-      // Uncomment this if we wanna store inputValues before the AI response is generated
-      // if (Object.keys(inputValues).length > 0) {
-      //   campaign[subSectionKey][key].inputValues = inputValues;
-      // }
-
-      await Campaign.updateOne({
-        slug: campaign.slug,
-      }).set({
-        data: campaign,
-      });
+      await sails.helpers.campaign.patch(
+        id,
+        'aiContent',
+        'generationStatus',
+        aiContent.generationStatus,
+      );
       await sails.helpers.queue.consumer();
 
       return exits.success({

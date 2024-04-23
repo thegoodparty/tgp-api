@@ -71,9 +71,11 @@ module.exports = {
 
         await Campaign.updateOne({ id: campaign.id }).set({
           details: updatedDetails,
-          campaignPlan,
-          campaignPlanStatus,
-          aiContent,
+          aiContent: {
+            ...aiContent,
+            ...campaignPlan,
+            generationStatus: campaignPlanStatus,
+          },
           data,
           pathToVictory: p2v.id,
         });

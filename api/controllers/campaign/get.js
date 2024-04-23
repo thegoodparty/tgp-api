@@ -35,7 +35,6 @@ module.exports = {
       // const campaignId = campaignRecord.id;
       // campaign.id = campaignId;
 
-      let updatedPlan;
       // if (campaign.campaignPlanStatus) {
       //   for (const key in campaign.campaignPlanStatus) {
       //     if (campaign.campaignPlanStatus.hasOwnProperty(key)) {

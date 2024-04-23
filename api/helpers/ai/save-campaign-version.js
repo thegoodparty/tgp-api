@@ -1,11 +1,9 @@
 module.exports = {
   inputs: {
-    data: {
+    aiContent: {
       type: 'json',
     },
-    subSectionKey: {
-      type: 'string',
-    },
+
     key: {
       type: 'string',
     },
@@ -29,8 +27,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { data, subSectionKey, key, campaignId, inputValues, oldVersion } =
-        inputs;
+      const { aiContent, key, campaignId, inputValues, oldVersion } = inputs;
       let newVersion;
 
       // we determine language by examining inputValues and tag it on the version.
@@ -43,24 +40,17 @@ module.exports = {
         });
       }
 
-      if (subSectionKey === 'aiContent') {
-        newVersion = {
-          date: new Date().toString(),
-          text: data[subSectionKey][key].content,
-          // if new inputValues are specified we use those
-          // otherwise we use the inputValues from the prior generation.
-          inputValues:
-            inputValues && inputValues.length > 0
-              ? inputValues
-              : data[subSectionKey][key]?.inputValues,
-          language: language,
-        };
-      } else {
-        newVersion = {
-          date: new Date().toString(),
-          text: data[subSectionKey][key],
-        };
-      }
+      newVersion = {
+        date: new Date().toString(),
+        text: aiContent[key].content,
+        // if new inputValues are specified we use those
+        // otherwise we use the inputValues from the prior generation.
+        inputValues:
+          inputValues && inputValues.length > 0
+            ? inputValues
+            : aiContent[key]?.inputValues,
+        language: language,
+      };
 
       const existingVersions = await CampaignPlanVersion.findOne({
         campaign: campaignId,
@@ -72,15 +62,15 @@ module.exports = {
 
       let foundKey = false;
       // for aiContent we must have inputValues to do versioning.
-      if (subSectionKey === 'aiContent') {
-        if (!inputValues || !Object.keys(inputValues).length > 0) {
-          // however we only require it for successive versions.
-          if (versions && versions[key]) {
-            console.log('no input values specified. exiting...');
-            return exits.success('ok');
-          }
-        }
-      }
+      // if (subSectionKey === 'aiContent') {
+      //   if (!inputValues || !Object.keys(inputValues).length > 0) {
+      //     // however we only require it for successive versions.
+      //     if (versions && versions[key]) {
+      //       console.log('no input values specified. exiting...');
+      //       return exits.success('ok');
+      //     }
+      //   }
+      // }
 
       if (!versions[key]) {
         versions[key] = [];
@@ -102,7 +92,7 @@ module.exports = {
         }
       }
 
-      if (foundKey === false && oldVersion) {
+      if (!foundKey && oldVersion) {
         // here, we determine if we need to save an older version of the content.
         // because in the past we didn't create a Content version for every new generation.
         // otherwise if they translate they won't have the old version to go back to.

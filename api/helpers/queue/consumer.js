@@ -84,8 +84,8 @@ async function handleMessage(message) {
   const { type, data } = action;
   console.log('processing queue message type ', type);
   switch (type) {
-    case 'generateCampaignPlan':
-      await handleGenerateCampaignPlan(data);
+    case 'generateAiContent':
+      await handleGenerateAiContent(data);
       break;
     case 'saveBallotReadyRace':
       await handleSaveBallotReadyRace(data);
@@ -478,13 +478,10 @@ function simpleSlackMessage(text, body) {
   };
 }
 
-async function handleGenerateCampaignPlan(message) {
-  const { prompt, slug, subSectionKey, key, existingChat, inputValues } =
-    message;
+async function handleGenerateAiContent(message) {
+  const { prompt, slug, key, existingChat, inputValues } = message;
   let chat = existingChat || [];
   let messages = [{ role: 'user', content: prompt }, ...chat];
-  let campaign;
-  let data;
   let chatResponse;
 
   let generateError = false;
@@ -494,9 +491,6 @@ async function handleGenerateCampaignPlan(message) {
       'handling campaign from queue',
       message,
     );
-
-    campaign = await Campaign.findOne({ slug });
-    data = campaign.data;
 
     let maxTokens = 2000;
     if (existingChat && existingChat.length > 0) {
@@ -517,7 +511,6 @@ async function handleGenerateCampaignPlan(message) {
     // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
     // chatResponse = chatResponse.replace('/n', '<br/><br/>');
 
-    console.log('chatResponse', chatResponse);
     // TODO: investigate if there is a way to get token usage with langchain.
     // const totalTokens = 0;
 
@@ -526,35 +519,30 @@ async function handleGenerateCampaignPlan(message) {
       totalTokens,
     );
 
-    campaign = await Campaign.findOne({ slug });
-    data = campaign.data;
+    const campaign = await Campaign.findOne({ slug });
+    const aiContent = campaign.aiContent;
     let oldVersion;
     if (chatResponse && chatResponse !== '') {
-      if (subSectionKey === 'aiContent') {
-        try {
-          let oldVersionData = data[subSectionKey][key];
-          oldVersion = {
-            // todo: try to convert oldVersionData.updatedAt to a date object.
-            date: new Date().toString(),
-            text: oldVersionData.content,
-          };
-        } catch (e) {
-          // dont warn because this is expected to fail sometimes.
-          // console.log('error getting old version', e);
-        }
-        data[subSectionKey][key] = {
-          name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
-          updatedAt: new Date().valueOf(),
-          inputValues,
-          content: chatResponse,
+      try {
+        let oldVersionData = aiContent[key];
+        oldVersion = {
+          // todo: try to convert oldVersionData.updatedAt to a date object.
+          date: new Date().toString(),
+          text: oldVersionData.content,
         };
-      } else {
-        data[subSectionKey][key] = chatResponse;
+      } catch (e) {
+        // dont warn because this is expected to fail sometimes.
+        // console.log('error getting old version', e);
       }
+      aiContent[key] = {
+        name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
+        updatedAt: new Date().valueOf(),
+        inputValues,
+        content: chatResponse,
+      };
 
       await sails.helpers.ai.saveCampaignVersion(
-        data,
-        subSectionKey,
+        aiContent,
         key,
         campaign.id,
         inputValues,
@@ -562,26 +550,28 @@ async function handleGenerateCampaignPlan(message) {
       );
 
       if (
-        !data?.campaignPlanStatus ||
-        typeof data.campaignPlanStatus !== 'object'
+        !aiContent?.generationStatus ||
+        typeof aiContent.generationStatus !== 'object'
       ) {
-        data.campaignPlanStatus = {};
+        aiContent.generationStatus = {};
       }
       if (
-        !data?.campaignPlanStatus[key] ||
-        typeof data.campaignPlanStatus[key] !== 'object'
+        !aiContent?.generationStatus[key] ||
+        typeof aiContent.generationStatus[key] !== 'object'
       ) {
-        data.campaignPlanStatus[key] = {};
+        aiContent.generationStatus[key] = {};
       }
 
-      data.campaignPlanStatus[key].status = 'completed';
+      aiContent.generationStatus[key].status = 'completed';
+
       await Campaign.updateOne({
         slug,
       }).set({
-        data,
+        aiContent,
       });
+
       await sails.helpers.slack.aiLoggerHelper(
-        `updated campaign with ai. chatResponse: subSectionKey: ${subSectionKey}. key: ${key}`,
+        `updated campaign with ai. chatResponse: key: ${key}`,
         chatResponse,
       );
     }
@@ -620,38 +610,38 @@ async function handleGenerateCampaignPlan(message) {
   if (!chatResponse || chatResponse === '' || generateError) {
     try {
       // if data does not have key campaignPlanAttempts
-      if (!data?.campaignPlanAttempts) {
-        data.campaignPlanAttempts = {};
+      if (!aiContent?.campaignPlanAttempts) {
+        aiContent.campaignPlanAttempts = {};
       }
-      if (!data?.campaignPlanAttempts[key]) {
-        data.campaignPlanAttempts[key] = 1;
+      if (!aiContent?.campaignPlanAttempts[key]) {
+        aiContent.campaignPlanAttempts[key] = 1;
       }
-      data.campaignPlanAttempts[key] = data?.campaignPlanAttempts[key]
-        ? data.campaignPlanAttempts[key] + 1
+      aiContent.campaignPlanAttempts[key] = aiContent?.campaignPlanAttempts[key]
+        ? aiContent.campaignPlanAttempts[key] + 1
         : 1;
 
       await sails.helpers.slack.aiLoggerHelper(
         'Current Attempts:',
-        data.campaignPlanAttempts[key],
+        aiContent.campaignPlanAttempts[key],
       );
 
       // After 3 attempts, we give up.
       if (
-        data?.campaignPlanStatus[key]?.status &&
-        data.campaignPlanStatus[key].status !== 'completed'
+        aiContent?.generationStatus[key]?.status &&
+        aiContent.generationStatus[key].status !== 'completed'
       ) {
-        if (data.campaignPlanAttempts[key] >= 3) {
+        if (aiContent.campaignPlanAttempts[key] >= 3) {
           await sails.helpers.slack.aiLoggerHelper(
-            'Deleting campaignPlanStatus for key',
+            'Deleting generationStatus for key',
             key,
           );
-          delete data.campaignPlanStatus[key];
+          delete aiContent.generationStatus[key];
         }
       }
       await Campaign.updateOne({
         slug,
       }).set({
-        data,
+        data: aiContent,
       });
     } catch (e) {
       console.log('error at consumer', e);

@@ -46,9 +46,6 @@ module.exports = {
           formattedValue = value;
         }
 
-        console.log('formattedValue', formattedValue);
-        console.log('key', key);
-
         // Construct the query to set the column to an empty object if it's null, then use jsonb_set
         const query = `
         UPDATE "campaign"
@@ -59,8 +56,6 @@ module.exports = {
         SET "${column}" = jsonb_set("${column}", '{${key}}', ${formattedValue}, true)
         WHERE "id" = ${id};
       `;
-
-        console.log('query', query);
 
         // Execute the raw query
         await Campaign.getDatastore().sendNativeQuery(query);

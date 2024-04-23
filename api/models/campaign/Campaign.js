@@ -21,10 +21,6 @@ module.exports = {
       type: 'json',
       columnType: 'jsonb',
     },
-    campaignPlan: {
-      type: 'json',
-      columnType: 'jsonb',
-    },
     aiContent: {
       type: 'json',
       columnType: 'jsonb',
