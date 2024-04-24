@@ -138,7 +138,7 @@ module.exports.routes = {
   // onboarding AI
   'POST   /api/v1/campaign/ai': 'campaign/ai/create',
   'POST   /api/v1/campaign/ai/rename': 'campaign/ai/rename',
-  'DELETE   /api/v1/campaign/onboarding/ai': 'campaign/ai/delete',
+  'DELETE   /api/v1/campaign/ai': 'campaign/ai/delete',
 
   'GET   /api/v1/campaign/onboarding/planVersion':
     'campaign/onboarding/planVersion/find',
