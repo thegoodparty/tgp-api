@@ -35,15 +35,15 @@ module.exports = {
         // Check if the value is a JSON object
         let formattedValue;
         if (typeof value === 'object') {
-          formattedValue = `'${JSON.stringify(value)}'::jsonb`; // Convert JSON object to string and type cast
-        } else if (typeof value === 'boolean') {
-          formattedValue = value;
+          formattedValue = JSON.stringify(value); // Ensure proper JSON formatting
+        } else if (typeof value === 'boolean' || typeof value === 'number') {
+          formattedValue = value; // Directly pass boolean or number
         } else if (typeof value === 'string') {
-          formattedValue = `'"${value}"'`; // Just a simple string wrapped in single quotes
+          formattedValue = JSON.stringify(value); // Ensure the string is JSON-safe
         } else if (value === null) {
-          formattedValue = 'null';
+          formattedValue = null;
         } else {
-          formattedValue = value;
+          throw new Error('Invalid value type');
         }
 
         const validKeyRegex = /^[a-zA-Z0-9_]+$/;
@@ -51,23 +51,33 @@ module.exports = {
           throw new Error('Invalid JSON path key');
         }
 
-        // Define query using parameterized values
-        const query = `
-          UPDATE "campaign"
-          SET "${column}" = COALESCE("${column}", '{}') -- Initialize to empty JSON if null
-          WHERE "id" = $1;
-          
-          -- Now update the specified path
-          UPDATE "campaign"
-          SET "${column}" = jsonb_set("${column}", ARRAY[$2], $3::jsonb, true)
-          WHERE "id" = $1;
-        `;
+        // Prepared statement for initializing the column
+        const queryInit = `
+        UPDATE "campaign"
+        SET "${column}" = COALESCE("${column}", '{}') -- Initialize to empty JSON if null
+        WHERE "id" = $1;
+      `;
+
+        // Prepared statement for updating JSONB
+        const queryUpdate = `
+        UPDATE "campaign"
+        SET "${column}" = jsonb_set("${column}", ARRAY[$2], $3, true)
+        WHERE "id" = $1;
+      `;
 
         // Send parameterized values to avoid SQL injection
-        const parameters = [id, key, formattedValue];
+        const parametersInit = [id];
+        const parametersUpdate = [id, key, formattedValue];
 
-        // Execute the raw query with sanitized inputs
-        await Campaign.getDatastore().sendNativeQuery(query, parameters);
+        // Execute the queries separately
+        await Campaign.getDatastore().sendNativeQuery(
+          queryInit,
+          parametersInit,
+        ); // First statement
+        await Campaign.getDatastore().sendNativeQuery(
+          queryUpdate,
+          parametersUpdate,
+        ); // Second statement
 
         const updated = await Campaign.findOne({ id });
         return exits.success(updated);
