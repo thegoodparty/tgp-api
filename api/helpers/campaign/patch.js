@@ -94,7 +94,7 @@ module.exports = {
         });
         return exits.success(updated);
       }
-
+      console.log('ERROR: invalid column');
       return exits.success(false);
     } catch (e) {
       console.log('error updating jsonb', e);

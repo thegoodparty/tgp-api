@@ -3,7 +3,11 @@ const determineName = async (campaignUser) => {
   if (campaignUser?.firstName) {
     return `${campaignUser.firstName} ${campaignUser.lastName}`;
   }
-  const user = await User.findOne({ id: campaignUser });
+  let id = campaignUser;
+  if (typeof campaignUser === 'object') {
+    id = campaignUser.id;
+  }
+  const user = await User.findOne({ id });
   return await sails.helpers.user.name(user);
 };
 

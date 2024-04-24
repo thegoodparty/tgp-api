@@ -32,7 +32,14 @@ module.exports = {
             p2vNotNeeded,
             p2vStatus,
           } = data;
-          const updatedDetails = {
+
+          let updatedDetails;
+          if (campaign.details) {
+            updatedDetails = {
+              ...campaign.details,
+            };
+          }
+          updatedDetails = {
             ...details,
             ...goals,
           };
@@ -43,13 +50,13 @@ module.exports = {
             ...pathToVictory,
           };
           if (p2vCompleteDate) {
-            updatedPathToVictory.p2Complete = p2vCompleteDate;
+            updatedPathToVictory.p2vComplete = p2vCompleteDate;
           }
           if (p2vNotNeeded) {
-            updatedPathToVictory.p2NotNeeded = p2vNotNeeded;
+            updatedPathToVictory.p2vNotNeeded = p2vNotNeeded;
           }
           if (p2vStatus) {
-            updatedPathToVictory.p2Status = p2vStatus;
+            updatedPathToVictory.p2vStatus = p2vStatus;
           }
           delete data.customIssues;
           delete data.firstName;
