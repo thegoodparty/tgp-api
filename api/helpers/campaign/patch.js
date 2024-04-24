@@ -46,19 +46,29 @@ module.exports = {
           formattedValue = value;
         }
 
-        // Construct the query to set the column to an empty object if it's null, then use jsonb_set
-        const query = `
-        UPDATE "campaign"
-        SET "${column}" = COALESCE("${column}", '{}') -- Initialize to empty JSON if null
-        WHERE "id" = ${id};
-        -- Now update the specified path
-        UPDATE "campaign"
-        SET "${column}" = jsonb_set("${column}", '{${key}}', ${formattedValue}, true)
-        WHERE "id" = ${id};
-      `;
+        const validKeyRegex = /^[a-zA-Z0-9_]+$/;
+        if (!validKeyRegex.test(key)) {
+          throw new Error('Invalid JSON path key');
+        }
 
-        // Execute the raw query
-        await Campaign.getDatastore().sendNativeQuery(query);
+        // Define query using parameterized values
+        const query = `
+          UPDATE "campaign"
+          SET "${column}" = COALESCE("${column}", '{}') -- Initialize to empty JSON if null
+          WHERE "id" = $1;
+          
+          -- Now update the specified path
+          UPDATE "campaign"
+          SET "${column}" = jsonb_set("${column}", ARRAY[$2], $3::jsonb, true)
+          WHERE "id" = $1;
+        `;
+
+        // Send parameterized values to avoid SQL injection
+        const parameters = [id, key, formattedValue];
+
+        // Execute the raw query with sanitized inputs
+        await Campaign.getDatastore().sendNativeQuery(query, parameters);
+
         const updated = await Campaign.findOne({ id });
         return exits.success(updated);
       }
