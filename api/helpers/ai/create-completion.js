@@ -69,13 +69,13 @@ module.exports = {
 
       const model = 'gpt-4-turbo-preview';
 
-      console.log('creating chat completion....');
+      console.log('creating chat completion....', messages);
       completion = await openai.createChatCompletion({
         model,
-        messages: messages,
+        messages,
         max_tokens: maxTokens,
         top_p: topP,
-        temperature: temperature,
+        temperature,
       });
       // console.log('completion', completion);
     } catch (error) {

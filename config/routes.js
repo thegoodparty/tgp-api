@@ -136,14 +136,10 @@ module.exports.routes = {
   'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch',
 
   // onboarding AI
-  'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',
-  'PUT   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/edit',
-  'POST   /api/v1/campaign/onboarding/ai/rename':
-    'campaign/onboarding/ai/rename',
-  'DELETE   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/delete',
+  'POST   /api/v1/campaign/ai': 'campaign/ai/create',
+  'POST   /api/v1/campaign/ai/rename': 'campaign/ai/rename',
+  'DELETE   /api/v1/campaign/onboarding/ai': 'campaign/ai/delete',
 
-  'POST   /api/v1/campaign/onboarding/fast-ai':
-    'campaign/onboarding/ai/create-no-queue',
   'GET   /api/v1/campaign/onboarding/planVersion':
     'campaign/onboarding/planVersion/find',
 

@@ -1,3 +1,5 @@
+const { update } = require('lodash');
+
 const camelToSentence = (text) => {
   const result = text.replace(/([A-Z])/g, ' $1');
   return result.charAt(0).toUpperCase() + result.slice(1);
@@ -26,56 +28,14 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      const campaign = await sails.helpers.campaign.byUser(user);
+      let campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.notFound();
       }
-
-      // const campaign = campaignRecord.data;
-      // const campaignId = campaignRecord.id;
-      // campaign.id = campaignId;
-
-      // if (campaign.campaignPlanStatus) {
-      //   for (const key in campaign.campaignPlanStatus) {
-      //     if (campaign.campaignPlanStatus.hasOwnProperty(key)) {
-      //       // detect and prune failed content.
-      //       if (
-      //         campaign.aiContent &&
-      //         (!campaign.aiContent[key] || !campaign.aiContent[key].content) &&
-      //         campaign.campaignPlanStatus[key] &&
-      //         campaign.campaignPlanStatus[key].status === 'processing'
-      //       ) {
-      //         if (campaign.campaignPlanStatus[key].createdAt) {
-      //           let createdAt = campaign.campaignPlanStatus[key].createdAt;
-      //           let now = new Date().valueOf();
-      //           let diff = now - createdAt;
-      //           if (diff > 3600 * 1000) {
-      //             campaign.campaignPlanStatus[key].status = 'failed';
-      //             delete campaign['aiContent'][key];
-      //             updatedPlan = true;
-      //           }
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
-
-      // let updated = false;
-
-      // if (updated === true || updatedPlan === true) {
-      //   await Campaign.updateOne({
-      //     id: campaignId,
-      //   }).set({ data: campaign });
-      // }
-
-      // if (
-      //   campaignRecord.isActive &&
-      //   campaign.currentStep !== 'onboarding-complete'
-      // ) {
-      //   await Campaign.updateOne({
-      //     id: campaignId,
-      //   }).set({ data: { ...campaign, currentStep: 'onboarding-complete' } });
-      // }
+      const neededFix = await fixFailedAi(campaign);
+      if (neededFix) {
+        campaign = await Campaign.findOne({ id: campaign.id });
+      }
 
       delete campaign.user;
       delete campaign.createdAt;
@@ -91,3 +51,50 @@ module.exports = {
     }
   },
 };
+
+async function fixFailedAi(campaign) {
+  const aiContent = campaign.data;
+  let needsUpdate = false;
+
+  const campaignPlanStatus = aiContent.campaignPlanStatus;
+
+  if (campaignPlanStatus) {
+    for (const key in campaignPlanStatus) {
+      if (campaignPlanStatus.hasOwnProperty(key)) {
+        // detect and prune failed content.
+        if (
+          aiContent &&
+          (!aiContent[key] || !aiContent[key].content) &&
+          campaignPlanStatus[key] &&
+          campaignPlanStatus[key].status === 'processing'
+        ) {
+          if (campaignPlanStatus[key].createdAt) {
+            let createdAt = campaignPlanStatus[key].createdAt;
+            let now = new Date().valueOf();
+            let diff = now - createdAt;
+            if (diff > 3600 * 1000) {
+              campaignPlanStatus[key].status = 'failed';
+              await sails.helpers.campaign.patch(
+                campaign.id,
+                'aiContent',
+                key,
+                false,
+              );
+              needsUpdate = true;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (needsUpdate) {
+    await sails.helpers.campaign.patch(
+      campaign.id,
+      'aiContent',
+      'campaignPlanStatus',
+      campaignPlanStatus,
+    );
+  }
+  return needsUpdate;
+}
