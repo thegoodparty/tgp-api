@@ -7,5 +7,8 @@ module.exports = {
     data: {
       type: 'json',
     },
+    campaign: {
+      model: 'campaign',
+    },
   },
 };

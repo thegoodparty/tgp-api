@@ -116,19 +116,20 @@ module.exports.routes = {
   'PUT   /api/v1/campaign': 'campaign/update',
   'GET   /api/v1/campaign': 'campaign/get',
   'POST   /api/v1/campaign/launch': 'campaign/launch',
+  'GET   /api/v1/campaigns': 'campaign/list',
+  'GET   /api/v1/campaign/by-slug': 'campaign/find-by-slug', //admin
+  'PUT   /api/v1/campaign-admin': 'campaign/admin-update', // admin
 
   // onboarding
 
   'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
   'DELETE   /api/v1/campaign': 'campaign/onboarding/admin-delete',
-  'PUT   /api/v1/campaign-admin': 'campaign/onboarding/admin-update',
+
   'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
   'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
   'GET   /api/v1/campaign/onboarding/by-user':
     'campaign/onboarding/find-by-user',
-  'GET   /api/v1/campaign/onboarding/by-slug':
-    'campaign/onboarding/find-by-slug', //admin
-  'GET   /api/v1/campaign/onboardings': 'campaign/onboarding/list',
+
   'POST   /api/v1/campaign/onboarding/launch-request':
     'campaign/onboarding/launch-request',
   'DELETE   /api/v1/campaign/onboarding/launch-request':

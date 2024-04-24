@@ -7,7 +7,7 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const campaigns = await Campaign.find({ dataCopy: { '=': null } });
+      const campaigns = await Campaign.find().where({ dataCopy: null });
 
       for (let i = 0; i < campaigns.length; i++) {
         try {
