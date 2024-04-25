@@ -17,6 +17,16 @@ const processTeamMembers = (teamMembers) => teamMembers.map(
     partyRole: member.fields.partyRole,
   }));
 
+const processTeamMilestone = (item) => ({
+  ...item.fields,
+  id: item.sys.id,
+  month: item.fields.month,
+  year: item.fields.year,
+  blurb: item.fields.blurb,
+  description: item.fields.description,
+  image: extractMediaFile(item.fields.image),
+})
+
 module.exports = {
   friendlyName: 'helper for fetching content from contentful cms',
   description:
@@ -301,6 +311,11 @@ function mapResponse(items) {
             goodPartyTeamMembers,
           ] :
           goodPartyTeamMembers;
+      } else if (itemId === 'teamMilestone'){
+        mappedResponse.teamMilestones = [
+          ...(mappedResponse.teamMilestones || []),
+          processTeamMilestone(item)
+        ]
       }
     } else {
       console.log('unhandled item => ', item);
