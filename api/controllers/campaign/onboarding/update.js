@@ -1,9 +1,3 @@
-/**
- * user/register.js
- *
- * @description :: Stand Alone action2 for signing up a user.
- * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
- */
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 const moment = require('moment');
 

@@ -541,5 +541,7 @@ async function getSearchColumn(
     // }
   }
 
+  console.log('office helper foundColumns', foundColumns);
+
   return foundColumns;
 }

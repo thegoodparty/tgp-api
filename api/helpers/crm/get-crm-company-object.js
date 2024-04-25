@@ -1,31 +1,28 @@
 const moment = require('moment/moment');
-const determineName = async (data, campaignUserId) => {
-  const { name, details } = data;
-
-  if (name) {
-    return name;
-  } else if (details?.firstName && details?.lastName) {
-    return `${details.firstName} ${details.lastName}`;
+const determineName = async (campaignUser) => {
+  if (campaignUser?.firstName) {
+    return `${campaignUser.firstName} ${campaignUser.lastName}`;
   }
-
-  const user = await User.findOne({ id: campaignUserId });
+  let id = campaignUser;
+  if (typeof campaignUser === 'object') {
+    id = campaignUser.id;
+  }
+  const user = await User.findOne({ id });
   return await sails.helpers.user.name(user);
 };
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
-  const { data, isActive, isVerified, dateVerified, isPro } = campaign || {};
-  const {
-    lastStepDate,
-    goals,
-    details,
-    currentStep,
-    aiContent,
-    reportedVoterGoals,
-    p2vStatus,
-    p2vCompleteDate,
-  } = data || {};
-  const electionDate = goals?.electionDate || undefined;
+  const { data, details, isActive, isVerified, dateVerified, isPro } =
+    campaign || {};
+
+  const p2v = await PathToVictory.findOne({ campaign: campaign.id });
+
+  const { p2vStatus, p2vCompleteDate } = p2v?.data || {};
+
+  const { lastStepDate, currentStep, aiContent, reportedVoterGoals } =
+    data || {};
+
   const {
     zip,
     party,
@@ -40,9 +37,11 @@ const getCrmCompanyObject = async (inputs, exits) => {
     city,
     website,
     runForOffice,
+    electionDate,
     primaryElectionDate,
   } = details || {};
-  const name = await determineName(data, campaign.user);
+
+  const name = await determineName(campaign.user);
 
   //UNIX formatted timestamps in milliseconds
   const electionDateMs = electionDate

@@ -1,10 +1,3 @@
-/**
- * user/register.js
- *
- * @description :: Stand Alone action2 for signing up a user.
- * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
- */
-
 module.exports = {
   friendlyName: 'Create Candidate',
 
@@ -27,7 +20,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const fileExt = 'jpeg';
       const { candidate } = inputs;
@@ -44,9 +37,7 @@ module.exports = {
         const assetsBase =
           sails.config.custom.assetsBase || sails.config.assetsBase;
         const cleanBase64 = imageBase64.replace(/^data:image\/.*;base64,/, '');
-        const uuid = Math.random()
-          .toString(36)
-          .substring(2, 8);
+        const uuid = Math.random().toString(36).substring(2, 8);
 
         const fileName = `${name}-${uuid}.${fileExt}`;
 

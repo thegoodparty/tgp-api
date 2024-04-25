@@ -18,7 +18,9 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const candidates = await Campaign.find().sort([{ updatedAt: 'DESC' }]);
+      const candidates = await Campaign.find()
+        .populate('user')
+        .sort([{ updatedAt: 'DESC' }]);
 
       return exits.success({
         candidates,
