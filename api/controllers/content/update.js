@@ -30,6 +30,9 @@ const schemaConfig = {
   goodPartyTeamMembers: {
     subKey: 'fullName',
   },
+  teamMilestones: {
+    subKey: 'id',
+  }
 };
 
 module.exports = {
