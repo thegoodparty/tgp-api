@@ -69,7 +69,7 @@ module.exports = {
       const exists = await BallotRace.findOne({
         ballotId: race_id,
       });
-      if (!exists && name !== '') {
+      if (!exists) {
         console.log('ballotRace does not exist. adding it...');
         const hashId = await randomHash();
         const ballotHashId = await sails.helpers.ballotready.encodeId(
@@ -93,10 +93,13 @@ module.exports = {
         );
 
         if (level === 'county') {
-          const countyExists = await County.findOne({
-            name,
-            state,
-          });
+          let countyExists;
+          if (name !== '') {
+            countyExists = await County.findOne({
+              name,
+              state,
+            });
+          }
           if (countyExists) {
             console.log('county exists. adding ballotRace');
             try {
@@ -120,7 +123,7 @@ module.exports = {
             } catch (e) {
               console.log('error in ballotRace.create', e);
               await sails.helpers.slack.errorLoggerHelper(
-                `error in ballotRace.create. name: ${name}, state: ${state}`,
+                `error creating ballotRace with county. name: ${name}, state: ${state}`,
                 {},
               );
             }
@@ -151,9 +154,10 @@ module.exports = {
               formattedCountyName = formattedCountyName.replace(' City', '');
 
               const aiCounties = await County.find({
-                name: formattedCountyName,
+                or: [{ name: formattedCountyName }, { name: countyName }],
                 state,
               });
+
               if (aiCounties && aiCounties.length > 0) {
                 console.log('ai county exists. adding ballotRace');
                 let aiCounty = aiCounties[0];
@@ -177,15 +181,18 @@ module.exports = {
                   });
                 } catch (e) {
                   console.log('error in ballotRace.create', e);
-                  await sails.helpers.slack.errorLoggerHelper(
-                    `error in ballotRace.create. name: ${name}, state: ${state}`,
-                    {},
-                  );
+                  // if error code is E_UNIQUE then dont throw slack error.
+                  if (e.code !== 'E_UNIQUE') {
+                    await sails.helpers.slack.errorLoggerHelper(
+                      `error creating ballotRace with ai county. name: ${formattedCountyName}, state: ${state}`,
+                      {},
+                    );
+                  }
                 }
               } else {
                 console.log('county does not exist. skipping!');
                 await sails.helpers.slack.errorLoggerHelper(
-                  `county does not exist. skipping! name: ${countyName}, state: ${state}`,
+                  `county does not exist. skipping! name: ${formattedCountyName}, state: ${state}`,
                   {},
                 );
               }
@@ -212,16 +219,19 @@ module.exports = {
           } catch (e) {
             console.log('error in ballotRace.create', e);
             await sails.helpers.slack.errorLoggerHelper(
-              `error in ballotRace.create. name: ${name}, state: ${state}`,
+              `error creating ballotRace for federal/state. state: ${state}`,
               {},
             );
           }
         } else {
           console.log('municipality level', level);
-          const municipalities = await Municipality.find({
-            name,
-            state,
-          });
+          let municipalities;
+          if (name !== '') {
+            municipalities = await Municipality.find({
+              name,
+              state,
+            });
+          }
           if (municipalities && municipalities.length > 0) {
             let muni = municipalities[0];
             console.log('municipality exists. adding ballotRace');
@@ -246,7 +256,7 @@ module.exports = {
             } catch (e) {
               console.log('error in ballotRace.create', e);
               await sails.helpers.slack.errorLoggerHelper(
-                `error in ballotRace.create. name: ${name}, state: ${state}`,
+                `error creating ballotRace for municipality. name: ${name}, state: ${state}`,
                 {},
               );
             }
@@ -279,7 +289,7 @@ module.exports = {
               formattedCityName = formattedCityName.replace(' Village', '');
 
               const aiMunicipalities = await Municipality.find({
-                name: formattedCityName,
+                or: [{ name: formattedCityName }, { name: cityName }],
                 state,
               });
               if (aiMunicipalities && aiMunicipalities.length > 0) {
@@ -306,7 +316,7 @@ module.exports = {
                 } catch (e) {
                   console.log('error in ballotRace.create', e);
                   await sails.helpers.slack.errorLoggerHelper(
-                    `error in ballotRace.create. name: ${name}, state: ${state}`,
+                    `error creating ballotRace with ai municipality. name: ${formattedCityName}, state: ${state}`,
                     {},
                   );
                 }
@@ -314,7 +324,7 @@ module.exports = {
                 console.log('ai municipality does not exist. skipping!');
                 // todo: if the municipality looks correct, then add them to the db.
                 await sails.helpers.slack.errorLoggerHelper(
-                  `municipality does not exist. skipping! office: ${position_name} ai city name: ${cityName}, state: ${state}`,
+                  `municipality does not exist. skipping! office: ${position_name} ai city name: ${formattedCityName}, state: ${state}`,
                   {},
                 );
                 return exits.success({
