@@ -66,16 +66,21 @@ module.exports = {
           delete data.p2vCompleteDate;
           delete data.p2vNotNeeded;
           delete data.p2vStatus;
+          delete data.goals;
+          delete data.details;
 
-          const p2v = await PathToVictory.findOrCreate(
-            {
-              campaign: campaign.id,
-            },
-            {
-              data: updatedPathToVictory,
-              campaign: campaign.id,
-            },
-          );
+          let p2v;
+          if (Object.keys(updatedPathToVictory).length > 0) {
+            p2v = await PathToVictory.findOrCreate(
+              {
+                campaign: campaign.id,
+              },
+              {
+                data: updatedPathToVictory,
+                campaign: campaign.id,
+              },
+            );
+          }
 
           const newAiContent = {
             ...aiContent,
@@ -93,12 +98,17 @@ module.exports = {
             }
           }
 
-          await Campaign.updateOne({ id: campaign.id }).set({
+          const updateData = {
             details: updatedDetails,
             aiContent: newAiContent,
             data,
-            pathToVictory: p2v.id,
-          });
+          };
+
+          if (p2v) {
+            updateData.pathToVictory = p2v.id;
+          }
+
+          await Campaign.updateOne({ id: campaign.id }).set(updateData);
         } catch (e) {
           console.log('Error in seed', e);
           await sails.helpers.slack.errorLoggerHelper(
