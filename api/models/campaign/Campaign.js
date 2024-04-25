@@ -13,17 +13,21 @@ module.exports = {
     },
     data: {
       type: 'json',
+      allowNull: true,
     },
     dataCopy: {
       type: 'json',
+      allowNull: true,
     },
     details: {
       type: 'json',
       columnType: 'jsonb',
+      allowNull: true,
     },
     aiContent: {
       type: 'json',
       columnType: 'jsonb',
+      allowNull: true,
     },
 
     isVerified: {
