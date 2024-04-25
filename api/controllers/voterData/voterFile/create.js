@@ -19,12 +19,14 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { slug } = inputs;
-      const campaign = await Campaign.findOne({ slug });
-      const { data } = campaign;
+      const campaign = await Campaign.findOne({ slug }).populate(
+        'pathToVictory',
+      );
+      const { data, details, pathToVictory } = campaign;
 
       if (
-        !data.pathToVictory?.electionType ||
-        !data.pathToVictory?.electionLocation ||
+        !pathToVictory?.electionType ||
+        !pathToVictory?.electionLocation ||
         data.hasVoterFile
       ) {
         return exits.badRequest({ message: 'Path to Victory is not set.' });
@@ -48,9 +50,9 @@ module.exports = {
 
       await sails.helpers.campaign.voterDataHelper(
         campaign.id,
-        data.details.state,
-        data.pathToVictory.electionType,
-        data.pathToVictory.electionLocation,
+        details.state,
+        pathToVictory.electionType,
+        pathToVictory.electionLocation,
         filters,
         false,
       );

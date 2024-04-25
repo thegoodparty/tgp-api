@@ -24,14 +24,18 @@ module.exports.policies = {
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/admin-delete': ['isAuthenticated', 'isAdmin'],
+  'campaign/admin-update': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/cancel-launch-request': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/list': ['isAuthenticated', 'isAdmin'],
+  'campaign/list': ['isAuthenticated', 'isAdmin'],
+  'campaign/find-by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   'topIssues/byLocation/find': ['isAuthenticated'],
   'ai/test': ['isAuthenticated', 'isAdmin'],
   'ai/load': ['isAuthenticated', 'isAdmin'],
   'voterData/*': ['isAuthenticated', 'isAdmin'],
   'voterData/get': ['isAuthenticated'],
+  'voterData/path-to-victory': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,

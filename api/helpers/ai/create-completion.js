@@ -69,13 +69,13 @@ module.exports = {
 
       const model = 'gpt-4-turbo-preview';
 
-      console.log('creating chat completion....');
+      console.log('creating chat completion....', messages);
       completion = await openai.createChatCompletion({
         model,
-        messages: messages,
+        messages,
         max_tokens: maxTokens,
         top_p: topP,
-        temperature: temperature,
+        temperature,
       });
       // console.log('completion', completion);
     } catch (error) {
@@ -91,12 +91,13 @@ module.exports = {
       completion.data.choices &&
       completion.data.choices[0].message.content
     ) {
-      console.log('completion success');
       let content = completion.data.choices[0].message.content;
       if (content.includes('```html')) {
         content = content.match(/```html([\s\S]*?)```/)[1];
       }
       content = content.replace('/n', '<br/><br/>');
+      console.log('completion success', content);
+
       return exits.success({
         content: content,
         tokens: completion.data.usage.total_tokens,

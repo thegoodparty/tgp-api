@@ -27,7 +27,7 @@ module.exports = {
       campaigns.forEach((campaign) => {
         const { firstName, lastName, slug } = campaign.campaign.data;
         const { city, state, office, otherOffice, party, district } =
-          campaign.campaign.data.details;
+          campaign.campaign.details;
         cleanCampaigns.push({
           firstName,
           lastName,

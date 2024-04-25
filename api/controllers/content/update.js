@@ -32,7 +32,7 @@ const schemaConfig = {
   },
   teamMilestones: {
     subKey: 'id',
-  },
+  }
 };
 
 module.exports = {
@@ -64,7 +64,6 @@ module.exports = {
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const value = content[key];
-        key === 'teamMilestones' && console.log(`value =>`, value)
 
         if (schemaConfig[key]) {
           const { subKey } = schemaConfig[key];

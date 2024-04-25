@@ -27,26 +27,13 @@ module.exports = {
         .populate('topIssue')
         .populate('position');
 
-      let name = campaign.name;
-      if (!name && campaign.details?.firstName && campaign.details?.lastName) {
-        name = `${campaign.details?.firstName} ${campaign.details?.lastName}`;
-      }
-      if (!name) {
-        // the name is on the user (old records)
-        const campaignRecord = await Campaign.findOne({
-          id: campaign.id,
-        }).populate('user');
-        name = campaignRecord.user?.name;
-        if (name) {
-          await Campaign.updateOne({ id: campaign.id }).set({
-            data: { ...campaign.data, name },
-          });
-        }
-      }
+      const user = await User.findOne({ id: campaign.user });
+
+      const name = `${user.firstName} ${user.lastName}`;
 
       const positionsStr = positionsToStr(
         campaignPositions,
-        campaign.customIssues,
+        campaign.details.customIssues,
       );
       let party =
         campaign.details?.party === 'Other'
@@ -83,7 +70,7 @@ module.exports = {
         },
         {
           find: 'primaryElectionDate',
-          replace: campaign.goals.primaryElectionDate,
+          replace: campaign.details.primaryElectionDate,
         },
         {
           find: 'district',
@@ -116,34 +103,24 @@ module.exports = {
         },
         {
           find: 'campaignCommittee',
-          replace:
-            campaign.details.campaignCommittee ||
-            campaign.goals?.campaignCommittee ||
-            'unknown',
+          replace: campaign.details.campaignCommittee || 'unknown',
         },
       ];
-      if (campaign.goals) {
-        const againstStr = againstToStr(campaign.goals.runningAgainst);
-        replaceArr.push(
-          {
-            find: 'runningAgainst',
-            replace: againstStr,
-          },
-          {
-            find: 'electionDate',
-            replace: campaign.goals.electionDate,
-          },
-          // {
-          //   find: 'whyRunning',
-          //   replace: campaign.goals.whyRunning,
-          // },
-
-          {
-            find: 'statementName',
-            replace: campaign.goals.statementName,
-          },
-        );
-      }
+      const againstStr = againstToStr(campaign.details.runningAgainst);
+      replaceArr.push(
+        {
+          find: 'runningAgainst',
+          replace: againstStr,
+        },
+        {
+          find: 'electionDate',
+          replace: campaign.details.electionDate,
+        },
+        {
+          find: 'statementName',
+          replace: campaign.details.statementName,
+        },
+      );
       if (campaign.pathToVictory) {
         const {
           projectedTurnout,
