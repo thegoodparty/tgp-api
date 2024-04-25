@@ -38,11 +38,13 @@ module.exports = {
           'pathToVictory',
         );
       }
-
       delete campaign.user;
       delete campaign.createdAt;
       delete campaign.updatedAt;
       delete campaign.dataCopy;
+      if (campaign.pathToVictory) {
+        campaign.pathToVictory = campaign.pathToVictory.data;
+      }
 
       return exits.success({
         campaign,
