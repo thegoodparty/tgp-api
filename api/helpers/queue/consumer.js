@@ -418,14 +418,10 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       link: `${appBase}/dashboard`,
     });
 
-    const p2v = await PathToVictory.findOrCreate(
-      {
-        campaign: campaign.id,
-      },
-      {
-        campaign: campaign.id,
-      },
-    );
+    let p2v = await PathToVictory.findOne({ campaign: campaign.id });
+    if (!p2v) {
+      p2v = await PathToVictory.create({ campaign: campaign.id }).fetch();
+    }
 
     const p2vData = p2v.data || {};
     await PathToVictory.updateOne({

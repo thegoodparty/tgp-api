@@ -18,7 +18,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { level } = inputs;
+      let { level } = inputs;
       // this helper just simplifies level to city/state/county/federal.
       // it is used in extractLocationAi.
       // from this larger list:

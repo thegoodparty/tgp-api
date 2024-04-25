@@ -91,12 +91,13 @@ module.exports = {
       completion.data.choices &&
       completion.data.choices[0].message.content
     ) {
-      console.log('completion success');
       let content = completion.data.choices[0].message.content;
       if (content.includes('```html')) {
         content = content.match(/```html([\s\S]*?)```/)[1];
       }
       content = content.replace('/n', '<br/><br/>');
+      console.log('completion success', content);
+
       return exits.success({
         content: content,
         tokens: completion.data.usage.total_tokens,

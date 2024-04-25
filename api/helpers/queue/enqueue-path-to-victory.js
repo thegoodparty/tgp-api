@@ -65,8 +65,7 @@ module.exports = {
 };
 
 async function sendVictoryIssuesSlackMessage(campaign, user) {
-  const { data, slug } = campaign;
-  const { details } = data;
+  const { slug, details } = campaign;
   const { office, state, city, district } = details;
   const appBase = sails.config.custom.appBase || sails.config.appBase;
 
@@ -109,8 +108,7 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
 }
 
 async function getCampaignDbMessage(queueMessage, campaign) {
-  const { data } = campaign;
-  const { details } = data;
+  const { details } = campaign;
   const { office, state, city, district, officeTermLength, otherOffice } =
     details;
 
@@ -211,9 +209,10 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
 
   // update the Campaign details
   if (details) {
+    const recentCampaign = await Campaign.findOne({ id: campaign.id });
     await Campaign.updateOne({ id: campaign.id }).set({
       details: {
-        ...details,
+        ...recentCampaign.details,
         officeTermLength: termLength ?? details.officeTermLength,
         electionDate: electionDate ?? details.electionDate,
         level: electionLevel ?? details.level,
@@ -228,21 +227,6 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   }
 
   return queueMessage;
-}
-
-function simpleSlackMessage(text, body) {
-  return {
-    text,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: body,
-        },
-      },
-    ],
-  };
 }
 
 async function getBallotReadyDbMessage(queueMessage, campaign, raceId) {

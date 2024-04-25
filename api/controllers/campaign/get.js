@@ -34,7 +34,9 @@ module.exports = {
       }
       const neededFix = await fixFailedAi(campaign);
       if (neededFix) {
-        campaign = await Campaign.findOne({ id: campaign.id });
+        campaign = await Campaign.findOne({ id: campaign.id }).populate(
+          'pathToVictory',
+        );
       }
 
       delete campaign.user;
