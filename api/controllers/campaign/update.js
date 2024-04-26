@@ -2,12 +2,8 @@ module.exports = {
   friendlyName: 'Update Campaign',
 
   inputs: {
-    keys: {
-      type: 'json', // array of strings in the format of section.key
-      required: true,
-    },
-    values: {
-      type: 'json', // array of values (any)
+    attr: {
+      type: 'json', // array of keys in the format of {key: section.key, value}
       required: true,
     },
   },
@@ -24,20 +20,17 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { keys, values } = inputs;
+      const { attr } = inputs;
       const { user } = this.req;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
 
-      if (keys.length !== values.length) {
-        return exits.badRequest('keys and values must be the same length');
-      }
       let updated = campaign;
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i];
-        const value = values[i];
+      for (let i = 0; i < attr.length; i++) {
+        const { key, value } = attr[i];
+        console.log(key, value);
         const keyArray = key.split('.');
         if (keyArray.length <= 1 || keyArray.length > 2) {
           return exits.badRequest('key must be in the format of section.key');
