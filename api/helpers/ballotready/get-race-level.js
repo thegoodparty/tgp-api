@@ -20,7 +20,7 @@ module.exports = {
     try {
       let { level } = inputs;
       // this helper just simplifies level to city/state/county/federal.
-      // it is used in extractLocationAi.
+      // it is used in p2v.
       // from this larger list:
       // "level"
       // "city"
