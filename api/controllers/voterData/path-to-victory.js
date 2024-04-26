@@ -32,12 +32,16 @@ module.exports = {
       } else {
         campaign = await sails.helpers.campaign.byUser(user);
       }
+
       let p2v = await PathToVictory.findOne({ campaign: campaign.id });
+      console.log('p2v', p2v);
       if (!p2v) {
         p2v = await PathToVictory.create({
           campaign: campaign.id,
           data: { p2vStatus: 'Waiting' },
         }).fetch();
+
+        console.log('creating new p2v', p2v.id);
 
         await Campaign.updateOne({ id: campaign.id }).set({
           pathToVictory: p2v.id,
@@ -48,6 +52,12 @@ module.exports = {
         }).set({
           data: { ...p2v.data, p2vStatus: 'Waiting' },
         });
+
+        // TODO: fixing a bug - this can be removed after testing is done on dev.
+        await Campaign.updateOne({ id: campaign.id }).set({
+          pathToVictory: p2v.id,
+        });
+        console.log('updating p2v', p2v.id);
       }
 
       await sails.helpers.queue.enqueuePathToVictory(campaign);

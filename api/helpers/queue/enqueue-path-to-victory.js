@@ -17,7 +17,9 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { campaign } = inputs;
+      let { campaign } = inputs;
+      // get a fresh copy of the campaign
+      campaign = await Campaign.findOne({ id: campaign.id });
 
       const { slug, details } = campaign;
 

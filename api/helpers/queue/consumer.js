@@ -420,6 +420,9 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
     let p2v = await PathToVictory.findOne({ campaign: campaign.id });
     if (!p2v) {
       p2v = await PathToVictory.create({ campaign: campaign.id }).fetch();
+      await Campaign.updateOne({ id: campaign.id }).set({
+        pathToVictory: p2v.id,
+      });
     }
 
     const p2vData = p2v.data || {};
