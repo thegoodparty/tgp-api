@@ -19,8 +19,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'updated',
-      responseType: 'ok',
+      outputDescription: 'ok',
     },
   },
 

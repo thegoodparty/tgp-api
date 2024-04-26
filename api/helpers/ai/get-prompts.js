@@ -3,8 +3,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Campaign Found',
-      responseType: 'ok',
+      outputDescription: 'Campaign Found',
     },
   },
 

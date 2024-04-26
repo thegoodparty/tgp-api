@@ -3,8 +3,6 @@ const { Configuration, OpenAIApi } = require('openai');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
-const appBase = sails.config.custom.appBase || sails.config.appBase;
-
 const configuration = new Configuration({
   apiKey: openAiKey,
 });
@@ -33,12 +31,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Campaign Found',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'The request was invalid',
-      responseType: 'badRequest',
+      outputDescription: 'Campaign Found',
     },
   },
 
@@ -82,7 +75,7 @@ module.exports = {
       console.log('Error in helpers/ai/create-compilation', error);
       if (error.response.data.error.message) {
         console.log('error message', error.response.data.error.message);
-        return exits.badRequest({ content: '', tokens: 0 });
+        return exits.success({ content: '', tokens: 0 });
       }
     }
 
@@ -104,7 +97,7 @@ module.exports = {
       });
     } else {
       console.log('completion failure');
-      return exits.badRequest({ content: '', tokens: 0 });
+      return exits.success({ content: '', tokens: 0 });
     }
   },
 };

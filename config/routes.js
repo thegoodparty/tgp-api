@@ -122,19 +122,7 @@ module.exports.routes = {
 
   // onboarding
 
-  'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
-  'DELETE   /api/v1/campaign': 'campaign/onboarding/admin-delete',
-
-  'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
-  'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
-  'GET   /api/v1/campaign/onboarding/by-user':
-    'campaign/onboarding/find-by-user',
-
-  'POST   /api/v1/campaign/onboarding/launch-request':
-    'campaign/onboarding/launch-request',
-  'DELETE   /api/v1/campaign/onboarding/launch-request':
-    'campaign/onboarding/cancel-launch-request',
-  'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch',
+  'DELETE   /api/v1/campaign': 'campaign/admin-delete',
 
   // onboarding AI
   'POST   /api/v1/campaign/ai': 'campaign/ai/create',

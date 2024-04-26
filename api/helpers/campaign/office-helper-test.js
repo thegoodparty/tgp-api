@@ -22,12 +22,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Office Helper Test',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'Bad Request',
-      responseType: 'badRequest',
+      outputDescription: 'Office Helper Test',
     },
   },
 

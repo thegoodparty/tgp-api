@@ -28,8 +28,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Embedding Inserted',
-      responseType: 'ok',
+      outputDescription: 'Embedding Inserted',
     },
   },
 
