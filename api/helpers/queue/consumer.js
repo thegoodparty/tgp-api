@@ -317,9 +317,9 @@ async function sendSlackMessage(
 
     // automatically update the Campaign with the pathToVictory data.
     if (
-      campaign.data?.pathToVictory &&
-      campaign?.p2vStatus &&
-      campaign.p2vStatus === 'Complete'
+      campaign.pathToVictory &&
+      campaign.pathToVictory.p2vStatus &&
+      campaign.pathToVictory.p2vStatus === 'Complete'
     ) {
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage(

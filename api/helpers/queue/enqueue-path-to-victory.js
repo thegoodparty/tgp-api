@@ -112,8 +112,7 @@ async function getCampaignDbMessage(queueMessage, campaign) {
   const { office, state, city, district, officeTermLength, otherOffice } =
     details;
 
-  let goals = data?.goals;
-  let electionDate = goals?.electionDate;
+  let electionDate = details?.electionDate;
   let electionLevel = 'city';
   if (
     office.toLowerCase().includes('senate') ||
@@ -298,6 +297,7 @@ async function getBallotReadyDbMessage(queueMessage, campaign, raceId) {
   // update the Campaign details
   await Campaign.updateOne({ id: campaign.id }).set({
     data: campaign.data,
+    details: campaign.details,
   });
 
   return queueMessage;
