@@ -39,8 +39,6 @@ module.exports = {
         );
         // }
       } else {
-        // This method was not accurate enough and was deprecated.
-        // queueMessage = await getCampaignDbMessage(queueMessage, campaign);
         const user = await User.findOne({ id: campaign.user });
         await sails.helpers.log(
           slug,
@@ -109,61 +107,17 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
   await sails.helpers.slack.slackHelper(slackMessage, 'victory-issues');
 }
 
-async function getCampaignDbMessage(queueMessage, campaign) {
-  const { data } = campaign;
-  const { details } = data;
-  const { office, state, city, district, officeTermLength, otherOffice } =
-    details;
-
-  let goals = data?.goals;
-  let electionDate = goals?.electionDate;
-  let electionLevel = 'city';
-  if (
-    office.toLowerCase().includes('senate') ||
-    office.toLowerCase().includes('house')
-  ) {
-    electionLevel = 'state';
-  } else if (office.toLowerCase().includes('county')) {
-    electionLevel = 'county';
-  } else if (
-    office.toLowerCase().includes('congress') ||
-    office.toLowerCase().includes('president')
-  ) {
-    electionLevel = 'federal';
-  }
-
-  let termLength = 0;
-  // extract the number from the officeTermLength string
-  if (officeTermLength) {
-    termLength = officeTermLength.match(/\d+/)[0].toString();
-  }
-
-  let officeName = office;
-  if (officeName === 'Other') {
-    officeName = otherOffice;
-  }
-  queueMessage.data.officeName = officeName;
-  queueMessage.data.electionDate = electionDate;
-  queueMessage.data.electionTerm = termLength;
-  queueMessage.data.electionLevel = electionLevel;
-  queueMessage.data.electionState = state;
-  queueMessage.data.electionCounty = '';
-  queueMessage.data.electionMunicipality = city;
-  queueMessage.data.subAreaName = district ? 'district' : undefined;
-  queueMessage.data.subAreaValue = district;
-  return queueMessage;
-}
-
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   const { data } = campaign;
 
-  const row = await getRaceById(raceId);
+  const row = await sails.helpers.ballotready.getRace(raceId);
   console.log('row', row);
 
   const electionDate = row?.election?.electionDay;
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
   const level = row?.position?.level.toLowerCase();
+  // a simplified race level (federal, state, city)
   let electionLevel = await sails.helpers.ballotready.getRaceLevel(level);
 
   const officeName = row?.position?.name;
@@ -178,22 +132,34 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
       : undefined;
   const electionState = row?.election?.state;
 
-  const locationData = await sails.helpers.ballotready.extractLocationAi(
+  const locationResp = await sails.helpers.ballotready.extractLocationAi(
     officeName + ' - ' + electionState,
-    electionLevel,
+    level,
   );
+
+  let county;
+  let city;
+  if (locationResp?.level) {
+    if (locationResp.level === 'county') {
+      county = locationResp.county;
+    } else {
+      if (
+        locationResp.county &&
+        locationResp.hasOwnProperty(locationResp.level)
+      ) {
+        city = locationResp[locationResp.level];
+        county = locationResp.county;
+      }
+    }
+  }
 
   queueMessage.data.officeName = officeName;
   queueMessage.data.electionDate = electionDate;
   queueMessage.data.electionTerm = termLength;
   queueMessage.data.electionLevel = electionLevel;
   queueMessage.data.electionState = electionState;
-  queueMessage.data.electionCounty = locationData?.county
-    ? locationData.county
-    : undefined;
-  queueMessage.data.electionMunicipality = locationData?.city
-    ? locationData.city
-    : undefined;
+  queueMessage.data.electionCounty = county;
+  queueMessage.data.electionMunicipality = city;
   queueMessage.data.subAreaName = subAreaName;
   queueMessage.data.subAreaValue = subAreaValue;
   queueMessage.data.partisanType = partisanType;
@@ -221,8 +187,8 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
           electionDate: electionDate ?? data.details.electionDate,
           level: electionLevel ?? data.details.level,
           state: electionState ?? data.details.state,
-          county: locationData?.county ?? data.details.county,
-          city: locationData?.city ?? data.details.city,
+          county: county ?? data.details.county,
+          city: city ?? data.details.city,
           district: subAreaValue ?? data.details.district,
           partisanType: partisanType ?? data.details.partisanType,
           priorElectionDates:
@@ -233,145 +199,4 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   }
 
   return queueMessage;
-}
-
-function simpleSlackMessage(text, body) {
-  return {
-    text,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: body,
-        },
-      },
-    ],
-  };
-}
-
-async function getBallotReadyDbMessage(queueMessage, campaign, raceId) {
-  let ballotRace;
-  console.log('raceId', raceId);
-  // if raceId is numeric. test it using a regex. since its a string.
-  let dbRaceId;
-  if (!raceId.match(/^\d+$/)) {
-    dbRaceId = await getRaceDatabaseId(raceId);
-    console.log('determined dbRaceId', dbRaceId);
-  }
-  ballotRace = await BallotRace.findOne({
-    ballotId: dbRaceId.toString(),
-  });
-  if (ballotRace) {
-    console.log('found ballotRace in database');
-    queueMessage = await getBallotReadyDbMessage(
-      queueMessage,
-      campaign,
-      ballotRace,
-    );
-  } else {
-    console.log('ballotRace not found in database. getting data from api');
-  }
-
-  if (ballotRace.data?.frequency) {
-    termData = ballotRace.data.frequency;
-    const pattern = /\[(\d+)[^\d]?/;
-    const match = termData.match(pattern);
-    const term = match[1];
-    console.log('Found term', term);
-    if (match) {
-      queueMessage.data.electionTerm = term;
-      campaign.data.details.officeTermLength = term;
-    }
-  }
-  if (ballotRace.data?.election_day) {
-    queueMessage.data.electionDate = ballotRace.data.election_day;
-    if (campaign.data.details.electionDate) {
-      campaign.data.details.electionDate = ballotRace.data.election_day;
-    }
-  }
-
-  if (ballotRace?.level) {
-    queueMessage.data.electionLevel = ballotRace.level;
-    campaign.data.details.level = ballotRace.level;
-  }
-  console.log('ballotRace.data?.partisan_type', ballotRace.data?.partisan_type);
-  if (ballotRace.data?.partisan_type) {
-    queueMessage.data.partisanType = ballotRace.data.partisan_type;
-    campaign.data.details.partisanType = ballotRace.data.partisan_type;
-  }
-  let subAreaName;
-  let subAreaValue;
-  if (ballotRace.data.sub_area_name) {
-    subAreaName = ballotRace.data.sub_area_name;
-    subAreaValue = ballotRace.data.sub_area_value;
-  } else if (ballotRace.data.sub_area_name_secondary) {
-    subAreaName = ballotRace.data.sub_area_name_secondary;
-    subAreaValue = ballotRace.data.sub_area_value_secondary;
-  }
-  queueMessage.data.officeName = ballotRace.data.position_name;
-  queueMessage.data.electionState = ballotRace.state;
-  queueMessage.data.electionCounty = ballotRace.county;
-  queueMessage.data.electionMunicipality = ballotRace.municipality;
-  queueMessage.data.subAreaName = subAreaName;
-  queueMessage.data.subAreaValue = subAreaValue;
-
-  // update the Campaign details
-  await Campaign.updateOne({ id: campaign.id }).set({
-    data: campaign.data,
-  });
-
-  return queueMessage;
-}
-
-async function getRaceDatabaseId(nodeId) {
-  const query = `
-  query Node {
-    node(id: "${nodeId}") {
-        ... on Race {
-            databaseId
-            id
-        }
-    }
-}
-`;
-  const { node } = await sails.helpers.graphql.queryHelper(query);
-  return node?.databaseId;
-}
-
-async function getRaceById(raceId) {
-  const query = `
-    query Node {
-      node(id: "${raceId}") {
-          ... on Race {
-              databaseId
-              isPartisan
-              isPrimary
-              election {
-                  electionDay
-                  name
-                  state
-              }
-              position {
-                  description
-                  judicial
-                  level
-                  name
-                  partisanType
-                  staggeredTerm
-                  state
-                  subAreaName
-                  subAreaValue
-                  tier
-                  electionFrequencies {
-                      frequency
-                  }
-                  hasPrimary
-              }
-          }
-      }
-  }
-  `;
-  const { node } = await sails.helpers.graphql.queryHelper(query);
-  return node;
 }

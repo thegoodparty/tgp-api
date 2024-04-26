@@ -95,79 +95,37 @@ async function insertCityIntoDatabase(row) {
       state: state_id,
     });
     if (county) {
-      await addCity(row, city, county, state_id, county_name, type);
+      await sails.helpers.ballotready.addCity(
+        row,
+        city,
+        county.id,
+        state_id,
+        county_name,
+        type,
+      );
     } else {
       console.log(
         'county does not exist. adding county',
         county_name,
         state_id,
       );
-      county = await addCounty(county_name, state_id, row);
+      county = await sails.helpers.ballotready.addCounty(
+        county_name,
+        state_id,
+        row,
+      );
       if (county) {
-        await addCity(row, city, county, state_id, county_name, type);
+        await sails.helpers.ballotready.addCity(
+          row,
+          city,
+          county.id,
+          state_id,
+          county_name,
+          type,
+        );
       }
     }
   } catch (e) {
     console.log('error in insertIntoDb', e);
-  }
-}
-
-async function addCounty(county_name, state_id, row) {
-  const slug = `${slugify(state_id, {
-    lower: true,
-  })}/${slugify(county_name, {
-    lower: true,
-  })}`;
-
-  let { county_fips } = row;
-
-  console.log(
-    `adding county: ${county_name}, state: ${state_id}. slug: ${slug}`,
-  );
-
-  let county;
-  try {
-    county = await County.create({
-      name: county_name,
-      state: state_id,
-      slug,
-      data: { county: county_name, county_fips },
-    }).fetch();
-  } catch (e) {
-    console.log('error in addCounty', e);
-  }
-  return county;
-}
-
-async function addCity(row, city, county, state_id, county_name, type) {
-  const slug = `${slugify(state_id, {
-    lower: true,
-  })}/${slugify(county_name, {
-    lower: true,
-  })}/${slugify(city, {
-    lower: true,
-  })}`;
-
-  console.log(
-    `adding city: ${city}, county: ${county_name}, state: ${state_id}. slug: ${slug}`,
-  );
-
-  const exists = await Municipality.findOne({
-    type,
-    slug,
-  });
-  if (!exists) {
-    try {
-      await Municipality.create({
-        name: city,
-        type,
-        state: state_id,
-        county: county.id,
-        data: row,
-        slug,
-      });
-    } catch (e) {
-      console.log('error in addCity', e);
-    }
   }
 }
