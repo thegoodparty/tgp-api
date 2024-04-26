@@ -28,7 +28,7 @@ module.exports = {
         console.log('campaign', campaign);
         const { firstName, lastName, slug } = campaign.campaign.data;
         const { city, state, office, otherOffice, party, district } =
-          campaign.campaign.details;
+          campaign.campaign.data.details || {};
         cleanCampaigns.push({
           firstName,
           lastName,
