@@ -24,20 +24,40 @@ module.exports = {
       const user = this.req.user;
       const { id } = inputs;
 
+      console.log('user', user);
+
       const route = await DoorKnockingRoute.findOne({ id });
+      console.log('route', route);
 
       const dkCampaign = await DoorKnockingCampaign.findOne({
         id: route.dkCampaign,
       });
+      console.log('dkCampaign', dkCampaign);
 
-      const campaignVolunteer = await CampaignVolunteer.findOne({
+      let campaignVolunteer = await CampaignVolunteer.findOne({
         user: user.id,
         campaign: dkCampaign.campaign,
       });
 
+      console.log('campaignVolunteer', campaignVolunteer);
+
       if (!campaignVolunteer) {
-        return exits.badRequest('You do not have access to this route');
+        console.log('No campaign volunteer');
+        // check if the campaign user is the req user. of so create a volunteer for the user
+        const campaign = await Campaign.findOne({ id: dkCampaign.campaign });
+        if (campaign.user === user.id) {
+          campaignVolunteer = await CampaignVolunteer.create({
+            role: 'candidate',
+            campaign: campaign.id,
+            user: user.id,
+          }).fetch();
+        } else {
+          return exits.badRequest('You do not have access to this route');
+        }
       }
+
+      console.log('route.volunteer', route.volunteer);
+      console.log('campaignVolunteer.id', campaignVolunteer.id);
 
       if (route.volunteer === campaignVolunteer.id) {
         return exits.success({ message: 'claimed' });
