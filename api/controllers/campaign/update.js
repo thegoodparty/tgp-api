@@ -30,7 +30,6 @@ module.exports = {
       let updated = campaign;
       for (let i = 0; i < attr.length; i++) {
         const { key, value } = attr[i];
-        console.log(key, value);
         const keyArray = key.split('.');
         if (keyArray.length <= 1 || keyArray.length > 2) {
           return exits.badRequest('key must be in the format of section.key');
@@ -67,7 +66,7 @@ module.exports = {
   },
 };
 
-async function handlePathToVictory(campaign, column, columnKey, value) {
+async function handlePathToVictory(campaign, columnKey, value) {
   const p2v = await PathToVictory.findOrCreate(
     {
       campaign: campaign.id,
