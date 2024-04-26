@@ -33,8 +33,10 @@ module.exports = {
         return exits.badRequest('No campaign');
       }
 
+      const lowerCaseEmail = email.toLowerCase();
+
       const existing = await VolunteerInvitation.findOne({
-        email,
+        email: lowerCaseEmail,
         campaign: campaign.id,
       });
       if (existing) {
@@ -42,14 +44,14 @@ module.exports = {
       }
 
       await VolunteerInvitation.create({
-        email,
+        email: lowerCaseEmail,
         campaign: campaign.id,
         role,
       });
 
       let name = `${user.firstName} ${user.lastName}`;
 
-      const existingUser = await User.findOne({ email });
+      const existingUser = await User.findOne({ email: lowerCaseEmail });
       const nextMonth = moment().add(1, 'month').format('YYYY-MM-DD');
       if (existingUser) {
         const notification = {
@@ -88,7 +90,7 @@ module.exports = {
       };
 
       await sails.helpers.mailgun.mailgunTemplateSender(
-        email,
+        lowerCaseEmail,
         `Join Me in Making a Difference: Volunteer for Our Campaign!`,
         'volunteer-invitation',
         JSON.stringify(variables),
