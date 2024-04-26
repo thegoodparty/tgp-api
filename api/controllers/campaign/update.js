@@ -21,7 +21,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { attr } = inputs;
-      console.log('atributes', attr);
       const { user } = this.req;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
@@ -31,7 +30,6 @@ module.exports = {
       let updated = campaign;
       for (let i = 0; i < attr.length; i++) {
         const { key, value } = attr[i];
-        console.log('key', key, 'value', value);
         const keyArray = key.split('.');
         if (keyArray.length <= 1 || keyArray.length > 2) {
           return exits.badRequest('key must be in the format of section.key');
