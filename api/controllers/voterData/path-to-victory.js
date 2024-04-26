@@ -3,7 +3,6 @@ module.exports = {
     slug: {
       // this is only for admins. users can only run their own campaign
       type: 'string',
-      required: true,
     },
   },
 
@@ -40,7 +39,9 @@ module.exports = {
           data: { p2vStatus: 'Waiting' },
         }).fetch();
 
-        await Campaign.updateOne({ slug }).set({ pathToVictory: p2v.id });
+        await Campaign.updateOne({ id: campaign.id }).set({
+          pathToVictory: p2v.id,
+        });
       } else {
         await PathToVictory.updateOne({
           id: p2v.id,
