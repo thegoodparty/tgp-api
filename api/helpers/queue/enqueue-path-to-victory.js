@@ -38,8 +38,6 @@ module.exports = {
         );
         // }
       } else {
-        // This method was not accurate enough and was deprecated.
-        // queueMessage = await getCampaignDbMessage(queueMessage, campaign);
         const user = await User.findOne({ id: campaign.user });
         await sails.helpers.log(
           slug,
@@ -153,13 +151,14 @@ async function getCampaignDbMessage(queueMessage, campaign) {
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   const { details } = campaign;
 
-  const row = await getRaceById(raceId);
+  const row = await sails.helpers.ballotready.getRace(raceId);
   console.log('row', row);
 
   const electionDate = row?.election?.electionDay;
   // todo: maker this safer (check array length first)
   const termLength = row?.position?.electionFrequencies[0].frequency[0];
   const level = row?.position?.level.toLowerCase();
+  // a simplified race level (federal, state, city)
   let electionLevel = await sails.helpers.ballotready.getRaceLevel(level);
 
   const officeName = row?.position?.name;
@@ -174,9 +173,9 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
       : undefined;
   const electionState = row?.election?.state;
 
-  const locationData = await sails.helpers.ballotready.extractLocationAi(
+  const locationResp = await sails.helpers.ballotready.extractLocationAi(
     officeName + ' - ' + electionState,
-    electionLevel,
+    level,
   );
 
   queueMessage.data.officeName = officeName;
