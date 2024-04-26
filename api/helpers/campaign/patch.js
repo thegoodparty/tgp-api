@@ -32,6 +32,10 @@ module.exports = {
         column === 'campaignPlan' ||
         column === 'aiContent'
       ) {
+        if (typeof value === 'undefined') {
+          console.log('undefined value');
+          return exits.success(false);
+        }
         // Check if the value is a JSON object
         let formattedValue;
         if (typeof value === 'object') {

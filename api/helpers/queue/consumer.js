@@ -2,7 +2,6 @@ const { Consumer } = require('sqs-consumer');
 const AWS = require('aws-sdk');
 const https = require('https');
 const moment = require('moment');
-const PathToVictory = require('../../models/campaign/PathToVictory');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
