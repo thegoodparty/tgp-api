@@ -60,11 +60,11 @@ module.exports = {
 
       const { data } = campaign;
       const { details, customIssues } = data;
-      const { office, otherOffice, electionDate } = details;
+      const { office, otherOffice, electionDate } = details || {};
 
       voter.campaign = {
-        firstName: details.firstName || data.firstName,
-        lastName: details.lastName || data.lastName,
+        firstName: details?.firstName || data.firstName,
+        lastName: details?.lastName || data.lastName,
         office: office === 'Other' ? otherOffice : office,
         electionDate,
         customIssues,
