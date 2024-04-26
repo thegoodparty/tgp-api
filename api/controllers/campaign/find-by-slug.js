@@ -31,13 +31,23 @@ module.exports = {
       const { slug } = inputs;
       const campaign = await Campaign.findOne({
         slug,
-      });
+      }).populate('pathToVictory');
+
+      console.log('campaign', campaign);
+
+      if (campaign?.pathToVictory) {
+        campaign.pathToVictory = campaign.pathToVictory?.data
+          ? campaign.pathToVictory.data
+          : false;
+      }
+
+      console.log('campaign', campaign);
 
       return exits.success({
         campaign,
       });
     } catch (e) {
-      console.log('Error in find candidate', e);
+      console.log('Error in find find-by-slug', e);
       return exits.forbidden();
     }
   },
