@@ -24,7 +24,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { office, level } = inputs;
+      let { office, level } = inputs;
 
       if (level === 'local' || level === 'regional') {
         // if the level is local or regional, we need to refine the level
