@@ -149,10 +149,20 @@ function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
   let votersByGeoHash = groupVotersByHash(voters, initialPrecision);
   //   console.log('votersByGeoHash', votersByGeoHash, initialPrecision);
   for (let hash of Object.keys(votersByGeoHash)) {
-    if (votersByGeoHash[hash].length > maxHousesPerRoute) {
+    const hashLength = votersByGeoHash[hash].length;
+    if (hashLength > maxHousesPerRoute) {
+      // determine the next precisions based on the different from maxhouses
+      let nextPrecision = initialPrecision + 1;
+      if (hashLength > maxHousesPerRoute * 3) {
+        nextPrecision = initialPrecision + 2;
+      }
+      if (hashLength > maxHousesPerRoute * 4) {
+        nextPrecision = initialPrecision + 3;
+      }
+
       const smallerGroup = groupAndSplitByGeoHash(
         votersByGeoHash[hash],
-        initialPrecision + 1,
+        nextPrecision,
         maxHousesPerRoute,
       );
       delete votersByGeoHash[hash];
