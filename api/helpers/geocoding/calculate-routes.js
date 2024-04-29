@@ -144,33 +144,26 @@ function combineEntries(votersByGeoHash, minHousesPerRoute) {
   return result;
 }
 
-// recursive function to group voters by geohash and split long lists
+// group voters by geohash and split long lists
 function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
-  let votersByGeoHash = groupVotersByHash(voters, initialPrecision);
-  //   console.log('votersByGeoHash', votersByGeoHash, initialPrecision);
-  for (let hash of Object.keys(votersByGeoHash)) {
-    const hashLength = votersByGeoHash[hash].length;
-    if (hashLength > maxHousesPerRoute) {
-      // determine the next precisions based on the different from maxhouses
-      let nextPrecision = initialPrecision + 1;
-      // if (hashLength > maxHousesPerRoute * 3) {
-      //   nextPrecision = initialPrecision + 2;
-      // }
-      // if (hashLength > maxHousesPerRoute * 4) {
-      //   nextPrecision = initialPrecision + 3;
-      // }
+  let queue = [{ voters, precision: initialPrecision }];
+  let result = {};
 
-      const smallerGroup = groupAndSplitByGeoHash(
-        votersByGeoHash[hash],
-        nextPrecision,
-        maxHousesPerRoute,
-      );
-      delete votersByGeoHash[hash];
-      votersByGeoHash = Object.assign(votersByGeoHash, smallerGroup);
+  while (queue.length > 0) {
+    const { voters, precision } = queue.shift();
+    let votersByGeoHash = groupVotersByHash(voters, precision);
+
+    for (let hash of Object.keys(votersByGeoHash)) {
+      const hashLength = votersByGeoHash[hash].length;
+      if (hashLength > maxHousesPerRoute) {
+        queue.push({ voters: votersByGeoHash[hash], precision: precision + 1 });
+      } else {
+        result[hash] = votersByGeoHash[hash];
+      }
     }
   }
 
-  return votersByGeoHash;
+  return result;
 }
 
 function groupVotersByHash(voters, precision) {
