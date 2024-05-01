@@ -27,7 +27,8 @@ module.exports = {
           message: 'Only admins can run campaigns by slug.',
         });
       }
-      if (user.isAdmin) {
+
+      if (user.isAdmin && slug) {
         campaign = await Campaign.findOne({ slug });
       } else {
         campaign = await sails.helpers.campaign.byUser(user);
@@ -52,12 +53,6 @@ module.exports = {
         }).set({
           data: { ...p2v.data, p2vStatus: 'Waiting' },
         });
-
-        // TODO: fixing a bug - this can be removed after testing is done on dev.
-        await Campaign.updateOne({ id: campaign.id }).set({
-          pathToVictory: p2v.id,
-        });
-        console.log('updating p2v', p2v.id);
       }
 
       await sails.helpers.queue.enqueuePathToVictory(campaign);
