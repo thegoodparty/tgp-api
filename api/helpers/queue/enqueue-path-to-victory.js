@@ -46,7 +46,16 @@ module.exports = {
           'campaign does not have race_id. skipping p2v...',
         );
         if (user) {
-          await sendVictoryIssuesSlackMessage(campaign, user);
+          let runForOffice = campaign?.data?.details?.runForOffice || 'no';
+          let knowRun = campaign?.data?.details?.knowRun || 'false';
+          // only send slack message if user is running for office
+          // and user did not pick an office.
+          if (
+            (runForOffice && runForOffice === 'yes') ||
+            (knowRun && knowRun === 'true')
+          ) {
+            await sendVictoryIssuesSlackMessage(campaign, user);
+          }
         }
         return exits.success({ message: 'ok' });
       }
