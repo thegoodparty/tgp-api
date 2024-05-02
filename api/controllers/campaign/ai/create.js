@@ -91,14 +91,27 @@ module.exports = {
         promptAfterReplace: prompt,
       });
 
+      if (!aiContent.generationStatus[key]) {
+        aiContent.generationStatus[key] = {};
+      }
+      aiContent.generationStatus[key].status = 'processing';
+      aiContent.generationStatus[key].prompt = prompt;
+      aiContent.generationStatus[key].existingChat = chat || [];
+      aiContent.generationStatus[key].inputValues = inputValues;
+      aiContent.generationStatus[key].createdAt = new Date().valueOf();
+
+      await sails.helpers.campaign.patch(
+        id,
+        'aiContent',
+        'generationStatus',
+        aiContent.generationStatus,
+      );
+
       const queueMessage = {
         type: 'generateAiContent',
         data: {
           slug,
-          prompt,
           key,
-          existingChat: chat || [],
-          inputValues,
         },
       };
 
@@ -108,18 +121,6 @@ module.exports = {
         queueMessage,
       );
 
-      if (!aiContent.generationStatus[key]) {
-        aiContent.generationStatus[key] = {};
-      }
-      aiContent.generationStatus[key].status = 'processing';
-      aiContent.generationStatus[key].createdAt = new Date().valueOf();
-
-      await sails.helpers.campaign.patch(
-        id,
-        'aiContent',
-        'generationStatus',
-        aiContent.generationStatus,
-      );
       await sails.helpers.queue.consumer();
 
       return exits.success({

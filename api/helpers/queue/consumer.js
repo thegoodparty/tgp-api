@@ -477,7 +477,14 @@ function simpleSlackMessage(text, body) {
 }
 
 async function handleGenerateAiContent(message) {
-  const { prompt, slug, key, existingChat, inputValues } = message;
+  const { slug, key } = message;
+
+  let campaign = await Campaign.findOne({ slug });
+  let aiContent = campaign.aiContent;
+  let prompt = aiContent.generationStatus[key].prompt;
+  let existingChat = aiContent.generationStatus[key].existingChat;
+  let inputValues = aiContent.generationStatus[key].inputValues;
+
   let chat = existingChat || [];
   let messages = [{ role: 'user', content: prompt }, ...chat];
   let chatResponse;
@@ -517,8 +524,8 @@ async function handleGenerateAiContent(message) {
       totalTokens,
     );
 
-    const campaign = await Campaign.findOne({ slug });
-    const aiContent = campaign.aiContent;
+    campaign = await Campaign.findOne({ slug });
+    aiContent = campaign.aiContent;
     let oldVersion;
     if (chatResponse && chatResponse !== '') {
       try {
