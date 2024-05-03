@@ -25,10 +25,11 @@ module.exports = {
       const { data, details, pathToVictory } = campaign;
 
       if (
-        !pathToVictory?.electionType ||
-        !pathToVictory?.electionLocation ||
+        !pathToVictory?.data?.electionType ||
+        !pathToVictory?.data?.electionLocation ||
         data.hasVoterFile
       ) {
+        console.log('Path to Victory is not set.', campaign);
         return exits.badRequest({ message: 'Path to Victory is not set.' });
       }
       await Campaign.updateOne({ id: campaign.id }).set({
@@ -51,8 +52,8 @@ module.exports = {
       await sails.helpers.campaign.voterDataHelper(
         campaign.id,
         details.state,
-        pathToVictory.electionType,
-        pathToVictory.electionLocation,
+        pathToVictory.data.electionType,
+        pathToVictory.data.electionLocation,
         filters,
         false,
       );

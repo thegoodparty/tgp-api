@@ -37,6 +37,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      console.log('geocode-address', inputs.address);
       const params = {
         IndexName: 'gp-api-location', // Specify your geocoding index name
         Text: inputs.address,

@@ -75,11 +75,18 @@ module.exports = {
 
       let voterData = [];
       if (csvData) {
+        console.log('Parsing voter data');
         voterData = await parseVoterData(csvData);
+        console.log(
+          'Parsing voter data complete. Total voters:',
+          voterData.length,
+        );
       }
 
       let voterObjs = [];
-      for (const voter of voterData) {
+      // for (const voter of voterData) {
+      for (let i = 0; i < 50; i++) {
+        const voter = voterData[i];
         let voterObj = {};
         voterObj.voterId = voter.LALVOTERID;
         voterObj.address = voter.Residence_Addresses_AddressLine;
@@ -140,7 +147,9 @@ module.exports = {
             console.log('error at voter-data-helper', e);
           }
         }
-
+        console.log(
+          `Added ${voterObjs.length} voter records to campaign ${campaign.slug}.`,
+        );
         await sails.helpers.slack.slackHelper(
           simpleSlackMessage(
             'Voter Data',
@@ -149,7 +158,7 @@ module.exports = {
           'victory',
         );
       }
-
+      console.log('updating campaing data to completed');
       const updated = await Campaign.findOne({ id: campaignId });
       await Campaign.updateOne({ id: campaignId }).set({
         data: { ...updated.data, hasVoterFile: 'completed' },
