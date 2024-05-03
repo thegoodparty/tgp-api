@@ -81,31 +81,43 @@ module.exports = {
           'Parsing voter data complete. Total voters:',
           voterData.length,
         );
+        await sails.helpers.slack.errorLoggerHelper(
+          `Parsing voter data complete. Total voters: ${voterData.length}`,
+          {},
+        );
       }
 
       let voterObjs = [];
-      // for (const voter of voterData) {
-      for (let i = 0; i < 50; i++) {
-        const voter = voterData[i];
-        let voterObj = {};
-        voterObj.voterId = voter.LALVOTERID;
-        voterObj.address = voter.Residence_Addresses_AddressLine;
-        voterObj.party = voter.Parties_Description;
-        voterObj.state = voter.Residence_Addresses_State;
-        voterObj.city = voter.Residence_Addresses_City;
-        voterObj.zip = voter.Residence_Addresses_Zip;
+      for (const voter of voterData) {
+        // for (let i = 0; i < 50; i++) {
+        // const voter = voterData[i];
+        try {
+          let voterObj = {};
+          voterObj.voterId = voter.LALVOTERID;
+          voterObj.address = voter.Residence_Addresses_AddressLine;
+          voterObj.party = voter.Parties_Description;
+          voterObj.state = voter.Residence_Addresses_State;
+          voterObj.city = voter.Residence_Addresses_City;
+          voterObj.zip = voter.Residence_Addresses_Zip;
 
-        const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
-        const loc = await sails.helpers.geocoding.geocodeAddress(address);
-        const { lat, lng, full, geoHash } = loc;
-        voterObj.data = { ...voter, geoLocation: full };
+          const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
+          const loc = await sails.helpers.geocoding.geocodeAddress(address);
+          const { lat, lng, full, geoHash } = loc;
+          voterObj.data = { ...voter, geoLocation: full };
 
-        voterObj.lat = lat;
-        voterObj.lng = lng;
-        voterObj.geoHash = geoHash;
-        voterObjs.push(voterObj);
+          voterObj.lat = lat;
+          voterObj.lng = lng;
+          voterObj.geoHash = geoHash;
+          voterObjs.push(voterObj);
+        } catch (e) {
+          await sails.helpers.slack.errorLoggerHelper(
+            `Error parsing a specific voter`,
+            { error: e, voter },
+          );
+        }
       }
       console.log('Adding voters to db. Total voters:', voterObjs.length);
+
       await sails.helpers.slack.errorLoggerHelper(
         'Adding voters to db. Total voters:',
         {
@@ -163,6 +175,12 @@ module.exports = {
       await Campaign.updateOne({ id: campaignId }).set({
         data: { ...updated.data, hasVoterFile: 'completed' },
       });
+      await sails.helpers.slack.errorLoggerHelper(
+        'Voter file purchase completed',
+        {
+          slug: updated.slug,
+        },
+      );
 
       return exits.success('ok');
     } catch (e) {
