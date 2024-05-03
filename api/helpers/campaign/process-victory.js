@@ -20,14 +20,15 @@ module.exports = {
       // Process path to victory all Waiting campaigns.
       const campaigns = await sails.sendNativeQuery(`
       select *
-      from public.campaign
-      where (data->>'p2vStatus'='Waiting' OR data->>'p2vStatus' is null)
-      and data->'details'->>'pledged'='true'
-      and (data->'details'->>'runForOffice'='yes' or data->'details'->>'knowRun'='true')
-      and data->'details'->>'electionDate' is not null
-      and data->>'p2vNotNeeded' is null
-      and data->'details'->>'raceId' is not null
-      order by id desc;
+      from public.campaign as c
+      inner join public.pathtovictory as pathtovictory on c.id = pathtovictory.campaign
+      where c.details->>'pledged'='true'
+      and (c.details->>'runForOffice'='yes' or c.details->>'knowRun'='true')
+      and c.details->>'electionDate' is not null
+      and c.details->>'raceId' is not null
+      and (pathtovictory.data->>'p2vStatus'='Waiting' OR pathtovictory.data->>'p2vStatus' is null)
+      and pathtovictory.data->>'p2vNotNeeded' is null
+      order by c.id desc;
       `);
 
       await sails.helpers.queue.consumer();
