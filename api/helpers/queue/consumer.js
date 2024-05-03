@@ -133,7 +133,9 @@ async function handlePathToVictory(message) {
 
   let campaign;
   try {
-    campaign = await Campaign.findOne({ id: campaignId });
+    campaign = await Campaign.findOne({ id: campaignId }).populate(
+      'pathToVictory',
+    );
   } catch (e) {
     console.log('error getting campaign', e);
   }
@@ -315,12 +317,11 @@ async function sendSlackMessage(
       'victory',
     );
 
+    // TODO: TAYLOR - why is this logic in sendSlackMessage function???
+
     // automatically update the Campaign with the pathToVictory data.
-    if (
-      campaign.pathToVictory &&
-      campaign.pathToVictory.p2vStatus &&
-      campaign.pathToVictory.p2vStatus === 'Complete'
-    ) {
+    if (campaign.pathToVictory?.data?.p2vStatus === 'Complete') {
+      console.log('Path To Victory already completed for', campaign.slug);
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage(
           'Path To Victory',
@@ -403,6 +404,8 @@ async function saveL2Counts(counts, electionType, district) {
 }
 
 async function completePathToVictory(slug, pathToVictoryResponse) {
+  console.log('completing path to victory for', slug);
+  console.log('pathToVictoryResponse', pathToVictoryResponse);
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
     const { user } = campaign;
@@ -418,8 +421,13 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
     });
 
     let p2v = await PathToVictory.findOne({ campaign: campaign.id });
+
     if (!p2v) {
       p2v = await PathToVictory.create({ campaign: campaign.id }).fetch();
+      await Campaign.updateOne({ id: campaign.id }).set({
+        pathToVictory: p2v.id,
+      });
+    } else if (!campaign.pathToVictory) {
       await Campaign.updateOne({ id: campaign.id }).set({
         pathToVictory: p2v.id,
       });
