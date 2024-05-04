@@ -6,7 +6,7 @@ const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 let maxRecords = 100000;
 if (appBase !== 'https://goodparty.org') {
-  maxRecords = 10000;
+  maxRecords = 50000;
 }
 
 module.exports = {
@@ -51,6 +51,8 @@ module.exports = {
         additionalFilters,
         limitApproved,
       } = inputs;
+      await sails.helpers.queue.consumer();
+      const newVoterIds = [];
 
       await sails.helpers.slack.errorLoggerHelper('voter data helper.', inputs);
 
@@ -86,8 +88,22 @@ module.exports = {
           {},
         );
       }
+      if (voterData.length === 0) {
+        await sails.helpers.slack.errorLoggerHelper(
+          `No voter data found for campaign ${campaign.slug}`,
+          {},
+        );
+        const updated = await Campaign.findOne({ id: campaignId });
+        const updateData = updated.data;
+        delete updateData.hasVoterFile;
+        await Campaign.updateOne({ id: campaignId }).set({
+          data: updateData,
+        });
+        return exits.success('no voter data found');
+      }
 
       let voterObjs = [];
+
       for (const voter of voterData) {
         // for (let i = 0; i < 50; i++) {
         // const voter = voterData[i];
@@ -100,16 +116,17 @@ module.exports = {
           voterObj.city = voter.Residence_Addresses_City;
           voterObj.zip = voter.Residence_Addresses_Zip;
 
-          const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
-          const loc = await sails.helpers.geocoding.geocodeAddress(address);
-          const { lat, lng, full, geoHash } = loc;
-          voterObj.data = { ...voter, geoLocation: full };
+          // const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
+          // const loc = await sails.helpers.geocoding.geocodeAddress(address);
+          // const { lat, lng, full, geoHash } = loc;
+          voterObj.data = voter;
 
-          voterObj.lat = lat;
-          voterObj.lng = lng;
-          voterObj.geoHash = geoHash;
+          // voterObj.lat = lat;
+          // voterObj.lng = lng;
+          // voterObj.geoHash = geoHash;
           voterObjs.push(voterObj);
         } catch (e) {
+          console.log('Error parsing a specific voter', voter, e);
           await sails.helpers.slack.errorLoggerHelper(
             `Error parsing a specific voter`,
             { error: e, voter },
@@ -133,24 +150,35 @@ module.exports = {
       if (voterObjs.length > 0) {
         for (const voterObj of voterObjs) {
           try {
-            const voter = await Voter.findOrCreate(
-              { voterId: voterObj.voterId },
-              voterObj,
-            );
-            await Campaign.addToCollection(campaign.id, 'voters', voter.id);
-            // because sails does not have unique_together we must do this.
-            await VoterSearch.findOrCreate(
-              {
-                voter: voter.id,
-                l2ColumnName,
-                l2ColumnValue,
-              },
-              {
-                voter: voter.id,
-                l2ColumnName,
-                l2ColumnValue,
-              },
-            );
+            const existing = await Voter.findOne({
+              voterId: voterObj.voterId,
+            });
+            if (existing) {
+              await Campaign.addToCollection(
+                campaign.id,
+                'voters',
+                existing.id,
+              );
+            } else {
+              const voter = await Voter.create(voterObj).fetch();
+              await Campaign.addToCollection(campaign.id, 'voters', voter.id);
+
+              newVoterIds.push(voter.id);
+
+              // because sails does not have unique_together we must do this.
+              await VoterSearch.findOrCreate(
+                {
+                  voter: voter.id,
+                  l2ColumnName,
+                  l2ColumnValue,
+                },
+                {
+                  voter: voter.id,
+                  l2ColumnName,
+                  l2ColumnValue,
+                },
+              );
+            }
           } catch (e) {
             await sails.helpers.slack.errorLoggerHelper(
               'Error adding voters',
@@ -181,6 +209,21 @@ module.exports = {
           slug: updated.slug,
         },
       );
+      if (newVoterIds.length > 0) {
+        console.log(
+          'adding new voterIds to queue. length: ',
+          newVoterIds.length,
+        );
+        const queueMessage = {
+          type: 'calculateGeoLocation',
+          data: {
+            voterIds: newVoterIds,
+          },
+        };
+
+        console.log('adding new voterIds to queue. message: ', queueMessage);
+        await sails.helpers.queue.enqueue(queueMessage);
+      }
 
       return exits.success('ok');
     } catch (e) {
@@ -254,6 +297,7 @@ async function getVoterData(
     const job = await initiateSearch(searchUrl, filters);
     return await waitForSearchCompletion(job, campaign);
   } catch (e) {
+    console.log('error at getVoterData', e);
     await sails.helpers.slack.errorLoggerHelper('error at getVoterData', e);
     return;
   }
