@@ -148,6 +148,9 @@ module.exports = {
       //   .tolerate('E_UNIQUE');
 
       if (voterObjs.length > 0) {
+        // first remove all previous voters
+        await Campaign.replaceCollection(campaignId, 'voters').members([]);
+
         for (const voterObj of voterObjs) {
           try {
             const existing = await Voter.findOne({
