@@ -2,7 +2,7 @@
 module.exports = {
   inputs: {
     campaignId: {
-      type: 'json',
+      type: 'number',
       required: true,
     },
   },
