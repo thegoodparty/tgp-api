@@ -1,8 +1,8 @@
 // Enqueue a message to the queue to process the path to victory for a campaign.
 module.exports = {
   inputs: {
-    campaign: {
-      type: 'json',
+    campaignId: {
+      type: 'number',
       required: true,
     },
   },
@@ -17,16 +17,16 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      let { campaign } = inputs;
+      let { campaignId } = inputs;
       // get a fresh copy of the campaign
-      campaign = await Campaign.findOne({ id: campaign.id });
+      const campaign = await Campaign.findOne({ id: campaignId });
 
       const { slug, details } = campaign;
 
       let queueMessage = {
         type: 'pathToVictory',
         data: {
-          campaignId: campaign.id,
+          campaignId,
         },
       };
 

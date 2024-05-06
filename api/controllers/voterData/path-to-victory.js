@@ -55,7 +55,7 @@ module.exports = {
         });
       }
 
-      await sails.helpers.queue.enqueuePathToVictory(campaign);
+      await sails.helpers.queue.enqueuePathToVictory(campaign.id);
 
       return exits.success({
         message: 'ok',

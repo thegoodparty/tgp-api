@@ -10,6 +10,7 @@ module.exports = {
     },
     isActive: {
       type: 'boolean',
+      allowNull: true,
     },
     data: {
       type: 'json',
@@ -43,9 +44,11 @@ module.exports = {
     isPro: {
       type: 'boolean',
       defaultsTo: false,
+      allowNull: true,
     },
     didWin: {
       type: 'boolean',
+      allowNull: true,
     },
     user: {
       model: 'user',

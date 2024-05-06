@@ -36,6 +36,7 @@ module.exports.policies = {
   'voterData/*': ['isAuthenticated', 'isAdmin'],
   'voterData/get': ['isAuthenticated'],
   'voterData/path-to-victory': ['isAuthenticated'],
+  'voterData/voterFile/get': ['isAuthenticated'],
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,

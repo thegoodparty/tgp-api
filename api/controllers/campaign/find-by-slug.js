@@ -33,15 +33,11 @@ module.exports = {
         slug,
       }).populate('pathToVictory');
 
-      console.log('campaign', campaign);
-
       if (campaign?.pathToVictory) {
         campaign.pathToVictory = campaign.pathToVictory?.data
           ? campaign.pathToVictory.data
           : false;
       }
-
-      console.log('campaign', campaign);
 
       return exits.success({
         campaign,
