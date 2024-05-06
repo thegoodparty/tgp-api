@@ -39,7 +39,7 @@ module.exports = {
         let campaign = await Campaign.findOne({
           id: row.id,
         });
-        await sails.helpers.queue.enqueuePathToVictory(campaign);
+        await sails.helpers.queue.enqueuePathToVictory(campaign.id);
       }
 
       return exits.success('ok');
