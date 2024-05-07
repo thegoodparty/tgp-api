@@ -58,8 +58,13 @@ module.exports = {
         dkCampaigns,
       });
     } catch (e) {
-      console.log('Error at doorKnocking/create', e);
-      return exits.badRequest({ message: 'Error creating campaign.' });
+      console.log('Error at doorKnocking/list', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at doorKnocking/list',
+        e,
+      );
+
+      return exits.badRequest({ message: 'Error listing campaigns.' });
     }
   },
 };
