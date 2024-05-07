@@ -49,10 +49,16 @@ module.exports = {
           }),
         });
         queue.on('error', (err) => {
+          sails.helpers.slack.errorLoggerHelper('on Queue error', {
+            err,
+          });
           console.error(err.message);
         });
 
         queue.on('processing_error', (err) => {
+          sails.helpers.slack.errorLoggerHelper('on Queue processing error', {
+            err,
+          });
           console.error(err.message);
         });
 
@@ -71,6 +77,9 @@ const camelToSentence = (text) => {
 };
 
 async function handleMessage(message) {
+  sails.helpers.slack.errorLoggerHelper('handling message', {
+    message,
+  });
   // console.log(`consumer received message: ${message.Body}`);
   if (!message) {
     return;
