@@ -42,6 +42,8 @@ module.exports = {
         'voters',
       );
       const voters = campaign.voters;
+      console.log('voters', voters.length);
+      console.log('campaign', campaign);
 
       await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
         voterCount: voters.length,

@@ -18,10 +18,14 @@ module.exports = {
     try {
       const { user } = this.req;
       const campaign = await sails.helpers.campaign.byUser(user);
+      if (!campaign) {
+        return exits.badRequest('No campaign');
+      }
+      const campaignWithVoters = await Campaign.findOne({
+        id: campaign.id,
+      }).populate('voters');
       // Fetch all records from the Person table
-      const voters = await Voter.find().populate('campaigns', {
-        where: { id: campaign.id },
-      });
+      const voters = campaignWithVoters.voters || [];
 
       // Convert the records to CSV format
       let csvContent = '';
