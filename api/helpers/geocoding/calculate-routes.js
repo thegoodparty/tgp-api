@@ -154,7 +154,6 @@ function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
   let result = {};
 
   while (queue.length > 0) {
-    console.log('in iteration', queue.length);
     const { voters, precision } = queue.shift();
     let votersByGeoHash = groupVotersByHash(voters, precision);
 
