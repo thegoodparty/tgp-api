@@ -30,6 +30,8 @@ module.exports = {
         campaign: campaign.id,
       });
       await DoorKnockingRoute.destroy({ dkCampaign: dkCampaign.id });
+      await DoorKnockingVoter.destroy({ dkCampaign: dkCampaign.id });
+
       await DoorKnockingCampaign.destroyOne({ id: dkCampaign.id });
 
       return exits.success({

@@ -37,10 +37,22 @@ module.exports = {
         campaignId,
       });
       const cappedMaxHousesPerRoute = Math.min(maxHousesPerRoute, 25);
-      const campaign = await Campaign.findOne({ id: campaignId }).populate(
-        'voters',
-      );
-      const voters = campaign.voters;
+
+      const dkVoters = await DoorKnockingVoter.find({
+        dkCampaign: dkCampaignId,
+        isCalculated: false,
+      })
+        .populate('voter')
+        .sort('geoHash ASC')
+        .limit(1000);
+
+      const voters = dkVoters.map((v) => {
+        return {
+          dkVoterId: v.id,
+          ...v.voter,
+        };
+      });
+
       console.log('voters', voters.length);
 
       await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
@@ -59,6 +71,7 @@ module.exports = {
         const addresses = groupedVoters[hash].map((voter) => {
           return {
             voterId: voter.id,
+            dkVoterId: voter.dkVoterId,
             address: `${voter.address}, ${voter.city}, ${voter.state} ${voter.zip}`,
             lat: voter.lat,
             lng: voter.lng,
@@ -82,15 +95,22 @@ module.exports = {
               data: route,
               dkCampaign: dkCampaignId,
             });
+
+            // mark dkVoters as calculated
+            for (let address of addresses) {
+              await DoorKnockingVoter.updateOne({ id: address.dkVoterId }).set({
+                isCalculated: true,
+              });
+            }
           }
-        } else {
-          await DoorKnockingRoute.create({
-            data: {
-              groupedRoute: addresses,
-            },
-            dkCampaign: dkCampaignId,
-            status: 'not-calculated',
-          });
+          // } else {
+          //   await DoorKnockingRoute.create({
+          //     data: {
+          //       groupedRoute: addresses,
+          //     },
+          //     dkCampaign: dkCampaignId,
+          //     status: 'not-calculated',
+          //   });
         }
       }
 

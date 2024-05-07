@@ -34,5 +34,11 @@ module.exports = {
       collection: 'doorKnockingRoute',
       via: 'dkCampaign',
     },
+
+    // has many
+    doorKnockingVoters: {
+      collection: 'doorKnockingVoter',
+      via: 'dkCampaign',
+    },
   },
 };
