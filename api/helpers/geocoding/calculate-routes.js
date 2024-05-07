@@ -34,18 +34,24 @@ module.exports = {
     try {
       const { campaignId, maxHousesPerRoute, dkCampaignId } = inputs;
       // console.log('campaignId', campaignId);
-      // await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
-      //   campaignId,
-      // });
-      const voters = await Voter.find()
-        .populate('campaigns', {
-          where: { id: campaignId },
-        })
-        .sort('geoHash ASC');
+      await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
+        campaignId,
+      });
+      const cappedMaxHousesPerRoute = Math.min(maxHousesPerRoute, 25);
+      const campaign = await Campaign.findOne({ id: campaignId }).populate(
+        'voters',
+      );
+      const voters = campaign.voters;
+      console.log('voters', voters.length);
+      console.log('campaign', campaign);
+
+      await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
+        voterCount: voters.length,
+      });
       const groupedVoters = generateVoterGroups(
         voters,
         MIN_HOUSES_PER_ROUTE,
-        maxHousesPerRoute,
+        cappedMaxHousesPerRoute,
       );
       const routesCount = Object.keys(groupedVoters).length;
       const maxRoutes = Math.min(routesCount, 10);
@@ -68,9 +74,7 @@ module.exports = {
           continue;
         }
         // console.log('addresses', addresses);
-        // await sails.helpers.slack.errorLoggerHelper('Calculating route', {
-        //   addresses,
-        // });
+
         if (i < maxRoutes) {
           const route = await sails.helpers.geocoding.generateOptimizedRoute(
             addresses,
@@ -155,7 +159,7 @@ function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
 
     for (let hash of Object.keys(votersByGeoHash)) {
       const hashLength = votersByGeoHash[hash].length;
-      if (hashLength > maxHousesPerRoute) {
+      if (hashLength > maxHousesPerRoute && precision < 11) {
         queue.push({ voters: votersByGeoHash[hash], precision: precision + 1 });
       } else {
         result[hash] = votersByGeoHash[hash];
