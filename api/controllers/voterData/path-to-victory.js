@@ -23,6 +23,10 @@ module.exports = {
       const { slug } = inputs;
       const { user } = this.req;
       if (!user.isAdmin && slug) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Only admins can run campaigns by slug.',
+          { slug, user: user.id },
+        );
         return exits.badRequest({
           message: 'Only admins can run campaigns by slug.',
         });
@@ -34,15 +38,17 @@ module.exports = {
         campaign = await sails.helpers.campaign.byUser(user);
       }
 
+      await sails.helpers.slack.errorLoggerHelper('Running p2v for campaign', {
+        slug,
+      });
+
       let p2v = await PathToVictory.findOne({ campaign: campaign.id });
-      console.log('p2v', p2v);
+
       if (!p2v) {
         p2v = await PathToVictory.create({
           campaign: campaign.id,
           data: { p2vStatus: 'Waiting' },
         }).fetch();
-
-        console.log('creating new p2v', p2v.id);
 
         await Campaign.updateOne({ id: campaign.id }).set({
           pathToVictory: p2v.id,
