@@ -1,4 +1,3 @@
-// create campaignVolunteer via accepting VolunteerInvitation
 module.exports = {
   inputs: {},
 
