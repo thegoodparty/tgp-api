@@ -76,6 +76,13 @@ module.exports = {
         },
       };
       await copyVoters(campaign.id, dkCampaign.id);
+      await sails.helpers.slack.errorLoggerHelper(
+        'enqueueing Calculating routes ',
+        {
+          queueMessage,
+        },
+      );
+
       await sails.helpers.queue.enqueue(queueMessage);
 
       // Create a volunteer for the user if they don't already have one
@@ -96,6 +103,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error at doorKnocking/create', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at doorKnocking/create ',
+        e,
+      );
       return exits.badRequest({ message: 'Error creating campaign.' });
     }
   },
