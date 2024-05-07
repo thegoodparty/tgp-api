@@ -37,6 +37,7 @@ module.exports = {
       // await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
       //   campaignId,
       // });
+      const cappedMaxHousesPerRoute = Math.min(maxHousesPerRoute, 25);
       const voters = await Voter.find()
         .populate('campaigns', {
           where: { id: campaignId },
@@ -45,7 +46,7 @@ module.exports = {
       const groupedVoters = generateVoterGroups(
         voters,
         MIN_HOUSES_PER_ROUTE,
-        maxHousesPerRoute,
+        cappedMaxHousesPerRoute,
       );
       const routesCount = Object.keys(groupedVoters).length;
       const maxRoutes = Math.min(routesCount, 10);
@@ -150,6 +151,7 @@ function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
   let result = {};
 
   while (queue.length > 0) {
+    console.log('in iteration', queue.length);
     const { voters, precision } = queue.shift();
     let votersByGeoHash = groupVotersByHash(voters, precision);
 
