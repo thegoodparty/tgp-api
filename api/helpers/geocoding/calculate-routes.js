@@ -33,7 +33,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { campaignId, maxHousesPerRoute, dkCampaignId } = inputs;
-      // console.log('campaignId', campaignId);
       await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
         campaignId,
       });
@@ -43,7 +42,6 @@ module.exports = {
       );
       const voters = campaign.voters;
       console.log('voters', voters.length);
-      console.log('campaign', campaign);
 
       await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
         voterCount: voters.length,
