@@ -92,7 +92,7 @@ module.exports = {
             addresses,
           );
           await sails.helpers.slack.errorLoggerHelper(
-            'Calculating routes4 route created ',
+            'Calculating routes4 route created',
             {
               route,
             },
