@@ -188,6 +188,10 @@ module.exports = {
               e,
             );
             console.log('error at voter-data-helper', e);
+            await sails.helpers.slack.errorLoggerHelper(
+              'error at voter-data-helper',
+              e,
+            );
           }
         }
         console.log(

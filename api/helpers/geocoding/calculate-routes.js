@@ -56,11 +56,6 @@ module.exports = {
       const routesCount = Object.keys(groupedVoters).length;
       const maxRoutes = Math.min(routesCount, 10);
 
-      await sails.helpers.slack.errorLoggerHelper('Calculating routes3 ', {
-        routesCount,
-        maxRoutes,
-      });
-
       for (let i = 0; i < routesCount; i++) {
         const hash = Object.keys(groupedVoters)[i];
         const addresses = groupedVoters[hash].map((voter) => {
@@ -79,24 +74,10 @@ module.exports = {
           continue;
         }
         // console.log('addresses', addresses);
-        await sails.helpers.slack.errorLoggerHelper('Calculating route', {
-          addresses,
-        });
+
         if (i < maxRoutes) {
-          await sails.helpers.slack.errorLoggerHelper(
-            'Generating optimized route',
-            {
-              i,
-            },
-          );
           const route = await sails.helpers.geocoding.generateOptimizedRoute(
             addresses,
-          );
-          await sails.helpers.slack.errorLoggerHelper(
-            'Calculating routes4 route created',
-            {
-              route,
-            },
           );
           if (route) {
             await DoorKnockingRoute.create({
