@@ -38,11 +38,10 @@ module.exports = {
         campaignId,
       });
       const cappedMaxHousesPerRoute = Math.min(maxHousesPerRoute, 25);
-      const voters = await Voter.find()
-        .populate('campaigns', {
-          where: { id: campaignId },
-        })
-        .sort('geoHash ASC');
+      const campaign = await Campaign.findOne({ id: campaignId }).populate(
+        'voters',
+      );
+      const voters = campaign.voters;
 
       await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
         voterCount: voters.length,
