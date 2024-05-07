@@ -160,7 +160,7 @@ function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
 
     for (let hash of Object.keys(votersByGeoHash)) {
       const hashLength = votersByGeoHash[hash].length;
-      if (hashLength > maxHousesPerRoute) {
+      if (hashLength > maxHousesPerRoute && precision < 11) {
         queue.push({ voters: votersByGeoHash[hash], precision: precision + 1 });
       } else {
         result[hash] = votersByGeoHash[hash];
