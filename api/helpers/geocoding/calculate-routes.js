@@ -41,9 +41,10 @@ module.exports = {
       const dkVoters = await DoorKnockingVoter.find({
         dkCampaign: dkCampaignId,
         isCalculated: false,
+        geoHash: { '!=': '' },
       })
         .populate('voter')
-        .sort('geoHash ASC')
+        .sort('geoHash DESC')
         .limit(1000);
 
       const voters = dkVoters.map((v) => {
