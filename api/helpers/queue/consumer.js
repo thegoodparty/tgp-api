@@ -77,7 +77,7 @@ const camelToSentence = (text) => {
 };
 
 async function handleMessage(message) {
-  sails.helpers.slack.errorLoggerHelper('handling message', {
+  await sails.helpers.slack.errorLoggerHelper('handling message', {
     message,
   });
   // console.log(`consumer received message: ${message.Body}`);

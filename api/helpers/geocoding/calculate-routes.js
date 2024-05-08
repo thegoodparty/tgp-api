@@ -115,7 +115,7 @@ module.exports = {
         }
       }
 
-      return exits.success({ groupedVoters });
+      return exits.success();
     } catch (err) {
       console.log('error at geocode-address', err);
       await sails.helpers.slack.errorLoggerHelper(

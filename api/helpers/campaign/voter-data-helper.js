@@ -10,6 +10,11 @@ if (appBase !== 'https://goodparty.org') {
   maxRecords = 50000;
 }
 
+let maxInserts;
+if (appBase === 'http://localhost:4000') {
+  maxInserts = 200;
+}
+
 module.exports = {
   friendlyName: 'Voter Data Helper',
 
@@ -69,6 +74,8 @@ module.exports = {
       // first remove all previous voters
       await Campaign.replaceCollection(campaignId, 'voters').members([]);
 
+      let index = 0;
+
       const stream = await getVoterData(
         electionState,
         l2ColumnName,
@@ -82,10 +89,14 @@ module.exports = {
         .on('data', async (row) => {
           stream.pause();
           try {
+            if (maxInserts && index >= maxInserts) {
+              return;
+            }
             const newId = await handleCsvRow(row, campaignId);
             if (newId) {
               newVoterIds.push(newId);
             }
+            index++;
           } catch (e) {
             console.error('Failed to process row', e);
           }
