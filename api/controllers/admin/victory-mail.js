@@ -41,6 +41,7 @@ module.exports = {
           ...campaign.pathToVictory.data,
           p2vCompleteDate: moment().format('YYYY-MM-DD'),
           p2vStatus: 'Complete',
+          completedBy: req.user.id,
         },
       });
 
