@@ -47,6 +47,11 @@ module.exports = {
       let claimedRoutes = [];
       for (let i = 0; i < dkCampaigns.length; i++) {
         const dkCampaign = dkCampaigns[i];
+        // first we filter campaigns that are not active
+        const status = calcCampaignStatus(dkCampaign);
+        if (status !== 'active') {
+          continue;
+        }
         for (let j = 0; j < dkCampaign.routes.length; j++) {
           const route = dkCampaign.routes[j];
           const { optimizedAddresses } = route.data;
@@ -79,3 +84,22 @@ module.exports = {
     }
   },
 };
+
+function calcCampaignStatus(campaign) {
+  const campaignData = campaign.data;
+  if (campaign.status === 'complete' || campaign.status === 'archived') {
+    return campaignData.status;
+  }
+
+  const startDate = new Date(campaignData.startDate);
+  const endDate = new Date(campaignData.endDate);
+  const currentDate = new Date();
+
+  if (currentDate < startDate) {
+    return 'upcoming';
+  } else if (currentDate > endDate) {
+    return 'passed';
+  } else {
+    return 'active';
+  }
+}
