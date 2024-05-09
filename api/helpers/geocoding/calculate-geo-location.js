@@ -71,7 +71,7 @@ module.exports = {
       } catch (err) {
         console.log('error at geocode-address', err);
         await sails.helpers.slack.errorLoggerHelper(
-          'error at geocode-address',
+          'error at geocode-address.',
           {
             error: err,
           },
