@@ -38,7 +38,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { name, type, maxHousesPerRoute, startDate, endDate } = inputs;
-      await sails.helpers.queue.consumer();
+      // await sails.helpers.queue.consumer();
 
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);

@@ -18,7 +18,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      await sails.helpers.queue.consumer();
+      // await sails.helpers.queue.consumer();
       let campaign;
       const { slug } = inputs;
       const { user } = this.req;

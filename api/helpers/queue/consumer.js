@@ -12,7 +12,7 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 let queue;
 AWS.config.update({
-  region: 'eu-west-2',
+  region: 'us-west-2',
   accessKeyId,
   secretAccessKey,
 });
@@ -62,10 +62,24 @@ module.exports = {
           console.error(err.message);
         });
 
+        queue.on('stopped', () => {
+          console.log('Consumer stopped running. Exiting...');
+          process.exit(); // Exit the Node.js process gracefully.
+        });
+
         queue.start();
       }
+
+      // Continue running indefinitely
+      while (queue.isRunning) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
       return exits.success('ok');
     } catch (e) {
+      sails.helpers.slack.errorLoggerHelper('Uncaught error in consumer', {
+        e,
+      });
       return exits.success('not ok');
     }
   },

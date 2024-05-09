@@ -52,7 +52,7 @@ module.exports = {
         additionalFilters,
         limitApproved,
       } = inputs;
-      await sails.helpers.queue.consumer();
+      // await sails.helpers.queue.consumer();
       const newVoterIds = [];
 
       await sails.helpers.slack.errorLoggerHelper('voter data helper.', inputs);

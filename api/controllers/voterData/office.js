@@ -29,7 +29,7 @@ module.exports = {
       // this view is just for testing the enqueuePathToVictory function
       const { campaignId, runAll } = inputs;
 
-      await sails.helpers.queue.consumer();
+      // await sails.helpers.queue.consumer();
 
       if (runAll === true) {
         await sails.helpers.campaign.processVictory();

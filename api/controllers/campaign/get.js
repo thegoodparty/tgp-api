@@ -32,7 +32,7 @@ module.exports = {
       if (!campaign) {
         return exits.notFound();
       }
-      await sails.helpers.queue.consumer();
+      // await sails.helpers.queue.consumer();
       const neededFix = await fixFailedAi(campaign);
       if (neededFix) {
         campaign = await Campaign.findOne({ id: campaign.id }).populate(
