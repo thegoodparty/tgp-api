@@ -49,23 +49,31 @@ module.exports = {
           }),
         });
         queue.on('error', (err) => {
-          sails.helpers.slack.errorLoggerHelper('on Queue error', {
-            err,
-          });
-          console.error(err.message);
+          (async () => {
+            await sails.helpers.slack.errorLoggerHelper('on Queue error', {
+              err,
+            });
+            console.error(err.message);
+          })();
         });
 
         queue.on('processing_error', (err) => {
-          sails.helpers.slack.errorLoggerHelper('on Queue processing error', {
-            err,
-          });
-          console.error(err.message);
+          (async () => {
+            await sails.helpers.slack.errorLoggerHelper(
+              'on Queue processing error',
+              {
+                err,
+              },
+            );
+            console.error(err.message);
+          })();
         });
 
         queue.start();
       }
       return exits.success('ok');
     } catch (e) {
+      await sails.helpers.slack.errorLoggerHelper('error in consumer', e);
       return exits.success('not ok');
     }
   },
@@ -91,6 +99,7 @@ async function handleMessage(message) {
   const action = JSON.parse(body);
   const { type, data } = action;
   console.log('processing queue message type ', type);
+
   switch (type) {
     case 'generateAiContent':
       await handleGenerateAiContent(data);
