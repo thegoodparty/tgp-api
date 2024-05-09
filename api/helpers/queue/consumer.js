@@ -111,7 +111,7 @@ async function handleMessage(message) {
       await handlePathToVictory(data);
       break;
     case 'calculateGeoLocation':
-      await sails.helpers.geocoding.calculateGeoLocation(data.voterIds);
+      await sails.helpers.geocoding.calculateGeoLocation();
       break;
     case 'calculateDkRoutes':
       await sails.helpers.geocoding.calculateRoutes(

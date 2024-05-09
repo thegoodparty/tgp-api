@@ -20,12 +20,7 @@ module.exports = {
   description:
     'Returns the latitude and longitude of a given address using AWS geocoding location service.',
 
-  inputs: {
-    voterIds: {
-      type: 'json',
-      required: true,
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -34,14 +29,13 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { voterIds } = inputs;
-    for (let i = 0; i < voterIds.length; i++) {
+    const voters = await Voter.find({
+      pendingProcessing: true,
+      geoHash: '',
+    }).limit(50);
+    for (let i = 0; i < voters.length; i++) {
       try {
-        const voterId = voterIds[i];
-        const voter = await Voter.findOne({ id: voterId });
-        if (!voter) {
-          continue;
-        }
+        const voter = voters[i];
         const address = `${voter.address} ${voter.city}, ${voter.state} ${voter.zip}`;
         console.log('geocode-address', address);
         const params = {
@@ -61,13 +55,14 @@ module.exports = {
           const lat = data.Results[0].Place.Geometry.Point[1];
           const lng = data.Results[0].Place.Geometry.Point[0];
           const geoHash = geohash.encode(lat, lng, 8);
-          await Voter.updateOne({ id: voterId }).set({
+          await Voter.updateOne({ id: voter.id }).set({
             lat,
             lng,
             geoHash,
+            pendingProcessing: false,
             data: { ...voter.data, geoLocation: data.Results[0] },
           });
-          console.log('updated voter with geoHash', voterId);
+          console.log('updated voter with geoHash', voter.id);
         }
       } catch (err) {
         console.log('error at geocode-address', err);
@@ -75,7 +70,7 @@ module.exports = {
           'error at geocode-address',
           {
             error: err,
-            voterId: inputs.voterId,
+            voterId: inputs.voter.id,
           },
         );
         continue;

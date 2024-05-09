@@ -22,11 +22,9 @@ module.exports.policies = {
   'newCandidates/create': ['isAuthenticated', 'isAdmin'],
   'newCandidates/delete': ['isAuthenticated', 'isAdmin'],
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
-  'campaign/onboarding/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-delete': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-update': ['isAuthenticated', 'isAdmin'],
   'campaign/onboarding/cancel-launch-request': ['isAuthenticated', 'isAdmin'],
-  'campaign/onboarding/list': ['isAuthenticated', 'isAdmin'],
   'campaign/list': ['isAuthenticated', 'isAdmin'],
   'campaign/find-by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
@@ -65,4 +63,5 @@ module.exports.policies = {
   'data-processing/*': true,
   'job/*': true,
   'jobs/*': true,
+  'voterData/voterFile/geo-location-cron': true,
 };
