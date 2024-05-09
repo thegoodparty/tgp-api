@@ -157,7 +157,6 @@ module.exports = {
 };
 
 async function handleCsvRow(row, campaignId) {
-  console.log('Parsing voter data', row);
   const voterObj = await parseVoter(row);
   const newId = insertVoterToDb(voterObj, campaignId);
 

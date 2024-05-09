@@ -27,7 +27,7 @@ module.exports = {
       if (
         !pathToVictory?.data?.electionType ||
         !pathToVictory?.data?.electionLocation ||
-        data.hasVoterFile
+        data.hasVoterFile === 'completed'
       ) {
         console.log('Path to Victory is not set.', campaign);
         return exits.badRequest({ message: 'Path to Victory is not set.' });
