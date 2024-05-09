@@ -4,6 +4,7 @@ const accessKeyId =
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 const geohash = require('ngeohash');
+const DoorKnockingVoter = require('../../models/doorKnocking/DoorKnockingVoter');
 
 // Set the region
 AWS.config.update({
@@ -61,6 +62,9 @@ module.exports = {
             geoHash,
             pendingProcessing: false,
             data: { ...voter.data, geoLocation: data.Results[0] },
+          });
+          await DoorKnockingVoter.update({ voter: voter.id }).set({
+            geoHash,
           });
           console.log('updated voter with geoHash', voter.id);
         }
