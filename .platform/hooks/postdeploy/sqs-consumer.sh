@@ -10,7 +10,8 @@ EB_APP_CURRENT_DIR=$(/opt/elasticbeanstalk/bin/get-config platformconfig -k AppD
 
  # Now we can execute the command. The -l flag sources makes sure to source everything in /etc/profile.d/
  # We start these as background processes so they dont hang the deployment
-su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js &"
-su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js &"
-su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js &"
-su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js &"
+ # Redirect stdout and stderr to dev null and detach the process from the parent.
+su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js & > /dev/null 2>&1"
+su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js & > /dev/null 2>&1"
+su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js & > /dev/null 2>&1"
+su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js & > /dev/null 2>&1"
