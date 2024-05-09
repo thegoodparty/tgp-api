@@ -32,7 +32,7 @@ module.exports = {
     const voters = await Voter.find({
       pendingProcessing: true,
       geoHash: '',
-    }).limit(50);
+    }).limit(200);
     for (let i = 0; i < voters.length; i++) {
       try {
         const voter = voters[i];
