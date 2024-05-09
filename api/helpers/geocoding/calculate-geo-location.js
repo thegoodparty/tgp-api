@@ -74,7 +74,6 @@ module.exports = {
           'error at geocode-address',
           {
             error: err,
-            voterId: inputs.voter.id,
           },
         );
         continue;
