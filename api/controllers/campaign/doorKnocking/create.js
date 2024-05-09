@@ -10,10 +10,6 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    maxHousesPerRoute: {
-      type: 'number',
-      required: true,
-    },
 
     startDate: {
       type: 'string',
@@ -37,8 +33,10 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { name, type, maxHousesPerRoute, startDate, endDate } = inputs;
+      const { name, type, startDate, endDate } = inputs;
       // await sails.helpers.queue.consumer();
+
+      const maxHousesPerRoute = 20;
 
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);
