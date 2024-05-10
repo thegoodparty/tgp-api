@@ -12,7 +12,7 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 let queue;
 AWS.config.update({
-  region: 'eu-west-2',
+  region: 'us-west-2',
   accessKeyId,
   secretAccessKey,
 });
@@ -49,17 +49,37 @@ module.exports = {
           }),
         });
         queue.on('error', (err) => {
+          sails.helpers.slack.errorLoggerHelper('on Queue error', {
+            err,
+          });
           console.error(err.message);
         });
 
         queue.on('processing_error', (err) => {
+          sails.helpers.slack.errorLoggerHelper('on Queue processing error', {
+            err,
+          });
           console.error(err.message);
+        });
+
+        queue.on('stopped', () => {
+          console.log('Consumer stopped running. Exiting...');
+          process.exit(); // Exit the Node.js process gracefully.
         });
 
         queue.start();
       }
+
+      // Continue running indefinitely
+      while (queue.isRunning) {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+
       return exits.success('ok');
     } catch (e) {
+      sails.helpers.slack.errorLoggerHelper('Uncaught error in consumer', {
+        e,
+      });
       return exits.success('not ok');
     }
   },
@@ -71,6 +91,9 @@ const camelToSentence = (text) => {
 };
 
 async function handleMessage(message) {
+  await sails.helpers.slack.errorLoggerHelper('handling message', {
+    message,
+  });
   // console.log(`consumer received message: ${message.Body}`);
   if (!message) {
     return;

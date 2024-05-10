@@ -8,7 +8,7 @@ const secretAccessKey =
 const queueUrl = sails.config.custom.queueUrl || sails.config.queueUrl;
 
 AWS.config.update({
-  region: 'eu-west-2',
+  region: 'us-west-2',
   accessKeyId,
   secretAccessKey,
 });

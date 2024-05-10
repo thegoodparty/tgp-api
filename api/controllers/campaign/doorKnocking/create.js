@@ -10,10 +10,6 @@ module.exports = {
       type: 'string',
       required: true,
     },
-    maxHousesPerRoute: {
-      type: 'number',
-      required: true,
-    },
 
     startDate: {
       type: 'string',
@@ -37,8 +33,10 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { name, type, maxHousesPerRoute, startDate, endDate } = inputs;
-      await sails.helpers.queue.consumer();
+      const { name, type, startDate, endDate } = inputs;
+      // await sails.helpers.queue.consumer();
+
+      const maxHousesPerRoute = 20;
 
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);
@@ -75,6 +73,13 @@ module.exports = {
           maxHousesPerRoute,
         },
       };
+      await copyVoters(campaign.id, dkCampaign.id);
+      await sails.helpers.slack.errorLoggerHelper(
+        'enqueueing Calculating routes ',
+        {
+          queueMessage,
+        },
+      );
 
       await sails.helpers.queue.enqueue(queueMessage);
 
@@ -96,6 +101,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error at doorKnocking/create', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at doorKnocking/create ',
+        e,
+      );
       return exits.badRequest({ message: 'Error creating campaign.' });
     }
   },
@@ -108,4 +117,43 @@ function generateRandomString(length) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return result;
+}
+
+async function copyVoters(campaignId, dkCampaignId) {
+  const campaign = await Campaign.findOne({ id: campaignId }).populate(
+    'voters',
+  );
+  const voters = campaign.voters;
+  const currentTimestamp = new Date().valueOf();
+
+  let records = voters.map((voter) => [
+    currentTimestamp,
+    currentTimestamp,
+    voter.geoHash,
+    false,
+    voter.id,
+    dkCampaignId,
+  ]);
+
+  // Creating a bulk insert SQL statement
+  let placeholders = records
+    .map(
+      (_, index) =>
+        `($${6 * index + 1}, $${6 * index + 2}, $${6 * index + 3}, $${
+          6 * index + 4
+        }, $${6 * index + 5}, $${6 * index + 6})`,
+    )
+    .join(', ');
+  let sql = `INSERT INTO public.doorknockingvoter ("createdAt", "updatedAt", "geoHash", "isCalculated", voter, "dkCampaign") VALUES ${placeholders}`;
+
+  // Flattening the array of records for the SQL query
+  let data = records.flat();
+
+  try {
+    const result = await sails.getDatastore().sendNativeQuery(sql, data);
+    console.log('Inserted successfully:', result.rowCount);
+  } catch (err) {
+    console.error('Failed to insert:', err);
+    throw err;
+  }
 }

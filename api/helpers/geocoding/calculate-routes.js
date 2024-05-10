@@ -33,17 +33,28 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { campaignId, maxHousesPerRoute, dkCampaignId } = inputs;
-      // console.log('campaignId', campaignId);
       await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
         campaignId,
       });
       const cappedMaxHousesPerRoute = Math.min(maxHousesPerRoute, 25);
-      const campaign = await Campaign.findOne({ id: campaignId }).populate(
-        'voters',
-      );
-      const voters = campaign.voters;
+
+      const dkVoters = await DoorKnockingVoter.find({
+        dkCampaign: dkCampaignId,
+        isCalculated: false,
+        geoHash: { '!=': '' },
+      })
+        .populate('voter')
+        .sort('geoHash DESC')
+        .limit(1000);
+
+      const voters = dkVoters.map((v) => {
+        return {
+          dkVoterId: v.id,
+          ...v.voter,
+        };
+      });
+
       console.log('voters', voters.length);
-      console.log('campaign', campaign);
 
       await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
         voterCount: voters.length,
@@ -61,6 +72,7 @@ module.exports = {
         const addresses = groupedVoters[hash].map((voter) => {
           return {
             voterId: voter.id,
+            dkVoterId: voter.dkVoterId,
             address: `${voter.address}, ${voter.city}, ${voter.state} ${voter.zip}`,
             lat: voter.lat,
             lng: voter.lng,
@@ -84,19 +96,26 @@ module.exports = {
               data: route,
               dkCampaign: dkCampaignId,
             });
+
+            // mark dkVoters as calculated
+            for (let address of addresses) {
+              await DoorKnockingVoter.updateOne({ id: address.dkVoterId }).set({
+                isCalculated: true,
+              });
+            }
           }
-        } else {
-          await DoorKnockingRoute.create({
-            data: {
-              groupedRoute: addresses,
-            },
-            dkCampaign: dkCampaignId,
-            status: 'not-calculated',
-          });
+          // } else {
+          //   await DoorKnockingRoute.create({
+          //     data: {
+          //       groupedRoute: addresses,
+          //     },
+          //     dkCampaign: dkCampaignId,
+          //     status: 'not-calculated',
+          //   });
         }
       }
 
-      return exits.success({ groupedVoters });
+      return exits.success();
     } catch (err) {
       console.log('error at geocode-address', err);
       await sails.helpers.slack.errorLoggerHelper(
