@@ -8,7 +8,12 @@ module.exports = {
 
   inputs: {},
 
-  exits: {},
+  exits: {
+    success: {
+      description: 'Ok',
+      responseType: 'ok',
+    },
+  },
 
   fn: async function (inputs, exits) {
     console.log('Sending slack post deployment message');
@@ -16,5 +21,8 @@ module.exports = {
       'Sails API server is online.',
       {},
     );
+    return exits.success({
+      message: 'ok',
+    });
   },
 };
