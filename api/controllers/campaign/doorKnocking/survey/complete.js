@@ -119,7 +119,7 @@ module.exports = {
           },
         };
         await sails.helpers.queue.enqueue(queueMessage);
-        // await sails.helpers.queue.consumer();
+        await sails.helpers.queue.consumer();
       } else {
         await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'in-progress',

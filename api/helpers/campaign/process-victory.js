@@ -31,7 +31,7 @@ module.exports = {
       order by c.id desc;
       `);
 
-      // await sails.helpers.queue.consumer();
+      await sails.helpers.queue.consumer();
 
       const rows = campaigns?.rows;
       console.log('rows', rows.length);

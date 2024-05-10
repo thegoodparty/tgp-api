@@ -39,7 +39,7 @@ module.exports = {
       const user = this.req.user;
       const { key, regenerate, editMode, chat, inputValues } = inputs;
 
-      // await sails.helpers.queue.consumer();
+      await sails.helpers.queue.consumer();
 
       const campaignObj = await sails.helpers.campaign.byUser(user);
       if (!campaignObj) {
@@ -121,7 +121,7 @@ module.exports = {
         queueMessage,
       );
 
-      // await sails.helpers.queue.consumer();
+      await sails.helpers.queue.consumer();
 
       return exits.success({
         status: 'processing',

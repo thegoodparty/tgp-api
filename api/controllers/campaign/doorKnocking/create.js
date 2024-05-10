@@ -34,7 +34,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { name, type, startDate, endDate } = inputs;
-      // await sails.helpers.queue.consumer();
+      await sails.helpers.queue.consumer();
 
       const maxHousesPerRoute = 20;
 

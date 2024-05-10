@@ -43,7 +43,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      // await sails.helpers.queue.consumer();
+      await sails.helpers.queue.consumer();
       const { zip } = inputs;
       const today = moment().format('YYYY-MM-DD');
       const nextYear = moment().add(4, 'year').format('YYYY-MM-DD');
