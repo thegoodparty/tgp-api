@@ -8,7 +8,7 @@ const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 
 AWS.config.update({
-  region: 'eu-west-2',
+  region: 'us-west-2',
   accessKeyId,
   secretAccessKey,
 });

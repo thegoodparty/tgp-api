@@ -11,7 +11,7 @@ const secretAccessKey =
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 AWS.config.update({
-  region: 'eu-west-2',
+  region: 'us-west-2',
   accessKeyId,
   secretAccessKey,
 });
