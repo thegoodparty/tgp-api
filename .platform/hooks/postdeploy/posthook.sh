@@ -9,9 +9,9 @@ EB_APP_USER=$(/opt/elasticbeanstalk/bin/get-config platformconfig -k AppUser)
 EB_APP_CURRENT_DIR=$(/opt/elasticbeanstalk/bin/get-config platformconfig -k AppDeployDir)
 
  # Now we can execute the command. The -l flag sources makes sure to source everything in /etc/profile.d/
-su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run slack-alert.js"
+su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run slack-alert"
 
 # This attempt to run the consumer in the background failed due to build errors.
 # Possily we'd need to use .ebextensions with files to make a daemon.
 # And then we'd need to use the .platform/hooks/postdeploy/ to start the daemon.
-# su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer.js & > /dev/null 2>&1"
+# su -l ${EB_APP_USER} -c "cd $EB_APP_CURRENT_DIR; npx sails run start-consumer & > /dev/null 2>&1"
