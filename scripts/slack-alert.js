@@ -11,9 +11,9 @@ module.exports = {
   exits: {},
 
   fn: async function (inputs, exits) {
-    console.log('Testing slack post deployment hooks');
+    console.log('Sending slack post deployment message');
     await sails.helpers.slack.errorLoggerHelper(
-      'Testing post deployment hooks',
+      'Sails API server is online.',
       {},
     );
   },
