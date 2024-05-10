@@ -52,6 +52,7 @@ module.exports = {
     },
     user: {
       model: 'user',
+      autoMigrations: { index: true },
     },
 
     pathToVictory: {
