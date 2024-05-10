@@ -3,8 +3,6 @@ const { Configuration, OpenAIApi } = require('openai');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
-const appBase = sails.config.custom.appBase || sails.config.appBase;
-
 const configuration = new Configuration({
   apiKey: openAiKey,
 });
@@ -33,12 +31,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Campaign Found',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'The request was invalid',
-      responseType: 'badRequest',
+      outputDescription: 'Campaign Found',
     },
   },
 
@@ -69,20 +62,20 @@ module.exports = {
 
       const model = 'gpt-4-turbo-preview';
 
-      console.log('creating chat completion....');
+      console.log('creating chat completion....', messages);
       completion = await openai.createChatCompletion({
         model,
-        messages: messages,
+        messages,
         max_tokens: maxTokens,
         top_p: topP,
-        temperature: temperature,
+        temperature,
       });
       // console.log('completion', completion);
     } catch (error) {
       console.log('Error in helpers/ai/create-compilation', error);
       if (error.response.data.error.message) {
         console.log('error message', error.response.data.error.message);
-        return exits.badRequest({ content: '', tokens: 0 });
+        return exits.success({ content: '', tokens: 0 });
       }
     }
 
@@ -91,19 +84,20 @@ module.exports = {
       completion.data.choices &&
       completion.data.choices[0].message.content
     ) {
-      console.log('completion success');
       let content = completion.data.choices[0].message.content;
       if (content.includes('```html')) {
         content = content.match(/```html([\s\S]*?)```/)[1];
       }
       content = content.replace('/n', '<br/><br/>');
+      console.log('completion success', content);
+
       return exits.success({
         content: content,
         tokens: completion.data.usage.total_tokens,
       });
     } else {
       console.log('completion failure');
-      return exits.badRequest({ content: '', tokens: 0 });
+      return exits.success({ content: '', tokens: 0 });
     }
   },
 };

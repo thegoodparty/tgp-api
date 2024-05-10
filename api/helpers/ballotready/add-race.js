@@ -264,7 +264,7 @@ async function addCityRace(
       const aiMunicipalities = await Municipality.find({
         or: [{ name: formattedCityName }, { name: cityName }],
         state,
-        type: level,
+        // type: level,
       });
       if (aiMunicipalities && aiMunicipalities.length > 0) {
         console.log('ai municipality exists. adding ballotRace');
@@ -346,7 +346,7 @@ async function addCityRace(
               cityName,
               county.id,
               state,
-              countyName,
+              formattedCountyName,
               level,
             );
           }

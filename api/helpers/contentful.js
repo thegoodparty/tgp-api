@@ -6,6 +6,27 @@ const documentToPlainTextString =
 const readingTime = require('reading-time');
 const slugify = require('slugify');
 
+const processTeamMembers = (teamMembers) => teamMembers.map(
+  (member) => ({
+    ...member.fields,
+    id: member.sys.id,
+    fullName: member.fields.fullName,
+    goodPhoto: extractMediaFile(member.fields.goodPhoto),
+    partyPhoto: extractMediaFile(member.fields.partyPhoto),
+    role: member.fields.role,
+    partyRole: member.fields.partyRole,
+  }));
+
+const processTeamMilestone = (item) => ({
+  ...item.fields,
+  id: item.sys.id,
+  month: item.fields.month,
+  year: item.fields.year,
+  blurb: item.fields.blurb,
+  description: item.fields.description,
+  image: extractMediaFile(item.fields.image),
+})
+
 module.exports = {
   friendlyName: 'helper for fetching content from contentful cms',
   description:
@@ -13,7 +34,7 @@ module.exports = {
 
   inputs: {},
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     const contentfulSpaceId =
       sails.config.custom.contentfulSpaceId || sails.config.contentfulSpaceId;
 
@@ -278,8 +299,28 @@ function mapResponse(items) {
           });
         }
         mappedResponse.elections.push(election);
+      } else if (itemId === 'goodPartyTeamMembers') {
+        const {
+          members: teamMembers,
+        } = item?.fields;
+        const goodPartyTeamMembers = processTeamMembers(teamMembers);
+
+        mappedResponse.goodPartyTeamMembers = mappedResponse.goodPartyTeamMembers ?
+          [
+            ...mappedResponse.goodPartyTeamMembers,
+            goodPartyTeamMembers,
+          ] :
+          goodPartyTeamMembers;
+      } else if (itemId === 'teamMilestone'){
+        mappedResponse.teamMilestones = [
+          ...(mappedResponse.teamMilestones || []),
+          processTeamMilestone(item)
+        ]
       }
+    } else {
+      console.log('unhandled item => ', item);
     }
+
   });
 
   mappedResponse.recentGlossaryItems = getRecentGlossaryItems(mappedResponse);

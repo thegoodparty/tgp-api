@@ -22,18 +22,26 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { slug } = inputs;
-      const campaign = await Campaign.findOne({ slug }).populate('user');
+      const campaign = await Campaign.findOne({ slug })
+        .populate('user')
+        .populate('pathToVictory');
+
+      if (!campaign.PathToVictory) {
+        return exits.badRequest({ message: 'Path to Victory is not set.' });
+      }
       const { user } = campaign;
       const name = await sails.helpers.user.name(user);
       const variables = JSON.stringify({
         name,
         link: `${appBase}/dashboard`,
       });
-      await Campaign.updateOne({ slug }).set({
+
+      await PathToVictory.updateOne({ id: campaign.pathToVictory.id }).set({
         data: {
-          ...campaign.data,
+          ...campaign.pathToVictory.data,
           p2vCompleteDate: moment().format('YYYY-MM-DD'),
           p2vStatus: 'Complete',
+          completedBy: req.user.id,
         },
       });
 

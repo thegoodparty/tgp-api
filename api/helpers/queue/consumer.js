@@ -49,17 +49,31 @@ module.exports = {
           }),
         });
         queue.on('error', (err) => {
-          console.error(err.message);
+          (async () => {
+            await sails.helpers.slack.errorLoggerHelper('on Queue error', {
+              err,
+            });
+            console.error(err.message);
+          })();
         });
 
         queue.on('processing_error', (err) => {
-          console.error(err.message);
+          (async () => {
+            await sails.helpers.slack.errorLoggerHelper(
+              'on Queue processing error',
+              {
+                err,
+              },
+            );
+            console.error(err.message);
+          })();
         });
 
         queue.start();
       }
       return exits.success('ok');
     } catch (e) {
+      await sails.helpers.slack.errorLoggerHelper('error in consumer', e);
       return exits.success('not ok');
     }
   },
@@ -71,6 +85,9 @@ const camelToSentence = (text) => {
 };
 
 async function handleMessage(message) {
+  await sails.helpers.slack.errorLoggerHelper('handling message', {
+    message,
+  });
   // console.log(`consumer received message: ${message.Body}`);
   if (!message) {
     return;
@@ -82,15 +99,19 @@ async function handleMessage(message) {
   const action = JSON.parse(body);
   const { type, data } = action;
   console.log('processing queue message type ', type);
+
   switch (type) {
-    case 'generateCampaignPlan':
-      await handleGenerateCampaignPlan(data);
+    case 'generateAiContent':
+      await handleGenerateAiContent(data);
       break;
     case 'saveBallotReadyRace':
       await handleSaveBallotReadyRace(data);
       break;
     case 'pathToVictory':
       await handlePathToVictory(data);
+      break;
+    case 'calculateGeoLocation':
+      await sails.helpers.geocoding.calculateGeoLocation();
       break;
     case 'calculateDkRoutes':
       await sails.helpers.geocoding.calculateRoutes(
@@ -133,7 +154,9 @@ async function handlePathToVictory(message) {
 
   let campaign;
   try {
-    campaign = await Campaign.findOne({ id: campaignId });
+    campaign = await Campaign.findOne({ id: campaignId }).populate(
+      'pathToVictory',
+    );
   } catch (e) {
     console.log('error getting campaign', e);
   }
@@ -315,12 +338,11 @@ async function sendSlackMessage(
       'victory',
     );
 
+    // TODO: TAYLOR - why is this logic in sendSlackMessage function???
+
     // automatically update the Campaign with the pathToVictory data.
-    if (
-      campaign.data?.pathToVictory &&
-      campaign?.p2vStatus &&
-      campaign.p2vStatus === 'Complete'
-    ) {
+    if (campaign.pathToVictory?.data?.p2vStatus === 'Complete') {
+      console.log('Path To Victory already completed for', campaign.slug);
       await sails.helpers.slack.slackHelper(
         simpleSlackMessage(
           'Path To Victory',
@@ -403,6 +425,8 @@ async function saveL2Counts(counts, electionType, district) {
 }
 
 async function completePathToVictory(slug, pathToVictoryResponse) {
+  console.log('completing path to victory for', slug);
+  console.log('pathToVictoryResponse', pathToVictoryResponse);
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
     const { user } = campaign;
@@ -417,23 +441,35 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       link: `${appBase}/dashboard`,
     });
 
-    await Campaign.updateOne({
-      id: campaign.id,
+    let p2v = await PathToVictory.findOne({ campaign: campaign.id });
+
+    if (!p2v) {
+      p2v = await PathToVictory.create({ campaign: campaign.id }).fetch();
+      await Campaign.updateOne({ id: campaign.id }).set({
+        pathToVictory: p2v.id,
+      });
+    } else if (!campaign.pathToVictory) {
+      await Campaign.updateOne({ id: campaign.id }).set({
+        pathToVictory: p2v.id,
+      });
+    }
+
+    const p2vData = p2v.data || {};
+    await PathToVictory.updateOne({
+      id: p2v.id,
     }).set({
       data: {
-        ...campaign.data,
-        pathToVictory: {
-          totalRegisteredVoters: pathToVictoryResponse.counts.total,
-          republicans: pathToVictoryResponse.counts.republican,
-          democrats: pathToVictoryResponse.counts.democrat,
-          indies: pathToVictoryResponse.counts.independent,
-          averageTurnout: pathToVictoryResponse.counts.averageTurnout,
-          projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
-          winNumber: pathToVictoryResponse.counts.winNumber,
-          voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
-          electionType: pathToVictoryResponse.electionType,
-          electionLocation: pathToVictoryResponse.electionLocation,
-        },
+        ...p2vData,
+        totalRegisteredVoters: pathToVictoryResponse.counts.total,
+        republicans: pathToVictoryResponse.counts.republican,
+        democrats: pathToVictoryResponse.counts.democrat,
+        indies: pathToVictoryResponse.counts.independent,
+        averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+        projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+        winNumber: pathToVictoryResponse.counts.winNumber,
+        voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+        electionType: pathToVictoryResponse.electionType,
+        electionLocation: pathToVictoryResponse.electionLocation,
         p2vCompleteDate: moment().format('YYYY-MM-DD'),
         p2vStatus: 'Complete',
       },
@@ -469,13 +505,17 @@ function simpleSlackMessage(text, body) {
   };
 }
 
-async function handleGenerateCampaignPlan(message) {
-  const { prompt, slug, subSectionKey, key, existingChat, inputValues } =
-    message;
+async function handleGenerateAiContent(message) {
+  const { slug, key } = message;
+
+  let campaign = await Campaign.findOne({ slug });
+  let aiContent = campaign.aiContent;
+  let prompt = aiContent.generationStatus[key].prompt;
+  let existingChat = aiContent.generationStatus[key].existingChat;
+  let inputValues = aiContent.generationStatus[key].inputValues;
+
   let chat = existingChat || [];
   let messages = [{ role: 'user', content: prompt }, ...chat];
-  let campaign;
-  let data;
   let chatResponse;
 
   let generateError = false;
@@ -485,9 +525,6 @@ async function handleGenerateCampaignPlan(message) {
       'handling campaign from queue',
       message,
     );
-
-    campaign = await Campaign.findOne({ slug });
-    data = campaign.data;
 
     let maxTokens = 2000;
     if (existingChat && existingChat.length > 0) {
@@ -508,7 +545,6 @@ async function handleGenerateCampaignPlan(message) {
     // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
     // chatResponse = chatResponse.replace('/n', '<br/><br/>');
 
-    console.log('chatResponse', chatResponse);
     // TODO: investigate if there is a way to get token usage with langchain.
     // const totalTokens = 0;
 
@@ -518,34 +554,29 @@ async function handleGenerateCampaignPlan(message) {
     );
 
     campaign = await Campaign.findOne({ slug });
-    data = campaign.data;
+    aiContent = campaign.aiContent;
     let oldVersion;
     if (chatResponse && chatResponse !== '') {
-      if (subSectionKey === 'aiContent') {
-        try {
-          let oldVersionData = data[subSectionKey][key];
-          oldVersion = {
-            // todo: try to convert oldVersionData.updatedAt to a date object.
-            date: new Date().toString(),
-            text: oldVersionData.content,
-          };
-        } catch (e) {
-          // dont warn because this is expected to fail sometimes.
-          // console.log('error getting old version', e);
-        }
-        data[subSectionKey][key] = {
-          name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
-          updatedAt: new Date().valueOf(),
-          inputValues,
-          content: chatResponse,
+      try {
+        let oldVersionData = aiContent[key];
+        oldVersion = {
+          // todo: try to convert oldVersionData.updatedAt to a date object.
+          date: new Date().toString(),
+          text: oldVersionData.content,
         };
-      } else {
-        data[subSectionKey][key] = chatResponse;
+      } catch (e) {
+        // dont warn because this is expected to fail sometimes.
+        // console.log('error getting old version', e);
       }
+      aiContent[key] = {
+        name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
+        updatedAt: new Date().valueOf(),
+        inputValues,
+        content: chatResponse,
+      };
 
       await sails.helpers.ai.saveCampaignVersion(
-        data,
-        subSectionKey,
+        aiContent,
         key,
         campaign.id,
         inputValues,
@@ -553,26 +584,28 @@ async function handleGenerateCampaignPlan(message) {
       );
 
       if (
-        !data?.campaignPlanStatus ||
-        typeof data.campaignPlanStatus !== 'object'
+        !aiContent?.generationStatus ||
+        typeof aiContent.generationStatus !== 'object'
       ) {
-        data.campaignPlanStatus = {};
+        aiContent.generationStatus = {};
       }
       if (
-        !data?.campaignPlanStatus[key] ||
-        typeof data.campaignPlanStatus[key] !== 'object'
+        !aiContent?.generationStatus[key] ||
+        typeof aiContent.generationStatus[key] !== 'object'
       ) {
-        data.campaignPlanStatus[key] = {};
+        aiContent.generationStatus[key] = {};
       }
 
-      data.campaignPlanStatus[key].status = 'completed';
+      aiContent.generationStatus[key].status = 'completed';
+
       await Campaign.updateOne({
         slug,
       }).set({
-        data,
+        aiContent,
       });
+
       await sails.helpers.slack.aiLoggerHelper(
-        `updated campaign with ai. chatResponse: subSectionKey: ${subSectionKey}. key: ${key}`,
+        `updated campaign with ai. chatResponse: key: ${key}`,
         chatResponse,
       );
     }
@@ -611,38 +644,38 @@ async function handleGenerateCampaignPlan(message) {
   if (!chatResponse || chatResponse === '' || generateError) {
     try {
       // if data does not have key campaignPlanAttempts
-      if (!data?.campaignPlanAttempts) {
-        data.campaignPlanAttempts = {};
+      if (!aiContent?.campaignPlanAttempts) {
+        aiContent.campaignPlanAttempts = {};
       }
-      if (!data?.campaignPlanAttempts[key]) {
-        data.campaignPlanAttempts[key] = 1;
+      if (!aiContent?.campaignPlanAttempts[key]) {
+        aiContent.campaignPlanAttempts[key] = 1;
       }
-      data.campaignPlanAttempts[key] = data?.campaignPlanAttempts[key]
-        ? data.campaignPlanAttempts[key] + 1
+      aiContent.campaignPlanAttempts[key] = aiContent?.campaignPlanAttempts[key]
+        ? aiContent.campaignPlanAttempts[key] + 1
         : 1;
 
       await sails.helpers.slack.aiLoggerHelper(
         'Current Attempts:',
-        data.campaignPlanAttempts[key],
+        aiContent.campaignPlanAttempts[key],
       );
 
       // After 3 attempts, we give up.
       if (
-        data?.campaignPlanStatus[key]?.status &&
-        data.campaignPlanStatus[key].status !== 'completed'
+        aiContent?.generationStatus[key]?.status &&
+        aiContent.generationStatus[key].status !== 'completed'
       ) {
-        if (data.campaignPlanAttempts[key] >= 3) {
+        if (aiContent.campaignPlanAttempts[key] >= 3) {
           await sails.helpers.slack.aiLoggerHelper(
-            'Deleting campaignPlanStatus for key',
+            'Deleting generationStatus for key',
             key,
           );
-          delete data.campaignPlanStatus[key];
+          delete aiContent.generationStatus[key];
         }
       }
       await Campaign.updateOne({
         slug,
       }).set({
-        data,
+        data: aiContent,
       });
     } catch (e) {
       console.log('error at consumer', e);

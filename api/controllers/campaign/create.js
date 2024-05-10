@@ -1,21 +1,7 @@
-/**
- * user/register.js
- *
- * @description :: Stand Alone action2 for signing up a user.
- * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
- */
-
 const slugify = require('slugify');
 
 module.exports = {
-  inputs: {
-    firstName: {
-      type: 'string',
-    },
-    lastName: {
-      type: 'string',
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -30,33 +16,22 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
-      const { firstName, lastName } = inputs;
-      await sails.helpers.queue.consumer();
       const userName = await sails.helpers.user.name(user);
-      const inputName = `${firstName} ${lastName}`;
-      let resolvedName = userName !== '' ? userName : inputName;
-      if (inputName && !user.firstName) {
-        await User.updateOne({ id: user.id }).set({ firstName, lastName });
+      if (userName === '') {
+        return exits.badRequest('No user name');
       }
 
-      if (firstName) {
-        await submitCrmForm(firstName, lastName, user.email);
-      }
-
-      const slug = await findSlug(resolvedName);
+      const slug = await findSlug(userName);
       const data = {
         slug,
-        name: resolvedName,
         currentStep: 'registration',
-        firstName,
-        lastName,
       };
 
       // see if the user already have campaign
       const existing = await Campaign.findOne({ user: user.id });
       if (existing) {
         return exits.success({
-          ...existing.data,
+          slug: existing.slug,
         });
       }
 
@@ -66,6 +41,7 @@ module.exports = {
         isActive: false,
         user: user.id,
       });
+      await submitCrmForm(user.firstName, user.lastName, user.email);
 
       return exits.success({
         slug,

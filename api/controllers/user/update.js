@@ -94,10 +94,8 @@ module.exports = {
       if (email && reqUser.email !== email) {
         updateFields.email = email;
       }
-      if (phone && reqUser.phone !== phone) {
+      if (phone) {
         updateFields.phone = phone;
-        updateFields.isPhoneVerified = false;
-        await sails.helpers.sms.smsVerify(phone);
       }
 
       if (zip) {

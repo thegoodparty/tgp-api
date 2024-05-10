@@ -31,19 +31,19 @@ module.exports = {
       const { slug } = inputs;
       const campaign = await Campaign.findOne({
         slug,
-      });
-      const data = campaign.data;
-      data.id = campaign.id;
+      }).populate('pathToVictory');
 
-      const campaignObj = { ...campaign };
-      delete campaignObj.data;
+      if (campaign?.pathToVictory) {
+        campaign.pathToVictory = campaign.pathToVictory?.data
+          ? campaign.pathToVictory.data
+          : false;
+      }
 
       return exits.success({
-        campaign: data,
-        campaignObj,
+        campaign,
       });
     } catch (e) {
-      console.log('Error in find candidate', e);
+      console.log('Error in find find-by-slug', e);
       return exits.forbidden();
     }
   },

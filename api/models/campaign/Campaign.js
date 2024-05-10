@@ -10,10 +10,23 @@ module.exports = {
     },
     isActive: {
       type: 'boolean',
+      allowNull: true,
     },
     data: {
       type: 'json',
     },
+    dataCopy: {
+      type: 'json',
+    },
+    details: {
+      type: 'json',
+      columnType: 'jsonb',
+    },
+    aiContent: {
+      type: 'json',
+      columnType: 'jsonb',
+    },
+
     isVerified: {
       type: 'boolean',
       allowNull: true,
@@ -21,7 +34,7 @@ module.exports = {
     dateVerified: {
       type: 'string',
       columnType: 'date',
-      allowNull: true
+      allowNull: true,
     },
     tier: {
       type: 'string',
@@ -31,12 +44,18 @@ module.exports = {
     isPro: {
       type: 'boolean',
       defaultsTo: false,
+      allowNull: true,
     },
     didWin: {
       type: 'boolean',
+      allowNull: true,
     },
     user: {
       model: 'user',
+    },
+
+    pathToVictory: {
+      model: 'pathToVictory',
     },
 
     campaignsUpdateHistories: {

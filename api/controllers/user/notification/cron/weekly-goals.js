@@ -43,9 +43,9 @@ module.exports = {
           const campaign = campaigns[i];
 
           const data = campaign.data;
-          const electionDate = data.goals?.electionDate;
+          const electionDate = data.details?.electionDate;
 
-          if (!campaign || !campaign.data || !campaign.data.pathToVictory) {
+          if (!campaign || !campaign.pathToVictory) {
             continue; // goals not set yet.
           }
 

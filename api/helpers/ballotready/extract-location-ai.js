@@ -165,7 +165,7 @@ module.exports = {
       } else if (level === 'village') {
         systemPrompt = villagePrompt;
       } else {
-        exits.success(false);
+        return exits.success(false);
       }
 
       let messages = [

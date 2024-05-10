@@ -39,7 +39,7 @@ module.exports.routes = {
     'entrance/send-password-recovery-email',
   'PUT   /api/v1/entrance/reset-password': 'entrance/reset-password',
 
-  'PUT    /api/v1/user/update-user': 'user/update-user',
+  'PUT    /api/v1/user': 'user/update',
   'PUT    /api/v1/user/refresh': 'user/refresh',
   'DELETE    /api/v1/user': 'user/delete',
   // 'POST    /api/v1/user/avatar': 'user/upload-avatar',
@@ -63,15 +63,7 @@ module.exports.routes = {
   'PUT    /api/v1/admin/deactivate-candidate-by-campaign':
     'admin/candidate/deactivate-candidate-by-campaign',
   'POST   /api/v1/admin/candidate-enhance': 'admin/candidate-enhance',
-
-  // New Candidates
-  // 'POST   /api/v1/new-candidate': 'newCandidates/create',
-  // 'GET    /api/v1/new-candidate': 'newCandidates/find',
-  // 'PUT    /api/v1/new-candidate': 'newCandidates/update',
-
-  // 'GET    /api/v1/new-candidates': 'newCandidates/list',
-  // 'DELETE    /api/v1/new-candidate': 'newCandidates/delete',
-  // 'GET    /api/v1/new-candidate/can-edit': 'newCandidates/can-edit',
+  'GET /api/v1/admin/p2v-stats': 'admin/p2v-stats/get',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
@@ -120,33 +112,24 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign/update-history':
     'campaign/campaignUpdateHistory/delete',
 
+  // campaign without onboarding
+  'POST   /api/v1/campaign': 'campaign/create',
+  'PUT   /api/v1/campaign': 'campaign/update',
+  'GET   /api/v1/campaign': 'campaign/get',
+  'POST   /api/v1/campaign/launch': 'campaign/launch',
+  'GET   /api/v1/campaigns': 'campaign/list',
+  'GET   /api/v1/campaign/by-slug': 'campaign/find-by-slug', //admin
+  'PUT   /api/v1/campaign-admin': 'campaign/admin-update', // admin
+
   // onboarding
 
-  'DELETE   /api/v1/campaign/onboarding': 'campaign/onboarding/delete',
-  'DELETE   /api/v1/campaign': 'campaign/onboarding/admin-delete',
-  'PUT   /api/v1/campaign-admin': 'campaign/onboarding/admin-update',
-  'POST   /api/v1/campaign/onboarding': 'campaign/onboarding/create',
-  'PUT   /api/v1/campaign/onboarding': 'campaign/onboarding/update',
-  'GET   /api/v1/campaign/onboarding/by-user':
-    'campaign/onboarding/find-by-user',
-  'GET   /api/v1/campaign/onboarding/by-slug':
-    'campaign/onboarding/find-by-slug', //admin
-  'GET   /api/v1/campaign/onboardings': 'campaign/onboarding/list',
-  'POST   /api/v1/campaign/onboarding/launch-request':
-    'campaign/onboarding/launch-request',
-  'DELETE   /api/v1/campaign/onboarding/launch-request':
-    'campaign/onboarding/cancel-launch-request',
-  'POST   /api/v1/campaign/onboarding/launch': 'campaign/onboarding/launch',
+  'DELETE   /api/v1/campaign': 'campaign/admin-delete',
 
   // onboarding AI
-  'POST   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/create',
-  'PUT   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/edit',
-  'POST   /api/v1/campaign/onboarding/ai/rename':
-    'campaign/onboarding/ai/rename',
-  'DELETE   /api/v1/campaign/onboarding/ai': 'campaign/onboarding/ai/delete',
+  'POST   /api/v1/campaign/ai': 'campaign/ai/create',
+  'POST   /api/v1/campaign/ai/rename': 'campaign/ai/rename',
+  'DELETE   /api/v1/campaign/ai': 'campaign/ai/delete',
 
-  'POST   /api/v1/campaign/onboarding/fast-ai':
-    'campaign/onboarding/ai/create-no-queue',
   'GET   /api/v1/campaign/onboarding/planVersion':
     'campaign/onboarding/planVersion/find',
 
@@ -171,11 +154,6 @@ module.exports.routes = {
     'topIssues/candidatePosition/find-by-candidate',
   'GET  /api/v1/campaign-position':
     'topIssues/candidatePosition/find-by-campaign',
-
-  // application
-
-  'POST   /api/v1/application/upload-image':
-    'newCandidates/application/upload-image',
 
   'GET   /api/v1/declares': 'declare/list',
 
@@ -204,6 +182,8 @@ module.exports.routes = {
   'POST  /api/v1/voter-data/path-to-victory': 'voterData/path-to-victory',
   'POST  /api/v1/voter-data/voter-file': 'voterData/voterFile/create',
   'GET  /api/v1/voter-data/voter-file': 'voterData/voterFile/get',
+  'GET  /api/v1/voter-data/voter-file/geo-location-cron':
+    'voterData/voterFile/geo-location-cron',
 
   // test ai
   'POST   /api/v1/ai/test': 'ai/test',

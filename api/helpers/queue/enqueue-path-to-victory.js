@@ -1,8 +1,8 @@
 // Enqueue a message to the queue to process the path to victory for a campaign.
 module.exports = {
   inputs: {
-    campaign: {
-      type: 'json',
+    campaignId: {
+      type: 'number',
       required: true,
     },
   },
@@ -17,15 +17,16 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { campaign } = inputs;
+      let { campaignId } = inputs;
+      // get a fresh copy of the campaign
+      const campaign = await Campaign.findOne({ id: campaignId });
 
-      const { data, slug } = campaign;
-      const { details } = data;
+      const { slug, details } = campaign;
 
       let queueMessage = {
         type: 'pathToVictory',
         data: {
-          campaignId: campaign.id,
+          campaignId,
         },
       };
 
@@ -45,7 +46,16 @@ module.exports = {
           'campaign does not have race_id. skipping p2v...',
         );
         if (user) {
-          await sendVictoryIssuesSlackMessage(campaign, user);
+          let runForOffice = campaign?.data?.details?.runForOffice || 'no';
+          let knowRun = campaign?.data?.details?.knowRun || 'false';
+          // only send slack message if user is running for office
+          // and user did not pick an office.
+          if (
+            (runForOffice && runForOffice === 'yes') ||
+            (knowRun && knowRun === 'true')
+          ) {
+            await sendVictoryIssuesSlackMessage(campaign, user);
+          }
         }
         return exits.success({ message: 'ok' });
       }
@@ -64,8 +74,7 @@ module.exports = {
 };
 
 async function sendVictoryIssuesSlackMessage(campaign, user) {
-  const { data, slug } = campaign;
-  const { details } = data;
+  const { slug, details } = campaign;
   const { office, state, city, district } = details;
   const appBase = sails.config.custom.appBase || sails.config.appBase;
 
@@ -108,7 +117,7 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
 }
 
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
-  const { data } = campaign;
+  const { details } = campaign;
 
   const row = await sails.helpers.ballotready.getRace(raceId);
   console.log('row', row);
@@ -168,8 +177,8 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   if (partisanType !== 'partisan') {
     priorElectionDates = await sails.helpers.ballotready.getElectionDates(
       officeName,
-      data.details.zip,
-      data.details.ballotLevel,
+      details.zip,
+      details.ballotLevel,
     );
   }
   console.log('priorElectionDates', priorElectionDates);
@@ -177,23 +186,20 @@ async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {
   queueMessage.data.priorElectionDates = priorElectionDates;
 
   // update the Campaign details
-  if (data.details) {
+  if (details.details) {
     await Campaign.updateOne({ id: campaign.id }).set({
-      data: {
-        ...data,
-        details: {
-          ...data.details,
-          officeTermLength: termLength ?? data.details.officeTermLength,
-          electionDate: electionDate ?? data.details.electionDate,
-          level: electionLevel ?? data.details.level,
-          state: electionState ?? data.details.state,
-          county: county ?? data.details.county,
-          city: city ?? data.details.city,
-          district: subAreaValue ?? data.details.district,
-          partisanType: partisanType ?? data.details.partisanType,
-          priorElectionDates:
-            priorElectionDates ?? data.details.priorElectionDates,
-        },
+      details: {
+        ...details.details,
+        officeTermLength: termLength ?? details.details.officeTermLength,
+        electionDate: electionDate ?? details.details.electionDate,
+        level: electionLevel ?? details.details.level,
+        state: electionState ?? details.details.state,
+        county: county ?? details.details.county,
+        city: city ?? details.details.city,
+        district: subAreaValue ?? details.details.district,
+        partisanType: partisanType ?? details.details.partisanType,
+        priorElectionDates:
+          priorElectionDates ?? details.details.priorElectionDates,
       },
     });
   }

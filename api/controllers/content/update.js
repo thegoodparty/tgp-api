@@ -27,6 +27,12 @@ const schemaConfig = {
   glossaryItems: {
     subKey: 'slug',
   },
+  goodPartyTeamMembers: {
+    subKey: 'fullName',
+  },
+  teamMilestones: {
+    subKey: 'id',
+  }
 };
 
 module.exports = {

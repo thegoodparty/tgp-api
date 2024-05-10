@@ -42,15 +42,9 @@ module.exports = {
         try {
           const campaign = campaigns[i];
 
-          const data = campaign.data;
-          const electionDate = data.goals?.electionDate;
+          const electionDate = campaign.details?.electionDate;
 
-          if (
-            !campaign ||
-            !campaign.data ||
-            !campaign.data.pathToVictory ||
-            !campaign.user
-          ) {
+          if (!campaign || !campaign.pathToVictory || !campaign.user) {
             continue; // goals not set yet.
           }
 

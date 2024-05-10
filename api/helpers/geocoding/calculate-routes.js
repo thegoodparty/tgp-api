@@ -33,19 +33,36 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { campaignId, maxHousesPerRoute, dkCampaignId } = inputs;
-      // console.log('campaignId', campaignId);
-      // await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
-      //   campaignId,
-      // });
-      const voters = await Voter.find()
-        .populate('campaigns', {
-          where: { id: campaignId },
-        })
-        .sort('geoHash ASC');
+      await sails.helpers.slack.errorLoggerHelper('Calculating routes ', {
+        campaignId,
+      });
+      const cappedMaxHousesPerRoute = Math.min(maxHousesPerRoute, 25);
+
+      const dkVoters = await DoorKnockingVoter.find({
+        dkCampaign: dkCampaignId,
+        isCalculated: false,
+        geoHash: { '!=': '' },
+      })
+        .populate('voter')
+        .sort('geoHash DESC')
+        .limit(1000);
+
+      const voters = dkVoters.map((v) => {
+        return {
+          dkVoterId: v.id,
+          ...v.voter,
+        };
+      });
+
+      console.log('voters', voters.length);
+
+      await sails.helpers.slack.errorLoggerHelper('Calculating routes2 ', {
+        voterCount: voters.length,
+      });
       const groupedVoters = generateVoterGroups(
         voters,
         MIN_HOUSES_PER_ROUTE,
-        maxHousesPerRoute,
+        cappedMaxHousesPerRoute,
       );
       const routesCount = Object.keys(groupedVoters).length;
       const maxRoutes = Math.min(routesCount, 10);
@@ -55,6 +72,7 @@ module.exports = {
         const addresses = groupedVoters[hash].map((voter) => {
           return {
             voterId: voter.id,
+            dkVoterId: voter.dkVoterId,
             address: `${voter.address}, ${voter.city}, ${voter.state} ${voter.zip}`,
             lat: voter.lat,
             lng: voter.lng,
@@ -68,9 +86,7 @@ module.exports = {
           continue;
         }
         // console.log('addresses', addresses);
-        // await sails.helpers.slack.errorLoggerHelper('Calculating route', {
-        //   addresses,
-        // });
+
         if (i < maxRoutes) {
           const route = await sails.helpers.geocoding.generateOptimizedRoute(
             addresses,
@@ -80,19 +96,26 @@ module.exports = {
               data: route,
               dkCampaign: dkCampaignId,
             });
+
+            // mark dkVoters as calculated
+            for (let address of addresses) {
+              await DoorKnockingVoter.updateOne({ id: address.dkVoterId }).set({
+                isCalculated: true,
+              });
+            }
           }
-        } else {
-          await DoorKnockingRoute.create({
-            data: {
-              groupedRoute: addresses,
-            },
-            dkCampaign: dkCampaignId,
-            status: 'not-calculated',
-          });
+          // } else {
+          //   await DoorKnockingRoute.create({
+          //     data: {
+          //       groupedRoute: addresses,
+          //     },
+          //     dkCampaign: dkCampaignId,
+          //     status: 'not-calculated',
+          //   });
         }
       }
 
-      return exits.success({ groupedVoters });
+      return exits.success();
     } catch (err) {
       console.log('error at geocode-address', err);
       await sails.helpers.slack.errorLoggerHelper(
@@ -144,23 +167,26 @@ function combineEntries(votersByGeoHash, minHousesPerRoute) {
   return result;
 }
 
-// recursive function to group voters by geohash and split long lists
+// group voters by geohash and split long lists
 function groupAndSplitByGeoHash(voters, initialPrecision, maxHousesPerRoute) {
-  let votersByGeoHash = groupVotersByHash(voters, initialPrecision);
-  //   console.log('votersByGeoHash', votersByGeoHash, initialPrecision);
-  for (let hash of Object.keys(votersByGeoHash)) {
-    if (votersByGeoHash[hash].length > maxHousesPerRoute) {
-      const smallerGroup = groupAndSplitByGeoHash(
-        votersByGeoHash[hash],
-        initialPrecision + 1,
-        maxHousesPerRoute,
-      );
-      delete votersByGeoHash[hash];
-      votersByGeoHash = Object.assign(votersByGeoHash, smallerGroup);
+  let queue = [{ voters, precision: initialPrecision }];
+  let result = {};
+
+  while (queue.length > 0) {
+    const { voters, precision } = queue.shift();
+    let votersByGeoHash = groupVotersByHash(voters, precision);
+
+    for (let hash of Object.keys(votersByGeoHash)) {
+      const hashLength = votersByGeoHash[hash].length;
+      if (hashLength > maxHousesPerRoute && precision < 11) {
+        queue.push({ voters: votersByGeoHash[hash], precision: precision + 1 });
+      } else {
+        result[hash] = votersByGeoHash[hash];
+      }
     }
   }
 
-  return votersByGeoHash;
+  return result;
 }
 
 function groupVotersByHash(voters, precision) {

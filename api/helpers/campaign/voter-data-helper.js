@@ -1,12 +1,18 @@
 const axios = require('axios');
 const fastCsv = require('fast-csv');
+const csv = require('csv-parser');
 const { max, isArray } = require('lodash');
 
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 let maxRecords = 100000;
 if (appBase !== 'https://goodparty.org') {
-  maxRecords = 10000;
+  maxRecords = 50000;
+}
+
+let maxInserts;
+if (appBase === 'http://localhost:4000') {
+  maxInserts = 2000;
 }
 
 module.exports = {
@@ -51,6 +57,7 @@ module.exports = {
         additionalFilters,
         limitApproved,
       } = inputs;
+      await sails.helpers.queue.consumer();
 
       await sails.helpers.slack.errorLoggerHelper('voter data helper.', inputs);
 
@@ -63,8 +70,12 @@ module.exports = {
       }
 
       console.log(`voterDataHelper invoked with ${JSON.stringify(inputs)}`);
+      // first remove all previous voters
+      await Campaign.replaceCollection(campaignId, 'voters').members([]);
 
-      let csvData = await getVoterData(
+      let index = 0;
+
+      const stream = await getVoterData(
         electionState,
         l2ColumnName,
         l2ColumnValue,
@@ -72,90 +83,55 @@ module.exports = {
         campaign,
         limitApproved,
       );
-
-      let voterData = [];
-      if (csvData) {
-        voterData = await parseVoterData(csvData);
-      }
-
-      let voterObjs = [];
-      for (const voter of voterData) {
-        let voterObj = {};
-        voterObj.voterId = voter.LALVOTERID;
-        voterObj.address = voter.Residence_Addresses_AddressLine;
-        voterObj.party = voter.Parties_Description;
-        voterObj.state = voter.Residence_Addresses_State;
-        voterObj.city = voter.Residence_Addresses_City;
-        voterObj.zip = voter.Residence_Addresses_Zip;
-
-        const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
-        const loc = await sails.helpers.geocoding.geocodeAddress(address);
-        const { lat, lng, full, geoHash } = loc;
-        voterObj.data = { ...voter, geoLocation: full };
-
-        voterObj.lat = lat;
-        voterObj.lng = lng;
-        voterObj.geoHash = geoHash;
-        voterObjs.push(voterObj);
-      }
-      console.log('Adding voters to db. Total voters:', voterObjs.length);
-      await sails.helpers.slack.errorLoggerHelper(
-        'Adding voters to db. Total voters:',
-        {
-          totalVoters: voterObjs.length,
-        },
-      );
-
-      // createEach wont work because we need to find it first to see if it exists.
-      // const voters = await Voter.createEach(voterObjs)
-      //   .fetch()
-      //   .tolerate('E_UNIQUE');
-
-      if (voterObjs.length > 0) {
-        for (const voterObj of voterObjs) {
+      stream
+        .pipe(csv())
+        .on('data', async (row) => {
+          stream.pause();
           try {
-            const voter = await Voter.findOrCreate(
-              { voterId: voterObj.voterId },
-              voterObj,
-            );
-            await Campaign.addToCollection(campaign.id, 'voters', voter.id);
-            // because sails does not have unique_together we must do this.
-            await VoterSearch.findOrCreate(
-              {
-                voter: voter.id,
-                l2ColumnName,
-                l2ColumnValue,
-              },
-              {
-                voter: voter.id,
-                l2ColumnName,
-                l2ColumnValue,
-              },
-            );
+            index++;
+            if (maxInserts && index >= maxInserts) {
+              console.log('skipping', index, maxInserts);
+              return;
+            }
+            await handleCsvRow(row, campaignId);
           } catch (e) {
-            await sails.helpers.slack.errorLoggerHelper(
-              'Error adding voters',
-              e,
-            );
-            console.log('error at voter-data-helper', e);
+            console.error('Failed to process row', e);
           }
-        }
+          stream.resume();
+        })
+        .on('end', async () => {
+          console.log('updating campaign data to completed');
+          const updated = await Campaign.findOne({ id: campaignId });
+          await Campaign.updateOne({ id: campaignId }).set({
+            data: { ...updated.data, hasVoterFile: 'completed' },
+          });
 
-        await sails.helpers.slack.slackHelper(
-          simpleSlackMessage(
-            'Voter Data',
-            `Added ${voterObjs.length} voter records to campaign ${campaign.slug}.`,
-          ),
-          'victory',
-        );
-      }
+          await sails.helpers.slack.errorLoggerHelper(
+            'Voter file purchase completed',
+            {
+              slug: updated.slug,
+            },
+          );
 
-      const updated = await Campaign.findOne({ id: campaignId });
-      await Campaign.updateOne({ id: campaignId }).set({
-        data: { ...updated.data, hasVoterFile: 'completed' },
-      });
+          const queueMessage = {
+            type: 'calculateGeoLocation',
+            data: {},
+          };
 
-      return exits.success('ok');
+          console.log('adding new voterIds to queue. message: ', queueMessage);
+          await sails.helpers.queue.enqueue(queueMessage);
+          return exits.success('ok');
+        })
+        .on('error', async (e) => {
+          console.log('Error reading csv', e);
+          const updated = await Campaign.findOne({ id: campaignId });
+          const updateData = updated.data;
+          delete updateData.hasVoterFile;
+          await Campaign.updateOne({ id: campaignId }).set({
+            data: updateData,
+          });
+          return exits.success('error');
+        });
     } catch (e) {
       console.log('error at voter-data-helper', e);
       await sails.helpers.slack.errorLoggerHelper(
@@ -167,29 +143,53 @@ module.exports = {
   },
 };
 
-async function parseVoterData(csvData) {
-  let parsedVoterData = [];
-  let finishedParsing = false;
-  // Uses fast-csv to parse the CSV data into an Object.
-  fastCsv
-    .parseString(csvData, { headers: true })
-    .on('data', (row) => {
-      parsedVoterData.push(row);
-    })
-    .on('end', () => {
-      console.log('finished parsing voterData');
-      finishedParsing = true;
-    });
+async function handleCsvRow(row, campaignId) {
+  const voterObj = await parseVoter(row);
+  await insertVoterToDb(voterObj, campaignId);
+}
 
-  // wait up to 30 seconds for the parsing to finish.
-  for (let i = 0; i < 60; i++) {
-    console.log('parsing voterData...');
-    await sleep(500);
-    if (finishedParsing === true) {
-      break;
+async function parseVoter(voter) {
+  const voterObj = {};
+  voterObj.voterId = voter.LALVOTERID;
+  voterObj.address = voter.Residence_Addresses_AddressLine;
+  voterObj.party = voter.Parties_Description;
+  voterObj.state = voter.Residence_Addresses_State;
+  voterObj.city = voter.Residence_Addresses_City;
+  voterObj.zip = voter.Residence_Addresses_Zip;
+
+  // const address = `${voterObj.address} ${voterObj.city}, ${voterObj.state} ${voterObj.zip}`;
+  // const loc = await sails.helpers.geocoding.geocodeAddress(address);
+  // const { lat, lng, full, geoHash } = loc;
+  voterObj.data = voter;
+
+  return voterObj;
+}
+
+// TODO: convert this to batch insert
+async function insertVoterToDb(voterObj, campaignId) {
+  let newVoter;
+  try {
+    const existing = await Voter.findOne({
+      voterId: voterObj.voterId,
+    });
+    if (existing) {
+      await Campaign.addToCollection(campaignId, 'voters', existing.id);
+    } else {
+      console.log('new voter');
+      voterObj.pendingProcessing = true;
+      newVoter = await Voter.create(voterObj).fetch();
+      await Campaign.addToCollection(campaignId, 'voters', newVoter.id);
     }
+  } catch (e) {
+    console.log('Error adding voter to DB', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'Error adding voter to DB',
+      e,
+      voterObj,
+    );
   }
-  return parsedVoterData;
+
+  return false;
 }
 
 async function getVoterData(
@@ -227,6 +227,7 @@ async function getVoterData(
     const job = await initiateSearch(searchUrl, filters);
     return await waitForSearchCompletion(job, campaign);
   } catch (e) {
+    console.log('error at getVoterData', e);
     await sails.helpers.slack.errorLoggerHelper('error at getVoterData', e);
     return;
   }
@@ -327,7 +328,7 @@ async function waitForSearchCompletion(job, campaign) {
       const status = response?.data?.status;
 
       if (status === 'FINISHED') {
-        return await downloadFile(job);
+        return await streamFile(job);
       } else if (status === 'ERROR') {
         await sendSlackNotification(
           'Voter Data',
@@ -352,10 +353,10 @@ async function waitForSearchCompletion(job, campaign) {
   return null;
 }
 
-async function downloadFile(job) {
+async function streamFile(job) {
   const fileUrl = `https://api.l2datamapping.com/api/v2/records/search/file/${job}?id=1OSR&apikey=${l2ApiKey}`;
   try {
-    const response = await axios.get(fileUrl);
+    const response = await axios.get(fileUrl, { responseType: 'stream' });
     return response?.data;
   } catch (e) {
     console.log('error at getVoterData downloadFile', e);
