@@ -22,12 +22,11 @@ module.exports = {
       const campaign = await Campaign.findOne({ slug }).populate(
         'pathToVictory',
       );
-      const { data, details, pathToVictory } = campaign;
+      const { details, pathToVictory } = campaign;
 
       if (
         !pathToVictory?.data?.electionType ||
-        !pathToVictory?.data?.electionLocation ||
-        data.hasVoterFile === 'completed'
+        !pathToVictory?.data?.electionLocation
       ) {
         console.log('Path to Victory is not set.', campaign);
         return exits.badRequest({ message: 'Path to Victory is not set.' });
@@ -41,17 +40,18 @@ module.exports = {
         //VotingPerformanceEvenYearGeneral
       };
 
-      await sails.helpers.campaign.voterDataHelper(
+      const count = await sails.helpers.campaign.voterDataHelper(
         campaign.id,
         details.state,
         pathToVictory.data.electionType,
         pathToVictory.data.electionLocation,
         filters,
         false, // limitApproved
+        true, // countOnly
       );
 
       return exits.success({
-        message: 'ok',
+        count: count || 0,
       });
     } catch (e) {
       console.log(e);

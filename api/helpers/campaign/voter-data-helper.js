@@ -40,6 +40,10 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
     },
+    countOnly: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
   exits: {
     success: {
@@ -56,6 +60,7 @@ module.exports = {
         l2ColumnValue,
         additionalFilters,
         limitApproved,
+        countOnly,
       } = inputs;
       await sails.helpers.queue.consumer();
 
@@ -74,6 +79,18 @@ module.exports = {
       await Campaign.replaceCollection(campaignId, 'voters').members([]);
 
       let index = 0;
+      if (countOnly) {
+        const count = await getVoterData(
+          electionState,
+          l2ColumnName,
+          l2ColumnValue,
+          additionalFilters,
+          campaign,
+          limitApproved,
+          countOnly,
+        );
+        return exits.success(count);
+      }
 
       const stream = await getVoterData(
         electionState,
@@ -199,6 +216,7 @@ async function getVoterData(
   additionalFilters,
   campaign,
   limitApproved,
+  countOnly,
 ) {
   try {
     const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
@@ -217,6 +235,9 @@ async function getVoterData(
     await sails.helpers.slack.errorLoggerHelper('got total records', {
       totalRecords,
     });
+    if (countOnly) {
+      return totalRecords;
+    }
     if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
       await sails.helpers.slack.errorLoggerHelper('cant proceed with search', {
         totalRecords,
