@@ -12,7 +12,6 @@ AWS.config.update({
   secretAccessKey,
 });
 
-// Assuming Amazon Location Service has direct support, adjust accordingly
 const location = new AWS.Location();
 
 module.exports = {
@@ -33,9 +32,8 @@ module.exports = {
       pendingProcessing: true,
       geoHash: '',
     }).limit(50);
-    for (let i = 0; i < voters.length; i++) {
-      try {
-        const voter = voters[i];
+    const promises = voters.map((voter) => {
+      return new Promise(async (resolve, reject) => {
         const address = `${voter.address} ${voter.city}, ${voter.state} ${voter.zip}`;
         console.log('geocode-address', address);
         const params = {
@@ -44,40 +42,43 @@ module.exports = {
           // Additional parameters as needed
         };
 
-        // Use async/await to wait for the promise to resolve
-        const data = await location.searchPlaceIndexForText(params).promise();
+        try {
+          const data = await location.searchPlaceIndexForText(params).promise();
 
-        if (data.Results.length === 0) {
-          console.log('no results found for', address);
-          continue;
-        } else {
-          // Assuming the response data structure has the latitude and longitude
-          const lat = data.Results[0].Place.Geometry.Point[1];
-          const lng = data.Results[0].Place.Geometry.Point[0];
-          const geoHash = geohash.encode(lat, lng, 8);
-          await Voter.updateOne({ id: voter.id }).set({
-            lat,
-            lng,
-            geoHash,
-            pendingProcessing: false,
-            data: { ...voter.data, geoLocation: data.Results[0] },
-          });
-          await DoorKnockingVoter.update({ voter: voter.id }).set({
-            geoHash,
-          });
-          console.log('updated voter with geoHash', voter.id);
+          if (data.Results.length === 0) {
+            console.log('no results found for', address);
+            resolve();
+          } else {
+            const lat = data.Results[0].Place.Geometry.Point[1];
+            const lng = data.Results[0].Place.Geometry.Point[0];
+            const geoHash = geohash.encode(lat, lng, 8);
+            await Voter.updateOne({ id: voter.id }).set({
+              lat,
+              lng,
+              geoHash,
+              pendingProcessing: false,
+              data: { ...voter.data, geoLocation: data.Results[0] },
+            });
+            await DoorKnockingVoter.update({ voter: voter.id }).set({
+              geoHash,
+            });
+            console.log('updated voter with geoHash', voter.id);
+            resolve();
+          }
+        } catch (err) {
+          console.log('error at geocode-address', err);
+          await sails.helpers.slack.errorLoggerHelper(
+            'error at geocode-address.',
+            {
+              error: err,
+            },
+          );
+          resolve(); // continue with other promises even on error
         }
-      } catch (err) {
-        console.log('error at geocode-address', err);
-        await sails.helpers.slack.errorLoggerHelper(
-          'error at geocode-address.',
-          {
-            error: err,
-          },
-        );
-        continue;
-      }
-    }
+      });
+    });
+
+    await Promise.all(promises);
     return exits.success();
   },
 };
