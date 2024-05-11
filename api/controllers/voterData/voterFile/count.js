@@ -4,6 +4,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    filters: {
+      type: 'json',
+    },
   },
 
   exits: {
@@ -18,7 +21,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { slug } = inputs;
+      const { slug, filters } = inputs;
       const campaign = await Campaign.findOne({ slug }).populate(
         'pathToVictory',
       );
@@ -35,9 +38,9 @@ module.exports = {
         data: { ...campaign.data, hasVoterFile: 'processing' },
       });
       let independentStateParties = getIndependentStateParties(details.state);
-      const filters = {
+      const combinedFilters = {
         Parties_Description: independentStateParties,
-        //VotingPerformanceEvenYearGeneral
+        ...filters,
       };
 
       const count = await sails.helpers.campaign.voterDataHelper(
@@ -45,7 +48,7 @@ module.exports = {
         details.state,
         pathToVictory.data.electionType,
         pathToVictory.data.electionLocation,
-        filters,
+        combinedFilters,
         false, // limitApproved
         true, // countOnly
       );
