@@ -31,7 +31,7 @@ module.exports = {
     const voters = await Voter.find({
       pendingProcessing: true,
       geoHash: '',
-    }).limit(50);
+    }).limit(500);
     const promises = voters.map((voter) => {
       return new Promise(async (resolve, reject) => {
         const address = `${voter.address} ${voter.city}, ${voter.state} ${voter.zip}`;
