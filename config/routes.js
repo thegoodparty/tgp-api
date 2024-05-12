@@ -182,6 +182,7 @@ module.exports.routes = {
   'POST  /api/v1/voter-data/path-to-victory': 'voterData/path-to-victory',
   'POST  /api/v1/voter-data/voter-file': 'voterData/voterFile/create',
   'GET  /api/v1/voter-data/voter-file': 'voterData/voterFile/get',
+  'PUT  /api/v1/voter-data/voter-file/count': 'voterData/voterFile/count',
   'GET  /api/v1/voter-data/voter-file/geo-location-cron':
     'voterData/voterFile/geo-location-cron',
 
