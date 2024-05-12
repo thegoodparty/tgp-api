@@ -69,6 +69,11 @@ module.exports = {
           })();
         });
 
+        queue.on('stopped', () => {
+          console.log('Consumer stopped running. Exiting...');
+          process.exit(); // Exit the Node.js process gracefully.
+        });
+
         queue.start();
       }
 
@@ -79,7 +84,10 @@ module.exports = {
 
       return exits.success('ok');
     } catch (e) {
-      await sails.helpers.slack.errorLoggerHelper('error in consumer', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Uncaught error in consumer',
+        e,
+      );
       return exits.success('not ok');
     }
   },
