@@ -12,7 +12,7 @@ if (appBase !== 'https://goodparty.org') {
 
 let maxInserts;
 if (appBase === 'http://localhost:4000') {
-  maxInserts = 200;
+  maxInserts = 2000;
 }
 
 module.exports = {
@@ -40,6 +40,10 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
     },
+    countOnly: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
   exits: {
     success: {
@@ -56,9 +60,9 @@ module.exports = {
         l2ColumnValue,
         additionalFilters,
         limitApproved,
+        countOnly,
       } = inputs;
       await sails.helpers.queue.consumer();
-      const newVoterIds = [];
 
       await sails.helpers.slack.errorLoggerHelper('voter data helper.', inputs);
 
@@ -75,6 +79,18 @@ module.exports = {
       await Campaign.replaceCollection(campaignId, 'voters').members([]);
 
       let index = 0;
+      if (countOnly) {
+        const count = await getVoterData(
+          electionState,
+          l2ColumnName,
+          l2ColumnValue,
+          additionalFilters,
+          campaign,
+          limitApproved,
+          countOnly,
+        );
+        return exits.success(count);
+      }
 
       const stream = await getVoterData(
         electionState,
@@ -89,14 +105,12 @@ module.exports = {
         .on('data', async (row) => {
           stream.pause();
           try {
+            index++;
             if (maxInserts && index >= maxInserts) {
+              console.log('skipping', index, maxInserts);
               return;
             }
-            const newId = await handleCsvRow(row, campaignId);
-            if (newId) {
-              newVoterIds.push(newId);
-            }
-            index++;
+            await handleCsvRow(row, campaignId);
           } catch (e) {
             console.error('Failed to process row', e);
           }
@@ -115,24 +129,14 @@ module.exports = {
               slug: updated.slug,
             },
           );
-          if (newVoterIds.length > 0) {
-            console.log(
-              'adding new voterIds to queue. length: ',
-              newVoterIds.length,
-            );
-            const queueMessage = {
-              type: 'calculateGeoLocation',
-              data: {
-                voterIds: newVoterIds,
-              },
-            };
 
-            console.log(
-              'adding new voterIds to queue. message: ',
-              queueMessage,
-            );
-            await sails.helpers.queue.enqueue(queueMessage);
-          }
+          const queueMessage = {
+            type: 'calculateGeoLocation',
+            data: {},
+          };
+
+          console.log('adding new voterIds to queue. message: ', queueMessage);
+          await sails.helpers.queue.enqueue(queueMessage);
           return exits.success('ok');
         })
         .on('error', async (e) => {
@@ -157,11 +161,8 @@ module.exports = {
 };
 
 async function handleCsvRow(row, campaignId) {
-  console.log('Parsing voter data', row);
   const voterObj = await parseVoter(row);
-  const newId = insertVoterToDb(voterObj, campaignId);
-
-  return newId;
+  await insertVoterToDb(voterObj, campaignId);
 }
 
 async function parseVoter(voter) {
@@ -181,6 +182,7 @@ async function parseVoter(voter) {
   return voterObj;
 }
 
+// TODO: convert this to batch insert
 async function insertVoterToDb(voterObj, campaignId) {
   let newVoter;
   try {
@@ -190,6 +192,8 @@ async function insertVoterToDb(voterObj, campaignId) {
     if (existing) {
       await Campaign.addToCollection(campaignId, 'voters', existing.id);
     } else {
+      console.log('new voter');
+      voterObj.pendingProcessing = true;
       newVoter = await Voter.create(voterObj).fetch();
       await Campaign.addToCollection(campaignId, 'voters', newVoter.id);
     }
@@ -201,9 +205,7 @@ async function insertVoterToDb(voterObj, campaignId) {
       voterObj,
     );
   }
-  if (newVoter) {
-    return newVoter.id;
-  }
+
   return false;
 }
 
@@ -214,6 +216,7 @@ async function getVoterData(
   additionalFilters,
   campaign,
   limitApproved,
+  countOnly,
 ) {
   try {
     const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
@@ -232,6 +235,9 @@ async function getVoterData(
     await sails.helpers.slack.errorLoggerHelper('got total records', {
       totalRecords,
     });
+    if (countOnly) {
+      return totalRecords;
+    }
     if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
       await sails.helpers.slack.errorLoggerHelper('cant proceed with search', {
         totalRecords,

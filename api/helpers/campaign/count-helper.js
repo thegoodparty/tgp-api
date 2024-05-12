@@ -317,6 +317,7 @@ async function getEstimatedCounts(electionState, searchJson) {
   // but if we need partisan election counts we can use the same endpoint.
   const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/estimate/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
   let response;
+  console.log('searchUrl', searchUrl, searchJson);
   try {
     response = await axios.post(searchUrl, searchJson);
   } catch (e) {
@@ -324,9 +325,10 @@ async function getEstimatedCounts(electionState, searchJson) {
     return count;
   }
   if (!response?.data || !response?.data?.results) {
+    console.log('no results found', response?.data);
     return count;
   }
-
+  console.log('found results');
   return response.data.results?.count || count;
 }
 

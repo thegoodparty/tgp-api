@@ -37,6 +37,11 @@ module.exports = {
     geoHash: {
       type: 'string',
     },
+    pendingProcessing: {
+      type: 'boolean',
+      defaultsTo: false,
+      allowNull: true,
+    },
     // has many
     surveys: {
       collection: 'survey',

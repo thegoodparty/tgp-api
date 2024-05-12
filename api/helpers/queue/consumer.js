@@ -49,22 +49,24 @@ module.exports = {
           }),
         });
         queue.on('error', (err) => {
-          sails.helpers.slack.errorLoggerHelper('on Queue error', {
-            err,
-          });
-          console.error(err.message);
+          (async () => {
+            await sails.helpers.slack.errorLoggerHelper('on Queue error', {
+              err,
+            });
+            console.error(err.message);
+          })();
         });
 
         queue.on('processing_error', (err) => {
-          sails.helpers.slack.errorLoggerHelper('on Queue processing error', {
-            err,
-          });
-          console.error(err.message);
-        });
-
-        queue.on('stopped', () => {
-          console.log('Consumer stopped running. Exiting...');
-          process.exit(); // Exit the Node.js process gracefully.
+          (async () => {
+            await sails.helpers.slack.errorLoggerHelper(
+              'on Queue processing error',
+              {
+                err,
+              },
+            );
+            console.error(err.message);
+          })();
         });
 
         queue.start();
@@ -77,9 +79,7 @@ module.exports = {
 
       return exits.success('ok');
     } catch (e) {
-      sails.helpers.slack.errorLoggerHelper('Uncaught error in consumer', {
-        e,
-      });
+      await sails.helpers.slack.errorLoggerHelper('error in consumer', e);
       return exits.success('not ok');
     }
   },
@@ -91,9 +91,6 @@ const camelToSentence = (text) => {
 };
 
 async function handleMessage(message) {
-  await sails.helpers.slack.errorLoggerHelper('handling message', {
-    message,
-  });
   // console.log(`consumer received message: ${message.Body}`);
   if (!message) {
     return;
@@ -105,6 +102,7 @@ async function handleMessage(message) {
   const action = JSON.parse(body);
   const { type, data } = action;
   console.log('processing queue message type ', type);
+
   switch (type) {
     case 'generateAiContent':
       await handleGenerateAiContent(data);
@@ -116,7 +114,7 @@ async function handleMessage(message) {
       await handlePathToVictory(data);
       break;
     case 'calculateGeoLocation':
-      await sails.helpers.geocoding.calculateGeoLocation(data.voterIds);
+      await sails.helpers.geocoding.calculateGeoLocation();
       break;
     case 'calculateDkRoutes':
       await sails.helpers.geocoding.calculateRoutes(
