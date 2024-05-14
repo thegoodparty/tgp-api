@@ -1,12 +1,5 @@
-// https://googlemaps.github.io/google-maps-services-js/
-const googleMaps = require('@googlemaps/google-maps-services-js');
-
-const client = new googleMaps.Client({});
-const googleApiKey =
-  sails.config.custom.googleApiKey || sails.config.googleApiKey;
-
 const GEO_HASH_SIZE = 5;
-const MIN_HOUSES_PER_ROUTE = 10;
+const MIN_HOUSES_PER_ROUTE = 20;
 module.exports = {
   inputs: {
     campaignId: {

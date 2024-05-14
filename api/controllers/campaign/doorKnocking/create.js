@@ -36,7 +36,7 @@ module.exports = {
       const { name, type, startDate, endDate } = inputs;
       await sails.helpers.queue.consumer();
 
-      const maxHousesPerRoute = 20;
+      const maxHousesPerRoute = 25;
 
       const user = this.req.user;
       const campaign = await sails.helpers.campaign.byUser(user);
