@@ -78,9 +78,9 @@ module.exports = {
       }
 
       // Continue running indefinitely
-      while (queue.isRunning) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
+      // while (queue.isRunning) {
+      //   await new Promise((resolve) => setTimeout(resolve, 1000));
+      // }
 
       return exits.success('ok');
     } catch (e) {
