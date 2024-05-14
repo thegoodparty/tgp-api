@@ -56,9 +56,6 @@ module.exports = {
         }
       }
 
-      console.log('route.volunteer', route.volunteer);
-      console.log('campaignVolunteer.id', campaignVolunteer.id);
-
       if (route.volunteer === campaignVolunteer.id) {
         return exits.success({ message: 'claimed' });
       }
@@ -68,7 +65,7 @@ module.exports = {
         status: 'claimed',
       });
 
-      await createMoreRoutes(dkCampaign.id);
+      await createMoreRoutes(dkCampaign);
 
       return exits.success({
         message: 'claimed',
@@ -82,15 +79,16 @@ module.exports = {
 
 // we need to create 10 more routes if only 3 are left
 
-async function createMoreRoutes(dkCampaignId) {
+async function createMoreRoutes(dkCampaign) {
   const notClaimed = await DoorKnockingRoute.count({
-    dkCampaign: dkCampaignId,
+    dkCampaign: dkCampaign.id,
     status: 'not-claimed',
   });
   if (notClaimed <= MIN_ROUTES) {
+    console.log('calculating more');
     // see if there are routes that are not calculated
     const notCalculated = await DoorKnockingRoute.find({
-      dkCampaign: dkCampaignId,
+      dkCampaign: dkCampaign.id,
       status: 'not-calculated',
     }).limit(10);
 
@@ -111,6 +109,22 @@ async function createMoreRoutes(dkCampaignId) {
           }
         }
       }
+      await sails.helpers.slack.errorLoggerHelper('Created more routes', {
+        count: notCalculated.length,
+      });
+    }
+    if (notCalculated.length < 10) {
+      // create more routes.
+      const queueMessage = {
+        type: 'calculateDkRoutes',
+        data: {
+          campaignId: dkCampaign.campaign,
+          dkCampaignId: dkCampaign.id,
+          maxHousesPerRoute: dkCampaign.data.maxHousesPerRoute,
+        },
+      };
+      await sails.helpers.queue.enqueue(queueMessage);
+      await sails.helpers.queue.consumer();
     }
   }
 }

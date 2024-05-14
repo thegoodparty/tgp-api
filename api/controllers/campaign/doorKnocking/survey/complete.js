@@ -108,18 +108,6 @@ module.exports = {
           status: 'completed',
         });
         isRouteCompleted = true;
-
-        // create more routes.
-        const queueMessage = {
-          type: 'calculateDkRoutes',
-          data: {
-            campaignId: dkCampaign.campaign,
-            dkCampaignId: dkCampaign.id,
-            maxHousesPerRoute: dkCampaign.data.maxHousesPerRoute,
-          },
-        };
-        await sails.helpers.queue.enqueue(queueMessage);
-        await sails.helpers.queue.consumer();
       } else {
         await DoorKnockingRoute.updateOne({ id: route.id }).set({
           status: 'in-progress',
