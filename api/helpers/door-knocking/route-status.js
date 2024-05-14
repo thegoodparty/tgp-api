@@ -52,8 +52,8 @@ module.exports = {
             continue;
           }
           if (
-            data.resolution === 'Engaging' ||
-            data.resolution === 'Informative'
+            data.resolution === '5 - Enthusiastic Supporter' ||
+            data.resolution === '4 - Somewhat Interested'
           ) {
             totals.positiveExperience++;
           }
@@ -64,7 +64,7 @@ module.exports = {
             totals.likelyVoters++;
           }
 
-          if (data.resolution === 'Refused to Engage') {
+          if (data.resolution === '1 - Not Interested' || '2 - Skeptical') {
             totals.refusal++;
           }
 
