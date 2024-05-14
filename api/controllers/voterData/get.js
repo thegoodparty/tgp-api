@@ -58,13 +58,17 @@ module.exports = {
         return exits.badRequest('You do not have access to this campaign.');
       }
 
-      const { data } = campaign;
-      const { details, customIssues } = data;
+      const { data, details } = campaign;
+      const { customIssues } = data;
       const { office, otherOffice, electionDate } = details || {};
+      const campaignUser = await User.findOne({
+        where: { id: campaign.user },
+        select: ['firstName', 'lastName'],
+      });
 
       voter.campaign = {
-        firstName: details?.firstName || data.firstName,
-        lastName: details?.lastName || data.lastName,
+        firstName: campaignUser.firstName || '',
+        lastName: campaignUser.lastName || '',
         office: office === 'Other' ? otherOffice : office,
         electionDate,
         customIssues,
