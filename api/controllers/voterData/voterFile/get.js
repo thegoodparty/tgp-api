@@ -27,6 +27,8 @@ module.exports = {
       // Fetch all records from the Person table
       const voters = campaignWithVoters.voters || [];
 
+      // TODO: use pg-copy-streams
+
       // Convert the records to CSV format
       let csvContent = '';
       csvContent +=

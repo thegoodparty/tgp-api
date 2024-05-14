@@ -24,8 +24,11 @@ module.exports = {
         });
       }
       let cleanCampaigns = [];
-      campaigns.forEach((campaign) => {
-        const { firstName, lastName, slug } = campaign.campaign.data;
+      for (let i = 0; i < campaigns.length; i++) {
+        const campaign = campaigns[i];
+        const { slug } = campaign.campaign.data;
+        const campaignUser = await Campaign.findOne({ slug }).populate('user');
+        const { firstName, lastName } = campaignUser.user || {};
         const { city, state, office, otherOffice, party, district } =
           campaign.campaign.details || {};
         cleanCampaigns.push({
@@ -39,7 +42,7 @@ module.exports = {
           district,
           slug,
         });
-      });
+      }
 
       return exits.success({
         campaigns: cleanCampaigns,
