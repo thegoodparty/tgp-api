@@ -44,7 +44,7 @@ module.exports = {
 
       const campaign = campaignRecord.data;
 
-      await Campaign.updateOne({ slug: campaign.slug }).set({
+      await Campaign.updateOne({ slug: campaignRecord.slug }).set({
         data: { ...campaign, lastVisited: timestamp },
       });
       if (campaignRecord.isActive) {
@@ -81,7 +81,11 @@ module.exports = {
       });
     } catch (e) {
       console.log('error at campaign status', e);
-      return exits.badRequest({ message: 'Error creating campaign.' });
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error getting campaign status',
+        e,
+      );
+      return exits.badRequest({ message: 'Error getting campaign status' });
     }
   },
 };
