@@ -64,7 +64,10 @@ module.exports = {
             totals.likelyVoters++;
           }
 
-          if (data.resolution === '1 - Not Interested' || '2 - Skeptical') {
+          if (
+            data.resolution === '1 - Not Interested' ||
+            data.resolution === '2 - Skeptical'
+          ) {
             totals.refusal++;
           }
 
