@@ -62,7 +62,7 @@ module.exports = {
         survey = await Survey.create({
           route: route.id,
           dkCampaign: dkCampaign.id,
-          data,
+          data: { ...data, status: 'skipped' },
           campaign: dkCampaign.campaign,
           volunteer: route.volunteer.id,
           voter: voterId,
@@ -90,7 +90,7 @@ module.exports = {
           survey = surveys[0];
         }
         if (survey) {
-          if (survey.data?.status === 'completed') {
+          if (survey.data?.status === 'completed' || !!survey.data?.atHome) {
             completeCount++;
           } else {
             if (address.voterId !== voterId) {
