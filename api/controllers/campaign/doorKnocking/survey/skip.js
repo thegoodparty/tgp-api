@@ -119,3 +119,14 @@ module.exports = {
     }
   },
 };
+
+const survey = {
+  planningToVote: 'yes',
+  heardOf: 'yes',
+  issuesCareAbout: 'A big note about the issies',
+  'political views': 'Libertarian',
+  canFollow: 'yes',
+  resolution: 'Refused to Engage',
+  note: 'Test the note ',
+  status: 'completed',
+};

@@ -211,6 +211,8 @@ module.exports.routes = {
   'PUT   /api/v1/campaign/door-knocking': 'campaign/doorKnocking/update',
   'GET   /api/v1/campaign/door-knockings': 'campaign/doorKnocking/list',
   'GET   /api/v1/campaign/door-knocking': 'campaign/doorKnocking/get',
+  'GET   /api/v1/campaign/door-knocking/download':
+    'campaign/doorKnocking/download',
   'DELETE   /api/v1/campaign/door-knocking': 'campaign/doorKnocking/delete',
   'PUT   /api/v1/campaign/door-knocking/archive':
     'campaign/doorKnocking/archive',
