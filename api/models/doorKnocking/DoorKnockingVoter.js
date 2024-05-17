@@ -8,6 +8,10 @@ module.exports = {
       type: 'string',
     },
 
+    zip: {
+      type: 'string',
+    },
+
     isCalculated: {
       type: 'boolean',
       defaultsTo: false,

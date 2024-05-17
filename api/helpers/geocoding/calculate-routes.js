@@ -37,7 +37,7 @@ module.exports = {
         geoHash: { '!=': '' },
       })
         .populate('voter')
-        .sort('geoHash DESC')
+        .sort([{ zip: 'DESC' }, { geoHash: 'DESC' }])
         .limit(1000);
 
       const voters = dkVoters.map((v) => {

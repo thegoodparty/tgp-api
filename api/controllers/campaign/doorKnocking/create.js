@@ -133,18 +133,19 @@ async function copyVoters(campaignId, dkCampaignId) {
     false,
     voter.id,
     dkCampaignId,
+    voter.zip,
   ]);
 
   // Creating a bulk insert SQL statement
   let placeholders = records
     .map(
       (_, index) =>
-        `($${6 * index + 1}, $${6 * index + 2}, $${6 * index + 3}, $${
-          6 * index + 4
-        }, $${6 * index + 5}, $${6 * index + 6})`,
+        `($${7 * index + 1}, $${7 * index + 2}, $${7 * index + 3}, $${
+          7 * index + 4
+        }, $${7 * index + 5}, $${7 * index + 6}, $${7 * index + 7})`,
     )
     .join(', ');
-  let sql = `INSERT INTO public.doorknockingvoter ("createdAt", "updatedAt", "geoHash", "isCalculated", voter, "dkCampaign") VALUES ${placeholders}`;
+  let sql = `INSERT INTO public.doorknockingvoter ("createdAt", "updatedAt", "geoHash", "isCalculated", voter, "dkCampaign", "zip") VALUES ${placeholders}`;
 
   // Flattening the array of records for the SQL query
   let data = records.flat();
