@@ -38,7 +38,7 @@ module.exports = {
         const column = keyArray[0];
         const columnKey = keyArray[1];
         if (column === 'pathToVictory') {
-          await handlePathToVictory(campaign, column, columnKey, value);
+          await handlePathToVictory(campaign, columnKey, value);
         } else {
           updated = await sails.helpers.campaign.patch(
             campaign.id,
@@ -81,6 +81,7 @@ async function handlePathToVictory(campaign, columnKey, value) {
     ...data,
     [columnKey]: value,
   };
+
   await PathToVictory.updateOne({ id: p2v.id }).set({
     data: updatedData,
   });
