@@ -37,6 +37,11 @@ module.exports = {
 
         const column = keyArray[0];
         const columnKey = keyArray[1];
+        await sails.helpers.slack.errorLoggerHelper('column-key', {
+          column,
+          columnKey,
+          value,
+        });
         if (column === 'pathToVictory') {
           await handlePathToVictory(campaign, columnKey, value);
         } else {
