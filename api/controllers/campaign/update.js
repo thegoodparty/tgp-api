@@ -67,27 +67,40 @@ module.exports = {
 };
 
 async function handlePathToVictory(campaign, columnKey, value) {
-  const p2v = await PathToVictory.findOrCreate(
-    {
-      campaign: campaign.id,
-    },
-    {
-      campaign: campaign.id,
-    },
-  );
-
-  const data = p2v.data || {};
-  const updatedData = {
-    ...data,
-    [columnKey]: value,
-  };
-
-  await PathToVictory.updateOne({ id: p2v.id }).set({
-    data: updatedData,
-  });
-  if (!campaign.pathToVictory) {
-    await Campaign.updateOne({ id: campaign.id }).set({
-      pathToVictory: p2v.id,
+  try {
+    await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
+      campaign,
+      columnKey,
+      value,
     });
+    const p2v = await PathToVictory.findOrCreate(
+      {
+        campaign: campaign.id,
+      },
+      {
+        campaign: campaign.id,
+      },
+    );
+
+    const data = p2v.data || {};
+    const updatedData = {
+      ...data,
+      [columnKey]: value,
+    };
+
+    await PathToVictory.updateOne({ id: p2v.id }).set({
+      data: updatedData,
+    });
+    if (!campaign.pathToVictory) {
+      await Campaign.updateOne({ id: campaign.id }).set({
+        pathToVictory: p2v.id,
+      });
+    }
+  } catch (e) {
+    console.log('Error at handlePathToVictory', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'Error at handlePathToVictory',
+      e,
+    );
   }
 }
