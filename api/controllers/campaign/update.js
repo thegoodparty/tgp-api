@@ -74,13 +74,6 @@ module.exports = {
 };
 
 async function handlePathToVictory(campaign, columnKey, value) {
-  await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
-    crazyPills: true,
-  });
-  await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
-    columnKey,
-    value,
-  });
   try {
     await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
       columnKey,
@@ -100,6 +93,10 @@ async function handlePathToVictory(campaign, columnKey, value) {
       ...data,
       [columnKey]: value,
     };
+    await sails.helpers.slack.errorLoggerHelper('handlePathToVictory data', {
+      data,
+      updatedData,
+    });
 
     await PathToVictory.updateOne({ id: p2v.id }).set({
       data: updatedData,
