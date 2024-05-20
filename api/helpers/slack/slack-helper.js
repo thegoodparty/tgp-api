@@ -1,6 +1,8 @@
 const request = require('request-promise');
 // https://api.slack.com/apps/A0166K4G4E6/incoming-webhooks?
 
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 module.exports = {
   friendlyName: 'Send Slack message helper',
 
