@@ -37,16 +37,10 @@ module.exports = {
 
         const column = keyArray[0];
         const columnKey = keyArray[1];
-        await sails.helpers.slack.errorLoggerHelper('column-key', {
-          column,
-          columnKey,
-          value,
-        });
+
         if (column === 'pathToVictory') {
-          await sails.helpers.slack.errorLoggerHelper('p2v', {});
           await handlePathToVictory(campaign, columnKey, value);
         } else {
-          await sails.helpers.slack.errorLoggerHelper('patch', {});
           updated = await sails.helpers.campaign.patch(
             campaign.id,
             column,
@@ -75,10 +69,6 @@ module.exports = {
 
 async function handlePathToVictory(campaign, columnKey, value) {
   try {
-    await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
-      columnKey,
-      value,
-    });
     const p2v = await PathToVictory.findOrCreate(
       {
         campaign: campaign.id,
@@ -88,20 +78,11 @@ async function handlePathToVictory(campaign, columnKey, value) {
       },
     );
 
-    await sails.helpers.slack.errorLoggerHelper('handlePathToVictory p2v', {
-      p2v,
-    });
-
     const data = p2v.data || {};
     const updatedData = {
       ...data,
       [columnKey]: value,
     };
-    await sails.helpers.slack.errorLoggerHelper('handlePathToVictory data', {
-      data,
-      updatedData,
-      id: p2v.id,
-    });
 
     await PathToVictory.updateOne({ id: p2v.id }).set({
       data: updatedData,
