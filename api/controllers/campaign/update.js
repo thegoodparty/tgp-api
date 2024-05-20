@@ -106,7 +106,7 @@ async function handlePathToVictory(campaign, columnKey, value) {
     await PathToVictory.updateOne({ id: p2v.id }).set({
       data: updatedData,
     });
-    const updatedP2v = await PathToVictory.finOne({ id: p2v.id });
+    const updatedP2v = await PathToVictory.findOne({ id: p2v.id });
     await sails.helpers.slack.errorLoggerHelper('updatedP2v ', {
       updatedP2v,
     });
