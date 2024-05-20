@@ -35,6 +35,7 @@ module.exports = {
 
       if (campaign?.pathToVictory) {
         campaign.pathToVictory = campaign.pathToVictory.data || {};
+        campaign.pathToVictory.id = campaign.pathToVictory.id || -1;
       }
 
       return exits.success({
