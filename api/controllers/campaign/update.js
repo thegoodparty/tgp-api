@@ -88,6 +88,10 @@ async function handlePathToVictory(campaign, columnKey, value) {
       },
     );
 
+    await sails.helpers.slack.errorLoggerHelper('handlePathToVictory p2v', {
+      p2v,
+    });
+
     const data = p2v.data || {};
     const updatedData = {
       ...data,
@@ -96,11 +100,17 @@ async function handlePathToVictory(campaign, columnKey, value) {
     await sails.helpers.slack.errorLoggerHelper('handlePathToVictory data', {
       data,
       updatedData,
+      id: p2v.id,
     });
 
     await PathToVictory.updateOne({ id: p2v.id }).set({
       data: updatedData,
     });
+    const updatedP2v = await PathToVictory.finOne({ id: p2v.id });
+    await sails.helpers.slack.errorLoggerHelper('updatedP2v ', {
+      updatedP2v,
+    });
+
     if (!campaign.pathToVictory) {
       await Campaign.updateOne({ id: campaign.id }).set({
         pathToVictory: p2v.id,
