@@ -3,7 +3,7 @@ module.exports = {
 
   inputs: {
     attr: {
-      type: 'json', // array of keys in the format of {key: section.key, value}
+      type: 'json', // array of keys in the format of {key: section.key, value}.
       required: true,
     },
   },
