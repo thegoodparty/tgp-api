@@ -1,4 +1,4 @@
-const request = require('request-promise');
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   friendlyName: 'Send Slack message helper',
@@ -21,7 +21,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { message, error } = inputs;
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
       const slackMessage = {
         text: `Error`,
         blocks: [
