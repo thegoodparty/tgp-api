@@ -6,6 +6,9 @@ module.exports = {
       type: 'json', // array of keys in the format of {key: section.key, value}.
       required: true,
     },
+    slug: {
+      type: 'string', // admin only
+    },
   },
 
   exits: {
@@ -20,9 +23,17 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { attr } = inputs;
+      const { attr, slug } = inputs;
       const { user } = this.req;
-      const campaign = await sails.helpers.campaign.byUser(user);
+      if (slug && user.role !== 'admin') {
+        return exits.badRequest('Unauthorized');
+      }
+      let campaign;
+      if (slug) {
+        campaign = await Campaign.findOne({ slug }).populate('pathToVictory');
+      } else {
+        campaign = await sails.helpers.campaign.byUser(user);
+      }
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
@@ -86,10 +97,6 @@ async function handlePathToVictory(campaign, columnKey, value) {
 
     await PathToVictory.updateOne({ id: p2v.id }).set({
       data: updatedData,
-    });
-    const updatedP2v = await PathToVictory.findOne({ id: p2v.id });
-    await sails.helpers.slack.errorLoggerHelper('updatedP2v ', {
-      updatedP2v,
     });
 
     if (!campaign.pathToVictory) {
