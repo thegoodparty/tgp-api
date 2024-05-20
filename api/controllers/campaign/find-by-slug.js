@@ -34,9 +34,7 @@ module.exports = {
       }).populate('pathToVictory');
 
       if (campaign?.pathToVictory) {
-        campaign.pathToVictory = campaign.pathToVictory?.data
-          ? campaign.pathToVictory.data
-          : false;
+        campaign.pathToVictory = campaign.pathToVictory.data || {};
       }
 
       return exits.success({
