@@ -74,6 +74,11 @@ module.exports = {
 };
 
 async function handlePathToVictory(campaign, columnKey, value) {
+  await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
+    campaign,
+    columnKey,
+    value,
+  });
   try {
     await sails.helpers.slack.errorLoggerHelper('handlePathToVictory', {
       campaign,
