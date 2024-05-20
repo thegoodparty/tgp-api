@@ -25,7 +25,7 @@ module.exports = {
     try {
       const { attr, slug } = inputs;
       const { user } = this.req;
-      if (slug && user.role !== 'admin') {
+      if (slug && !user.isAdmin) {
         return exits.badRequest('Unauthorized');
       }
       let campaign;
