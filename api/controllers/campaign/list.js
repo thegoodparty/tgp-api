@@ -1,50 +1,68 @@
+const buildQueryWhereClause = ({
+  state,
+  slug,
+  level,
+  primaryElectionDateStart,
+  primaryElectionDateEnd,
+  campaignStatus,
+  generalElectionDateStart,
+  generalElectionDateEnd,
+}) => `
+  ${slug ? ` AND campaign.slug = '${slug}'` : ''}
+  ${state ? ` AND campaign.details->>'state' = '${state}'` : ''}
+  ${level ? ` AND campaign.details->>'ballotLevel' = '${level.toUpperCase()}'` : ''}
+  ${campaignStatus ? ` AND campaign."isActive" = ${campaignStatus === 'active' ? 'true' : 'false'}` : ''}
+  ${primaryElectionDateStart ? ` AND campaign.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'` : ''}
+  ${primaryElectionDateEnd ? ` AND campaign.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'` : ''}
+  ${generalElectionDateStart ? ` AND campaign.details->>'electionDate' >= '${generalElectionDateStart}'` : ''}
+  ${generalElectionDateEnd ? ` AND campaign.details->>'electionDate' <= '${generalElectionDateEnd}'` : ''}
+`;
+
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
   inputs: {
-    level: {
+    state: {
       type: 'string',
-    },
-    primaryElectionDateStart: {
+    }, slug: {
       type: 'string',
-    },
-    primaryElectionDateEnd: {
+    }, level: {
       type: 'string',
-    },
-    campaignStatus: {
+    }, primaryElectionDateStart: {
       type: 'string',
-    },
-    generalElectionDateStart: {
+    }, primaryElectionDateEnd: {
       type: 'string',
-    },
-    generalElectionDateEnd: {
+    }, campaignStatus: {
+      type: 'string',
+    }, generalElectionDateStart: {
+      type: 'string',
+    }, generalElectionDateEnd: {
       type: 'string',
     },
   },
 
   exits: {
     success: {
-      description: 'Onboardings Found',
-      responseType: 'ok',
-    },
-    forbidden: {
-      description: 'Unauthorized',
-      responseType: 'forbidden',
+      description: 'Onboardings Found', responseType: 'ok',
+    }, forbidden: {
+      description: 'Unauthorized', responseType: 'forbidden',
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function({
+    state,
+    slug,
+    level,
+    primaryElectionDateStart,
+    primaryElectionDateEnd,
+    campaignStatus,
+    generalElectionDateStart,
+    generalElectionDateEnd,
+  }, exits) {
     try {
-      const {
-        level,
-        primaryElectionDateStart,
-        primaryElectionDateEnd,
-        campaignStatus,
-        generalElectionDateStart,
-        generalElectionDateEnd,
-      } = inputs;
-
       if (
+        !state &&
+        !slug &&
         !level &&
         !primaryElectionDateStart &&
         !primaryElectionDateEnd &&
@@ -61,21 +79,25 @@ module.exports = {
       }
 
       const query = `
-      SELECT campaign.*, "user".*
-      FROM public.campaign
-      JOIN public."user" ON "user".id = campaign.user
-      WHERE campaign.user IS NOT NULL
-      ${
-        level
-          ? `AND campaign.details->>'ballotLevel' = '${level.toUpperCase()}'`
-          : ''
-      }
-      ORDER BY campaign.id DESC;
-      `;
-      console.log('query', query);
-      const campaigns = await sails.sendNativeQuery(query);
+        SELECT campaign.*, "user".*
+        FROM public.campaign
+        JOIN public."user" ON "user".id = campaign.user
+        WHERE campaign.user IS NOT NULL
+        ${
+          buildQueryWhereClause({
+            state,
+            slug,
+            level,
+            primaryElectionDateStart,
+            primaryElectionDateEnd,
+            campaignStatus,
+            generalElectionDateStart,
+            generalElectionDateEnd,
+          })
+        }
+        ORDER BY campaign.id DESC;`;
 
-      console.log('campaigns?.rows', campaigns?.rows);
+      const campaigns = await sails.sendNativeQuery(query);
 
       return exits.success({
         campaigns: campaigns?.rows || [],
