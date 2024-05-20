@@ -46,7 +46,9 @@ module.exports = {
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
-      // console.log(e);
+      if (appBase !== 'http://localhost:4000') {
+        console.log('error in error-logger-helper', e);
+      }
       return null;
     }
   },
