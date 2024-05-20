@@ -43,8 +43,10 @@ module.exports = {
           value,
         });
         if (column === 'pathToVictory') {
+          await sails.helpers.slack.errorLoggerHelper('p2v', {});
           await handlePathToVictory(campaign, columnKey, value);
         } else {
+          await sails.helpers.slack.errorLoggerHelper('patch', {});
           updated = await sails.helpers.campaign.patch(
             campaign.id,
             column,
