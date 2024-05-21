@@ -3,6 +3,8 @@ const csv = require('csv-parser');
 const { pipeline } = require('stream');
 const { promisify } = require('util');
 
+// Note: this function was moved to a separate repository that uses prisma.
+
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =

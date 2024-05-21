@@ -432,8 +432,8 @@ function determineHistoryColumn(
           if (
             electionKeyType !== 'EG' &&
             electionKeyType !== 'ECG' &&
-            electionKeyType !== 'EL' // &&
-            // electionKeyType !== 'EP'
+            electionKeyType !== 'EL' &&
+            electionKeyType !== 'EP'
           ) {
             continue;
           }
