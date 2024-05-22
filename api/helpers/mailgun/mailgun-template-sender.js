@@ -46,7 +46,7 @@ module.exports = {
       const domain = 'mg.goodparty.org';
       const mg = mailgun.client({ key: mailgunApiKey, username: 'api' });
       const data = {
-        from: 'GOOD PARTY <noreply@goodparty.org>',
+        from: 'GoodParty.org <noreply@goodparty.org>',
         to,
         subject,
         template,

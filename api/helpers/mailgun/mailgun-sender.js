@@ -51,7 +51,8 @@ module.exports = {
 
       // const validFromEmail =
       //   fromEmail || 'The Good Party <noreply@goodparty.org>';
-      const validFromEmail = fromEmail || 'GOOD PARTY <noreply@goodparty.org>';
+      const validFromEmail =
+        fromEmail || 'GoodParty.org <noreply@goodparty.org>';
 
       const data = {
         from: validFromEmail,
@@ -141,7 +142,7 @@ function html(msg = '', messageHeader = '', subject = '') {
             <br />
                 <img
                   style="margin: 0 auto"
-                  src="https://s3-us-west-2.amazonaws.com/assets.goodparty.org/new-heart.png"
+                  src="https://s3.us-west-2.amazonaws.com/assets.goodparty.org/logo-hologram.png"
                 />
             </td>
           </tr>

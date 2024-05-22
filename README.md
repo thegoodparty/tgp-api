@@ -1,9 +1,9 @@
-# THE GOOD PARTY - API
+# GoodParty.org - API
 
-[Sails v1](https://sailsjs.com) based node.js api for [The Good Party](https://goodparty.org/).
+[Sails v1](https://sailsjs.com) based node.js api for [GoodParty.org](https://goodparty.org/).
 
-<img src="https://assets.goodparty.org/share.jpg" align="center"
-     title="The Good Party" width="100%">
+<img src="https://s3.us-west-2.amazonaws.com/assets.goodparty.org/logo-hologram.png" align="center"
+     title="Good Party" width="100%">
 
 ## Getting Started
 

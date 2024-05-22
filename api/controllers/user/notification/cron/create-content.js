@@ -357,7 +357,7 @@ There's nothing like a personal connection to earn a vote. Craft your door-knock
         <br/>
         Best,
         <br/>
-        The Good Party Team
+        GoodParty.org Team
       `,
     },
   };
