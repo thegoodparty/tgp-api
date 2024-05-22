@@ -1,64 +1,57 @@
-const buildQueryWhereClause = ({
-  state,
-  slug,
-  level,
-  primaryElectionDateStart,
-  primaryElectionDateEnd,
-  campaignStatus,
-  generalElectionDateStart,
-  generalElectionDateEnd,
-}) => `
-  ${slug ? ` AND campaign.slug = '${slug}'` : ''}
-  ${state ? ` AND campaign.details->>'state' = '${state}'` : ''}
-  ${level ? ` AND campaign.details->>'ballotLevel' = '${level.toUpperCase()}'` : ''}
-  ${campaignStatus ? ` AND campaign."isActive" = ${campaignStatus === 'active' ? 'true' : 'false'}` : ''}
-  ${primaryElectionDateStart ? ` AND campaign.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'` : ''}
-  ${primaryElectionDateEnd ? ` AND campaign.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'` : ''}
-  ${generalElectionDateStart ? ` AND campaign.details->>'electionDate' >= '${generalElectionDateStart}'` : ''}
-  ${generalElectionDateEnd ? ` AND campaign.details->>'electionDate' <= '${generalElectionDateEnd}'` : ''}
-`;
-
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
   inputs: {
     state: {
       type: 'string',
-    }, slug: {
+    },
+    slug: {
       type: 'string',
-    }, level: {
+    },
+    level: {
       type: 'string',
-    }, primaryElectionDateStart: {
+    },
+    primaryElectionDateStart: {
       type: 'string',
-    }, primaryElectionDateEnd: {
+    },
+    primaryElectionDateEnd: {
       type: 'string',
-    }, campaignStatus: {
+    },
+    campaignStatus: {
       type: 'string',
-    }, generalElectionDateStart: {
+    },
+    generalElectionDateStart: {
       type: 'string',
-    }, generalElectionDateEnd: {
+    },
+    generalElectionDateEnd: {
       type: 'string',
     },
   },
 
   exits: {
     success: {
-      description: 'Onboardings Found', responseType: 'ok',
-    }, forbidden: {
-      description: 'Unauthorized', responseType: 'forbidden',
+      description: 'Onboardings Found',
+      responseType: 'ok',
+    },
+    forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
     },
   },
 
-  fn: async function({
-    state,
-    slug,
-    level,
-    primaryElectionDateStart,
-    primaryElectionDateEnd,
-    campaignStatus,
-    generalElectionDateStart,
-    generalElectionDateEnd,
-  }, exits) {
+  fn: async function (
+    {
+      state,
+      slug,
+      level,
+      primaryElectionDateStart,
+      primaryElectionDateEnd,
+      campaignStatus,
+      generalElectionDateStart,
+      generalElectionDateEnd,
+    },
+    exits,
+  ) {
     try {
       if (
         !state &&
@@ -83,18 +76,16 @@ module.exports = {
         FROM public.campaign
         JOIN public."user" ON "user".id = campaign.user
         WHERE campaign.user IS NOT NULL
-        ${
-          buildQueryWhereClause({
-            state,
-            slug,
-            level,
-            primaryElectionDateStart,
-            primaryElectionDateEnd,
-            campaignStatus,
-            generalElectionDateStart,
-            generalElectionDateEnd,
-          })
-        }
+        ${buildQueryWhereClause({
+          state,
+          slug,
+          level,
+          primaryElectionDateStart,
+          primaryElectionDateEnd,
+          campaignStatus,
+          generalElectionDateStart,
+          generalElectionDateEnd,
+        })}
         ORDER BY campaign.id DESC;`;
 
       const campaigns = await sails.sendNativeQuery(query);
@@ -108,3 +99,51 @@ module.exports = {
     }
   },
 };
+
+function buildQueryWhereClause({
+  state,
+  slug,
+  level,
+  primaryElectionDateStart,
+  primaryElectionDateEnd,
+  campaignStatus,
+  generalElectionDateStart,
+  generalElectionDateEnd,
+}) {
+  return `
+  ${slug ? ` AND campaign.slug = '${slug}'` : ''}
+  ${state ? ` AND campaign.details->>'state' = '${state}'` : ''}
+  ${
+    level
+      ? ` AND campaign.details->>'ballotLevel' = '${level.toUpperCase()}'`
+      : ''
+  }
+  ${
+    campaignStatus
+      ? ` AND campaign."isActive" = ${
+          campaignStatus === 'active' ? 'true' : 'false'
+        }`
+      : ''
+  }
+  ${
+    primaryElectionDateStart
+      ? ` AND campaign.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'`
+      : ''
+  }
+  ${
+    primaryElectionDateEnd
+      ? ` AND campaign.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'`
+      : ''
+  }
+  ${
+    generalElectionDateStart
+      ? ` AND campaign.details->>'electionDate' >= '${generalElectionDateStart}'`
+      : ''
+  }
+  ${
+    generalElectionDateEnd
+      ? ` AND campaign.details->>'electionDate' <= '${generalElectionDateEnd}'`
+      : ''
+  }
+`;
+}
