@@ -6,8 +6,11 @@ const documentToPlainTextString =
 const readingTime = require('reading-time');
 const slugify = require('slugify');
 
-const processTeamMembers = (teamMembers) => teamMembers.map(
-  (member) => ({
+const limit = 300;
+const calls = 8;
+
+const processTeamMembers = (teamMembers) =>
+  teamMembers.map((member) => ({
     ...member.fields,
     id: member.sys.id,
     fullName: member.fields.fullName,
@@ -25,7 +28,7 @@ const processTeamMilestone = (item) => ({
   blurb: item.fields.blurb,
   description: item.fields.description,
   image: extractMediaFile(item.fields.image),
-})
+});
 
 module.exports = {
   friendlyName: 'helper for fetching content from contentful cms',
@@ -34,7 +37,7 @@ module.exports = {
 
   inputs: {},
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const contentfulSpaceId =
       sails.config.custom.contentfulSpaceId || sails.config.contentfulSpaceId;
 
@@ -47,24 +50,12 @@ module.exports = {
       accessToken: contentfulAccessToken,
     });
 
-    const entries1 = await client.getEntries({
-      limit: 500,
-    });
+    const rawEntries = await fetchEntries(client, limit, calls);
 
-    const entries2 = await client.getEntries({
-      limit: 500,
-      skip: 500,
-    });
-    const entries3 = await client.getEntries({
-      limit: 500,
-      skip: 1000,
-    });
+    const parsedItems = await parseEntries(client, rawEntries);
 
-    const items1 = client.parseEntries(entries1).items;
-    const items2 = client.parseEntries(entries2).items;
-    const items3 = client.parseEntries(entries3).items;
+    const flatResponse = mapResponse(parsedItems);
 
-    const flatResponse = mapResponse([...items1, ...items2, ...items3]);
     return exits.success(flatResponse);
   },
 };
@@ -300,27 +291,22 @@ function mapResponse(items) {
         }
         mappedResponse.elections.push(election);
       } else if (itemId === 'goodPartyTeamMembers') {
-        const {
-          members: teamMembers,
-        } = item?.fields;
+        const { members: teamMembers } = item?.fields;
         const goodPartyTeamMembers = processTeamMembers(teamMembers);
 
-        mappedResponse.goodPartyTeamMembers = mappedResponse.goodPartyTeamMembers ?
-          [
-            ...mappedResponse.goodPartyTeamMembers,
-            goodPartyTeamMembers,
-          ] :
-          goodPartyTeamMembers;
-      } else if (itemId === 'teamMilestone'){
+        mappedResponse.goodPartyTeamMembers =
+          mappedResponse.goodPartyTeamMembers
+            ? [...mappedResponse.goodPartyTeamMembers, goodPartyTeamMembers]
+            : goodPartyTeamMembers;
+      } else if (itemId === 'teamMilestone') {
         mappedResponse.teamMilestones = [
           ...(mappedResponse.teamMilestones || []),
-          processTeamMilestone(item)
-        ]
+          processTeamMilestone(item),
+        ];
       }
     } else {
       console.log('unhandled item => ', item);
     }
-
   });
 
   mappedResponse.recentGlossaryItems = getRecentGlossaryItems(mappedResponse);
@@ -450,7 +436,7 @@ function addArticlesToCategories(mapped) {
     };
   });
   faqArticles.forEach((article) => {
-    if (article.category) {
+    if (article.category && categoriesById[article.category.id]) {
       categoriesById[article.category.id].articles.push({
         title: article.title,
         id: article.id,
@@ -463,21 +449,25 @@ function addArticlesToCategories(mapped) {
 function addBlogArticlesToSections(mapped) {
   const { blogSections, blogArticles } = mapped;
   const sectionsById = {};
-  blogSections.forEach((section) => {
-    sectionsById[section.id] = { ...section, articles: [] };
-  });
-  blogArticles.forEach((article) => {
-    if (article.section) {
-      sectionsById[article.section.id].articles.push({
-        title: article.title,
-        id: article.id,
-        mainImage: article.mainImage,
-        publishDate: article.publishDate,
-        slug: article.slug,
-        summary: article.summary,
-      });
-    }
-  });
+  if (blogSections) {
+    blogSections.forEach((section) => {
+      sectionsById[section.id] = { ...section, articles: [] };
+    });
+  }
+  if (blogArticles) {
+    blogArticles.forEach((article) => {
+      if (article.section && sectionsById[article.section.id]) {
+        sectionsById[article.section.id].articles.push({
+          title: article.title,
+          id: article.id,
+          mainImage: article.mainImage,
+          publishDate: article.publishDate,
+          slug: article.slug,
+          summary: article.summary,
+        });
+      }
+    });
+  }
   mapped.blogSections = Object.values(sectionsById);
 }
 
@@ -491,4 +481,25 @@ function combineAiContentAndCategories(categories, categoriesHash) {
     });
   });
   return combined;
+}
+
+async function fetchEntries(client, limit, calls) {
+  const allEntries = [];
+
+  for (let i = 0; i < calls; i++) {
+    const entries = await client.getEntries({
+      limit: limit,
+      skip: i * limit,
+    });
+    allEntries.push(entries);
+  }
+
+  return allEntries;
+}
+
+async function parseEntries(client, entries) {
+  return entries.reduce((acc, entry) => {
+    const items = client.parseEntries(entry).items;
+    return acc.concat(items);
+  }, []);
 }
