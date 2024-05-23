@@ -50,17 +50,7 @@ module.exports = {
         }
       }
 
-      // TODO: centralized token limit check
-      // and possibly use gpt4-32k if response would exceed token limit.
-      // let promptTokens = 0;
-      // for (const message of messages) {
-      //   const tokens = isWithinTokenLimit(message.content, 13000) || 13000;
-      //   promptTokens += tokens;
-      // }
-
-      // i
-
-      const model = 'gpt-4-turbo-preview';
+      const model = 'gpt-4o';
 
       console.log('creating chat completion....', messages);
       completion = await openai.createChatCompletion({
@@ -70,10 +60,14 @@ module.exports = {
         top_p: topP,
         temperature,
       });
-      // console.log('completion', completion);
     } catch (error) {
       console.log('Error in helpers/ai/create-compilation', error);
-      if (error.response.data.error.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.error &&
+        error.response.data.error.message
+      ) {
         console.log('error message', error.response.data.error.message);
         return exits.success({ content: '', tokens: 0 });
       }
