@@ -39,8 +39,8 @@ module.exports = {
     },
   },
 
-  fn: async function (
-    {
+  fn: async function (inputs, exits) {
+    const {
       state,
       slug,
       level,
@@ -49,9 +49,7 @@ module.exports = {
       campaignStatus,
       generalElectionDateStart,
       generalElectionDateEnd,
-    },
-    exits,
-  ) {
+    } = inputs;
     try {
       if (
         !state &&
