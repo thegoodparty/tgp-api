@@ -2,18 +2,21 @@ const hubspot = require('@hubspot/api-client');
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
-const generateCompanyProperties = (fields) => async (campaign) => {
+const generateCompanyProperties = (fields = []) => async (campaign) => {
   const id = campaign.data?.hubspotId;
   const companyObject = await sails.helpers.crm.getCrmCompanyObject(campaign);
-  const properties = fields.reduce(
-    (aggregate, field) => ({
-      ...aggregate,
-      ...(
-        companyObject.properties[field] || companyObject.properties[field] === null ?
-          {[field]: companyObject.properties[field]} : {}
-      )
-    }), {}
-  );
+  const includeAll = fields.length === 1 && fields.includes('all');
+  const properties = includeAll ?
+    companyObject :
+    fields.reduce(
+      (aggregate, field) => ({
+        ...aggregate,
+        ...(
+          companyObject.properties[field] || companyObject.properties[field] === null ?
+            {[field]: companyObject.properties[field]} : {}
+        )
+      }), {}
+    );
   return {id, properties};
 };
 
@@ -42,6 +45,7 @@ module.exports = {
 
   fn: async function(inputs, exits) {
     let companyUpdateObjects = [];
+    console.log(`inputs =>`, inputs)
     try {
       const {fields} = inputs;
       const campaigns = await Campaign.find();
@@ -73,6 +77,8 @@ module.exports = {
           e,
       );
     }
+
+    console.log(`CRM Companies updated =>`, updates)
 
     return exits.success(`OK: ${updates?.results?.length} companies updated`);
   },
