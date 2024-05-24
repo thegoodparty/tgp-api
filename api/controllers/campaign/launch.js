@@ -44,6 +44,7 @@ module.exports = {
       });
 
       await sails.helpers.crm.updateCampaign(updated);
+      await sails.helpers.fullstory.customAttr(updated.id);
 
       await sendMail(campaignRecord.slug);
 

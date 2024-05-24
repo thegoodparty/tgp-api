@@ -1,5 +1,3 @@
-const moment = require('moment');
-
 module.exports = {
   inputs: {},
 
@@ -7,122 +5,21 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const campaigns = await Campaign.find().where({ dataCopy: null });
+      const campaigns = await Campaign.find({
+        where: { user: { '!=': null } },
+      });
 
       for (let i = 0; i < campaigns.length; i++) {
-        try {
-          const campaign = campaigns[i];
-          const { data } = campaign;
-          if (!data) {
-            continue;
-          }
-          // first backup the data
-          await Campaign.updateOne({ id: campaign.id }).set({
-            dataCopy: data,
-          });
-
-          const {
-            details,
-            campaignPlan,
-            campaignPlanStatus,
-            aiContent,
-            goals,
-            pathToVictory,
-            p2vCompleteDate,
-            p2vNotNeeded,
-            p2vStatus,
-          } = data;
-
-          let updatedDetails;
-          if (campaign.details) {
-            updatedDetails = {
-              ...campaign.details,
-            };
-          }
-          updatedDetails = {
-            ...details,
-            ...goals,
-          };
-          if (data.customIssues) {
-            updatedDetails.customIssues = data.customIssues;
-          }
-          const updatedPathToVictory = {
-            ...pathToVictory,
-          };
-          if (p2vCompleteDate) {
-            updatedPathToVictory.p2vComplete = p2vCompleteDate;
-          }
-          if (p2vNotNeeded) {
-            updatedPathToVictory.p2vNotNeeded = p2vNotNeeded;
-          }
-          if (p2vStatus) {
-            updatedPathToVictory.p2vStatus = p2vStatus;
-          }
-          delete data.customIssues;
-          delete data.firstName;
-          delete data.lastName;
-          delete data.name;
-          delete data.candidateSlug;
-          delete data.p2vCompleteDate;
-          delete data.p2vNotNeeded;
-          delete data.p2vStatus;
-          delete data.goals;
-          delete data.details;
-
-          let p2v;
-          if (Object.keys(updatedPathToVictory).length > 0) {
-            p2v = await PathToVictory.findOrCreate(
-              {
-                campaign: campaign.id,
-              },
-              {
-                data: updatedPathToVictory,
-                campaign: campaign.id,
-              },
-            );
-          }
-
-          const newAiContent = {
-            ...aiContent,
-            generationStatus: campaignPlanStatus,
-          };
-
-          // aiContent has a different structure than campaignPlan
-          if (campaignPlan) {
-            for (const key in campaignPlan) {
-              if (campaignPlan[key]) {
-                newAiContent[key] = {
-                  content: campaignPlan[key],
-                };
-              }
-            }
-          }
-
-          const updateData = {
-            details: updatedDetails,
-            aiContent: newAiContent,
-            data,
-          };
-
-          if (p2v) {
-            updateData.pathToVictory = p2v.id;
-          }
-
-          await Campaign.updateOne({ id: campaign.id }).set(updateData);
-        } catch (e) {
-          console.log('Error in seed', e);
-          await sails.helpers.slack.errorLoggerHelper(
-            'Error at seed',
-            e,
-            campaigns[i],
-          );
+        const campaign = campaigns[i];
+        if (!campaign.data.fullStoryId) {
+          await sails.helpers.fullstory.customAttr(campaign.id);
         }
       }
 
       return exits.success(`updated ${campaigns.length} campaigns`);
     } catch (e) {
       console.log('Error in seed', e);
-      await sails.helpers.slack.errorLoggerHelper('Error at seed', e);
+      // await sails.helpers.slack.errorLoggerHelper('Error at seed', e);
       return exits.success({
         message: 'Error in seed',
         e,

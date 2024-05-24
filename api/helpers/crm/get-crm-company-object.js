@@ -13,15 +13,21 @@ const determineName = async (campaignUser) => {
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
-  const { data, details, isActive, isVerified, dateVerified, isPro } =
-    campaign || {};
+  const {
+    data,
+    aiContent,
+    details,
+    isActive,
+    isVerified,
+    dateVerified,
+    isPro,
+  } = campaign || {};
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
   const { p2vStatus, p2vCompleteDate } = p2v?.data || {};
 
-  const { lastStepDate, currentStep, aiContent, reportedVoterGoals } =
-    data || {};
+  const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
   const {
     zip,
@@ -89,9 +95,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
       doors_knocked: reportedVoterGoals?.doorKnocking || 0,
       calls_made: reportedVoterGoals?.calls || 0,
       online_impressions: reportedVoterGoals?.digital || 0,
-      my_content_pieces_created: aiContent
-        ? Object.keys(data.aiContent).length
-        : 0,
+      my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
       filed_candidate: campaignCommittee ? 'yes' : 'no',
       pro_candidate: isPro ? 'Yes' : 'No',
       ...(isVerified !== null
