@@ -65,8 +65,7 @@ module.exports = {
         // First, check if the user exists in FullStory
         try {
           const response = await axios.get(
-            // `https://api.fullstory.com/v2/users?uid=${id}`,
-            `https://api.fullstory.com/v2/users?uid=4525`,
+            `https://api.fullstory.com/v2/users?uid=${id}`,
             {
               headers,
             },
