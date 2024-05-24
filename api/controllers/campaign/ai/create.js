@@ -86,6 +86,14 @@ module.exports = {
       const keyNoDigits = key.replace(/\d+/g, ''); // we allow multiple keys like key1, key2
       let prompt = cmsPrompts[keyNoDigits];
       prompt = await sails.helpers.ai.promptReplace(prompt, campaignObj);
+      if (!prompt || prompt === '') {
+        await sails.helpers.slack.errorLoggerHelper('empty prompt replace', {
+          cmsPrompt: cmsPrompts[keyNoDigits],
+          promptAfterReplace: prompt,
+          campaignObj,
+        });
+        return exits.badRequest('No prompt');
+      }
       await sails.helpers.slack.aiLoggerHelper('prompt', {
         cmsPrompt: cmsPrompts[keyNoDigits],
         promptAfterReplace: prompt,
@@ -130,6 +138,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error generating AI response', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error generating AI response',
+        e,
+      );
       if (e.data && e.data.error) {
         console.log('*** error*** :', e.data.error);
         return exits.badRequest();
