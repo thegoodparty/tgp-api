@@ -5,11 +5,18 @@ const determineName = async (campaignUser) => {
   }
   let id = campaignUser;
   if (typeof campaignUser === 'object') {
-    id = campaignUser.id;
+    id = campaignUser?.id;
   }
-  const user = await User.findOne({ id });
-  return await sails.helpers.user.name(user);
+  const user = id ? await User.findOne({ id }) : null;
+  return user ? await sails.helpers.user.name(user) : '';
 };
+
+const getP2VValues = (p2vData = {}) => Object
+  .keys(p2vData)
+  .reduce((result, key) => ({
+    ...result,
+    [key.toLowerCase()]: p2vData[key]
+  }), {})
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
@@ -25,7 +32,11 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
-  const { p2vStatus, p2vCompleteDate } = p2v?.data || {};
+  const {
+    p2vStatus,
+    p2vCompleteDate,
+    winNumber
+  } = p2v?.data || {};
 
   const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
@@ -106,6 +117,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
       ...(level ? { ai_office_level: level } : {}),
       ...(ballotLevel ? { office_level: ballotLevel } : {}),
       ...(runForOffice ? { running: runForOffice } : {}),
+      ...(getP2VValues(p2v?.data)),
+      win_number: winNumber
     },
   });
 };
