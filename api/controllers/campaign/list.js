@@ -63,16 +63,23 @@ module.exports = {
       ) {
         const campaigns = await Campaign.find({
           where: { user: { '!=': null } },
-        }).populate('user');
+        })
+          .populate('user')
+          .populate('pathToVictory');
+
         return exits.success({
           campaigns,
         });
       }
 
       const query = `
-        SELECT campaign.*, "user".*
+        SELECT 
+          campaign.*, 
+          "user"."firstName" as "firstName", "user"."lastName" as "lastName", "user".phone as phone, "user".email as email,
+          pathToVictory.data as "pathToVictory"
         FROM public.campaign
         JOIN public."user" ON "user".id = campaign.user
+        JOIN public."pathtovictory" ON "pathtovictory".id = campaign."pathToVictory"
         WHERE campaign.user IS NOT NULL
         ${buildQueryWhereClause({
           state,
@@ -88,8 +95,25 @@ module.exports = {
 
       const campaigns = await sails.sendNativeQuery(query);
 
+      // we need to match the format of the response from the ORM
+      let cleanCampaigns = [];
+      if (campaigns.rows) {
+        cleanCampaigns = campaigns.rows.map((campaign) => {
+          if (campaign.pathToVictory) {
+            campaign.pathToVictory = { data: campaign.pathToVictory };
+          }
+          campaign.user = {
+            firstName: campaign.firstName,
+            lastName: campaign.lastName,
+            phone: campaign.phone,
+            email: campaign.email,
+          };
+          return campaign;
+        });
+      }
+
       return exits.success({
-        campaigns: campaigns?.rows || [],
+        campaigns: cleanCampaigns,
       });
     } catch (e) {
       console.log('Error in onboarding list', e);
