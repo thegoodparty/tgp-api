@@ -29,22 +29,19 @@ module.exports = {
       const user = await User.findOne({ id: campaign.user });
 
       const name = `${user.firstName} ${user.lastName}`;
+      const details = campaign.details || {};
 
       const positionsStr = positionsToStr(
         campaignPositions,
-        campaign.details.customIssues,
+        details.customIssues,
       );
       let party =
-        campaign.details?.party === 'Other'
-          ? campaign.details.otherParty
-          : campaign.details?.party;
+        details.party === 'Other' ? details.otherParty : details?.party;
       if (party === 'Independent') {
         party = 'Independent / non-partisan';
       }
       const office =
-        campaign.details?.office === 'Other'
-          ? campaign.details.otherOffice
-          : campaign.details?.office;
+        details.office === 'Other' ? details.otherOffice : details?.office;
 
       const replaceArr = [
         {
@@ -53,11 +50,11 @@ module.exports = {
         },
         {
           find: 'zip',
-          replace: campaign.details.zip,
+          replace: details.zip,
         },
         {
           find: 'website',
-          replace: campaign.details.website,
+          replace: details.website,
         },
         {
           find: 'party',
@@ -65,20 +62,20 @@ module.exports = {
         },
         {
           find: 'state',
-          replace: campaign.details.state,
+          replace: details.state,
         },
         {
           find: 'primaryElectionDate',
-          replace: campaign.details.primaryElectionDate,
+          replace: details.primaryElectionDate,
         },
         {
           find: 'district',
-          replace: campaign.details.district,
+          replace: details.district,
         },
         {
           find: 'office',
           replace: `${office}${
-            campaign.details.district ? ` in ${campaign.details.district}` : ''
+            details.district ? ` in ${details.district}` : ''
           }`,
         },
         {
@@ -88,24 +85,24 @@ module.exports = {
         {
           find: 'pastExperience',
           replace:
-            typeof campaign.details.pastExperience === 'string'
-              ? campaign.details.pastExperience
-              : JSON.stringify(campaign.details.pastExperience || {}),
+            typeof details.pastExperience === 'string'
+              ? details.pastExperience
+              : JSON.stringify(details.pastExperience || {}),
         },
         {
           find: 'occupation',
-          replace: campaign.details.occupation,
+          replace: details.occupation,
         },
         {
           find: 'funFact',
-          replace: campaign.details.funFact,
+          replace: details.funFact,
         },
         {
           find: 'campaignCommittee',
-          replace: campaign.details.campaignCommittee || 'unknown',
+          replace: details.campaignCommittee || 'unknown',
         },
       ];
-      const againstStr = againstToStr(campaign.details.runningAgainst);
+      const againstStr = againstToStr(details.runningAgainst);
       replaceArr.push(
         {
           find: 'runningAgainst',
@@ -113,11 +110,11 @@ module.exports = {
         },
         {
           find: 'electionDate',
-          replace: campaign.details.electionDate,
+          replace: details.electionDate,
         },
         {
           find: 'statementName',
-          replace: campaign.details.statementName,
+          replace: details.statementName,
         },
       );
       if (campaign.pathToVictory) {
