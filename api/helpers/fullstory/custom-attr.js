@@ -1,4 +1,5 @@
 const axios = require('axios');
+const moment = require('moment');
 
 const fullStoryKey =
   sails.config.custom.fullStoryKey || sails.config.fullStoryKey;
@@ -61,6 +62,13 @@ module.exports = {
         party,
       } = details || {};
 
+      const electionDateMonth = electionDate
+        ? moment(electionDate).format('MMMMYY')
+        : '';
+      const primaryElectionDateMonth = primaryElectionDate
+        ? moment(primaryElectionDate).format('MMMMYY')
+        : '';
+
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
       if (data.fsUserId) {
         fsUserId = data.fsUserId;
@@ -119,6 +127,8 @@ module.exports = {
               isPro,
               aiContentCount: aiContent ? Object.keys(aiContent).length : 0,
               p2vStatus,
+              electionDateStr: electionDateMonth,
+              primaryElectionDateStr: primaryElectionDateMonth,
             },
           },
           {
