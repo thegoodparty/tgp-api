@@ -11,7 +11,7 @@ module.exports = {
 
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (!campaign.data.fsUserId) {
+        if (campaign.data.fsUserId) {
           await sails.helpers.fullstory.customAttr(campaign.id);
         }
       }
