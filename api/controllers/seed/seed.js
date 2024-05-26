@@ -17,7 +17,6 @@ module.exports = {
       }
       await sails.helpers.slack.errorLoggerHelper(
         `updated ${campaigns.length} campaigns`,
-        e,
       );
       return exits.success(`updated ${campaigns.length} campaigns`);
     } catch (e) {

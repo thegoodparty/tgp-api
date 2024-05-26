@@ -34,6 +34,9 @@ module.exports = {
         .populate('user')
         .populate('pathToVictory');
       const { user, firstName, lastName } = campaign;
+      if (!user) {
+        return exits.success('no user found');
+      }
       const { email, id } = user;
       const domain = email.split('@')[1];
       if (domain === 'goodparty.org') {
@@ -127,9 +130,9 @@ module.exports = {
       }
       return exits.success('no user found');
     } catch (e) {
-      console.log('FullStory error - update-campaign', e);
+      console.log('FullStory error - custom-attr', e);
       await sails.helpers.slack.errorLoggerHelper(
-        'Uncaught error in update-campaign',
+        'FullStory error - custom-attr',
         e,
       );
       return exits.success('not ok');
