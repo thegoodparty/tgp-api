@@ -11,15 +11,17 @@ module.exports = {
 
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (!campaign.data.fullStoryId) {
+        if (campaign.data.fsUserId) {
           await sails.helpers.fullstory.customAttr(campaign.id);
         }
       }
-
+      await sails.helpers.slack.errorLoggerHelper(
+        `updated ${campaigns.length} campaigns`,
+      );
       return exits.success(`updated ${campaigns.length} campaigns`);
     } catch (e) {
       console.log('Error in seed', e);
-      // await sails.helpers.slack.errorLoggerHelper('Error at seed', e);
+      await sails.helpers.slack.errorLoggerHelper('Error at seed', e);
       return exits.success({
         message: 'Error in seed',
         e,

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const moment = require('moment');
 
 const fullStoryKey =
   sails.config.custom.fullStoryKey || sails.config.fullStoryKey;
@@ -34,6 +35,9 @@ module.exports = {
         .populate('user')
         .populate('pathToVictory');
       const { user, firstName, lastName } = campaign;
+      if (!user) {
+        return exits.success('no user found');
+      }
       const { email, id } = user;
       const domain = email.split('@')[1];
       if (domain === 'goodparty.org') {
@@ -58,6 +62,13 @@ module.exports = {
         party,
       } = details || {};
 
+      const electionDateMonth = electionDate
+        ? moment(electionDate).format('MMMYY')
+        : '';
+      const primaryElectionDateMonth = primaryElectionDate
+        ? moment(primaryElectionDate).format('MMMYY')
+        : '';
+
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
       if (data.fsUserId) {
         fsUserId = data.fsUserId;
@@ -65,8 +76,7 @@ module.exports = {
         // First, check if the user exists in FullStory
         try {
           const response = await axios.get(
-            // `https://api.fullstory.com/v2/users?uid=${id}`,
-            `https://api.fullstory.com/v2/users?uid=4525`,
+            `https://api.fullstory.com/v2/users?uid=${id}`,
             {
               headers,
             },
@@ -117,6 +127,8 @@ module.exports = {
               isPro,
               aiContentCount: aiContent ? Object.keys(aiContent).length : 0,
               p2vStatus,
+              electionDateStr: electionDateMonth,
+              primaryElectionDateStr: primaryElectionDateMonth,
             },
           },
           {
@@ -128,9 +140,9 @@ module.exports = {
       }
       return exits.success('no user found');
     } catch (e) {
-      console.log('FullStory error - update-campaign', e);
+      console.log('FullStory error - custom-attr', e);
       await sails.helpers.slack.errorLoggerHelper(
-        'Uncaught error in update-campaign',
+        'FullStory error - custom-attr',
         e,
       );
       return exits.success('not ok');
