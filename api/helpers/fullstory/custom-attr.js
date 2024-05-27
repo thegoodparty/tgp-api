@@ -63,10 +63,10 @@ module.exports = {
       } = details || {};
 
       const electionDateMonth = electionDate
-        ? moment(electionDate).format('MMMMYY')
+        ? moment(electionDate).format('MMMYY')
         : '';
       const primaryElectionDateMonth = primaryElectionDate
-        ? moment(primaryElectionDate).format('MMMMYY')
+        ? moment(primaryElectionDate).format('MMMYY')
         : '';
 
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
