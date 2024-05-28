@@ -75,6 +75,8 @@ module.exports = {
       }
 
       console.log(`voterDataHelper invoked with ${JSON.stringify(inputs)}`);
+      // first remove all previous voters
+      await Campaign.replaceCollection(campaignId, 'voters').members([]);
 
       let index = 0;
       if (countOnly) {
@@ -89,9 +91,6 @@ module.exports = {
         );
         return exits.success(count);
       }
-
-      console.log('not implemented yet');
-      return exits.success('not implemented yet');
 
       const stream = await getVoterData(
         electionState,
@@ -220,21 +219,19 @@ async function getVoterData(
   countOnly,
 ) {
   try {
-    // filter to sql query
-    // L2 Election Type: County_Commissioner_District - column
-    // L2 Location: IN##CLARK##CLARK CNTY COMM DIST 1 value
+    const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+
     const filters = createFilters(
       l2ColumnName,
       l2ColumnValue,
       additionalFilters,
-      electionState,
     );
 
     if (isFilterEmpty(filters)) {
       return;
     }
 
-    const totalRecords = await getTotalRecords(filters);
+    const totalRecords = await getTotalRecords(searchUrl, filters);
     await sails.helpers.slack.errorLoggerHelper('got total records', {
       totalRecords,
     });
@@ -257,18 +254,13 @@ async function getVoterData(
   }
 }
 
-function createFilters(
-  l2ColumnName,
-  l2ColumnValue,
-  additionalFilters,
-  electionState,
-) {
+function createFilters(l2ColumnName, l2ColumnValue, additionalFilters) {
   let filters = {};
   if (l2ColumnName && l2ColumnValue) {
     filters[l2ColumnName] = l2ColumnValue;
   }
   if (additionalFilters) {
-    filters = { ...filters, ...additionalFilters, state: electionState };
+    filters = { ...filters, ...additionalFilters };
   }
   return filters;
 }

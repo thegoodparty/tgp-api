@@ -34,10 +34,11 @@ module.exports = {
       const campaign = await Campaign.findOne({ id: campaignId })
         .populate('user')
         .populate('pathToVictory');
-      const { user, firstName, lastName } = campaign;
+      const { user } = campaign;
       if (!user) {
         return exits.success('no user found');
       }
+      const { firstName, lastName } = user;
       const { email, id } = user;
       const domain = email.split('@')[1];
       if (domain === 'goodparty.org') {
@@ -137,6 +138,17 @@ module.exports = {
         );
 
         return exits.success('updated user');
+      } else {
+        console.log('no fsUserId');
+        await sails.helpers.slack.errorLoggerHelper(
+          'FullStory error - no FS user ID found or created',
+          {
+            slug: campaign.slug,
+            email,
+            firstName,
+            lastName,
+          },
+        );
       }
       return exits.success('no user found');
     } catch (e) {
