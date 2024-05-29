@@ -11,12 +11,20 @@ const determineName = async (campaignUser) => {
   return user ? await sails.helpers.user.name(user) : '';
 };
 
-const getP2VValues = (p2vData = {}) => Object
-  .keys(p2vData)
-  .reduce((result, key) => ({
-    ...result,
-    [key.toLowerCase()]: p2vData[key]
-  }), {})
+// Some Hubspot keys couldn't be changed, see:
+// https://goodpartyorg.slack.com/archives/C01AEH4TEBX/p1716572940340399?thread_ts=1716563708.979759&cid=C01AEH4TEBX
+const KEEP_SNAKECASE = ['p2vStatus', 'p2vCompleteDate', 'winNumber'];
+
+const getP2VValues = (p2vData = {}) =>
+  Object.keys(p2vData)
+    .filter((key) => KEEP_SNAKECASE.includes(key))
+    .reduce(
+      (result, key) => ({
+        ...result,
+        [key.toLowerCase()]: p2vData[key],
+      }),
+      {},
+    );
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
@@ -32,11 +40,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
-  const {
-    p2vStatus,
-    p2vCompleteDate,
-    winNumber
-  } = p2v?.data || {};
+  const { p2vStatus, p2vCompleteDate, winNumber } = p2v?.data || {};
 
   const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
@@ -117,8 +121,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
       ...(level ? { ai_office_level: level } : {}),
       ...(ballotLevel ? { office_level: ballotLevel } : {}),
       ...(runForOffice ? { running: runForOffice } : {}),
-      ...(getP2VValues(p2v?.data)),
-      win_number: winNumber
+      ...getP2VValues(p2v?.data),
+      win_number: winNumber,
     },
   });
 };
