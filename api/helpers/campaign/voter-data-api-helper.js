@@ -386,10 +386,7 @@ async function streamFile(job) {
 }
 
 async function sendSlackNotification(title, message, channel) {
-  await sails.helpers.slack.slackHelper(
-    simpleSlackMessage(title, message),
-    channel,
-  );
+  await sails.helpers.slack.slackHelper({ title, body: message }, channel);
 }
 
 function sleep(ms) {

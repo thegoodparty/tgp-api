@@ -257,7 +257,7 @@ async function handlePathToVictory(message) {
       }
     }
 
-    await sendSlackMessage(
+    await analyzePathToVictoryResponse(
       campaign,
       pathToVictoryResponse,
       officeResponse,
@@ -282,7 +282,7 @@ async function handlePathToVictory(message) {
   }
 }
 
-async function sendSlackMessage(
+async function analyzePathToVictoryResponse(
   campaign,
   pathToVictoryResponse,
   officeResponse,
@@ -339,26 +339,25 @@ async function sendSlackMessage(
     `;
 
     await sails.helpers.slack.slackHelper(
-      simpleSlackMessage(
-        'Path To Victory',
-        candidateSlackMessage +
+      {
+        title: 'Path To Victory',
+        body:
+          candidateSlackMessage +
           pathToVictorySlackMessage +
           turnoutSlackMessage +
           alertSlackMessage,
-      ),
+      },
       'victory',
     );
-
-    // TODO: TAYLOR - why is this logic in sendSlackMessage function???
 
     // automatically update the Campaign with the pathToVictory data.
     if (campaign.pathToVictory?.data?.p2vStatus === 'Complete') {
       console.log('Path To Victory already completed for', campaign.slug);
       await sails.helpers.slack.slackHelper(
-        simpleSlackMessage(
-          'Path To Victory',
-          `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
-        ),
+        {
+          title: 'Path To Victory',
+          body: `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
+        },
         'victory',
       );
     } else {
@@ -374,13 +373,14 @@ async function sendSlackMessage(
     // TODO: possibly add more debug info here. Which election dates did we try to get turnout numbers for?
     const debugMessage = 'Was not able to get the turnout numbers.\n';
     await sails.helpers.slack.slackHelper(
-      simpleSlackMessage(
-        'Path To Victory',
-        candidateSlackMessage +
+      {
+        title: 'Path To Victory',
+        body:
+          candidateSlackMessage +
           pathToVictorySlackMessage +
           debugMessage +
           alertSlackMessage,
-      ),
+      },
       'victory-issues',
     );
   } else {
@@ -394,10 +394,10 @@ async function sendSlackMessage(
         'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
     }
     await sails.helpers.slack.slackHelper(
-      simpleSlackMessage(
-        'Path To Victory',
-        candidateSlackMessage + debugMessage + alertSlackMessage,
-      ),
+      {
+        title: 'Path To Victory',
+        body: candidateSlackMessage + debugMessage + alertSlackMessage,
+      },
       'victory-issues',
     );
   }
