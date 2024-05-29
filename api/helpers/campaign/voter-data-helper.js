@@ -78,7 +78,7 @@ module.exports = {
 
       let index = 0;
       if (countOnly) {
-        const count = await getVoterData(
+        const count = await countVoters(
           electionState,
           l2ColumnName,
           l2ColumnValue,
@@ -93,7 +93,7 @@ module.exports = {
       console.log('not implemented yet');
       return exits.success('not implemented yet');
 
-      const stream = await getVoterData(
+      const stream = await countVoters(
         electionState,
         l2ColumnName,
         l2ColumnValue,
@@ -210,46 +210,25 @@ async function insertVoterToDb(voterObj, campaignId) {
   return false;
 }
 
-async function getVoterData(
+async function countVoters(
   electionState,
   l2ColumnName,
   l2ColumnValue,
   additionalFilters,
-  campaign,
-  limitApproved,
-  countOnly,
 ) {
   try {
     // filter to sql query
     // L2 Election Type: County_Commissioner_District - column
     // L2 Location: IN##CLARK##CLARK CNTY COMM DIST 1 value
-    const filters = createFilters(
+    const whereClause = filtersToQuery(
       l2ColumnName,
       l2ColumnValue,
       additionalFilters,
-      electionState,
     );
 
-    if (isFilterEmpty(filters)) {
-      return;
-    }
-
-    const totalRecords = await getTotalRecords(filters);
-    await sails.helpers.slack.errorLoggerHelper('got total records', {
-      totalRecords,
-    });
-    if (countOnly) {
-      return totalRecords;
-    }
-    if (!canProceedWithSearch(totalRecords, limitApproved, campaign)) {
-      await sails.helpers.slack.errorLoggerHelper('cant proceed with search', {
-        totalRecords,
-      });
-      return;
-    }
-
-    const job = await initiateSearch(searchUrl, filters);
-    return await waitForSearchCompletion(job, campaign);
+    const totalRecords = await getTotalRecords(whereClause, electionState);
+    console.log('totalRecords', totalRecords);
+    return totalRecords;
   } catch (e) {
     console.log('error at getVoterData', e);
     await sails.helpers.slack.errorLoggerHelper('error at getVoterData', e);
@@ -257,60 +236,59 @@ async function getVoterData(
   }
 }
 
-function createFilters(
-  l2ColumnName,
-  l2ColumnValue,
-  additionalFilters,
-  electionState,
-) {
-  let filters = {};
+function filtersToQuery(l2ColumnName, l2ColumnValue, filters) {
+  let query = '';
+  // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
   if (l2ColumnName && l2ColumnValue) {
-    filters[l2ColumnName] = l2ColumnValue;
+    let cleanValue = l2ColumnValue.split('##').pop();
+    query += `"${l2ColumnName}" = '${cleanValue}' `;
   }
-  if (additionalFilters) {
-    filters = { ...filters, ...additionalFilters, state: electionState };
-  }
-  return filters;
-}
 
-function isFilterEmpty(filters) {
-  return !filters || Object.keys(filters).length === 0;
-}
+  console.log('filters', filters);
 
-async function getTotalRecords(searchUrl, filters) {
-  try {
-    let estimateResponse;
-    try {
-      estimateResponse = await axios.post(searchUrl, {
-        format: 'counts',
-        filters,
-        columns: ['Parties_Description'],
+  if (filters) {
+    if (query !== '') {
+      query += ' AND ';
+    }
+    // party_description
+    if (filters.Parties_Description && filters.Parties_Description.length > 0) {
+      query += ' "Parties_Description" IN ( ';
+      filters.Parties_Description.forEach((party, index) => {
+        query += `'${party}'`;
+        if (index < filters.Parties_Description.length - 1) {
+          query += ', ';
+        }
       });
-    } catch (e) {
-      await sails.helpers.slack.errorLoggerHelper(
-        'error searching for voter data. getTotalRecords estimateResponse',
-        { e, filters, searchUrl },
-      );
-      console.log('error at getVoterData estimateResponse', e);
+      query += ' ) ';
     }
 
-    await sails.helpers.slack.errorLoggerHelper('estimateResponse?.data', {
-      estimateResponseData: estimateResponse?.data,
-    });
-
-    let totalRecords = 0;
-    if (estimateResponse?.data && isArray(estimateResponse.data)) {
-      totalRecords = estimateResponse.data.reduce(
-        (acc, item) => acc + (item?.__COUNT || 0),
-        0,
-      );
-    } else {
-      await sails.helpers.slack.errorLoggerHelper(
-        'unexpected response in getVoterData estimate',
-        estimateResponse,
-      );
+    // VotingPerformanceEvenYearGeneral
+    if (
+      filters.VotingPerformanceEvenYearGeneral &&
+      filters.VotingPerformanceEvenYearGeneral.length > 0
+    ) {
+      query += ' AND  "Voters_VotingPerformanceEvenYearGeneral" IN ( ';
+      filters.VotingPerformanceEvenYearGeneral.forEach((vote, index) => {
+        query += `'${vote}'`;
+        if (index < filters.VotingPerformanceEvenYearGeneral.length - 1) {
+          query += ', ';
+        }
+      });
+      query += ' ) ';
     }
-    return totalRecords;
+  }
+  if (query.endsWith('AND ')) {
+    query = query.slice(0, -4);
+  }
+  console.log('query', query);
+  return query;
+}
+
+async function getTotalRecords(whereClause, state) {
+  try {
+    const query = ` SELECT COUNT(*) FROM public."Voter${state}" WHERE ${whereClause}`;
+    const result = await sails.helpers.voter.queryHelper(query);
+    return result.rows[0].count;
   } catch (e) {
     console.log('error at getVoterData estimate', e);
     await sails.helpers.slack.errorLoggerHelper(
@@ -319,21 +297,6 @@ async function getTotalRecords(searchUrl, filters) {
     );
     return 0;
   }
-}
-
-async function canProceedWithSearch(totalRecords, limitApproved, campaign) {
-  if (totalRecords > maxRecords && !limitApproved) {
-    console.log(
-      `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}`,
-    );
-    await sendSlackNotification(
-      'Voter Data',
-      `Voter data estimate is over 100,000 records. Estimate: ${totalRecords}. Campaign: ${campaign.slug}. Approval is required.`,
-      'victory',
-    );
-    return false;
-  }
-  return true;
 }
 
 async function initiateSearch(searchUrl, filters) {
