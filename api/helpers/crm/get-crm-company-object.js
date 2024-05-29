@@ -129,6 +129,10 @@ const getCrmCompanyObject = async (inputs, exits) => {
   };
 
   delete properties.winnumber;
+  delete properties.p2vStatus;
+  delete properties.p2vstatus;
+  delete properties.p2vCompleteDate;
+  delete properties.p2vcompletedate;
 
   exits.success({
     properties,
