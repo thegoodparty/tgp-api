@@ -92,44 +92,46 @@ const getCrmCompanyObject = async (inputs, exits) => {
       ? moment(new Date(dateVerified)).format('YYYY-MM-DD')
       : null;
 
+  const properties = {
+    name,
+    candidate_party: party,
+    candidate_office: resolvedOffice,
+    state: longState,
+    candidate_state: longState,
+    candidate_district: district,
+    lifecyclestage: 'customer',
+    city,
+    type: 'CAMPAIGN',
+    last_step: isActive ? 'onboarding-complete' : currentStep,
+    last_step_date: lastStepDate || undefined,
+    zip,
+    pledge_status: pledged ? 'yes' : 'no',
+    is_active: !!name,
+    live_candidate: isActive,
+    p2v_complete_date: p2vCompleteDate || undefined,
+    p2v_status: p2vStatus || 'Locked',
+    election_date: electionDateMs,
+    primary_date: primaryElectionDateMs,
+    doors_knocked: reportedVoterGoals?.doorKnocking || 0,
+    calls_made: reportedVoterGoals?.calls || 0,
+    online_impressions: reportedVoterGoals?.digital || 0,
+    my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
+    filed_candidate: campaignCommittee ? 'yes' : 'no',
+    pro_candidate: isPro ? 'Yes' : 'No',
+    ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
+    ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
+    ...(website ? { website } : {}),
+    ...(level ? { ai_office_level: level } : {}),
+    ...(ballotLevel ? { office_level: ballotLevel } : {}),
+    ...(runForOffice ? { running: runForOffice } : {}),
+    ...getP2VValues(p2v?.data),
+    win_number: winNumber,
+  };
+
+  delete properties.winnumber;
+
   exits.success({
-    properties: {
-      name,
-      candidate_party: party,
-      candidate_office: resolvedOffice,
-      state: longState,
-      candidate_state: longState,
-      candidate_district: district,
-      lifecyclestage: 'customer',
-      city,
-      type: 'CAMPAIGN',
-      last_step: isActive ? 'onboarding-complete' : currentStep,
-      last_step_date: lastStepDate || undefined,
-      zip,
-      pledge_status: pledged ? 'yes' : 'no',
-      is_active: !!name,
-      live_candidate: isActive,
-      p2v_complete_date: p2vCompleteDate || undefined,
-      p2v_status: p2vStatus || 'Locked',
-      election_date: electionDateMs,
-      primary_date: primaryElectionDateMs,
-      doors_knocked: reportedVoterGoals?.doorKnocking || 0,
-      calls_made: reportedVoterGoals?.calls || 0,
-      online_impressions: reportedVoterGoals?.digital || 0,
-      my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
-      filed_candidate: campaignCommittee ? 'yes' : 'no',
-      pro_candidate: isPro ? 'Yes' : 'No',
-      ...(isVerified !== null
-        ? { verified_candidates: verifiedCandidate }
-        : {}),
-      ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
-      ...(website ? { website } : {}),
-      ...(level ? { ai_office_level: level } : {}),
-      ...(ballotLevel ? { office_level: ballotLevel } : {}),
-      ...(runForOffice ? { running: runForOffice } : {}),
-      ...getP2VValues(p2v?.data),
-      win_number: winNumber,
-    },
+    properties,
   });
 };
 
