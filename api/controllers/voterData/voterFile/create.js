@@ -44,7 +44,7 @@ module.exports = {
         ...filters,
       };
 
-      await sails.helpers.campaign.voterDataHelper(
+      await sails.helpers.voter.voterDataApiHelper(
         campaign.id,
         details.state,
         pathToVictory.data.electionType,

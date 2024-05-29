@@ -43,7 +43,7 @@ module.exports = {
         ...filters,
       };
 
-      const count = await sails.helpers.campaign.voterDataHelper(
+      const count = await sails.helpers.voter.voterDataHelper(
         campaign.id,
         details.state,
         pathToVictory.data.electionType,

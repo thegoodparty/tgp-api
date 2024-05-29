@@ -288,14 +288,14 @@ function positionsToStr(campaignPositions, customIssues) {
   let str = '';
   campaignPositions.forEach((campaignPosition, i) => {
     const { position, topIssue } = campaignPosition;
-    str += `Issue #${i + 1}: ${topIssue.name}. Position on the issue: ${
+    str += `Issue #${i + 1}: ${topIssue?.name}. Position on the issue: ${
       position.name
-    }. Candidate's position: ${campaignPosition.description}. `;
+    }. Candidate's position: ${campaignPosition?.description}. `;
   });
 
   if (customIssues) {
     customIssues.forEach((issue) => {
-      str += `${issue.title} - ${issue.position}, `;
+      str += `${issue?.title} - ${issue?.position}, `;
     });
   }
   return str;
