@@ -28,6 +28,7 @@ const getP2VValues = (p2vData = {}) => {
   delete p2v.p2vStatus;
   delete p2v.p2vCompleteDate;
   delete p2v.winNumber;
+  delete p2v.winnumber;
   return p2v;
 };
 
