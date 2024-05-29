@@ -19,6 +19,12 @@ module.exports = {
       description: 'dev or content',
       type: 'string',
     },
+    addMarkdown: {
+      friendlyName: 'Add markdown',
+      description: 'Add markdown to the message',
+      type: 'boolean',
+      defaultsTo: true,
+    },
   },
 
   exits: {
@@ -32,7 +38,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { message, channel } = inputs;
+      let { message, channel, addMarkdown } = inputs;
       let slackChannelId;
       const slackAppId =
         sails.config.custom.slackAppId || sails.config.slackAppId;
@@ -84,6 +90,10 @@ module.exports = {
         });
       }
 
+      if (addMarkdown) {
+        message = simpleSlackMessage(message.title, message.body);
+      }
+
       const options = {
         uri: `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${token}`,
         method: 'POST',
@@ -102,3 +112,18 @@ module.exports = {
     }
   },
 };
+
+function simpleSlackMessage(text, body) {
+  return {
+    text,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: body,
+        },
+      },
+    ],
+  };
+}

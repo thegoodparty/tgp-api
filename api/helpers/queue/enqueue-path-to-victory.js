@@ -113,7 +113,7 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
     ],
   };
 
-  await sails.helpers.slack.slackHelper(slackMessage, 'victory-issues');
+  await sails.helpers.slack.slackHelper(slackMessage, 'victory-issues', false);
 }
 
 async function getBallotReadyApiMessage(queueMessage, campaign, raceId) {

@@ -654,27 +654,9 @@ function rowsToCsv(headers, rows) {
 }
 
 async function sendSlackNotification(title, message, channel) {
-  await sails.helpers.slack.slackHelper(
-    simpleSlackMessage(title, message),
-    channel,
-  );
+  await sails.helpers.slack.slackHelper({ title, body: message }, channel);
 }
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function simpleSlackMessage(text, body) {
-  return {
-    text,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: body,
-        },
-      },
-    ],
-  };
 }
