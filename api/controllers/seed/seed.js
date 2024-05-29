@@ -5,20 +5,17 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      let count = 0;
       const campaigns = await Campaign.find({
         where: { user: { '!=': null } },
       });
 
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (!campaign.data.fsUserId) {
-          count++;
-          await sails.helpers.fullstory.customAttr(campaign.id);
-        }
+
+        await sails.helpers.crm.updateCampaign(campaign);
       }
       await sails.helpers.slack.errorLoggerHelper(
-        `updated ${count} of ${campaigns.length} campaigns`,
+        `updated ${campaigns.length} campaigns`,
       );
       return exits.success(`updated ${campaigns.length} campaigns`);
     } catch (e) {

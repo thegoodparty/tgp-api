@@ -97,7 +97,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
       lifecyclestage: 'customer',
       city,
       type: 'CAMPAIGN',
-      last_step: currentStep,
+      last_step: isActive ? 'onboarding-complete' : currentStep,
       last_step_date: lastStepDate || undefined,
       zip,
       pledge_status: pledged ? 'yes' : 'no',
