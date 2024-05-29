@@ -113,7 +113,9 @@ const getCrmCompanyObject = async (inputs, exits) => {
     election_date: electionDateMs,
     primary_date: primaryElectionDateMs,
     doors_knocked: reportedVoterGoals?.doorKnocking || 0,
-    calls_made: reportedVoterGoals?.calls || 0,
+    calls_made: Number.isInteger(reportedVoterGoals?.calls)
+      ? reportedVoterGoals?.calls
+      : 0,
     online_impressions: reportedVoterGoals?.digital || 0,
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
