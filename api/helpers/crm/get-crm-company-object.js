@@ -11,12 +11,26 @@ const determineName = async (campaignUser) => {
   return user ? await sails.helpers.user.name(user) : '';
 };
 
-const getP2VValues = (p2vData = {}) => Object
-  .keys(p2vData)
-  .reduce((result, key) => ({
-    ...result,
-    [key.toLowerCase()]: p2vData[key]
-  }), {})
+// Some Hubspot keys couldn't be changed, see:
+// https://goodpartyorg.slack.com/archives/C01AEH4TEBX/p1716572940340399?thread_ts=1716563708.979759&cid=C01AEH4TEBX
+const KEEP_SNAKECASE = ['p2vStatus', 'p2vCompleteDate', 'winNumber'];
+
+const getP2VValues = (p2vData = {}) => {
+  const p2v = Object.keys(p2vData)
+    .filter((key) => KEEP_SNAKECASE.includes(key))
+    .reduce(
+      (result, key) => ({
+        ...result,
+        [key.toLowerCase()]: p2vData[key],
+      }),
+      {},
+    );
+  delete p2v.p2vStatus;
+  delete p2v.p2vCompleteDate;
+  delete p2v.winNumber;
+  delete p2v.winnumber;
+  return p2v;
+};
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
@@ -32,11 +46,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
-  const {
-    p2vStatus,
-    p2vCompleteDate,
-    winNumber
-  } = p2v?.data || {};
+  const { p2vStatus, p2vCompleteDate, winNumber } = p2v?.data || {};
 
   const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
@@ -82,44 +92,50 @@ const getCrmCompanyObject = async (inputs, exits) => {
       ? moment(new Date(dateVerified)).format('YYYY-MM-DD')
       : null;
 
+  const properties = {
+    name,
+    candidate_party: party,
+    candidate_office: resolvedOffice,
+    state: longState,
+    candidate_state: longState,
+    candidate_district: district,
+    lifecyclestage: 'customer',
+    city,
+    type: 'CAMPAIGN',
+    last_step: isActive ? 'onboarding-complete' : currentStep,
+    last_step_date: lastStepDate || undefined,
+    zip,
+    pledge_status: pledged ? 'yes' : 'no',
+    is_active: !!name,
+    live_candidate: isActive,
+    p2v_complete_date: p2vCompleteDate || undefined,
+    p2v_status: p2vStatus || 'Locked',
+    election_date: electionDateMs,
+    primary_date: primaryElectionDateMs,
+    doors_knocked: reportedVoterGoals?.doorKnocking || 0,
+    calls_made: reportedVoterGoals?.calls || 0,
+    online_impressions: reportedVoterGoals?.digital || 0,
+    my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
+    filed_candidate: campaignCommittee ? 'yes' : 'no',
+    pro_candidate: isPro ? 'Yes' : 'No',
+    ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
+    ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
+    ...(website ? { website } : {}),
+    ...(level ? { ai_office_level: level } : {}),
+    ...(ballotLevel ? { office_level: ballotLevel } : {}),
+    ...(runForOffice ? { running: runForOffice } : {}),
+    ...getP2VValues(p2v?.data),
+    win_number: winNumber,
+  };
+
+  delete properties.winnumber;
+  delete properties.p2vStatus;
+  delete properties.p2vstatus;
+  delete properties.p2vCompleteDate;
+  delete properties.p2vcompletedate;
+
   exits.success({
-    properties: {
-      name,
-      candidate_party: party,
-      candidate_office: resolvedOffice,
-      state: longState,
-      candidate_state: longState,
-      candidate_district: district,
-      lifecyclestage: 'customer',
-      city,
-      type: 'CAMPAIGN',
-      last_step: currentStep,
-      last_step_date: lastStepDate || undefined,
-      zip,
-      pledge_status: pledged ? 'yes' : 'no',
-      is_active: !!name,
-      live_candidate: isActive,
-      p2v_complete_date: p2vCompleteDate || undefined,
-      p2v_status: p2vStatus || 'Locked',
-      election_date: electionDateMs,
-      primary_date: primaryElectionDateMs,
-      doors_knocked: reportedVoterGoals?.doorKnocking || 0,
-      calls_made: reportedVoterGoals?.calls || 0,
-      online_impressions: reportedVoterGoals?.digital || 0,
-      my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
-      filed_candidate: campaignCommittee ? 'yes' : 'no',
-      pro_candidate: isPro ? 'Yes' : 'No',
-      ...(isVerified !== null
-        ? { verified_candidates: verifiedCandidate }
-        : {}),
-      ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
-      ...(website ? { website } : {}),
-      ...(level ? { ai_office_level: level } : {}),
-      ...(ballotLevel ? { office_level: ballotLevel } : {}),
-      ...(runForOffice ? { running: runForOffice } : {}),
-      ...(getP2VValues(p2v?.data)),
-      win_number: winNumber
-    },
+    properties,
   });
 };
 
