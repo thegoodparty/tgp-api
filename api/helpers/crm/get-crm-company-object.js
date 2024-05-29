@@ -15,8 +15,8 @@ const determineName = async (campaignUser) => {
 // https://goodpartyorg.slack.com/archives/C01AEH4TEBX/p1716572940340399?thread_ts=1716563708.979759&cid=C01AEH4TEBX
 const KEEP_SNAKECASE = ['p2vStatus', 'p2vCompleteDate', 'winNumber'];
 
-const getP2VValues = (p2vData = {}) =>
-  Object.keys(p2vData)
+const getP2VValues = (p2vData = {}) => {
+  const p2v = Object.keys(p2vData)
     .filter((key) => KEEP_SNAKECASE.includes(key))
     .reduce(
       (result, key) => ({
@@ -25,6 +25,11 @@ const getP2VValues = (p2vData = {}) =>
       }),
       {},
     );
+  delete p2v.p2vStatus;
+  delete p2v.p2vCompleteDate;
+  delete p2v.winNumber;
+  return p2v;
+};
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
