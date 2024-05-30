@@ -53,7 +53,7 @@ module.exports = {
             await sails.helpers.slack.errorLoggerHelper('on Queue error', {
               err,
             });
-            console.error(err.message);
+            console.error(err);
           })();
         });
 
@@ -65,7 +65,7 @@ module.exports = {
                 err,
               },
             );
-            console.error(err.message);
+            console.error(err);
           })();
         });
 
@@ -689,10 +689,20 @@ async function handleGenerateAiContent(message) {
         data: aiContent,
       });
     } catch (e) {
+      await sails.helpers.slack.aiLoggerHelper(
+        'Error at consumer updating campaign with ai.',
+        key,
+        e,
+      );
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at consumer updating campaign with ai.',
+        key,
+        e,
+      );
       console.log('error at consumer', e);
     }
     // throw an Error so that the message goes back to the queue or the DLQ.
-    throw new Error('error generating ai content');
+    throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
   }
 }
 
