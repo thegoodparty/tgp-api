@@ -31,10 +31,7 @@ module.exports.policies = {
   'topIssues/byLocation/find': ['isAuthenticated'],
   'ai/test': ['isAuthenticated', 'isAdmin'],
   'ai/load': ['isAuthenticated', 'isAdmin'],
-  'voterData/*': ['isAuthenticated', 'isAdmin'],
-  'voterData/get': ['isAuthenticated'],
-  'voterData/path-to-victory': ['isAuthenticated'],
-  'voterData/voterFile/get': ['isAuthenticated'],
+
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
   'general/*': true,

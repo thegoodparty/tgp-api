@@ -28,7 +28,7 @@ module.exports = {
       await client.end();
       return exits.success(result);
     } catch (err) {
-      console.log('error at helpers/door-knocking/route-status', err);
+      console.log('error at helpers/voter/query-helper', err);
 
       return exits.success({ route: inputs.route });
     }
