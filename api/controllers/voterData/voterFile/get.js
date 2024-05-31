@@ -218,5 +218,5 @@ function typeToQuery(type, campaign) {
     whereClause += ` AND "VoterTelephones_LandlineFormatted" IS NOT NULL`;
   }
 
-  return `SELECT ${columns} FROM public."Voter${state}" WHERE ${whereClause} limit 100`;
+  return `SELECT ${columns} FROM public."Voter${state}" WHERE ${whereClause}`;
 }
