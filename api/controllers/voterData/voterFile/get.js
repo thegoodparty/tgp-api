@@ -199,5 +199,24 @@ function typeToQuery(type, campaign) {
     // );`;
   }
 
+  if (type === 'telemarketing') {
+    columns += `, "VoterTelephones_CellPhoneFormatted", 
+    "VoterTelephones_CellConfidenceCode", 
+    "VoterTelephones_LandlineFormatted",
+    "VoterTelephones_LandlineConfidenceCode",
+    "Voters_VotingPerformanceEvenYearGeneral",
+    "Voters_VotingPerformanceEvenYearPrimary",
+    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
+    "VoterParties_Change_Changed_Party",
+    "Residence_Addresses_AddressLine", 
+    "Residence_Addresses_ExtraAddressLine", 
+    "Residence_Addresses_City", 
+    "Residence_Addresses_State", 
+    "Residence_Addresses_Zip", 
+    "Residence_Addresses_ZipPlus4"`;
+
+    whereClause += ` AND "VoterTelephones_LandlineFormatted" IS NOT NULL`;
+  }
+
   return `SELECT ${columns} FROM public."Voter${state}" WHERE ${whereClause} limit 100`;
 }
