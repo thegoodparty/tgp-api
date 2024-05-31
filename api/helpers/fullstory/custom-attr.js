@@ -106,7 +106,7 @@ module.exports = {
           }
         }
 
-        await Campaign.update({ id: campaignId }).set({
+        await Campaign.updateOne({ id: campaignId }).set({
           data: { ...data, fsUserId },
         });
       }
