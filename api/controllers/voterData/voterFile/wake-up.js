@@ -14,7 +14,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const query = `SELECT "LALVOTERID" FROM public."VoterNV" where "LALVOTERID" = 'LALCA3184219' limit 1`;
+      const query = `SELECT "LALVOTERID" FROM public."VoterCA" where "LALVOTERID" = 'LALCA3184219' limit 1`;
       return await sails.helpers.voter.csvStreamHelper(query, this.res);
     } catch (error) {
       console.error('Error at wakeup:', error);

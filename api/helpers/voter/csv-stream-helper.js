@@ -54,7 +54,6 @@ module.exports = {
       stream.pipe(passThrough).pipe(res);
 
       passThrough.on('end', async () => {
-        console.log('PassThrough stream ended');
         await client.end();
         return exits.success();
       });

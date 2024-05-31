@@ -62,16 +62,60 @@ function typeToQuery(type, campaign) {
     let cleanValue = l2ColumnValue.split('##').pop();
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
-  let columns =
-    '"LALVOTERID", "Voters_FirstName", "Voters_MiddleName", "Voters_LastName", "Voters_NameSuffix", "Parties_Description", "Voters_Age", "Residence_Addresses_AddressLine", "Residence_Addresses_ExtraAddressLine", "Residence_Addresses_City", "Residence_Addresses_State", "Residence_Addresses_Zip", "Residence_Addresses_ZipPlus4"';
+  let columns = `"LALVOTERID", 
+  "Voters_FirstName", 
+  "Voters_MiddleName", 
+  "Voters_LastName", 
+  "Voters_NameSuffix", 
+  "Parties_Description", 
+  "Voters_Age", 
+  "Residence_Addresses_AddressLine", 
+  "Residence_Addresses_ExtraAddressLine", 
+  "Residence_Addresses_City", 
+  "Residence_Addresses_State", 
+  "Residence_Addresses_Zip", 
+  "Residence_Addresses_ZipPlus4"`;
+
   if (type === 'full') {
-    columns +=
-      ', "Voters_VotingPerformanceEvenYearGeneral", "Voters_VotingPerformanceEvenYearPrimary", "Residence_Addresses_ApartmentType", "EthnicGroups_EthnicGroup1Desc", "Languages_Description", "Residence_Addresses_Latitude", "Residence_Addresses_Longitude", "Residence_HHParties_Description", "Mailing_Families_HHCount", "Voters_SequenceOddEven" ';
+    columns += `, "Voters_VotingPerformanceEvenYearGeneral", 
+    "Voters_VotingPerformanceEvenYearPrimary", 
+    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
+    "Residence_Addresses_ApartmentType", 
+    "EthnicGroups_EthnicGroup1Desc", 
+    "Residence_Addresses_Latitude", 
+    "Residence_Addresses_Longitude", 
+    "Residence_HHParties_Description", 
+    "Mailing_Families_HHCount", 
+    "Voters_SequenceOddEven",
+    "VoterTelephones_CellPhoneFormatted", 
+    "VoterTelephones_CellConfidenceCode",
+    "VoterParties_Change_Changed_Party",
+    "Languages_Description"`;
   }
 
   if (type === 'doorKnocking') {
-    columns +=
-      ', "Voters_VotingPerformanceEvenYearGeneral", "Voters_VotingPerformanceEvenYearPrimary", "Residence_Addresses_ApartmentType", "EthnicGroups_EthnicGroup1Desc", "Languages_Description", "Residence_Addresses_Latitude", "Residence_Addresses_Longitude", "Residence_HHParties_Description", "Mailing_Families_HHCount", "Voters_SequenceOddEven" ';
+    columns += `, "Voters_VotingPerformanceEvenYearGeneral", 
+    "Voters_VotingPerformanceEvenYearPrimary", 
+    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
+    "Residence_Addresses_ApartmentType", 
+    "EthnicGroups_EthnicGroup1Desc", 
+    "Languages_Description", 
+    "Residence_Addresses_Latitude", 
+    "Residence_Addresses_Longitude", 
+    "Residence_HHParties_Description", 
+    "Mailing_Families_HHCount", 
+    "Voters_SequenceOddEven"`;
+  }
+
+  if (type === 'sms') {
+    columns += `, "VoterTelephones_CellPhoneFormatted", 
+    "VoterTelephones_CellConfidenceCode", 
+    "Voters_VotingPerformanceEvenYearGeneral",
+    "Voters_VotingPerformanceEvenYearPrimary",
+    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
+    "VoterParties_Change_Changed_Party"`;
+
+    whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }
 
   return `SELECT ${columns} FROM public."Voter${state}" WHERE ${whereClause} limit 100`;
