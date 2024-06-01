@@ -38,10 +38,6 @@ module.exports = {
         campaign = await sails.helpers.campaign.byUser(user);
       }
 
-      await sails.helpers.slack.errorLoggerHelper('Running p2v for campaign', {
-        slug: campaign.slug,
-      });
-
       let p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
       if (!p2v) {
