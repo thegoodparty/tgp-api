@@ -54,6 +54,7 @@ module.exports = {
 function typeToQuery(type, campaign) {
   const state = campaign.details.state;
   let whereClause = '';
+  let nestedWhereClause = '';
   const l2ColumnName = campaign.pathToVictory.data.electionType;
   const l2ColumnValue = campaign.pathToVictory.data.electionLocation;
 
@@ -153,7 +154,8 @@ function typeToQuery(type, campaign) {
     "Residence_Addresses_City", 
     "Residence_Addresses_State", 
     "Residence_Addresses_Zip", 
-    "Residence_Addresses_ZipPlus4"`;
+    "Residence_Addresses_ZipPlus4",
+    "Mailing_Addresses_State"`;
 
     whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }
@@ -190,6 +192,8 @@ function typeToQuery(type, campaign) {
 
     // measure performance after index is added
 
+    nestedWhereClause = 'a';
+
     whereClause += ` AND EXISTS (
       SELECT 1
       FROM public."Voter${state}" b
@@ -218,5 +222,5 @@ function typeToQuery(type, campaign) {
     whereClause += ` AND "VoterTelephones_LandlineFormatted" IS NOT NULL`;
   }
 
-  return `SELECT ${columns} FROM public."Voter${state}" WHERE ${whereClause}`;
+  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
 }
