@@ -196,7 +196,7 @@ function typeToQuery(type, campaign) {
       WHERE a."Mailing_Families_FamilyID" = b."Mailing_Families_FamilyID"
       GROUP BY b."Mailing_Families_FamilyID"
       HAVING COUNT(*) = 1
-    );`;
+    )`;
   }
 
   if (type === 'telemarketing') {
