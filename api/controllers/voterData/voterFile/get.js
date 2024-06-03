@@ -181,22 +181,22 @@ function typeToQuery(type, campaign) {
     `;
 
     // unique households
-    whereClause += ` AND "Mailing_Families_FamilyID" IN (
-      SELECT "Mailing_Families_FamilyID"
-      FROM public."Voter${state}"
-      GROUP BY "Mailing_Families_FamilyID"
-      HAVING COUNT(*) = 1
-    )`;
+    // whereClause += ` AND "Mailing_Families_FamilyID" IN (
+    //   SELECT "Mailing_Families_FamilyID"
+    //   FROM public."Voter${state}"
+    //   GROUP BY "Mailing_Families_FamilyID"
+    //   HAVING COUNT(*) = 1
+    // )`;
 
     // measure performance after index is added
 
-    // whereClause += ` AND EXISTS (
-    //   SELECT 1
-    //   FROM public."Voter${state}" b
-    //   WHERE a."Mailing_Families_FamilyID" = b."Mailing_Families_FamilyID"
-    //   GROUP BY b."Mailing_Families_FamilyID"
-    //   HAVING COUNT(*) = 1
-    // );`;
+    whereClause += ` AND EXISTS (
+      SELECT 1
+      FROM public."Voter${state}" b
+      WHERE a."Mailing_Families_FamilyID" = b."Mailing_Families_FamilyID"
+      GROUP BY b."Mailing_Families_FamilyID"
+      HAVING COUNT(*) = 1
+    );`;
   }
 
   if (type === 'telemarketing') {
