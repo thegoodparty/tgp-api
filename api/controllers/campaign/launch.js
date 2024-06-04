@@ -40,7 +40,7 @@ module.exports = {
         (!details.office || details.office === '') &&
         (!details.otherOffice || details.otherOffice === '')
       ) {
-        return exits.success({ message: 'office not set' });
+        return exits.forbidden({ message: 'office not set' });
       }
 
       const updated = await Campaign.updateOne({ id: campaignRecord.id }).set({
