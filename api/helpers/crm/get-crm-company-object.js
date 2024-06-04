@@ -66,6 +66,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     runForOffice,
     electionDate,
     primaryElectionDate,
+    filingPeriodsStart,
+    filingPeriodsEnd,
   } = details || {};
 
   const name = await determineName(campaign.user);
@@ -91,6 +93,14 @@ const getCrmCompanyObject = async (inputs, exits) => {
     dateVerified !== null
       ? moment(new Date(dateVerified)).format('YYYY-MM-DD')
       : null;
+
+  const filing_start = filingPeriodsStart
+    ? moment(filingPeriodsStart).format('YYYY-MM-DD')
+    : null;
+
+  const filing_end = filingPeriodsEnd
+    ? moment(filingPeriodsEnd).format('YYYY-MM-DD')
+    : null;
 
   const properties = {
     name,
@@ -120,6 +130,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',
+    filing_start,
+    filing_end,
     ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
     ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
     ...(website ? { website } : {}),

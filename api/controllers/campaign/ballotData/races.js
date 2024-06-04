@@ -85,7 +85,7 @@ module.exports = {
                 state
                 timezone
               }
-              position {  # Include the 'position' field here to get position data
+              position { 
                 id
                 appointed
                 hasPrimary
@@ -99,6 +99,10 @@ module.exports = {
                 electionFrequencies {
                   frequency
                 }
+              }
+              filingPeriods {
+                startOn
+                endOn
               }
             }
           }

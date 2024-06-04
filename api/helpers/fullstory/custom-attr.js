@@ -61,6 +61,8 @@ module.exports = {
         state,
         pledged,
         party,
+        filingPeriodsStart,
+        filingPeriodsEnd,
       } = details || {};
 
       const electionDateMonth = electionDate
@@ -68,6 +70,13 @@ module.exports = {
         : '';
       const primaryElectionDateMonth = primaryElectionDate
         ? moment(primaryElectionDate).format('MMMYY')
+        : '';
+
+      const filingPeriodsStartMonth = filingPeriodsStart
+        ? moment(filingPeriodsStart).format('MMMYY')
+        : '';
+      const filingPeriodsEndMonth = filingPeriodsEnd
+        ? moment(filingPeriodsEnd).format('MMMYY')
         : '';
 
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
@@ -130,6 +139,8 @@ module.exports = {
               p2vStatus,
               electionDateStr: electionDateMonth,
               primaryElectionDateStr: primaryElectionDateMonth,
+              filingPeriodsStartMonth,
+              filingPeriodsEndMonth,
             },
           },
           {
