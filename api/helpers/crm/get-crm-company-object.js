@@ -132,7 +132,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     pro_candidate: isPro ? 'Yes' : 'No',
     filing_start,
     filing_end,
-    ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
+    // ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
     ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
     ...(website ? { website } : {}),
     ...(level ? { ai_office_level: level } : {}),
