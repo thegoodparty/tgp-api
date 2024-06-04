@@ -31,22 +31,24 @@ module.exports = {
             const filingPeroiods = node?.filingPeriods;
             if (filingPeroiods && filingPeroiods.length > 0) {
               const { endOn, startOn } = node.filingPeriods[0];
-              await sails.helpers.campaign.patch(
-                campaign.id,
-                'details',
-                'endOn',
-                endOn,
-              );
+              if (endOn && startOn) {
+                await sails.helpers.campaign.patch(
+                  campaign.id,
+                  'details',
+                  'endOn',
+                  endOn,
+                );
 
-              const updated = await sails.helpers.campaign.patch(
-                campaign.id,
-                'details',
-                'startOn',
-                startOn,
-              );
+                const updated = await sails.helpers.campaign.patch(
+                  campaign.id,
+                  'details',
+                  'startOn',
+                  startOn,
+                );
 
-              await sails.helpers.crm.updateCampaign(updated);
-              counter++;
+                await sails.helpers.crm.updateCampaign(updated);
+                counter++;
+              }
             }
           }
         } catch (e) {
