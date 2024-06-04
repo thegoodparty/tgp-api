@@ -68,7 +68,8 @@ function typeToQuery(type, campaign) {
   "Voters_MiddleName", 
   "Voters_LastName", 
   "Voters_NameSuffix", 
-  "Parties_Description", 
+  "Parties_Description",
+  "Voters_Gender",
   "Voters_Age"`;
 
   if (type === 'full') {
@@ -154,8 +155,7 @@ function typeToQuery(type, campaign) {
     "Residence_Addresses_City", 
     "Residence_Addresses_State", 
     "Residence_Addresses_Zip", 
-    "Residence_Addresses_ZipPlus4",
-    "Residence_Addresses_State"`;
+    "Residence_Addresses_ZipPlus4"`;
 
     whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }
