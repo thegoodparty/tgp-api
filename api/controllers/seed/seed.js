@@ -35,14 +35,14 @@ module.exports = {
                 await sails.helpers.campaign.patch(
                   campaign.id,
                   'details',
-                  'endOn',
+                  'filingPeriodsEnd',
                   endOn,
                 );
 
                 const updated = await sails.helpers.campaign.patch(
                   campaign.id,
                   'details',
-                  'startOn',
+                  'filingPeriodsStart',
                   startOn,
                 );
 
