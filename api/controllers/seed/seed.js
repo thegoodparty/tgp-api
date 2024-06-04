@@ -5,19 +5,63 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const campaigns = await Campaign.find({
-        where: { user: { '!=': null } },
-      });
+      let counter = 0;
+      const campaigns = await Campaign.find();
 
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
+        try {
+          const raceId = campaign?.details?.raceId;
+          console.log('raceId', raceId);
+          if (raceId) {
+            const query = `
+            query Node {
+              node(id: "${raceId}") {
+                  ... on Race {
+                    
+                      filingPeriods {
+                          endOn
+                          startOn
+                      }
+                  }
+              }
+            }
+          `;
+            const { node } = await sails.helpers.graphql.queryHelper(query);
+            const filingPeroiods = node?.filingPeriods;
+            if (filingPeroiods && filingPeroiods.length > 0) {
+              const { endOn, startOn } = node.filingPeriods[0];
+              await sails.helpers.campaign.patch(
+                campaign.id,
+                'details',
+                'endOn',
+                endOn,
+              );
 
-        await sails.helpers.crm.updateCampaign(campaign);
+              const updated = await sails.helpers.campaign.patch(
+                campaign.id,
+                'details',
+                'startOn',
+                startOn,
+              );
+
+              await sails.helpers.crm.updateCampaign(updated);
+              counter++;
+            }
+          }
+        } catch (e) {
+          console.log('Error in seed campaign', e);
+          await sails.helpers.slack.errorLoggerHelper(
+            `Error at seed with campaign ${campaign.slug}`,
+            e,
+          );
+        }
       }
       await sails.helpers.slack.errorLoggerHelper(
-        `updated ${campaigns.length} campaigns`,
+        `updated ${counter} campaigns`,
+        {},
       );
-      return exits.success(`updated ${campaigns.length} campaigns`);
+      return exits.success(`updated ${counter} campaigns`);
     } catch (e) {
       console.log('Error in seed', e);
       await sails.helpers.slack.errorLoggerHelper('Error at seed', e);
