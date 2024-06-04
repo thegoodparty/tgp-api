@@ -120,7 +120,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',
-    ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
+    // ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
     ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
     ...(website ? { website } : {}),
     ...(level ? { ai_office_level: level } : {}),
