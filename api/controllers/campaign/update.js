@@ -64,12 +64,12 @@ module.exports = {
       try {
         await sails.helpers.crm.updateCampaign(updated);
       } catch (e) {
-        sails.helpers.log(slug, 'error updating crm', e);
+        sails.helpers.log(campaign.slug, 'error updating crm', e);
       }
       try {
         await sails.helpers.fullstory.customAttr(updated.id);
       } catch (e) {
-        sails.helpers.log(slug, 'error updating fullstory', e);
+        sails.helpers.log(campaign.slug, 'error updating fullstory', e);
       }
 
       return exits.success({
