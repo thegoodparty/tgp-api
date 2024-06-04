@@ -34,6 +34,15 @@ module.exports = {
         return exits.success({ message: 'already launched' });
       }
 
+      // check if the user has office or otherOffice
+      const { details } = campaignRecord;
+      if (
+        (!details.office || details.office === '') &&
+        (!details.otherOffice || details.otherOffice === '')
+      ) {
+        return exits.success({ message: 'office not set' });
+      }
+
       const updated = await Campaign.updateOne({ id: campaignRecord.id }).set({
         isActive: true,
         data: {
