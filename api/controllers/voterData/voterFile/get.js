@@ -155,7 +155,7 @@ function typeToQuery(type, campaign) {
     "Residence_Addresses_State", 
     "Residence_Addresses_Zip", 
     "Residence_Addresses_ZipPlus4",
-    "Mailing_Addresses_State"`;
+    "Residence_Addresses_State"`;
 
     whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }
