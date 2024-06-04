@@ -179,7 +179,12 @@ function typeToQuery(type, campaign) {
     "MaritalStatus_Description", 
     "Mailing_Families_FamilyID",
     "Mailing_Families_HHCount",
-    "Mailing_HHParties_Description"
+    "Mailing_HHParties_Description",
+    "Voters_VotingPerformanceEvenYearGeneral", 
+    "Voters_VotingPerformanceEvenYearPrimary", 
+    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
+    "EthnicGroups_EthnicGroup1Desc",
+    "Languages_Description",
     `;
 
     // unique households
