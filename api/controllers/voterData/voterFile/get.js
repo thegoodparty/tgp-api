@@ -89,6 +89,7 @@ function typeToQuery(type, campaign) {
     "Languages_Description",
     "Residence_Addresses_AddressLine", 
     "Residence_Addresses_ExtraAddressLine", 
+    "Residence_Addresses_HouseNumber",
     "Residence_Addresses_City", 
     "Residence_Addresses_State", 
     "Residence_Addresses_Zip", 
@@ -137,6 +138,7 @@ function typeToQuery(type, campaign) {
     "Voters_SequenceOddEven",
     "Residence_Addresses_AddressLine", 
     "Residence_Addresses_ExtraAddressLine", 
+    "Residence_Addresses_HouseNumber",
     "Residence_Addresses_City", 
     "Residence_Addresses_State", 
     "Residence_Addresses_Zip", 
@@ -152,6 +154,7 @@ function typeToQuery(type, campaign) {
     "VoterParties_Change_Changed_Party",
     "Residence_Addresses_AddressLine", 
     "Residence_Addresses_ExtraAddressLine", 
+    "Residence_Addresses_HouseNumber",
     "Residence_Addresses_City", 
     "Residence_Addresses_State", 
     "Residence_Addresses_Zip", 
@@ -184,7 +187,7 @@ function typeToQuery(type, campaign) {
     "Voters_VotingPerformanceEvenYearPrimary", 
     "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
     "EthnicGroups_EthnicGroup1Desc",
-    "Languages_Description",
+    "Languages_Description"
     `;
 
     // unique households
