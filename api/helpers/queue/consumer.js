@@ -686,7 +686,7 @@ async function handleGenerateAiContent(message) {
       await Campaign.updateOne({
         slug,
       }).set({
-        data: aiContent,
+        aiContent,
       });
     } catch (e) {
       await sails.helpers.slack.aiLoggerHelper(
