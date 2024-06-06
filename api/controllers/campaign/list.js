@@ -63,93 +63,17 @@ module.exports = {
         !generalElectionDateStart &&
         !generalElectionDateEnd
       ) {
-        const res = this.res;
-        let hasStarted = false;
+        const campaigns = await Campaign.find({
+          where: { user: { '!=': null } },
+        })
+          .populate('user')
+          .populate('pathToVictory');
 
-        try {
-          // Set headers for JSON response before any data is sent
-          res.setHeader('Content-Type', 'application/json');
-
-          const limit = 100; // Adjust limit based on your requirements
-          let skip = 0;
-          let hasMoreData = true;
-
-          const passThrough = new PassThrough();
-
-          passThrough.on('error', (err) => {
-            console.error('Error in PassThrough stream:', err);
-            if (!res.headersSent) {
-              res.status(500).json({ error: 'Internal Server Error' });
-            } else {
-              res.end();
-            }
-          });
-
-          passThrough.on('end', () => {
-            if (!hasStarted) {
-              res.write('[]');
-            }
-            return exits.success();
-          });
-
-          // Pipe the PassThrough stream to the response
-          passThrough.pipe(res);
-
-          // Start the JSON array before any data is sent
-          res.write('[');
-
-          // Function to fetch and stream data in chunks
-          async function fetchAndStreamData() {
-            try {
-              while (hasMoreData) {
-                const campaigns = await Campaign.find({
-                  where: { user: { '!=': null } },
-                  limit: limit,
-                  skip: skip,
-                })
-                  .populate('user')
-                  .populate('pathToVictory');
-
-                if (campaigns.length > 0) {
-                  // Stream each campaign as a JSON string
-                  campaigns.forEach((campaign, index) => {
-                    if (skip > 0 || index > 0 || hasStarted) {
-                      res.write(','); // Add a comma if not the first item
-                    }
-                    res.write(JSON.stringify(campaign));
-                    hasStarted = true;
-                  });
-
-                  skip += limit;
-                } else {
-                  hasMoreData = false;
-                }
-              }
-
-              // End the JSON array
-              res.write(']');
-              res.end();
-            } catch (err) {
-              console.error('Error in fetchAndStreamData:', err);
-              if (!res.headersSent) {
-                res.status(500).json({ error: 'Internal Server Error' });
-              } else {
-                res.end();
-              }
-            }
-          }
-
-          // Start fetching and streaming data
-          fetchAndStreamData();
-        } catch (err) {
-          console.error('Error in action:', err);
-          if (!res.headersSent) {
-            res.status(500).json({ error: 'Internal Server Error' });
-          } else {
-            res.end();
-          }
-        }
+        return exits.success({
+          campaigns,
+        });
       } else {
+        console.log('here1');
         const query = `
         SELECT 
           campaign.*, 
