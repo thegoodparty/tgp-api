@@ -1,3 +1,5 @@
+const { PassThrough } = require('stream');
+
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
@@ -61,18 +63,94 @@ module.exports = {
         !generalElectionDateStart &&
         !generalElectionDateEnd
       ) {
-        const campaigns = await Campaign.find({
-          where: { user: { '!=': null } },
-        })
-          .populate('user')
-          .populate('pathToVictory');
+        const res = this.res;
+        let hasStarted = false;
 
-        return exits.success({
-          campaigns,
-        });
-      }
+        try {
+          // Set headers for JSON response before any data is sent
+          res.setHeader('Content-Type', 'application/json');
 
-      const query = `
+          const limit = 100; // Adjust limit based on your requirements
+          let skip = 0;
+          let hasMoreData = true;
+
+          const passThrough = new PassThrough();
+
+          passThrough.on('error', (err) => {
+            console.error('Error in PassThrough stream:', err);
+            if (!res.headersSent) {
+              res.status(500).json({ error: 'Internal Server Error' });
+            } else {
+              res.end();
+            }
+          });
+
+          passThrough.on('end', () => {
+            if (!hasStarted) {
+              res.write('[]');
+            }
+            return exits.success();
+          });
+
+          // Pipe the PassThrough stream to the response
+          passThrough.pipe(res);
+
+          // Start the JSON array before any data is sent
+          res.write('[');
+
+          // Function to fetch and stream data in chunks
+          async function fetchAndStreamData() {
+            try {
+              while (hasMoreData) {
+                const campaigns = await Campaign.find({
+                  where: { user: { '!=': null } },
+                  limit: limit,
+                  skip: skip,
+                })
+                  .populate('user')
+                  .populate('pathToVictory');
+
+                if (campaigns.length > 0) {
+                  // Stream each campaign as a JSON string
+                  campaigns.forEach((campaign, index) => {
+                    if (skip > 0 || index > 0 || hasStarted) {
+                      res.write(','); // Add a comma if not the first item
+                    }
+                    res.write(JSON.stringify(campaign));
+                    hasStarted = true;
+                  });
+
+                  skip += limit;
+                } else {
+                  hasMoreData = false;
+                }
+              }
+
+              // End the JSON array
+              res.write(']');
+              res.end();
+            } catch (err) {
+              console.error('Error in fetchAndStreamData:', err);
+              if (!res.headersSent) {
+                res.status(500).json({ error: 'Internal Server Error' });
+              } else {
+                res.end();
+              }
+            }
+          }
+
+          // Start fetching and streaming data
+          fetchAndStreamData();
+        } catch (err) {
+          console.error('Error in action:', err);
+          if (!res.headersSent) {
+            res.status(500).json({ error: 'Internal Server Error' });
+          } else {
+            res.end();
+          }
+        }
+      } else {
+        const query = `
         SELECT 
           campaign.*, 
           "user"."firstName" as "firstName", "user"."lastName" as "lastName", "user".phone as phone, "user".email as email,
@@ -93,28 +171,29 @@ module.exports = {
         })}
         ORDER BY campaign.id DESC;`;
 
-      const campaigns = await sails.sendNativeQuery(query);
+        const campaigns = await sails.sendNativeQuery(query);
 
-      // we need to match the format of the response from the ORM
-      let cleanCampaigns = [];
-      if (campaigns.rows) {
-        cleanCampaigns = campaigns.rows.map((campaign) => {
-          if (campaign.pathToVictory) {
-            campaign.pathToVictory = { data: campaign.pathToVictory };
-          }
-          campaign.user = {
-            firstName: campaign.firstName,
-            lastName: campaign.lastName,
-            phone: campaign.phone,
-            email: campaign.email,
-          };
-          return campaign;
+        // we need to match the format of the response from the ORM
+        let cleanCampaigns = [];
+        if (campaigns.rows) {
+          cleanCampaigns = campaigns.rows.map((campaign) => {
+            if (campaign.pathToVictory) {
+              campaign.pathToVictory = { data: campaign.pathToVictory };
+            }
+            campaign.user = {
+              firstName: campaign.firstName,
+              lastName: campaign.lastName,
+              phone: campaign.phone,
+              email: campaign.email,
+            };
+            return campaign;
+          });
+        }
+
+        return exits.success({
+          campaigns: cleanCampaigns,
         });
       }
-
-      return exits.success({
-        campaigns: cleanCampaigns,
-      });
     } catch (e) {
       console.log('Error in onboarding list', e);
       return exits.forbidden();
