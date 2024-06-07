@@ -73,7 +73,6 @@ module.exports = {
           campaigns,
         });
       } else {
-        console.log('here1');
         const query = `
         SELECT 
           campaign.*, 
@@ -113,6 +112,8 @@ module.exports = {
             return campaign;
           });
         }
+
+        console.log('cleanCampaigns', cleanCampaigns);
 
         return exits.success({
           campaigns: cleanCampaigns,
