@@ -1,0 +1,513 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model application {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  status    String?
+  data      String?
+  user      Int?
+}
+
+model archive {
+  id               Int     @id @default(autoincrement())
+  createdAt        BigInt?
+  fromModel        String?
+  originalRecord   Json?   @db.Json
+  originalRecordId Json?   @db.Json
+}
+
+model ballotcandidate {
+  createdAt              BigInt?
+  updatedAt              BigInt?
+  id                     Int      @id @default(autoincrement())
+  firstName              String?
+  middleName             String?
+  lastName               String?
+  state                  String?
+  parsedLocation         String?
+  positionName           String?
+  normalizedPositionName String?
+  data                   Json?    @db.Json
+  email                  String?
+  phone                  String?
+  candidateId            String?
+  raceId                 String?
+  positionId             String?
+  electionId             String?
+  parties                String?
+  electionName           String?
+  electionDay            String?
+  electionResult         String?
+  level                  String?
+  tier                   String?
+  isJudicial             Boolean?
+  isRetention            Boolean?
+  isPrimary              Boolean?
+  isRunoff               Boolean?
+  isUnexpired            Boolean?
+  campaign               Int?
+}
+
+model ballotcandidate_elections__ballotelection_candidates {
+  id                        Int  @id @default(autoincrement())
+  ballotcandidate_elections Int?
+  ballotelection_candidates Int?
+}
+
+model ballotcandidate_positions__ballotposition_candidates {
+  id                        Int  @id @default(autoincrement())
+  ballotcandidate_positions Int?
+  ballotposition_candidates Int?
+}
+
+model ballotcandidate_races__ballotrace_candidates {
+  id                    Int  @id @default(autoincrement())
+  ballotcandidate_races Int?
+  ballotrace_candidates Int?
+}
+
+model ballotelection {
+  createdAt    BigInt?
+  updatedAt    BigInt?
+  id           Int     @id @default(autoincrement())
+  ballotId     String? @unique
+  ballotHashId String?
+  electionDate Float?  @db.Real
+  state        String?
+  data         Json?   @db.Json
+}
+
+model ballotposition {
+  createdAt      BigInt?
+  updatedAt      BigInt?
+  id             Int     @id @default(autoincrement())
+  ballotId       String? @unique
+  ballotHashId   String?
+  data           Json?   @db.Json
+  ballotElection Int?
+}
+
+model ballotrace {
+  createdAt    BigInt?
+  updatedAt    BigInt?
+  id           Int      @id @default(autoincrement())
+  ballotId     String?  @unique
+  ballotHashId String?
+  hashId       String?  @unique
+  positionSlug String?
+  state        String?
+  electionDate Float?   @db.Real
+  level        String?
+  subAreaName  String?
+  subAreaValue String?
+  isJudicial   Boolean?
+  isPrimary    Boolean?
+  data         Json?    @db.Json
+  county       Int?
+  municipality Int?
+}
+
+model campaign {
+  createdAt     BigInt?
+  updatedAt     BigInt?
+  id            Int       @id @default(autoincrement())
+  slug          String?   @unique
+  isActive      Boolean?
+  data          Json?     @db.Json
+  dataCopy      Json?     @db.Json
+  details       Json?
+  aiContent     Json?
+  isVerified    Boolean?
+  dateVerified  DateTime? @db.Date
+  tier          String?
+  isPro         Boolean?
+  didWin        Boolean?
+  user          Int?
+  pathToVictory Int?
+
+  @@index([user], map: "campaign_user")
+}
+
+model campaign_positions__position_campaigns {
+  id                 Int  @id @default(autoincrement())
+  campaign_positions Int?
+  position_campaigns Int?
+}
+
+model campaign_topIssues__topissue_campaigns {
+  id                 Int  @id @default(autoincrement())
+  campaign_topIssues Int?
+  topissue_campaigns Int?
+}
+
+model campaign_voters__voter_campaigns {
+  id              Int  @id @default(autoincrement())
+  campaign_voters Int?
+  voter_campaigns Int?
+}
+
+model campaignclaim {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  user      Int?
+  candidate Int?
+}
+
+model campaignplanversion {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  data      Json?   @db.Json
+  campaign  Int?
+}
+
+model campaignupdatehistory {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  type      String?
+  quantity  Float?  @db.Real
+  user      Int?
+  campaign  Int?
+}
+
+model campaignvolunteer {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  role      String?
+  campaign  Int?
+  user      Int?
+}
+
+model candidate {
+  createdAt    BigInt?
+  updatedAt    BigInt?
+  id           Int      @id @default(autoincrement())
+  slug         String?  @unique
+  firstName    String?
+  lastName     String?
+  isActive     Boolean?
+  chamber      String?
+  isOnHomepage Boolean?
+  state        String?
+  data         String?
+  contact      Json?    @db.Json
+}
+
+model candidate_positions__position_candidates {
+  id                  Int  @id @default(autoincrement())
+  candidate_positions Int?
+  position_candidates Int?
+}
+
+model candidate_topIssues__topissue_candidates {
+  id                  Int  @id @default(autoincrement())
+  candidate_topIssues Int?
+  topissue_candidates Int?
+}
+
+model candidateissue {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  data      Json?   @db.Json
+  status    String?
+  candidate Int?    @unique
+}
+
+model candidateposition {
+  createdAt   BigInt?
+  updatedAt   BigInt?
+  id          Int     @id @default(autoincrement())
+  description String?
+  order       Float?  @db.Real
+  candidate   Int?
+  campaign    Int?
+  topIssue    Int?
+  position    Int?
+}
+
+model cmscontent {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  content   String?
+}
+
+model content {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  key       String?
+  subKey    String?
+  data      Json?   @db.Json
+}
+
+model county {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  slug      String? @unique
+  name      String?
+  state     String?
+  data      Json?   @db.Json
+}
+
+model doorknockingcampaign {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  slug      String? @unique
+  data      Json?   @db.Json
+  status    String?
+  campaign  Int?
+}
+
+model doorknockingroute {
+  createdAt  BigInt?
+  updatedAt  BigInt?
+  id         Int     @id @default(autoincrement())
+  data       Json?   @db.Json
+  status     String?
+  dkCampaign Int?
+  volunteer  Int?
+}
+
+model doorknockingvoter {
+  createdAt    BigInt?
+  updatedAt    BigInt?
+  id           Int      @id @default(autoincrement())
+  geoHash      String?
+  zip          String?
+  isCalculated Boolean?
+  voter        Int?
+  dkCampaign   Int?
+}
+
+model electiondeadlines {
+  createdAt       BigInt?
+  updatedAt       BigInt?
+  id              Int     @id @default(autoincrement())
+  state           String?
+  year            String?
+  reportType      String?
+  reportPeriod    String?
+  relativeDueDate String?
+  dueDate         BigInt?
+}
+
+model endorsement {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  summary   String?
+  title     String?
+  link      String?
+  image     String?
+  candidate Int?
+}
+
+model helpfularticle {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int      @id @default(autoincrement())
+  cmsId     String?
+  uuid      String?
+  isHelpful Boolean?
+  feedback  String?
+}
+
+model helpfultopic {
+  createdAt   BigInt?
+  updatedAt   BigInt?
+  id          Int      @id @default(autoincrement())
+  candidateId String?
+  uuid        String?
+  topicId     String?
+  isHelpful   Boolean?
+  feedback    String?
+}
+
+model keyvalue {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  key       String? @unique
+  value     String?
+}
+
+model l2count {
+  createdAt        BigInt?
+  updatedAt        BigInt?
+  id               Int     @id @default(autoincrement())
+  electionType     String?
+  electionLocation String?
+  electionDistrict String?
+  counts           Json?   @db.Json
+}
+
+model municipality {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  slug      String? @unique
+  name      String?
+  type      String?
+  state     String?
+  data      Json?   @db.Json
+  county    Int?
+}
+
+model notification {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int      @id @default(autoincrement())
+  isRead    Boolean?
+  data      Json?    @db.Json
+  user      Int?
+}
+
+model pathtovictory {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  data      Json?   @db.Json
+  campaign  Int?
+}
+
+model position {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  name      String? @unique
+  topIssue  Int?
+}
+
+model share {
+  createdAt   BigInt?
+  updatedAt   BigInt?
+  id          Int      @id @default(autoincrement())
+  candidateId Float?   @db.Real
+  uuid        String?
+  chamber     String?
+  isIncumbent Boolean?
+}
+
+model sharecandidate {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  candidate Float?  @db.Real
+  user      Int?
+}
+
+model staff {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  role      String?
+  user      Int?
+  createdBy Int?
+  candidate Int?
+}
+
+model survey {
+  createdAt  BigInt?
+  updatedAt  BigInt?
+  id         Int     @id @default(autoincrement())
+  data       Json?   @db.Json
+  voter      Int?
+  campaign   Int?
+  dkCampaign Int?
+  route      Int?
+  volunteer  Int?
+}
+
+model topissue {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  name      String? @unique
+  icon      String?
+}
+
+model user {
+  createdAt                   BigInt?
+  updatedAt                   BigInt?
+  id                          Int      @id @default(autoincrement())
+  phone                       String?
+  email                       String?  @unique
+  name                        String?
+  firstName                   String?
+  lastName                    String?
+  socialId                    String?
+  socialProvider              String?
+  zip                         String?
+  isPhoneVerified             Boolean?
+  isEmailVerified             Boolean?
+  avatar                      String?
+  password                    String?
+  hasPassword                 Boolean?
+  passwordResetToken          String?
+  passwordResetTokenExpiresAt Float?   @db.Real
+  emailConfToken              String?
+  emailConfTokenDateCreated   String?
+  voteStatus                  String?
+  isAdmin                     Boolean?
+  metaData                    String?
+  displayName                 String?
+  referrer                    Int?
+}
+
+model visit {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  url       String?
+  data      String?
+}
+
+model volunteerinvitation {
+  createdAt BigInt?
+  updatedAt BigInt?
+  id        Int     @id @default(autoincrement())
+  email     String?
+  role      String?
+  campaign  Int?
+}
+
+model voter {
+  createdAt         BigInt?
+  updatedAt         BigInt?
+  id                Int      @id @default(autoincrement())
+  voterId           String?  @unique
+  data              Json?    @db.Json
+  address           String?
+  party             String?
+  state             String?
+  city              String?
+  zip               String?
+  lat               String?
+  lng               String?
+  geoHash           String?
+  pendingProcessing Boolean?
+}
+
+model votersearch {
+  createdAt     BigInt?
+  updatedAt     BigInt?
+  id            Int     @id @default(autoincrement())
+  l2ColumnName  String?
+  l2ColumnValue String?
+  voter         Int?
+}
