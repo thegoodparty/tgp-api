@@ -38,7 +38,6 @@ module.exports = {
       const { type } = inputs;
       let customFilters;
       if (inputs.customFilters && inputs.customFilters !== 'undefined') {
-        console.log('her1');
         customFilters = JSON.parse(inputs.customFilters);
       }
       const { user } = this.req;
