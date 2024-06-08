@@ -7,7 +7,17 @@ module.exports = {
     type: {
       type: 'string',
       required: true,
-      isIn: ['full', 'doorKnocking', 'sms', 'directMail', 'telemarketing'],
+      isIn: [
+        'full',
+        'doorKnocking',
+        'sms',
+        'directMail',
+        'telemarketing',
+        'custom',
+      ],
+    },
+    customFilters: {
+      type: 'string',
     },
   },
 
@@ -18,17 +28,26 @@ module.exports = {
     serverError: {
       description: 'There was a problem on the server.',
     },
+    badRequest: {
+      description: 'Bad request',
+    },
   },
 
   fn: async function (inputs, exits) {
     try {
       const { type } = inputs;
+      let customFilters;
+      if (inputs.customFilters && inputs.customFilters !== 'undefined') {
+        console.log('her1');
+        customFilters = JSON.parse(inputs.customFilters);
+      }
       const { user } = this.req;
       const campaign = await sails.helpers.campaign.byUser(user);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
       const { pathToVictory } = campaign;
+      console.log('Path to Victory:', pathToVictory);
       if (
         !pathToVictory?.data?.electionType ||
         !pathToVictory?.data?.electionLocation
@@ -40,7 +59,20 @@ module.exports = {
         console.log('Path to Victory is not set.', campaign);
         return exits.badRequest({ message: 'Path to Victory is not set.' });
       }
-      const query = typeToQuery(type, campaign);
+      let resolvedType = type;
+      if (type === 'custom') {
+        const channel = customFilters.channel;
+        if (channel === 'Door Knocking') {
+          resolvedType = 'doorKnocking';
+        } else if (channel === 'SMS Texting') {
+          resolvedType = 'sms';
+        } else if (channel === 'Direct Mail') {
+          resolvedType = 'directMail';
+        } else if (channel === 'Telemarketing') {
+          resolvedType = 'telemarketing';
+        }
+      }
+      const query = typeToQuery(resolvedType, campaign, customFilters);
 
       console.log('Constructed Query:', query);
       return await sails.helpers.voter.csvStreamHelper(query, this.res);
@@ -51,7 +83,7 @@ module.exports = {
   },
 };
 
-function typeToQuery(type, campaign) {
+function typeToQuery(type, campaign, customFilters) {
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
@@ -231,5 +263,182 @@ function typeToQuery(type, campaign) {
     whereClause += ` AND "VoterTelephones_LandlineFormatted" IS NOT NULL`;
   }
 
+  if (customFilters?.filters && customFilters.filters.length > 0) {
+    /*
+     custom filter format:
+     {
+      channel: "Door Knocking"
+      filters: ['audience_superVoters', 'audience_likelyVoters', 'party_independent', 'age_18-25', 'age_25-35']
+      purpose: "GOTV"
+  }
+    */
+    whereClause += customFiltersToQuery(customFilters.filters);
+  }
+
   return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
 }
+
+function customFiltersToQuery(filters) {
+  const filterConditions = {
+    audience: [],
+    party: [],
+    age: [],
+    gender: [],
+  };
+
+  filters.forEach((filter) => {
+    switch (filter) {
+      case 'audience_superVoters':
+        filterConditions.audience.push(`CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END > 75`);
+        break;
+      case 'audience_likelyVoters':
+        filterConditions.audience.push(`(CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END > 50 AND 
+                                        CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END <= 75)`);
+        break;
+      case 'audience_unreliableVoters':
+        filterConditions.audience.push(`(CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END > 25 AND 
+                                        CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END <= 50)`);
+        break;
+      case 'audience_unlikelyVoters':
+        filterConditions.audience.push(`CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END <= 25`);
+        break;
+      case 'audience_firstTimeVoters':
+        filterConditions.audience.push(
+          '"Voters_VotingPerformanceEvenYearGeneral" IS NULL',
+        );
+        break;
+      case 'party_independent':
+        filterConditions.party.push(
+          '("Parties_Description" = \'Non-Partisan\' OR "Parties_Description" = \'Other\')',
+        );
+        break;
+      case 'party_democrat':
+        filterConditions.party.push('"Parties_Description" = \'Democrat\'');
+        break;
+      case 'party_republican':
+        filterConditions.party.push('"Parties_Description" = \'Republican\'');
+        break;
+      case 'age_18-25':
+        filterConditions.age.push(
+          '("Voters_Age"::integer >= 18 AND "Voters_Age"::integer <= 25)',
+        );
+        break;
+      case 'age_25-35':
+        filterConditions.age.push(
+          '("Voters_Age"::integer > 25 AND "Voters_Age"::integer <= 35)',
+        );
+        break;
+      case 'age_35-50':
+        filterConditions.age.push(
+          '("Voters_Age"::integer > 35 AND "Voters_Age"::integer <= 50)',
+        );
+        break;
+      case 'age_50+':
+        filterConditions.age.push('"Voters_Age"::integer > 50');
+        break;
+      case 'gender_male':
+        filterConditions.gender.push('"Voters_Gender" = \'M\'');
+        break;
+      case 'gender_female':
+        filterConditions.gender.push('"Voters_Gender" = \'F\'');
+        break;
+      case 'gender_unknown':
+        filterConditions.gender.push('"Voters_Gender" IS NULL');
+        break;
+    }
+  });
+
+  // Combine conditions for each category with OR and wrap them in parentheses
+  const audienceCondition = filterConditions.audience.length
+    ? `(${filterConditions.audience.join(' OR ')})`
+    : null;
+  const partyCondition = filterConditions.party.length
+    ? `(${filterConditions.party.join(' OR ')})`
+    : null;
+  const ageCondition = filterConditions.age.length
+    ? `(${filterConditions.age.join(' OR ')})`
+    : null;
+  const genderCondition = filterConditions.gender.length
+    ? `(${filterConditions.gender.join(' OR ')})`
+    : null;
+
+  // Combine all categories with AND
+  const finalCondition = [
+    audienceCondition,
+    partyCondition,
+    ageCondition,
+    genderCondition,
+  ]
+    .filter(Boolean)
+    .join(' AND ');
+
+  return finalCondition ? ` AND ${finalCondition}` : '';
+}
+
+/*
+ all customFilters options ( the keys)
+ const fields = [
+  {
+    label: 'AUDIENCE',
+    options: [
+      { key: 'audience_superVoters', label: 'Super Voters (75% +)' },
+      { key: 'audience_likelyVoters', label: 'Likely Voters (50%-75%)' },
+      {
+        key: 'audience_unreliableVoters',
+        label: 'Unreliable Voters (25%-50%)',
+      },
+      { key: 'audience_unlikelyVoters', label: 'Unlikely Voters (0%-25%)' },
+      { key: 'audience_firstTimeVoters', label: 'First Time Voters' },
+    ],
+  },
+  {
+    label: 'POLITICAL PARTY',
+    options: [
+      { key: 'party_independent', label: 'Independent / Non-Partisan' },
+      { key: 'party_democrat', label: 'Democrat' },
+      { key: 'party_republican', label: 'Republican' },
+    ],
+  },
+  {
+    label: 'AGE',
+    options: [
+      { key: 'age_18-25', label: '18-25' },
+      { key: 'age_25-35', label: '25-35' },
+      { key: 'age_35-50', label: '35-50' },
+      { key: 'age_50+', label: '50+' },
+    ],
+  },
+  {
+    label: 'GENDER',
+    options: [
+      { key: 'gender_male', label: 'Male' },
+      { key: 'gender_female', label: 'Female' },
+      { key: 'gender_unknown', label: 'Unknown' },
+    ],
+  },
+];
+*/
