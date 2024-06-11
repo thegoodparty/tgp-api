@@ -10,6 +10,10 @@ module.exports = {
     slug: {
       type: 'string',
     },
+    email: {
+      // can be partial
+      type: 'string',
+    },
     level: {
       type: 'string',
     },
@@ -45,6 +49,7 @@ module.exports = {
     const {
       state,
       slug,
+      email,
       level,
       primaryElectionDateStart,
       primaryElectionDateEnd,
@@ -56,6 +61,7 @@ module.exports = {
       if (
         !state &&
         !slug &&
+        !email &&
         !level &&
         !primaryElectionDateStart &&
         !primaryElectionDateEnd &&
@@ -85,6 +91,7 @@ module.exports = {
         ${buildQueryWhereClause({
           state,
           slug,
+          email,
           level,
           primaryElectionDateStart,
           primaryElectionDateEnd,
@@ -129,6 +136,7 @@ module.exports = {
 function buildQueryWhereClause({
   state,
   slug,
+  email,
   level,
   primaryElectionDateStart,
   primaryElectionDateEnd,
@@ -138,6 +146,7 @@ function buildQueryWhereClause({
 }) {
   return `
   ${slug ? ` AND campaign.slug = '${slug}'` : ''}
+  ${email ? ` AND "user".email ILIKE '%${email}%'` : ''}
   ${state ? ` AND campaign.details->>'state' = '${state}'` : ''}
   ${
     level
