@@ -299,6 +299,8 @@ async function addNewCandidate(row) {
     }
   }
 
+  let candidacyId = row.candidacy_id;
+
   // fields we don't need to search, sort, filter on.
   let data = {
     subAreaName: row.sub_area_name,
@@ -318,7 +320,7 @@ async function addNewCandidate(row) {
     normalizedPositionId: row.normalized_position_id,
     mtfcc: row.mtfcc,
     geoId: row.geo_id,
-    candidacyId: row.candidacy_id,
+    candidacyId,
     candidacyCreatedAt: row.candidacy_created_at,
     candidacyUpdatedAt: row.candidacy_updated_at,
   };
@@ -331,6 +333,15 @@ async function addNewCandidate(row) {
   const isRunoff = row.is_runoff && row.is_runoff.toLowerCase() === 'true';
   const isUnexpired =
     row.is_unexpired && row.is_unexpired.toLowerCase() === 'true';
+
+  const candidacyHashId = await sails.helpers.ballotready.encodeId(
+    candidacyId,
+    'Candidacy',
+  );
+
+  const candidacyData = await sails.helpers.ballotready.getCandidacy(
+    candidacyHashId,
+  );
 
   const candidateHashId = await sails.helpers.ballotready.encodeId(
     row.candidate_id,
@@ -364,6 +375,7 @@ async function addNewCandidate(row) {
     isPrimary: isPrimary,
     isRunoff: isRunoff,
     isUnexpired: isUnexpired,
+    candidacyData,
   };
 
   if (campaign) {
