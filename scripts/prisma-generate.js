@@ -107,6 +107,7 @@ datasource db {
   models.forEach(({ model, fields, m2mRelations }) => {
     schema += `model ${model} {
 ${fields.join('\n')}
+  @@map("${model.toLowerCase()}")
 }
 `;
 
@@ -137,6 +138,7 @@ ${fields.join('\n')}
   ${leftField} Int
   ${rightField} Int
   @@index([${leftField}, ${rightField}])
+  @@map("${name.toLowerCase()}")
 }
 `;
   });
@@ -157,7 +159,9 @@ module.exports = {
     // Parse all models and generate the schema
 
     const modelsDir = path.join(__dirname, '../api', 'models');
-    const modelFiles = glob.sync(path.join(modelsDir, '*/*.js'));
+    let models1 = glob.sync(path.join(modelsDir, '*.js'));
+    let models2 = glob.sync(path.join(modelsDir, '*/*.js'));
+    const modelFiles = models1.concat(models2);
 
     // Convert Waterline models to Prisma schema
     const convertWaterlineToPrisma = (prismaFile) => {
@@ -167,7 +171,7 @@ module.exports = {
       fs.writeFileSync(prismaFile, prismaSchema);
     };
 
-    const prismaFile = './scripts/schema.prisma';
+    const prismaFile = './prisma/schema.prisma';
     convertWaterlineToPrisma(prismaFile);
 
     console.log('Prisma schema generated successfully.');
