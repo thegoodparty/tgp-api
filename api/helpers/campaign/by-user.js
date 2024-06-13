@@ -19,12 +19,11 @@ module.exports = {
     try {
       const { user } = inputs;
 
-      const campaigns = await Campaign.find({
+      const campaign = await Campaign.findOne({
         user: user.id,
       }).populate('pathToVictory');
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0];
+      if (!campaign) {
+        throw new Error('No campaign found for given user');
       }
 
       return exits.success(campaign);
