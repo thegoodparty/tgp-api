@@ -1,3 +1,6 @@
+const {
+  exists,
+} = require('@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch');
 const axios = require('axios');
 const ashbyKey = sails.config.custom.ashbyKey || sails.config.ashbyKey;
 
@@ -54,12 +57,15 @@ module.exports = {
             response.status,
             response.statusText,
           );
+          return exits.notFound();
         }
       } catch (error) {
         console.error('Error during fetch:', error.message);
-        return {
-          notFound: true,
-        };
+        return exits.notFound();
+      }
+      console.log('job', job);
+      if (!job) {
+        return exits.notFound();
       }
 
       return exits.success({
@@ -67,10 +73,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('error at jobs/get', e);
-      return exits.success({
-        error: true,
-        e,
-      });
+      return exits.notFound();
     }
   },
 };
