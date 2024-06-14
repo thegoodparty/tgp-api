@@ -58,6 +58,9 @@ module.exports = {
       // note: a unique sparse index is created in scripts/indexes.js
       type: 'string',
     },
+    ballotHashId: {
+      type: 'string',
+    },
     bpCandidateId: {
       // note: a unique sparse index is created in scripts/indexes.js
       type: 'string',
