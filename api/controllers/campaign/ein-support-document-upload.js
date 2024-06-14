@@ -48,7 +48,6 @@ module.exports = {
 
     let uploadedFile = null;
     try {
-      // uploadedFile = await sails.helpers.uploadSingleFileToS3(document, bucket, fileName)
       uploadedFile = await uploadSingleFileToS3({
         file: document,
         bucket,
