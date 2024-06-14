@@ -30,8 +30,6 @@ module.exports = {
 
     const { valid } = await fakeLookup(name, ein);
 
-    await sails.helpers.campaign.patch(campaign.id, 'details', 'ein', ein);
-
     return exits.success({
       valid,
     });
