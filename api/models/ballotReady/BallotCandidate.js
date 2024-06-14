@@ -29,7 +29,13 @@ module.exports = {
     normalizedPositionName: {
       type: 'string',
     },
-    data: {
+    brData: {
+      type: 'json',
+    },
+    bpData: {
+      type: 'json',
+    },
+    vendorTsData: {
       type: 'json',
     },
     email: {
@@ -40,7 +46,19 @@ module.exports = {
       // note: a unique sparse index is created in scripts/indexes.js
       type: 'string',
     },
+    vendorTsPhone: {
+      // note: a unique sparse index is created in scripts/indexes.js
+      type: 'string',
+    },
+    vendorTsEmail: {
+      // note: a unique sparse index is created in scripts/indexes.js
+      type: 'string',
+    },
     candidateId: {
+      // note: a unique sparse index is created in scripts/indexes.js
+      type: 'string',
+    },
+    bpCandidateId: {
       // note: a unique sparse index is created in scripts/indexes.js
       type: 'string',
     },

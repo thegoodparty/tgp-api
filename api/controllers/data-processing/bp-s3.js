@@ -28,7 +28,7 @@ const desiredOrder = [
   'phone',
 ];
 
-const s3Bucket = 'goodparty-ballotready';
+const s3Bucket = 'goodparty-ballotpedia';
 
 let csvFilePath = path.join(__dirname, '../../../data/candidates');
 
@@ -36,10 +36,6 @@ const s3 = new AWS.S3();
 
 module.exports = {
   inputs: {
-    addToSheets: {
-      type: 'boolean',
-      defaultsTo: true,
-    },
     allFiles: {
       type: 'boolean',
       defaultsTo: false,
@@ -86,18 +82,6 @@ module.exports = {
           rows = rows.slice(0, inputs.maxRows);
         }
 
-        if (
-          inputs.addToSheets === true &&
-          appBase === 'https://goodparty.org'
-        ) {
-          const sheetId = '1A1p8e3I6_cMnti1DgZPl-NqoKHyoLoR_dvslVqAqXzg';
-          await sails.helpers.google.uploadSheets(
-            localFilePath,
-            sheetId,
-            objectKey,
-          );
-        }
-
         if (rows) {
           console.log(`rows: ${rows.length}`);
           await writeDb(rows);
@@ -108,12 +92,9 @@ module.exports = {
         message: 'ok',
       });
     } catch (e) {
-      console.log('error at data-processing/ballot-s3');
+      console.log('error at data-processing/bp-s3');
       console.log(e);
-      await sails.helpers.slack.errorLoggerHelper(
-        'data-processing/ballot-s3',
-        e,
-      );
+      await sails.helpers.slack.errorLoggerHelper('data-processing/bp-s3', e);
       return exits.badRequest({
         message: 'unknown error',
       });
@@ -124,146 +105,16 @@ module.exports = {
 async function addNewCandidate(row) {
   let ballotElection;
 
+  // need to fix this.
+  // lets make electionDate a string
+  // and fix the insert for bp-Candidate.
   try {
     ballotElection = await BallotElection.findOne({
-      ballotId: row.election_id,
+      electionDate: row.election_date,
+      state: row.state,
     });
   } catch (e) {
     console.log('error finding ballotElection', e);
-  }
-  if (!ballotElection) {
-    console.log('ballotElection not found');
-    const encodedElectionId = await sails.helpers.ballotready.encodeId(
-      row.election_id,
-      'Election',
-    );
-    const election = await sails.helpers.ballotready.getElection(
-      encodedElectionId,
-    );
-    console.log('got election', election);
-    let electionData = {
-      electionId: election.databaseId,
-      electionDay: election.electionDay,
-      state: election.state,
-      data: { ...election },
-    };
-
-    console.log('adding election', electionData);
-    await sails.helpers.ballotready.addElection(electionData);
-
-    ballotElection = await BallotElection.findOne({
-      ballotId: row.election_id,
-    });
-  }
-
-  if (!ballotElection) {
-    await sendSlackNotification(
-      'BallotElection not found',
-      `BallotElection not found for election ${row.election_id}`,
-      'dev',
-    );
-  }
-
-  let ballotPosition;
-  let positionId = row.position_id;
-  try {
-    ballotPosition = await BallotPosition.findOne({
-      ballotId: positionId,
-    });
-  } catch (e) {
-    console.log('error finding ballotPosition', e);
-  }
-  if (!ballotPosition) {
-    console.log('ballotPosition not found');
-
-    const encodedPositionId = await sails.helpers.ballotready.encodeId(
-      positionId,
-      'Position',
-    );
-    const position = await sails.helpers.ballotready.getPosition(
-      encodedPositionId,
-    );
-    console.log('got position', position);
-    let positionData = {
-      positionId: position.databaseId,
-      electionId: ballotElection.id,
-      state: position.state,
-      ballotElection: ballotElection.id,
-      data: { ...position },
-    };
-
-    console.log('adding position', positionData);
-    await sails.helpers.ballotready.addPosition(positionData);
-
-    ballotPosition = await BallotPosition.findOne({
-      ballotId: positionId,
-    });
-  }
-
-  if (!ballotPosition) {
-    await sendSlackNotification(
-      'BallotPosition not found',
-      `BallotPosition not found for position ${row.position_id}`,
-      'dev',
-    );
-  }
-
-  let ballotRace = await BallotRace.findOne({
-    ballotId: row.race_id,
-  });
-  if (!ballotRace) {
-    console.log('ballotRace not found');
-    // console.log('getting race', row.race_id);
-    // the row.race_id is the Database ID but the ballotready API uses the hashed ID
-    const raceId = row.race_id;
-    const encodedRaceId = await sails.helpers.ballotready.encodeId(
-      raceId,
-      'PositionElection',
-    );
-    const race = await sails.helpers.ballotready.getRace(encodedRaceId);
-    console.log('got race data from ballotReady api', race);
-
-    let filingPeriods = [];
-    for (const fp of race.filingPeriods) {
-      filingPeriods.push({
-        start_on: fp.startOn,
-        end_on: fp.endOn,
-      });
-    }
-    // for now we match the format of the existing filing_periods field (from csv parse in seed/races)
-    // but we may want to change this to an array of objects in the future
-    // would need to fix it here and in seed/races and truncate/rerun the seed.
-    let fpString = JSON.stringify(filingPeriods);
-    fpString = fpString.replace(/"/g, '\\"').replace(/:/g, '=>');
-
-    let raceData = {
-      position_name: race.position.name,
-      state: race.position.state,
-      race_id: race.databaseId,
-      is_primary: race.isPrimary,
-      is_judicial: race.position.judicial,
-      sub_area_name: race.position.subAreaName,
-      sub_area_value: race.position.subAreaValue,
-      filing_periods: fpString,
-      election_day: race.election.electionDay,
-      normalized_position_name: race.position.normalizedPosition.name,
-      level: race.position.level,
-    };
-
-    console.log('adding race', raceData);
-    await sails.helpers.ballotready.addRace(raceData);
-
-    ballotRace = await BallotRace.findOne({
-      ballotId: row.race_id,
-    });
-  }
-
-  if (!ballotRace) {
-    await sendSlackNotification(
-      'BallotRace not found',
-      `BallotRace not found for race ${row.race_id}`,
-      'dev',
-    );
   }
 
   let campaign;
@@ -299,83 +150,39 @@ async function addNewCandidate(row) {
     }
   }
 
-  let candidacyId = row.candidacy_id;
+  console.log('row.election_date', row.election_date);
 
-  // fields we don't need to search, sort, filter on.
-  let data = {
-    subAreaName: row.sub_area_name,
-    subAreaValue: row.sub_area_value,
-    subAreaNameSecondary: row.sub_area_name_secondary,
-    subAreaValueSecondary: row.sub_area_value_secondary,
-    email2: row.email2,
-    phone2: row.phone2,
-    urls: row.urls,
-    imageUrl: row.image_url,
-    suffix: row.suffix,
-    nickname: row.nickname,
-    middleName: row.middle_name,
-    numberOfSeats: row.number_of_seats,
-    geofenceIsNotExact: row.geofence_is_not_exact,
-    geofenceId: row.geofence_id,
-    normalizedPositionId: row.normalized_position_id,
-    mtfcc: row.mtfcc,
-    geoId: row.geo_id,
-    candidacyId,
-    candidacyCreatedAt: row.candidacy_created_at,
-    candidacyUpdatedAt: row.candidacy_updated_at,
-  };
-
-  const isPrimary = row.is_primary && row.is_primary.toLowerCase() === 'true';
-  const isJudicial =
-    row.is_judicial && row.is_judicial.toLowerCase() === 'true';
-  const isRetention =
-    row.is_retention && row.is_retention.toLowerCase() === 'true';
-  const isRunoff = row.is_runoff && row.is_runoff.toLowerCase() === 'true';
-  const isUnexpired =
-    row.is_unexpired && row.is_unexpired.toLowerCase() === 'true';
-
-  const candidacyHashId = await sails.helpers.ballotready.encodeId(
-    candidacyId,
-    'Candidacy',
-  );
-
-  const candidacyData = await sails.helpers.ballotready.getCandidacy(
-    candidacyHashId,
-  );
-
-  const candidateHashId = await sails.helpers.ballotready.encodeId(
-    row.candidate_id,
-    'Candidate',
-  );
-
-  // fields we may wish to search, sort, filter on.
-  candidateData = {
+  const bpData = row;
+  let candidateData = {
+    bpCandidateId: row.candidate_id,
     firstName: row.first_name,
     lastName: row.last_name,
-    brData: data,
+    bpData,
     state: row.state,
-    parsedLocation: row.parsedLocation,
+    parsedLocation: row.district_name,
     normalizedPositionName: row.normalized_position_name,
-    parties: row.parties,
-    email: row?.email ? row.email : '',
-    phone: row?.phone ? row.phone : '',
-    ballotHashId: candidateHashId,
-    candidateId: row.candidate_id,
-    positionId: row.position_id,
-    electionId: row.election_id,
-    raceId: row.race_id,
+    parties: row.party_affiliation,
+    email:
+      row?.campaign_email && row.campaign_email !== ''
+        ? row.campaign_email
+        : row?.email && row.email !== ''
+        ? row.email
+        : '',
+    phone: row?.campaign_phone ? row.campaign_phone : '',
     electionName: row.election_name,
-    electionDay: row.election_day,
-    electionResult: row.election_result,
-    positionName: row.position_name,
-    level: row?.level ? row.level : '',
+    electionDay: row.election_date,
+    electionResult: row.candidate_status,
+    positionName: row.office_name,
+    level: row?.office_level ? row.office_level : '',
     tier: row.tier,
-    isJudicial: isJudicial,
-    isRetention: isRetention,
-    isPrimary: isPrimary,
-    isRunoff: isRunoff,
-    isUnexpired: isUnexpired,
-    candidacyData,
+    isJudicial: row.office_branch === 'Judicial' ? true : false,
+    isPrimary: row.stage === 'Primary' ? true : false,
+    isRunoff: row.stage === 'General Runoff' ? true : false,
+    isUnexpired:
+      row.candidate_status === 'On the Ballot' ||
+      row.candidate_status === 'Candidacy Declared'
+        ? true
+        : false,
   };
 
   if (campaign) {
@@ -416,28 +223,6 @@ async function addNewCandidate(row) {
         console.log('error making election relationship', e);
       }
     }
-    if (ballotPosition) {
-      try {
-        await BallotCandidate.addToCollection(
-          candidate.id,
-          'positions',
-          ballotPosition.id,
-        );
-      } catch (e) {
-        console.log('error making position relationship', e);
-      }
-    }
-    if (ballotRace) {
-      try {
-        await BallotCandidate.addToCollection(
-          candidate.id,
-          'races',
-          ballotRace.id,
-        );
-      } catch (e) {
-        console.log('error making race relationship', e);
-      }
-    }
   }
 }
 
@@ -469,6 +254,9 @@ async function writeDb(rows) {
       // todo: consider updating candidate if data has changed.
       // for example if the candidate has entered a new race
       console.log('candidate already exists');
+
+      // TODO: only update bpData
+
       continue;
     } else {
       console.log('adding new candidate', row.candidate_id);
@@ -504,7 +292,7 @@ async function getAllCandidateFiles(bucket, maxKeys) {
     candidateFiles = [];
     for (let i = 0; i < sortedFiles.length; i++) {
       const key = sortedFiles[i]?.Key;
-      if (key?.startsWith('candidacies_v3')) {
+      if (key?.startsWith('ballotpedia_')) {
         candidateFiles.push(key);
       }
     }
@@ -540,7 +328,7 @@ async function getLatestFiles(bucket, maxKeys) {
 function findLatestCandidatesFile(files) {
   for (let i = 0; i < files.length; i++) {
     const key = files[i]?.Key;
-    if (key?.startsWith('candidacies_v3')) {
+    if (key?.startsWith('ballotpedia_')) {
       return key;
     }
   }
@@ -603,16 +391,10 @@ async function parseFile(filePath) {
             row.urls = '';
           }
         }
-        if (row.parties !== 'Democratic' && row.parties !== 'Republican') {
-          const { name } = await sails.helpers.ballotready.extractLocation(row);
-          row.parsedLocation = name ? name.replace(/\"+/g, '') : ''; //remove quotes
-          row.normalizedPosition = row.normalizedPosition
-            ? row.normalizedPosition.replace(/\"+/g, '')
-            : ''; //remove quotes
-          row.positionName = row.positionName
-            ? row.positionName.replace(/\"+/g, '')
-            : ''; //remove quotes
-
+        if (
+          row.party_affiliation !== 'Democratic' &&
+          row.party_affiliation !== 'Republican'
+        ) {
           const reorderedRow = {};
           headers.forEach((header) => {
             reorderedRow[header] = row[header] || '';

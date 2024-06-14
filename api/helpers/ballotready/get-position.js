@@ -87,6 +87,35 @@ async function getPositionById(positionId) {
                 validFrom
                 validTo
             }
+            officeHolders {
+              nodes {
+                  centralPhone
+                  createdAt
+                  databaseId
+                  endAt
+                  id
+                  isAppointed
+                  isCurrent
+                  isOffCycle
+                  isVacant
+                  officePhone
+                  officeTitle
+                  otherPhone
+                  primaryEmail
+                  specificity
+                  startAt
+                  totalYearsInOffice
+                  updatedAt
+                  party {
+                      createdAt
+                      databaseId
+                      id
+                      name
+                      shortName
+                      updatedAt
+                  }
+              }
+          }
         }
     }
   }
