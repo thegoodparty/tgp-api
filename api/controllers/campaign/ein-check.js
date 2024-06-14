@@ -5,6 +5,19 @@ const fakeLookup = async (name, ein) => new Promise((resolve) => {
 });
 
 module.exports = {
+  inputs: {
+    name: {
+      type: 'string',
+      required: true,
+      description: 'Entity name',
+    },
+    ein: {
+      type: 'string',
+      required: true,
+      description: 'EIN',
+    },
+
+  },
   exits: {
     success: {
       description: 'Successfull EIN lookup',
@@ -18,13 +31,13 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(_, exits) {
+  fn: async function(inputs, exits) {
     const campaign = await sails.helpers.campaign.byUser(
       this.req.user,
     );
-    const { name, ein } = this.req.query;
+    const { name, ein } = inputs;
 
-    if (!name || !ein || !campaign) {
+    if (!campaign) {
       return exits.badRequest();
     }
 
