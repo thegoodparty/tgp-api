@@ -14,18 +14,16 @@ module.exports = {
       type: 'string',
     },
     electionDate: {
-      type: 'number',
+      type: 'string',
       required: true,
     },
     state: {
       type: 'string',
       required: true,
     },
-
     data: {
       type: 'json',
     },
-
     ballotPositions: {
       collection: 'ballotPosition',
       via: 'ballotElection',

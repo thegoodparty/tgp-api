@@ -28,7 +28,7 @@ module.exports = {
 
       if (existingRecord) {
         await BallotElection.updateOne({ ballotId: electionId }).set({
-          electionDate: new Date(electionDay).getTime(),
+          electionDate: electionDay, //new Date(electionDay).getTime(),
           state,
           data,
         });
@@ -41,7 +41,7 @@ module.exports = {
         const resp = await BallotElection.create({
           ballotId: electionId,
           ballotHashId: ballotHashId,
-          electionDate: new Date(electionDay).getTime(),
+          electionDate: electionDay, //new Date(electionDay).getTime(),
           state: state,
           data,
         });

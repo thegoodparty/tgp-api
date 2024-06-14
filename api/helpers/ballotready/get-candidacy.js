@@ -73,7 +73,6 @@ query Node {
                 statement
                 issue {
                     databaseId
-                    expandedText
                     id
                     name
                     pluginEnabled
