@@ -201,6 +201,7 @@ async function addNewCandidate(row) {
   }
 
   if (!ballotPosition) {
+    console.log('Error: ballotPosition not found!!!');
     await sendSlackNotification(
       'BallotPosition not found',
       `BallotPosition not found for position ${row.position_id}`,
@@ -220,6 +221,7 @@ async function addNewCandidate(row) {
       raceId,
       'PositionElection',
     );
+    console.log('encoded race id', encodedRaceId);
     const race = await sails.helpers.ballotready.getRace(encodedRaceId);
     console.log('got race data from ballotReady api', race);
 
@@ -247,7 +249,7 @@ async function addNewCandidate(row) {
       filing_periods: fpString,
       election_day: race.election.electionDay,
       normalized_position_name: race.position.normalizedPosition.name,
-      level: race.position.level,
+      level: race.position.level.toLowerCase(),
     };
 
     console.log('adding race', raceData);
@@ -259,6 +261,7 @@ async function addNewCandidate(row) {
   }
 
   if (!ballotRace) {
+    console.log('ERROR: No ballotRace!!!');
     await sendSlackNotification(
       'BallotRace not found',
       `BallotRace not found for race ${row.race_id}`,
@@ -368,7 +371,7 @@ async function addNewCandidate(row) {
     electionDay: row.election_day,
     electionResult: row.election_result,
     positionName: row.position_name,
-    level: row?.level ? row.level : '',
+    level: row?.level ? row.level.toLowerCase() : '',
     tier: row.tier,
     isJudicial: isJudicial,
     isRetention: isRetention,
