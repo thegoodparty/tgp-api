@@ -23,6 +23,8 @@ module.exports.routes = {
   'GET    /api/v1/seed/reduce': 'seed/reduce-large-csv',
   'GET    /api/v1/seed/races': 'seed/races',
   'GET    /api/v1/seed/fix-campaigns-no-users': 'seed/fix-campaigns-no-users',
+  'GET    /api/v1/seed/create-public-candidates':
+    'seed/create-public-candidates',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'GET    /api/v1/content/blog-articles-titles': 'content/blog-articles-titles',
