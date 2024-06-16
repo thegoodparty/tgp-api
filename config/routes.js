@@ -72,12 +72,6 @@ module.exports.routes = {
 
   'POST   /api/v1/visit': 'visit/create',
 
-  // candidate from campaigns
-  'GET    /api/v1/candidate': 'candidate/find',
-  'PUT    /api/v1/candidate': 'candidate/update',
-  'GET    /api/v1/candidates': 'candidate/list',
-  'GET    /api/v1/candidate/can-edit': 'candidate/can-edit',
-
   // campaign
 
   'GET    /api/v1/campaign/deadlines/refresh': 'campaign/deadlines/refresh',
