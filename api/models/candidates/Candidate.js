@@ -51,12 +51,6 @@ module.exports = {
       description: 'contact info',
     },
 
-    // one to many relationship to endorsements
-    endorsements: {
-      collection: 'endorsement',
-      via: 'candidate',
-    },
-
     // one to many relationship to candidateIssueItem
     candidatePositions: {
       collection: 'candidatePosition',
