@@ -15,7 +15,7 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { user } = inputs;
 
@@ -30,7 +30,7 @@ module.exports = {
       const campaign = campaigns && campaigns.length > 0 ?
         campaigns[0] : false;
 
-      return exits.success(campaigns);
+      return exits.success(campaign);
     } catch (e) {
       console.log('error getting campaign', e);
       return exits.success(false);

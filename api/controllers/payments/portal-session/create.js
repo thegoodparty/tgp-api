@@ -1,6 +1,6 @@
 const stripe = require('stripe')(
   sails.config.custom.stripeSecretKey ||
-  sails.config.stripeSecretKey
+  sails.config.stripeSecretKey,
 );
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -36,7 +36,7 @@ module.exports = {
     // TODO: This should be handled in a seperate webhook listener that fires upon successful subscription
     //  creation: https://docs.stripe.com/api/events#:~:text=For%20example%2C%20if%20you%20create%20a%20new%20subscription%20for%20a%20customer%2C%20you%20receive%20both%20a%20customer.subscription.created%20event%20and%20a%20charge.succeeded%20event
     //  https://goodparty.atlassian.net/browse/WEB-2266
-    const campaign = await Campaign.findOne({ user: this.req.user.id });
+    const campaign = await sails.helpers.campaign.byUser(this.req.user);
     if (!campaign) {
       return exits.error('Could not fetch campaign');
     }
