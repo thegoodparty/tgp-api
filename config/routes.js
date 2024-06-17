@@ -203,7 +203,8 @@ module.exports.routes = {
 
   'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
   'GET   /api/v1/bp-s3': 'data-processing/bp-s3',
-  'GET   /api/v1/techspeed-enhance': 'data-processing/techspeed-enhance',
+  'GET   /api/v1/techspeed-enhance-cron':
+    'data-processing/techspeed-enhance-cron',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
