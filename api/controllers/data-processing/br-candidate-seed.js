@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const csvParser = require('csv-parser');
 const slugify = require('slugify');
+const async = require('async');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -18,7 +19,7 @@ const s3Bucket = 'goodparty-ballotready';
 const s3 = new AWS.S3();
 
 let maxRows;
-// let maxRows = 20; // good for local dev.
+// let maxRows = 25; // good for local dev.
 let count = 0;
 
 module.exports = {
@@ -70,17 +71,44 @@ async function processCsvFromS3(bucketName, objectKey, processRowCallback) {
 
     const s3Stream = s3.getObject(params).createReadStream();
 
+    // Create an async queue to process rows one at a time
+    const q = async.queue(async (row, callback) => {
+      try {
+        await processRowCallback(row);
+        if (callback) {
+          return callback();
+        }
+      } catch (err) {
+        if (callback) {
+          return callback(err);
+        }
+      }
+    }, 1); // concurrency set to 1
+
+    q.drain(() => {
+      console.log('All rows have been processed.');
+      resolve();
+    });
+
+    q.error((err) => {
+      console.error('Error in processing queue:', err);
+      reject(err);
+    });
+
     s3Stream
       .pipe(csvParser())
       .on('data', (row) => {
-        processRowCallback(row);
+        q.push(row, (err) => {
+          if (err) {
+            console.error('Error processing row:', err);
+          }
+        });
       })
       .on('end', () => {
-        console.log('CSV file successfully processed');
-        resolve();
+        console.log('CSV file successfully streamed.');
       })
       .on('error', (error) => {
-        console.error('Error while processing CSV file:', error);
+        console.error('Error while streaming CSV file:', error);
         reject(error);
       });
   });
