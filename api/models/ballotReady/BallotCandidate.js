@@ -7,6 +7,21 @@
 
 module.exports = {
   attributes: {
+    slug: {
+      type: 'string',
+      required: true,
+      unique: true,
+    },
+    brCandidateId: {
+      // note: a unique sparse index is created in scripts/indexes.js
+      type: 'string',
+    },
+
+    bpCandidateId: {
+      // note: a unique sparse index is created in scripts/indexes.js
+      type: 'string',
+    },
+
     firstName: {
       type: 'string',
       required: true,
@@ -29,15 +44,7 @@ module.exports = {
     normalizedPositionName: {
       type: 'string',
     },
-    brData: {
-      type: 'json',
-    },
-    bpData: {
-      type: 'json',
-    },
-    vendorTsData: {
-      type: 'json',
-    },
+
     email: {
       // note: a unique sparse index is created in scripts/indexes.js
       type: 'string',
@@ -54,17 +61,11 @@ module.exports = {
       // note: a unique sparse index is created in scripts/indexes.js
       type: 'string',
     },
-    candidateId: {
-      // note: a unique sparse index is created in scripts/indexes.js
-      type: 'string',
-    },
+
     ballotHashId: {
       type: 'string',
     },
-    bpCandidateId: {
-      // note: a unique sparse index is created in scripts/indexes.js
-      type: 'string',
-    },
+
     raceId: {
       type: 'string',
     },
@@ -74,24 +75,8 @@ module.exports = {
     electionId: {
       type: 'string',
     },
-    // many to many relationships
-    positions: {
-      collection: 'BallotPosition',
-      via: 'candidates',
-    },
-    elections: {
-      collection: 'BallotElection',
-      via: 'candidates',
-    },
-    races: {
-      collection: 'BallotRace',
-      via: 'candidates',
-    },
-    // one to one relationship
-    campaign: {
-      model: 'Campaign',
-    },
-    parties: {
+
+    party: {
       type: 'string',
     },
     electionName: {
@@ -123,6 +108,48 @@ module.exports = {
     },
     isUnexpired: {
       type: 'boolean',
+    },
+
+    brData: {
+      type: 'json',
+    },
+
+    brCandidacyData: {
+      type: 'json',
+    },
+
+    brPositionData: {
+      type: 'json',
+    },
+
+    brElectionData: {
+      type: 'json',
+    },
+
+    brRaceData: {
+      type: 'json',
+    },
+
+    p2vData: {
+      type: 'json',
+    },
+
+    bpData: {
+      type: 'json',
+    },
+    vendorTsData: {
+      type: 'json',
+    },
+
+    // many to many relationships
+
+    races: {
+      collection: 'BallotRace',
+      via: 'candidates',
+    },
+    // one to one relationship
+    campaign: {
+      model: 'Campaign',
     },
   },
 };

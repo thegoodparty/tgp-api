@@ -87,7 +87,8 @@ module.exports.routes = {
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
 
   'GET /api/v1/campaign/ein-check': 'campaign/ein-check',
-  'POST /api/v1/campaign/ein-support-document': 'campaign/ein-support-document-upload',
+  'POST /api/v1/campaign/ein-support-document':
+    'campaign/ein-support-document-upload',
 
   // volunteerInvitation
 
@@ -204,7 +205,8 @@ module.exports.routes = {
   'GET   /api/v1/race': 'race/get',
   'GET   /api/v1/race/csv': 'race/races-csv',
 
-  'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
+  'GET   /api/v1/ballotready-s3': 'data-processing/br-candidate-seed', // TODO: change cron job and then remove the route
+  'GET   /api/v1/br-candidate-seed': 'data-processing/br-candidate-seed',
   'GET   /api/v1/bp-s3': 'data-processing/bp-s3',
   'GET   /api/v1/techspeed-enhance-cron':
     'data-processing/techspeed-enhance-cron',
@@ -249,8 +251,11 @@ module.exports.routes = {
     'campaign/doorKnocking/survey/skip',
 
   // Payment Processor Integrations
-  'POST /api/v1/payments/purchase/checkout-session': 'payments/checkout-session/create',
-  'PATCH /api/v1/payments/purchase/checkout-session/:sessionId': 'payments/checkout-session/update',
+  'POST /api/v1/payments/purchase/checkout-session':
+    'payments/checkout-session/create',
+  'PATCH /api/v1/payments/purchase/checkout-session/:sessionId':
+    'payments/checkout-session/update',
   'GET /api/v1/payments/purchase/portal-session': 'payments/portal-session/get',
-  'POST /api/v1/payments/purchase/portal-session': 'payments/portal-session/create',
+  'POST /api/v1/payments/purchase/portal-session':
+    'payments/portal-session/create',
 };

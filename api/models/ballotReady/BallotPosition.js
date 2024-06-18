@@ -19,9 +19,5 @@ module.exports = {
     ballotElection: {
       model: 'ballotElection',
     },
-    candidates: {
-      collection: 'ballotCandidate',
-      via: 'positions',
-    },
   },
 };

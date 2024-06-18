@@ -28,9 +28,5 @@ module.exports = {
       collection: 'ballotPosition',
       via: 'ballotElection',
     },
-    candidates: {
-      collection: 'ballotCandidate',
-      via: 'elections',
-    },
   },
 };
