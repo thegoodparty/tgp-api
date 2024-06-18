@@ -1,10 +1,5 @@
-console.log('Trying to get this thing to deploy...')
-
-const stripeSecretKey = sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey;
-console.log('create-session module - stripeSecretKey => ', stripeSecretKey)
-
 const stripe = require('stripe')(
-  stripeSecretKey
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey
 )
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -25,11 +20,6 @@ module.exports = {
   },
 
   fn: async function(inputs, exits) {
-    console.log(`stripeSecretKey =>`, stripeSecretKey)
-    await sails.helpers.slack.slackHelper({
-      title: 'Create Stripe Checkout Session',
-      message: `Stripe secret key => ${stripeSecretKey}`,
-    }, 'dev', false)
     const prices = await stripe.prices.list();
 
     const session = await stripe.checkout.sessions.create({
