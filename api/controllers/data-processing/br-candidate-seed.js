@@ -131,88 +131,98 @@ Row example:
 */
 
 async function processRow(row) {
-  // save all the fields to BallotCandidate Model and the entire row as brData
-  const {
-    id,
-    candidacy_id,
-    election_id,
-    position_id,
-    first_name,
-    middle_name,
-    last_name,
-    state,
-    position_name,
-    normalized_position_name,
-    is_judicial,
-    is_retention,
-    is_unexpired,
-    phone,
-    email,
-    election_day,
-    level,
-    tier,
-    parties,
-    election_result,
-    race_id,
-    election_name,
-  } = row;
+  try {
+    // save all the fields to BallotCandidate Model and the entire row as brData
+    const {
+      id,
+      candidacy_id,
+      election_id,
+      position_id,
+      first_name,
+      middle_name,
+      last_name,
+      state,
+      position_name,
+      normalized_position_name,
+      is_judicial,
+      is_retention,
+      is_unexpired,
+      phone,
+      email,
+      election_day,
+      level,
+      tier,
+      parties,
+      election_result,
+      race_id,
+      election_name,
+    } = row;
 
-  const slug = slugify(`${first_name}-${last_name}-${position_name}`, {
-    lower: true,
-  });
+    const slug = slugify(`${first_name}-${last_name}-${position_name}`, {
+      lower: true,
+    });
 
-  let party = parties;
-  if (parties) {
-    const match = parties.match(/"name"=>\s*"([^"]+)"/);
-    if (match && match[1]) {
-      party = match[1];
+    let party = parties;
+    if (parties) {
+      const match = parties.match(/"name"=>\s*"([^"]+)"/);
+      if (match && match[1]) {
+        party = match[1];
+      }
     }
-  }
-  if (party === 'Republican' || party === 'Democratic') {
-    return;
-  }
-  if (maxRows) {
-    count++;
-    if (count > maxRows) {
+    console.log('candidate', slug, party);
+    if (party === 'Republican' || party === 'Democratic') {
       return;
     }
-  }
+    if (maxRows) {
+      count++;
+      if (count > maxRows) {
+        return;
+      }
+    }
 
-  const dbCandidate = await BallotCandidate.findOrCreate(
-    {
-      brCandidateId: id,
-    },
-    {
-      brCandidateId: id,
+    const dbCandidate = await BallotCandidate.findOrCreate(
+      {
+        brCandidateId: id,
+      },
+      {
+        brCandidateId: id,
+        slug,
+        firstName: first_name,
+      },
+    );
+    await BallotCandidate.updateOne({ id: dbCandidate.id }).set({
+      brCandidateId: candidacy_id,
       slug,
+      electionId: election_id,
+      positionId: position_id,
       firstName: first_name,
-    },
-  );
-  await BallotCandidate.updateOne({ id: dbCandidate.id }).set({
-    brCandidateId: candidacy_id,
-    slug,
-    electionId: election_id,
-    positionId: position_id,
-    firstName: first_name,
-    middleName: middle_name,
-    lastName: last_name,
-    state,
-    positionName: position_name,
-    electionName: election_name,
-    normalizedPositionName: normalized_position_name,
-    isJudicial: is_judicial === 'true',
-    isRetention: is_retention === 'true',
-    isUnexpired: is_unexpired === 'true',
-    phone,
-    email,
-    electionDay: election_day,
-    level,
-    tier,
-    party,
-    electionResult: election_result,
-    brData: row,
-    raceId: race_id,
-  });
+      middleName: middle_name,
+      lastName: last_name,
+      state,
+      positionName: position_name,
+      electionName: election_name,
+      normalizedPositionName: normalized_position_name,
+      isJudicial: is_judicial === 'true',
+      isRetention: is_retention === 'true',
+      isUnexpired: is_unexpired === 'true',
+      phone,
+      email,
+      electionDay: election_day,
+      level,
+      tier,
+      party,
+      electionResult: election_result,
+      brData: row,
+      raceId: race_id,
+    });
+  } catch (e) {
+    console.log('error at data-processing/ballot-s3 processRow');
+    console.log(e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'data-processing/ballot-s3 processRow',
+      e,
+    );
+  }
 }
 
 async function getLatestFiles(bucket, maxKeys) {
