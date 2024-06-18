@@ -15,17 +15,20 @@ module.exports = {
     },
   },
 
-  fn: async function (inputs, exits) {
+  fn: async function(inputs, exits) {
     try {
       const { user } = inputs;
 
       const campaigns = await Campaign.find({
         user: user.id,
       }).populate('pathToVictory');
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0];
+
+      if (!campaigns) {
+        throw new Error('No campaigns found for given user');
       }
+
+      const campaign = campaigns && campaigns.length > 0 ?
+        campaigns[0] : false;
 
       return exits.success(campaign);
     } catch (e) {

@@ -86,6 +86,9 @@ module.exports.routes = {
   'DELETE    /api/v1/campaign/endorsement': 'campaign/endorsement/delete',
   'PUT    /api/v1/campaign/endorsement': 'campaign/endorsement/update',
 
+  'GET /api/v1/campaign/ein-check': 'campaign/ein-check',
+  'POST /api/v1/campaign/ein-support-document': 'campaign/ein-support-document-upload',
+
   // volunteerInvitation
 
   'POST   /api/v1/campaign/volunteer/invitation':
@@ -244,4 +247,10 @@ module.exports.routes = {
     'campaign/doorKnocking/survey/complete',
   'PUT   /api/v1/campaign/door-knocking/skip-survey':
     'campaign/doorKnocking/survey/skip',
+
+  // Payment Processor Integrations
+  'POST /api/v1/payments/purchase/checkout-session': 'payments/checkout-session/create',
+  'PATCH /api/v1/payments/purchase/checkout-session/:sessionId': 'payments/checkout-session/update',
+  'GET /api/v1/payments/purchase/portal-session': 'payments/portal-session/get',
+  'POST /api/v1/payments/purchase/portal-session': 'payments/portal-session/create',
 };
