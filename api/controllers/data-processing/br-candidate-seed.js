@@ -27,10 +27,6 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false,
     },
-    maxRows: {
-      type: 'number',
-      defaultsTo: 0,
-    },
   },
 
   exits: {
