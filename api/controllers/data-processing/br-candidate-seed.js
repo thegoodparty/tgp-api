@@ -174,10 +174,7 @@ async function processRow(row) {
         party = match[1];
       }
     }
-    console.log('candidate', slug, party);
-    if (party === 'Republican' || party === 'Democratic') {
-      return;
-    }
+
     if (maxRows) {
       count++;
       if (count > maxRows) {
