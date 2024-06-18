@@ -84,6 +84,7 @@ async function processCsvFromS3(bucketName, objectKey, processRowCallback) {
 
 /*
 Row example:
+
 {
   id: '919151',
   candidacy_id: '919151',
