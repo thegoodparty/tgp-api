@@ -1,3 +1,5 @@
+console.log('Trying to get this thing to deploy...')
+
 const stripeSecretKey = sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey;
 console.log('create-session module - stripeSecretKey => ', stripeSecretKey)
 
