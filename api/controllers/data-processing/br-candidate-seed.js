@@ -41,6 +41,10 @@ module.exports = {
 
       files = await getLatestFiles(s3Bucket, 200);
       const objectKey = findLatestCandidatesFile(files);
+      console.log('objectKey', objectKey);
+      await sails.helpers.slack.errorLoggerHelper('data-processing/starting', {
+        objectKey,
+      });
       await processCsvFromS3(s3Bucket, objectKey, processRow);
       return exits.success({ message: 'ok' });
     } catch (e) {
@@ -132,6 +136,7 @@ Row example:
 
 async function processRow(row) {
   try {
+    console.log('row', row);
     // save all the fields to BallotCandidate Model and the entire row as brData
     const {
       id,
