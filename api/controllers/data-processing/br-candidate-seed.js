@@ -136,7 +136,7 @@ Row example:
 
 async function processRow(row) {
   try {
-    console.log('row', row);
+    console.log('row.', row);
     // save all the fields to BallotCandidate Model and the entire row as brData
     const {
       id,
