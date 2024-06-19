@@ -55,6 +55,10 @@ module.exports = {
           console.log(e);
         }
       }
+      await sails.helpers.slack.errorLoggerHelper(
+        'Finished processing positions',
+        {},
+      );
       return exits.success({ message: 'ok' });
     } catch (e) {
       console.log('error at data-processing/br-positions');
