@@ -10,33 +10,40 @@ module.exports = {
       required: true,
       description: 'PDF document to upload to S3',
       example: '===',
+    }, campaignId: {
+      type: 'number',
+      description: 'Campaign id to upload document for (admin use only)',
     },
   },
   files: ['document'],
   exits: {
     success: {
-      description: 'Document uploaded successfully',
-      responseType: 'ok',
-    },
-    failure: {
-      description: 'Document upload failed',
-      responseType: 'serverError',
-    },
-    badRequest: {
-      description: 'Missing document',
-      responseType: 'badRequest',
-    },
+      description: 'Document uploaded successfully', responseType: 'ok',
+    }, failure: {
+      description: 'Document upload failed', responseType: 'serverError',
+    }, badRequest: {
+      description: 'Missing document', responseType: 'badRequest',
+    }, forbidden: {
+      description: 'Unauthorized',
+      responseType: 'forbidden',
+    }
   },
   fn: async function(inputs, exits) {
-    const { document } = inputs;
-    const { success, failure, badRequest } = exits;
-    const { user, file } = this.req;
+    const { document, campaignId } = inputs;
+    const { success, failure } = exits;
+    const { user } = this.req;
 
     if (!document) {
       return ('document is required');
     }
 
-    const campaignRecord = await sails.helpers.campaign.byUser(user);
+    if (campaignId && !user.isAdmin) {
+      return exits.forbidden();
+    }
+
+    const campaignRecord = campaignId ? await Campaign.findOne({
+      id: campaignId,
+    }) : await sails.helpers.campaign.byUser(user);
 
     if (!campaignRecord) {
       return exits.forbidden();
@@ -49,13 +56,20 @@ module.exports = {
     let uploadedFile = null;
     try {
       uploadedFile = await uploadSingleFileToS3({
-        file: document,
-        bucket,
-        fileName,
+        file: document, bucket, fileName,
       });
     } catch (e) {
       sails.log.error('Error uploading EIN supporting document', e);
       return failure('Error uploading EIN supporting document');
+    }
+
+    try {
+      await sails.helpers.campaign.patch(
+        campaignRecord.id, 'details', 'einSupportingDocument', fileName,
+      );
+    } catch (e) {
+      sails.log.error('Error updating campaign with EIN supporting document', e);
+      return failure('Error updating campaign with EIN supporting document');
     }
 
     return success({

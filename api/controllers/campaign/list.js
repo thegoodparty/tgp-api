@@ -80,8 +80,8 @@ module.exports = {
         });
       } else {
         const query = `
-        SELECT 
-          campaign.*, 
+        SELECT
+          campaign.*,
           "user"."firstName" as "firstName", "user"."lastName" as "lastName", "user".phone as phone, "user".email as email,
           pathToVictory.data as "pathToVictory"
         FROM public.campaign
@@ -119,8 +119,6 @@ module.exports = {
             return campaign;
           });
         }
-
-        console.log('cleanCampaigns', cleanCampaigns);
 
         return exits.success({
           campaigns: cleanCampaigns,
