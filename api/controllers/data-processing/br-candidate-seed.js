@@ -18,8 +18,8 @@ const s3Bucket = 'goodparty-ballotready';
 
 const s3 = new AWS.S3();
 
-// let maxRows;
-let maxRows = 25; // good for local dev.
+let maxRows;
+// let maxRows = 25; // good for local dev.
 let count = 0;
 
 module.exports = {
@@ -42,11 +42,17 @@ module.exports = {
 
       files = await getLatestFiles(s3Bucket, 200);
       const objectKey = findLatestCandidatesFile(files);
-      console.log('objectKey', objectKey);
-      await sails.helpers.slack.errorLoggerHelper('data-processing/starting', {
-        objectKey,
-      });
+      await sails.helpers.slack.errorLoggerHelper(
+        'data-processing/starting candidate seed',
+        {
+          objectKey,
+        },
+      );
       await processCsvFromS3(s3Bucket, objectKey, processRow);
+      await sails.helpers.slack.errorLoggerHelper(
+        'data-processing/ finished seed candidates',
+        {},
+      );
       return exits.success({ message: 'ok' });
     } catch (e) {
       console.log('error at data-processing/ballot-s3');
