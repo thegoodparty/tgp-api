@@ -21,10 +21,10 @@ module.exports = {
 
     // one-to-one
     user: {
-      model: 'user'
+      model: 'user',
     },
     createdBy: {
-      model: 'user'
+      model: 'user',
     },
 
     // has one candidate

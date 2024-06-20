@@ -13,8 +13,8 @@ module.exports = {
     },
     icon: {
       type: 'string',
-      allowNull: true
-    }
+      allowNull: true,
+    },
   },
 
   exits: {
@@ -29,28 +29,28 @@ module.exports = {
   },
 
   async fn(inputs, exits) {
-    let iconUrl = null
+    let iconUrl = null;
     try {
       const { id, name, icon } = inputs;
       if (icon?.startsWith('http')) {
-        iconUrl = icon
+        iconUrl = icon;
       } else if (icon) {
         iconUrl = await sails.helpers.svgUploader(
           `topissue-icon-${id}-${md5(icon)}.svg`,
           'top-issue-icons',
-          icon
-        )
+          icon,
+        );
       }
 
       await TopIssue.updateOne({ id }).set({
         name,
-        icon: iconUrl
+        icon: iconUrl,
       });
 
       return exits.success({
         id,
         name,
-        icon: iconUrl
+        icon: iconUrl,
       });
     } catch (e) {
       console.log('error at topIssue/update', e);

@@ -1,8 +1,13 @@
-const fakeLookup = async (name, ein) => new Promise((resolve) => {
-  setTimeout(() => resolve({
-    valid: true,
-  }), 500);
-});
+const fakeLookup = async (name, ein) =>
+  new Promise((resolve) => {
+    setTimeout(
+      () =>
+        resolve({
+          valid: true,
+        }),
+      500,
+    );
+  });
 
 module.exports = {
   inputs: {
@@ -16,7 +21,6 @@ module.exports = {
       required: true,
       description: 'EIN',
     },
-
   },
   exits: {
     success: {
@@ -31,10 +35,8 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
-    const campaign = await sails.helpers.campaign.byUser(
-      this.req.user,
-    );
+  fn: async function (inputs, exits) {
+    const campaign = await sails.helpers.campaign.byUser(this.req.user);
     const { name, ein } = inputs;
 
     if (!campaign) {

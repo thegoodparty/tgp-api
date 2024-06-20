@@ -13,7 +13,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { candidates, chamber } = inputs;
 
@@ -61,7 +61,7 @@ module.exports = {
   },
 };
 
-const findIncumbentRaised = candidates => {
+const findIncumbentRaised = (candidates) => {
   let maxRaised = 0;
   for (let i = 0; i < candidates.length; i++) {
     if (candidates[i].isIncumbent) {

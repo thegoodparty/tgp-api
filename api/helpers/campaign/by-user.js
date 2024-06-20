@@ -15,7 +15,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { user } = inputs;
 
@@ -27,8 +27,7 @@ module.exports = {
         throw new Error('No campaigns found for given user');
       }
 
-      const campaign = campaigns && campaigns.length > 0 ?
-        campaigns[0] : false;
+      const campaign = campaigns && campaigns.length > 0 ? campaigns[0] : false;
 
       return exits.success(campaign);
     } catch (e) {

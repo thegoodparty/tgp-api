@@ -1,6 +1,5 @@
 const stripe = require('stripe')(
-  sails.config.custom.stripeSecretKey ||
-  sails.config.stripeSecretKey
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
 );
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -18,7 +17,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const { customerId } = inputs;
     if (!customerId) {
       return exits.error('Could not retrieve portal session');
@@ -29,7 +28,6 @@ module.exports = {
         customer: customerId,
         return_url: `${appBase}/profile`,
       });
-
 
       if (!portalSession) {
         throw 'Could not create payment portal session';

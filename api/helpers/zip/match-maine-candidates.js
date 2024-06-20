@@ -53,7 +53,7 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { user } = inputs;
       const { zip } = user;
