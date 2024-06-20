@@ -11,7 +11,7 @@ module.exports = {
 
     icon: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
     },
 
     positions: {

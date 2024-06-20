@@ -9,7 +9,7 @@ module.exports = {
     },
     icon: {
       type: 'string',
-      allowNull: true
+      allowNull: true,
     },
   },
 
@@ -31,11 +31,13 @@ module.exports = {
         name,
       }).fetch();
 
-      const iconUrl = icon ? await sails.helpers.svgUploader(
-        `topissue-icon-${id}-${md5(icon)}.svg`,
-        'top-issue-icons',
-        icon,
-      ) : null
+      const iconUrl = icon
+        ? await sails.helpers.svgUploader(
+            `topissue-icon-${id}-${md5(icon)}.svg`,
+            'top-issue-icons',
+            icon,
+          )
+        : null;
 
       await TopIssue.updateOne({
         id,
@@ -46,7 +48,7 @@ module.exports = {
       return exits.success({
         id,
         name,
-        icon: iconUrl
+        icon: iconUrl,
       });
     } catch (e) {
       console.log('error at issue topIssue/create', e);

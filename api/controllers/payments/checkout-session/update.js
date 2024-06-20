@@ -1,6 +1,5 @@
 const stripe = require('stripe')(
-  sails.config.custom.stripeSecretKey ||
-  sails.config.stripeSecretKey
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
 );
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -19,15 +18,16 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const checkoutSessionId = this.req.param('sessionId');
-
 
     if (!checkoutSessionId) {
       return exits.badRequest('sessionId is required');
     }
 
-    const checkoutSession = await stripe.checkout.sessions.retrieve(checkoutSessionId);
+    const checkoutSession = await stripe.checkout.sessions.retrieve(
+      checkoutSessionId,
+    );
 
     if (!checkoutSession?.customer) {
       throw new Error('No customer ID found on checkout session');
@@ -43,7 +43,6 @@ module.exports = {
     }).set({
       metaData: JSON.stringify(metaData),
     });
-
 
     return exits.success();
   },

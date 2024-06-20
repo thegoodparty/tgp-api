@@ -1,6 +1,5 @@
 const stripe = require('stripe')(
-  sails.config.custom.stripeSecretKey ||
-  sails.config.stripeSecretKey,
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
 );
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
@@ -11,7 +10,8 @@ module.exports = {
   exits: {
     success: {
       statusCode: 201,
-      description: 'Successfully created payment portal redirect url and set isPro accordingly',
+      description:
+        'Successfully created payment portal redirect url and set isPro accordingly',
     },
 
     badRequest: {
@@ -20,14 +20,16 @@ module.exports = {
     },
   },
 
-  fn: async function(_, exits) {
+  fn: async function (_, exits) {
     const user = await User.findOne({ id: this.req.user.id });
     const { customerId } = JSON.parse(user.metaData);
     if (!customerId) {
       throw new Error('No customerId found on user');
     }
 
-    const portalSession = await sails.helpers.payments.createPortalSession(customerId);
+    const portalSession = await sails.helpers.payments.createPortalSession(
+      customerId,
+    );
 
     if (!portalSession) {
       return exits.error('Could not create portal session');

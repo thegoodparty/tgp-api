@@ -8,7 +8,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { candidate } = inputs;
       const { chamber, state, district, votesReceived } = candidate;

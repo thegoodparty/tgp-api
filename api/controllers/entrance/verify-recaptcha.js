@@ -36,7 +36,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       if (!googleRecaptchaKey) {
         return exits.success({
@@ -121,7 +121,7 @@ module.exports = {
   },
 };
 
-const getApiKeyCredentials = apiKey => {
+const getApiKeyCredentials = (apiKey) => {
   const sslCreds = grpc.credentials.createSsl();
 
   const authJWT = new GoogleAuth().fromAPIKey(apiKey);

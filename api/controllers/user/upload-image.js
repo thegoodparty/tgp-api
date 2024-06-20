@@ -12,7 +12,7 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const file = this.req.file('files[0]');
       const { user } = this.req;

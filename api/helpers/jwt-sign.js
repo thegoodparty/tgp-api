@@ -13,8 +13,7 @@ module.exports = {
     },
   },
 
-
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const token = await jwt.sign(
       {
         data: inputs.payload,

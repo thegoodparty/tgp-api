@@ -16,7 +16,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const { file, bucket } = inputs;
     const bucketName = bucket || `${assetsBase}/candidate-info`;
 
@@ -43,8 +43,8 @@ module.exports = {
           'cache-control': 'max-age=31536000',
         },
       },
-      function(err, uploadedFiles) {
-        uploadedFiles.forEach(file => {
+      function (err, uploadedFiles) {
+        uploadedFiles.forEach((file) => {
           response.data.files.push(file.fd);
           response.data.isImages.push(true);
         });

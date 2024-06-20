@@ -1,6 +1,6 @@
 const stripe = require('stripe')(
-  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey
-)
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
+);
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
@@ -19,7 +19,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const prices = await stripe.prices.list();
 
     const session = await stripe.checkout.sessions.create({
@@ -37,9 +37,7 @@ module.exports = {
       cancel_url: `${appBase}/dashboard`,
     });
 
-    const {
-      url: redirectUrl,
-    } = session;
+    const { url: redirectUrl } = session;
 
     return exits.success({
       redirectUrl,
