@@ -16,38 +16,40 @@ module.exports = {
     try {
       // or each BallotCandidate - get position. First look for it in the DB then in ballotReady API.
       const ballotCandidates = await BallotCandidate.find({
-        where: { positionId: { '!=': null } },
-        select: ['positionId', 'id'],
+        where: { electionId: { '!=': null } },
+        select: ['electionId', 'id'],
       });
       for (const ballotCandidate of ballotCandidates) {
         try {
-          const { positionId } = ballotCandidate;
-          if (positionId) {
-            let position = await BallotPosition.findOne({
-              ballotId: positionId,
+          const { electionId } = ballotCandidate;
+          if (electionId) {
+            let election = await BallotElection.findOne({
+              ballotId: electionId,
             });
-            if (!position) {
-              const encodedPositionId =
+            if (!election) {
+              const encodedElectionId =
                 await sails.helpers.ballotready.encodeId(
-                  positionId,
-                  'Position',
+                  electionId,
+                  'Election',
                 );
-              const brPosition = await sails.helpers.ballotready.getPosition(
-                encodedPositionId,
+              const brElection = await sails.helpers.ballotready.getElection(
+                encodedElectionId,
               );
-              if (brPosition) {
-                position = await BallotPosition.create({
-                  ballotId: positionId,
-                  ballotHashId: encodedPositionId,
-                  data: brPosition,
+              if (brElection) {
+                election = await BallotElection.create({
+                  ballotId: electionId,
+                  ballotHashId: encodedElectionId,
+                  data: brElection,
+                  electionDate: brElection.originalElectionDate,
+                  state: brElection.state,
                 }).fetch();
               }
             }
-            if (position) {
+            if (election) {
               await BallotCandidate.addToCollection(
                 ballotCandidate.id,
-                'positions',
-                position.id,
+                'elections',
+                election.id,
               );
             }
           }
@@ -61,7 +63,7 @@ module.exports = {
         }
       }
       await sails.helpers.slack.errorLoggerHelper(
-        'Finished processing positions',
+        'Finished processing elections',
         { count: ballotCandidates.length },
       );
       return exits.success({ message: 'ok', count: ballotCandidates.length });

@@ -208,6 +208,7 @@ module.exports.routes = {
   'GET   /api/v1/ballotready-s3': 'data-processing/br-candidate-seed', // TODO: change cron job and then remove the route
   'GET   /api/v1/br-candidate-seed': 'data-processing/br-candidate-seed',
   'GET   /api/v1/br-positions': 'data-processing/br-positions',
+  'GET   /api/v1/br-elections': 'data-processing/br-elections',
   'GET   /api/v1/bp-s3': 'data-processing/bp-s3',
   'GET   /api/v1/techspeed-enhance-cron':
     'data-processing/techspeed-enhance-cron',
