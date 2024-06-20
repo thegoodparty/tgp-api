@@ -1,5 +1,9 @@
-const { getEinSupportDocumentFilename } = require('../../utils/campaign/get-ein-support-document-filename');
-const { uploadSingleFileToS3 } = require('../../utils/upload-single-file-to-s3');
+const {
+  getEinSupportDocumentFilename,
+} = require('../../utils/campaign/get-ein-support-document-filename');
+const {
+  uploadSingleFileToS3,
+} = require('../../utils/upload-single-file-to-s3');
 
 module.exports = {
   friendlyName: 'Campaign EIN Support Document Upload',
@@ -27,13 +31,13 @@ module.exports = {
       responseType: 'badRequest',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const { document } = inputs;
     const { success, failure, badRequest } = exits;
     const { user, file } = this.req;
 
     if (!document) {
-      return ('document is required');
+      return 'document is required';
     }
 
     const campaignRecord = await sails.helpers.campaign.byUser(user);

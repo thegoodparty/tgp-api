@@ -442,7 +442,7 @@ module.exports = {
       description: 'Error',
     },
   },
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const { zip } = inputs;
 
     const inMaine = maineZips[zip];

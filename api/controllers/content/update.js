@@ -32,7 +32,7 @@ const schemaConfig = {
   },
   teamMilestones: {
     subKey: 'id',
-  }
+  },
 };
 
 module.exports = {

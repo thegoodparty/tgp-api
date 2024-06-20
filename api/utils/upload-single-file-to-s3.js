@@ -4,8 +4,11 @@ const skipperS3 = require('skipper-s3');
 const key = sails.config.custom.s3Key || sails.config.s3Key;
 const secret = sails.config.custom.s3Secret || sails.config.s3Secret;
 
-const uploadSingleFileToS3 = async function({
-  file, bucket, fileName = '', headers = {},
+const uploadSingleFileToS3 = async function ({
+  file,
+  bucket,
+  fileName = '',
+  headers = {},
 }) {
   if (!file) {
     const e = new Error('No File provided');
@@ -18,26 +21,29 @@ const uploadSingleFileToS3 = async function({
     return exits.failure(e);
   }
   return new Promise((resolve, reject) => {
-    file.upload({
-      adapter: skipperS3,
-      key,
-      secret,
-      bucket,
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'inline',
-        'Cache-Control': 'max-age=31536000',
-        ...headers,
+    file.upload(
+      {
+        adapter: skipperS3,
+        key,
+        secret,
+        bucket,
+        headers: {
+          'Content-Type': 'application/pdf',
+          'Content-Disposition': 'inline',
+          'Cache-Control': 'max-age=31536000',
+          ...headers,
+        },
+        //Override the filename for easy lookup later
+        saveAs: (file, cb) => cb(null, fileName || file.filename),
       },
-      //Override the filename for easy lookup later
-      saveAs: (file, cb) => cb(null, fileName || file.filename),
-    }, (err, uploadedFiles) => {
-      if (err) {
-        return reject(err);
-      }
-      const [uploadedFile] = uploadedFiles;
-      return resolve(uploadedFile);
-    });
+      (err, uploadedFiles) => {
+        if (err) {
+          return reject(err);
+        }
+        const [uploadedFile] = uploadedFiles;
+        return resolve(uploadedFile);
+      },
+    );
   });
 };
 

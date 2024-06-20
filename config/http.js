@@ -26,7 +26,7 @@ module.exports.http = {
      * (This Sails app's routes are handled by the "router" middleware below.)  *
      *                                                                          *
      ***************************************************************************/
-    requireHttps: function(req, res, next) {
+    requireHttps: function (req, res, next) {
       if (
         req.headers['x-forwarded-proto'] !== undefined &&
         req.headers['x-forwarded-proto'] === 'http'

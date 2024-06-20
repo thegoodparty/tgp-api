@@ -3,18 +3,18 @@ module.exports = {
 
   inputs: {},
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     const presidential = await PresidentialCandidate.find({
       isActive: true,
       isHidden: false,
     }).sort([{ isIncumbent: 'DESC' }, { combinedRaised: 'DESC' }]);
-    presidential.forEach(president => (president.chamber = 'Presidential'));
+    presidential.forEach((president) => (president.chamber = 'Presidential'));
 
     const incumbents = await Incumbent.find({
       isActive: true,
       isHidden: false,
     }).sort([{ raised: 'DESC' }]);
-    incumbents.forEach(incumbent => (incumbent.isIncumbent = true));
+    incumbents.forEach((incumbent) => (incumbent.isIncumbent = true));
 
     const raceCand = await RaceCandidate.find({
       isActive: true,
@@ -52,7 +52,7 @@ module.exports = {
   },
 };
 
-const candidateLastName = candidate => {
+const candidateLastName = (candidate) => {
   if (!candidate) {
     return '';
   }
