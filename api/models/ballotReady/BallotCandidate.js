@@ -118,18 +118,6 @@ module.exports = {
       type: 'json',
     },
 
-    brPositionData: {
-      type: 'json',
-    },
-
-    brElectionData: {
-      type: 'json',
-    },
-
-    brRaceData: {
-      type: 'json',
-    },
-
     p2vData: {
       type: 'json',
     },
@@ -141,10 +129,23 @@ module.exports = {
       type: 'json',
     },
 
+    // cached data from position, election etc. to prevent joins for SEO pages.
+    presentationData: {
+      type: 'json',
+    },
+
     // many to many relationships
 
     races: {
       collection: 'BallotRace',
+      via: 'candidates',
+    },
+    positions: {
+      collection: 'BallotPosition',
+      via: 'candidates',
+    },
+    elections: {
+      collection: 'BallotElection',
       via: 'candidates',
     },
     // one to one relationship

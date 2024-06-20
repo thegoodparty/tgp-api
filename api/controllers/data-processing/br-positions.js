@@ -15,7 +15,10 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       // or each BallotCandidate - get position. First look for it in the DB then in ballotReady API.
-      const ballotCandidates = await BallotCandidate.find();
+      const ballotCandidates = await BallotCandidate.find({
+        where: { positionId: { '!=': null } },
+        select: ['positionId', 'id'],
+      });
       for (const ballotCandidate of ballotCandidates) {
         try {
           const { positionId } = ballotCandidate;
@@ -41,9 +44,11 @@ module.exports = {
               }
             }
             if (position) {
-              await BallotCandidate.updateOne({ id: ballotCandidate.id }).set({
-                brPositionData: position.data,
-              });
+              await BallotCandidate.addToCollection(
+                ballotCandidate.id,
+                'positions',
+                position.id,
+              );
             }
           }
         } catch (e) {
@@ -57,9 +62,9 @@ module.exports = {
       }
       await sails.helpers.slack.errorLoggerHelper(
         'Finished processing positions',
-        {},
+        { count: ballotCandidates.length },
       );
-      return exits.success({ message: 'ok' });
+      return exits.success({ message: 'ok', count: ballotCandidates.length });
     } catch (e) {
       console.log('error at data-processing/br-positions');
       console.log(e);

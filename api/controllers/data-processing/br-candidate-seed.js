@@ -18,8 +18,8 @@ const s3Bucket = 'goodparty-ballotready';
 
 const s3 = new AWS.S3();
 
-let maxRows;
-// let maxRows = 25; // good for local dev.
+// let maxRows;
+let maxRows = 25; // good for local dev.
 let count = 0;
 
 module.exports = {
@@ -168,7 +168,8 @@ async function processRow(row) {
     // save all the fields to BallotCandidate Model and the entire row as brData
     const {
       id,
-      candidacy_id,
+      // candidacy_id,
+      candidate_id,
       election_id,
       position_id,
       first_name,
@@ -212,16 +213,16 @@ async function processRow(row) {
 
     const dbCandidate = await BallotCandidate.findOrCreate(
       {
-        brCandidateId: id,
+        brCandidateId: candidate_id,
       },
       {
-        brCandidateId: id,
+        brCandidateId: candidate_id,
         slug,
         firstName: first_name,
       },
     );
     await BallotCandidate.updateOne({ id: dbCandidate.id }).set({
-      brCandidateId: candidacy_id,
+      brCandidateId: candidate_id,
       slug,
       electionId: election_id,
       positionId: position_id,
