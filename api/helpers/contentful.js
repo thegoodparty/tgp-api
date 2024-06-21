@@ -198,7 +198,6 @@ function mapResponse(items) {
         if (!mappedResponse.redirects) {
           mappedResponse.redirects = [];
         }
-        console.log('item', item);
         mappedResponse.redirects.push({
           id: elementId,
           pathname: item.fields.pathname,
