@@ -92,10 +92,10 @@ module.exports = {
           console.log(e);
         }
       }
-      await sails.helpers.slack.errorLoggerHelper(
-        'Finished processing elections',
-        { count: ballotCandidates.length, newRaces },
-      );
+      await sails.helpers.slack.errorLoggerHelper('Finished processing races', {
+        count: ballotCandidates.length,
+        newRaces,
+      });
       return exits.success({
         message: 'ok',
         count: ballotCandidates.length,
