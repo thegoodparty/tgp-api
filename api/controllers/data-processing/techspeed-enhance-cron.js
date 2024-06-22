@@ -85,7 +85,7 @@ module.exports = {
         }
       }
       console.log('writing to sheet');
-      // write back to google sheets
+      // write back to google sheets.
       await sheets.spreadsheets.values.update({
         spreadsheetId,
         range: 'Enhanced BallotReady Candidates',
