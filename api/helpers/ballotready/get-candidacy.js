@@ -18,14 +18,11 @@ module.exports = {
     const { candidacyId } = inputs;
     let candidacy;
     try {
-      console.log('getting candidacy by candidacyId', candidacyId);
+      // console.log('getting candidacy by candidacyId', candidacyId);
       candidacy = await getCandidacyById(candidacyId);
     } catch (error) {
       console.log('Error in getCandidacyById', error);
-      return exits.badRequest({
-        message: 'Error in getCandidacyById',
-        error: JSON.stringify(error),
-      });
+      return exits.success(false);
     }
     return exits.success(candidacy);
   },
@@ -85,6 +82,6 @@ query Node {
 }    
     `;
   const { node } = await sails.helpers.graphql.queryHelper(query);
-  console.log('node', node);
+  // console.log('node', node);
   return node;
 }
