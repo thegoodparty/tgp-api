@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const { google } = require('googleapis');
 const AWS = require('aws-sdk');
 const googleServiceEmail =
@@ -7,6 +8,20 @@ const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
+
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
+// the process column changes based on the app base. prod - last column, qa - second last column, dev - third last column
+let processColumn = 1;
+if (appBase === 'https://qa.goodparty.org') {
+  processColumn = 2;
+}
+if (
+  appBase === 'https://dev.goodparty.org' ||
+  appBase === 'http://localhost:4000'
+) {
+  processColumn = 3;
+}
 
 AWS.config.update({
   region: 'us-west-2',
@@ -48,24 +63,38 @@ module.exports = {
 
       const rows = readResponse.data.values;
 
-      // Create a parameters JSON object
-      const updatedRows = [];
-      for (let i = 1; i < rows.length; i++) {
-        // start from 1 to skip header
-        const row = await processRow(rows[i]);
-        console.log('processed row', row);
-        updatedRows.push(row);
-      }
+      const columnNames = rows[1];
+      let processedCount = 0;
+      for (let i = 2; i < rows.length; i++) {
+        // for (let i = 2; i < 5; i++) {
+        const row = rows[i];
+        // start from 2 to skip header
+        console.log('processing row : ', i);
+        const processedRow = await processRow(row, columnNames);
+        console.log('processedRow : ', processedRow);
+        const isUpdated = await saveVendorCandidate(processedRow);
 
-      // Write back to the sheet
-      // await sheets.spreadsheets.values.update({
-      //   spreadsheetId: spreadsheetId,
-      //   range: 'enhanced',
-      //   valueInputOption: 'RAW',
-      //   requestBody: {
-      //     values: updatedRows,
-      //   },
-      // });
+        console.log('isUpdated : ', isUpdated, i);
+
+        if (isUpdated) {
+          console.log('updated1');
+          rows[i][row.length - processColumn] = 'processed';
+          console.log('updated2');
+          processedCount++;
+          console.log('processed');
+        }
+      }
+      console.log('writing to sheet');
+      // write back to google sheets
+      await sheets.spreadsheets.values.update({
+        spreadsheetId,
+        range: 'Enhanced BallotReady Candidates',
+        valueInputOption: 'RAW',
+        requestBody: {
+          values: rows,
+        },
+      });
+      console.log('done writing to sheet');
 
       await sails.helpers.slack.errorLoggerHelper(
         'Successfully enhanced candidates',
@@ -73,7 +102,7 @@ module.exports = {
       );
 
       return exits.success({
-        updatedRows,
+        processedCount,
       });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
@@ -119,30 +148,53 @@ async function readJsonFromS3(bucketName, keyName) {
   }
 }
 
-async function processRow(candidate) {
+async function processRow(candidate, columnNames) {
   try {
     if (!candidate) {
       return [];
     }
-
-    console.log('candidate[9]', candidate[9]);
-    console.log('processing row : ', candidate);
-    if (candidate[9]) {
+    const gpProcessed = candidate[candidate.length - processColumn];
+    // console.log('processing row : ', candidate);
+    if (gpProcessed === 'processed') {
       // already processed
-      console.log('already processed', candidate.length);
+      console.log('already processed', gpProcessed, processColumn);
       return candidate;
     }
-    const firstName = candidate[0];
-    const lastName = candidate[1];
-    const city = candidate[2];
-    const state = candidate[3];
-    const email = candidate[4];
-    console.log('procsessing row : ', firstName, lastName);
+    const parsedCandidate = {};
 
-    return [...candidate];
+    for (let i = 0; i < columnNames.length - 3; i++) {
+      parsedCandidate[columnNames[i]] = candidate[i];
+    }
+
+    console.log('parsedCandidate : ', parsedCandidate);
+
+    return {
+      parsedCandidate,
+    };
   } catch (e) {
     console.log('error processing row : ', candidate);
     console.log('error : ', e);
     return [...candidate, 'n/a', 'n/a'];
+  }
+}
+
+async function saveVendorCandidate(row) {
+  try {
+    const { parsedCandidate } = row;
+    const { ballotready_candidate_id, phone_clean, email } = parsedCandidate;
+    if (!ballotready_candidate_id) {
+      console.log('missing required fields');
+      return;
+    }
+    const updated = await BallotCandidate.updateOne({
+      brCandidateId: ballotready_candidate_id,
+    }).set({
+      vendorTsPhone: phone_clean || '',
+      vendorTsEmail: email || '',
+      vendorTsData: parsedCandidate,
+    });
+    return !!updated;
+  } catch (e) {
+    console.log('error saving vendor candidate : ', e);
   }
 }
