@@ -83,12 +83,6 @@ module.exports.routes = {
   'POST /api/v1/campaign/ein-support-document/:campaignId':
     'campaign/ein-support-document-upload',
 
-  'GET /api/v1/campaign/ein-check': 'campaign/ein-check',
-  'POST /api/v1/campaign/ein-support-document':
-    'campaign/ein-support-document-upload',
-  'POST /api/v1/campaign/ein-support-document/:campaignId':
-    'campaign/ein-support-document-upload',
-
   // volunteerInvitation
 
   'POST   /api/v1/campaign/volunteer/invitation':
