@@ -29,12 +29,10 @@ module.exports = {
     try {
       const { name, office } = inputs;
       const slug = `${name}-${office}`;
-      const candidate = await PublicCandidate.findOne({ slug });
+      const candidate = await BallotCandidate.findOne({ slug });
       if (!candidate) {
         return exits.notFound();
       }
-
-      // future - queue here an update from ballotCandidate. Maybe check last updated time first.
 
       return exits.success({
         candidate,

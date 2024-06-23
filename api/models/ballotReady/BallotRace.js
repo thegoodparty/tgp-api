@@ -71,11 +71,7 @@ module.exports = {
     municipality: {
       model: 'municipality',
     },
-    // one to many
-    publicCandidates: {
-      collection: 'publicCandidate',
-      via: 'ballotRace',
-    },
+
     // many to many
     candidates: {
       collection: 'ballotCandidate',
