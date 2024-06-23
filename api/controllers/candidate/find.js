@@ -8,6 +8,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    bustCache: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -27,15 +30,27 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { name, office } = inputs;
+      const { name, office, bustCache } = inputs;
       const slug = `${name}-${office}`;
-      const candidate = await BallotCandidate.findOne({ slug });
+      let candidate = await BallotCandidate.findOne({ slug });
       if (!candidate) {
         return exits.notFound();
       }
+      if (candidate.presentationData && !bustCache) {
+        console.log('Returning cached candidate');
+        return exits.success({
+          candidate: candidate.presentationData,
+        });
+      }
+      const presentationData =
+        await sails.helpers.candidate.generatePresentation(candidate.id);
+
+      await BallotCandidate.updateOne({ slug }).set({
+        presentationData,
+      });
 
       return exits.success({
-        candidate,
+        candidate: presentationData,
       });
     } catch (e) {
       console.log('Error in find candidate', e);

@@ -18,8 +18,8 @@ const s3Bucket = 'goodparty-ballotready';
 
 const s3 = new AWS.S3();
 
-let maxRows;
-// let maxRows = 25; // good for local dev.
+// let maxRows;
+let maxRows = 25; // good for local dev.
 let count = 0;
 
 module.exports = {
