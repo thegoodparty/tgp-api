@@ -8,17 +8,17 @@ module.exports = {
     },
     isVerified: {
       type: 'boolean',
-      allowNull: true
+      allowNull: true,
     },
     dateVerified: {
       type: 'string',
       columnType: 'date',
-      allowNull: true
+      allowNull: true,
     },
-    tier:{
+    tier: {
       type: 'string',
       allowNull: true,
-      isIn: ['WIN', 'LOSE', 'TOSSUP']
+      isIn: ['WIN', 'LOSE', 'TOSSUP'],
     },
     isPro: {
       type: 'boolean',
@@ -45,8 +45,7 @@ module.exports = {
       const attributes = {};
       if (typeof isVerified !== 'undefined') {
         attributes.isVerified = isVerified;
-        attributes.dateVerified =  isVerified === null ?
-          null : new Date();
+        attributes.dateVerified = isVerified === null ? null : new Date();
       }
       if (typeof isPro !== 'undefined') {
         attributes.isPro = isPro;
@@ -54,11 +53,13 @@ module.exports = {
       if (typeof didWin !== 'undefined') {
         attributes.didWin = didWin;
       }
-      if(typeof tier !== 'undefined') {
+      if (typeof tier !== 'undefined') {
         attributes.tier = tier;
       }
 
-      const updatedCampaign = await Campaign.updateOne({ slug }).set(attributes);
+      const updatedCampaign = await Campaign.updateOne({ slug }).set(
+        attributes,
+      );
       await sails.helpers.crm.updateCampaign(updatedCampaign);
 
       return exits.success({

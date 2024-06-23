@@ -107,15 +107,15 @@ module.exports = {
       console.log('emailIndex already exists');
     }
 
-    console.log('creating sparse index on BallotCandidate.candidateId');
-    // sparse index
-    try {
-      await sails.getDatastore().sendNativeQuery(`
-        CREATE UNIQUE INDEX candidateidindex ON public.ballotcandidate ("candidateId") WHERE "candidateId" <> ''
-      `);
-    } catch (error) {
-      console.log('candidateIdIndex already exists');
-    }
+    // console.log('creating sparse index on BallotCandidate.candidateId');
+    // // sparse index
+    // try {
+    //   await sails.getDatastore().sendNativeQuery(`
+    //     CREATE UNIQUE INDEX candidateidindex ON public.ballotcandidate ("candidateId") WHERE "candidateId" <> ''
+    //   `);
+    // } catch (error) {
+    //   console.log('candidateIdIndex already exists');
+    // }
 
     console.log('creating sparse index on BallotCandidate.phone');
     // sparse index

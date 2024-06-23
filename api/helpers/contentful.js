@@ -194,6 +194,15 @@ function mapResponse(items) {
           fields: item.fields,
           id: elementId,
         });
+      } else if (itemId === 'redirects') {
+        if (!mappedResponse.redirects) {
+          mappedResponse.redirects = [];
+        }
+        mappedResponse.redirects.push({
+          id: elementId,
+          pathname: item.fields.pathname,
+          redirectUrl: item.fields.redirectUrl,
+        });
       } else if (itemId === 'blogSection') {
         if (!mappedResponse.blogSections) {
           mappedResponse.blogSections = [];

@@ -1,8 +1,7 @@
 module.exports = {
   friendlyName: 'SVG Uploader',
 
-  description:
-    'Upload an .svg file to a bucket in S3',
+  description: 'Upload an .svg file to a bucket in S3',
 
   inputs: {
     fileName: {
@@ -16,13 +15,14 @@ module.exports = {
     svgData: {
       friendlyName: 'image/scg+xml data to place in file',
       type: 'string',
-    }
+    },
   },
 
-  fn: async function(inputs, exits){
-    const { fileName, bucketName, svgData } = inputs
-    const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
-    const bucketPath = `${assetsBase}/${bucketName}`
+  fn: async function (inputs, exits) {
+    const { fileName, bucketName, svgData } = inputs;
+    const assetsBase =
+      sails.config.custom.assetsBase || sails.config.assetsBase;
+    const bucketPath = `${assetsBase}/${bucketName}`;
 
     try {
       await sails.helpers.s3Uploader(
@@ -30,14 +30,14 @@ module.exports = {
           Key: fileName,
           ContentType: `image/svg+xml`,
           CacheControl: 'max-age=31536000',
-          Body: svgData
+          Body: svgData,
         },
-        bucketPath
+        bucketPath,
       );
-      return exits.success(`https://${bucketPath}/${fileName}`)
+      return exits.success(`https://${bucketPath}/${fileName}`);
     } catch (e) {
-      console.error('Error uploading SVG', new Error(e))
-      throw new Error(e)
+      console.error('Error uploading SVG', new Error(e));
+      throw new Error(e);
     }
-  }
-}
+  },
+};

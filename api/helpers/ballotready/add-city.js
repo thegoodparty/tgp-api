@@ -65,12 +65,12 @@ module.exports = {
         console.log('error in addCity', e);
       }
     }
-    if (municipality && row?.aiExtracted) {
-      await sails.helpers.slack.errorLoggerHelper(
-        `added ai extracted city: ${city}, state: ${state_id}`,
-        {},
-      );
-    }
+    // if (municipality && row?.aiExtracted) {
+    //   await sails.helpers.slack.errorLoggerHelper(
+    //     `added ai extracted city: ${city}, state: ${state_id}`,
+    //     {},
+    //   );
+    // }
     return exits.success(municipality);
   },
 };

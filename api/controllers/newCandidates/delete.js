@@ -26,7 +26,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { id } = inputs;
       await Candidate.destroyOne({ id });

@@ -7,7 +7,7 @@
 
 const errorMsg = '';
 
-module.exports = async function(req, res, next) {
+module.exports = async function (req, res, next) {
   let token;
 
   if (req.headers && req.headers.authorization) {

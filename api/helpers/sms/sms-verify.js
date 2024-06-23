@@ -12,7 +12,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const twilioSID = sails.config.custom.twilioSID || sails.config.twilioSID;
       const twilioAuthToken =

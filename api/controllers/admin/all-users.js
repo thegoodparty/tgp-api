@@ -21,7 +21,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { dateRange } = inputs;
       let users = [];

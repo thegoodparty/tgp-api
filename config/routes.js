@@ -77,6 +77,18 @@ module.exports.routes = {
   'GET    /api/v1/campaign/deadlines/refresh': 'campaign/deadlines/refresh',
   'GET    /api/v1/campaign/deadlines': 'campaign/deadlines/list',
 
+  'GET /api/v1/campaign/ein-check': 'campaign/ein-check',
+  'POST /api/v1/campaign/ein-support-document':
+    'campaign/ein-support-document-upload',
+  'POST /api/v1/campaign/ein-support-document/:campaignId':
+    'campaign/ein-support-document-upload',
+
+  'GET /api/v1/campaign/ein-check': 'campaign/ein-check',
+  'POST /api/v1/campaign/ein-support-document':
+    'campaign/ein-support-document-upload',
+  'POST /api/v1/campaign/ein-support-document/:campaignId':
+    'campaign/ein-support-document-upload',
+
   // volunteerInvitation
 
   'POST   /api/v1/campaign/volunteer/invitation':
@@ -192,9 +204,15 @@ module.exports.routes = {
   'GET   /api/v1/race': 'race/get',
   'GET   /api/v1/race/csv': 'race/races-csv',
 
-  'GET   /api/v1/ballotready-s3': 'data-processing/ballot-s3',
+  'GET   /api/v1/ballotready-s3': 'data-processing/br-candidate-seed', // TODO: change cron job and then remove the route
+  'GET   /api/v1/br-candidate-seed': 'data-processing/br-candidate-seed',
+  'GET   /api/v1/br-positions': 'data-processing/br-positions',
+  'GET   /api/v1/br-elections': 'data-processing/br-elections',
+  'GET   /api/v1/br-races': 'data-processing/br-races',
+  'GET   /api/v1/br-candidacies': 'data-processing/br-candidacies',
   'GET   /api/v1/bp-s3': 'data-processing/bp-s3',
-  'GET   /api/v1/techspeed-enhance': 'data-processing/techspeed-enhance',
+  'GET   /api/v1/techspeed-enhance-cron':
+    'data-processing/techspeed-enhance-cron',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
@@ -234,4 +252,13 @@ module.exports.routes = {
     'campaign/doorKnocking/survey/complete',
   'PUT   /api/v1/campaign/door-knocking/skip-survey':
     'campaign/doorKnocking/survey/skip',
+
+  // Payment Processor Integrations
+  'POST /api/v1/payments/purchase/checkout-session':
+    'payments/checkout-session/create',
+  'PATCH /api/v1/payments/purchase/checkout-session/:sessionId':
+    'payments/checkout-session/update',
+  'GET /api/v1/payments/purchase/portal-session': 'payments/portal-session/get',
+  'POST /api/v1/payments/purchase/portal-session':
+    'payments/portal-session/create',
 };

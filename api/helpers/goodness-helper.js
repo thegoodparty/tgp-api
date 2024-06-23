@@ -16,7 +16,7 @@ module.exports = {
     },
   },
 
-  fn: async function(inputs, exits) {
+  fn: async function (inputs, exits) {
     try {
       const { candidate, chamber, incumbentRaised } = inputs;
 

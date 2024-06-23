@@ -91,7 +91,7 @@ function typeToQuery(type, campaign, customFilters) {
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
-    let cleanValue = l2ColumnValue.split('##').pop();
+    let cleanValue = l2ColumnValue.split('##').pop().replace(' (EST.)', '');
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
   let columns = `"LALVOTERID", 

@@ -47,10 +47,10 @@ module.exports = {
       console.log('error in addCounty', e);
     }
     if (county && row?.aiExtracted) {
-      await sails.helpers.slack.errorLoggerHelper(
-        `added ai extracted county: ${county_name}, state: ${state_id}`,
-        {},
-      );
+      // await sails.helpers.slack.errorLoggerHelper(
+      //   `added ai extracted county: ${county_name}, state: ${state_id}`,
+      //   {},
+      // );
     }
     return exits.success(county);
   },
