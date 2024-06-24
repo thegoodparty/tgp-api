@@ -52,7 +52,7 @@ module.exports = {
 
       const model = 'gpt-4o';
 
-      console.log('creating chat completion....', messages);
+      // console.log('creating chat completion....', messages);
       completion = await openai.createChatCompletion({
         model,
         messages,

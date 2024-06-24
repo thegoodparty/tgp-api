@@ -10,6 +10,8 @@ const secretAccessKey =
 const queueUrl = sails.config.custom.queueUrl || sails.config.queueUrl;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
+const handlePathToVictory = require('../../utils/campaign/handle-path-to-victory');
+
 let queue;
 AWS.config.update({
   region: 'us-west-2',
@@ -119,7 +121,7 @@ async function handleMessage(message) {
       await handleSaveBallotReadyRace(data);
       break;
     case 'pathToVictory':
-      await handlePathToVictory(data);
+      await handlePathToVictoryMessage(data);
       break;
     case 'calculateGeoLocation':
       await sails.helpers.geocoding.calculateGeoLocation();
@@ -134,10 +136,29 @@ async function handleMessage(message) {
   }
 }
 
-async function handlePathToVictory(message) {
-  //create or update each election and position
-  let {
-    campaignId,
+async function handlePathToVictoryMessage(message) {
+  try {
+    const p2vResponse = await handlePathToVictory({
+      ...message,
+    });
+    console.log('p2vResponse', p2vResponse);
+
+    await analyzePathToVictoryResponse({ ...p2vResponse });
+  } catch (e) {
+    console.log('error in consumer/handlePathToVictoryMessage', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error in consumer/handlePathToVictorMessagey',
+      e,
+    );
+    throw new Error('error in consumer/handlePathToVictoryMessage');
+  }
+}
+
+async function analyzePathToVictoryResponse(p2vResponse) {
+  const {
+    campaign,
+    pathToVictoryResponse,
+    officeResponse,
     officeName,
     electionDate,
     electionTerm,
@@ -148,157 +169,10 @@ async function handlePathToVictory(message) {
     subAreaName,
     subAreaValue,
     partisanType,
-    priorElectionDates,
-  } = message;
+  } = p2vResponse;
 
-  let pathToVictoryResponse = {
-    electionType: '',
-    electionLocation: '',
-    district: '',
-    counts: {
-      total: 0,
-      democrat: 0,
-      republican: 0,
-      independent: 0,
-    },
-  };
-
-  let campaign;
-  try {
-    campaign = await Campaign.findOne({ id: campaignId }).populate(
-      'pathToVictory',
-    );
-  } catch (e) {
-    console.log('error getting campaign', e);
-  }
-  if (!campaign) {
-    console.log('error: no campaign found');
-    return;
-  }
-  let slug = campaign.slug;
-  // sails.helpers.log(slug, 'campaign', campaign);
-  sails.helpers.log(slug, 'handling p2v message', message);
-
-  try {
-    const officeResponse = await sails.helpers.campaign.officeHelper(
-      officeName,
-      electionLevel,
-      electionState,
-      electionCounty,
-      electionMunicipality,
-      subAreaName,
-      subAreaValue,
-    );
-    sails.helpers.log(slug, 'officeResponse', officeResponse);
-
-    let electionTypes;
-    let electionDistricts;
-    if (officeResponse && officeResponse?.electionTypes) {
-      electionTypes = officeResponse.electionTypes;
-    }
-    if (officeResponse && officeResponse?.electionDistricts) {
-      electionDistricts = officeResponse.electionDistricts;
-    }
-
-    sails.helpers.log(slug, 'electionTypes', electionTypes);
-    sails.helpers.log(slug, 'electionDistricts', electionDistricts);
-
-    let attempts = 0;
-    if (electionTypes && electionTypes.length > 0) {
-      for (let electionType of electionTypes) {
-        // for now we only try the top district in the list.
-        let district;
-        sails.helpers.log(
-          slug,
-          `checking if electionDistricts has ${electionType}`,
-        );
-        let electionTypeName = electionType.column;
-        if (
-          electionDistricts &&
-          electionDistricts.hasOwnProperty(electionTypeName) &&
-          electionDistricts[electionTypeName].length > 0
-        ) {
-          district = electionDistricts[electionTypeName][0].value;
-          electionType = electionDistricts[electionTypeName][0];
-        }
-        sails.helpers.log(slug, 'district', district);
-        sails.helpers.log(slug, 'electionType', electionType);
-
-        if (officeName === 'President of the United States') {
-          // special case for President.
-          electionState = 'US';
-        }
-
-        const counts = await sails.helpers.campaign.countHelper(
-          electionTerm,
-          electionDate ? electionDate : new Date().toISOString().slice(0, 10),
-          electionState,
-          electionType.column,
-          electionType.value,
-          district,
-          partisanType,
-          priorElectionDates,
-        );
-        sails.helpers.log(slug, 'counts', counts);
-
-        if (counts && counts?.total && counts.total > 0) {
-          pathToVictoryResponse.electionType = electionType.column;
-          pathToVictoryResponse.electionLocation = electionType.value;
-          pathToVictoryResponse.electionDistrict = district;
-          pathToVictoryResponse.counts = counts;
-          await saveL2Counts(counts, electionType, district);
-          break;
-        }
-        attempts++;
-        if (attempts > 10) {
-          // we now limit electionTypes to 10.
-          break;
-        }
-      }
-    }
-
-    await analyzePathToVictoryResponse(
-      campaign,
-      pathToVictoryResponse,
-      officeResponse,
-      officeName,
-      electionDate,
-      electionTerm,
-      electionLevel,
-      electionState,
-      electionCounty,
-      electionMunicipality,
-      subAreaName,
-      subAreaValue,
-      partisanType,
-    );
-  } catch (e) {
-    sails.helpers.log(slug, 'error in consumer/handlePathToVictory', e);
-    await sails.helpers.slack.errorLoggerHelper(
-      'error in consumer/handlePathToVictory',
-      e,
-    );
-    throw new Error('error in consumer/handlePathToVictory');
-  }
-}
-
-async function analyzePathToVictoryResponse(
-  campaign,
-  pathToVictoryResponse,
-  officeResponse,
-  officeName,
-  electionDate,
-  electionTerm,
-  electionLevel,
-  electionState,
-  electionCounty,
-  electionMunicipality,
-  subAreaName,
-  subAreaValue,
-  partisanType,
-) {
   const candidateSlackMessage = `
-  • Candidate: ${campaign.data.name} [${campaign.slug}]
+  • Candidate: ${campaign.data?.name} [${campaign?.slug}]
   • Office: ${officeName}
   • Election Date: ${electionDate}
   • Election Term: ${electionTerm}
@@ -383,6 +257,13 @@ async function analyzePathToVictoryResponse(
       },
       'victory-issues',
     );
+    // We now call the completePathToVictory function to update the campaign with the pathToVictory data.
+    // However, in this case, it will not set the p2vStatus to 'Complete' or email the user.
+    // This is because we were not able to get the turnout numbers.
+    // But we still want to update the campaign with the pathToVictory data (and L2 Location for Voterfile)
+    if (campaign.pathToVictory?.data?.p2vStatus !== 'Complete') {
+      await completePathToVictory(campaign.slug, pathToVictoryResponse);
+    }
   } else {
     let debugMessage = 'No Path To Victory Found.\n';
     if (officeResponse) {
@@ -403,54 +284,12 @@ async function analyzePathToVictoryResponse(
   }
 }
 
-async function saveL2Counts(counts, electionType, district) {
-  if (electionType && electionType?.column && electionType.column !== '') {
-    try {
-      const existingObj = await l2Count.findOne({
-        electionType: electionType.column,
-        electionLocation: electionType.value,
-        electionDistrict: district,
-      });
-      if (existingObj) {
-        await l2Count
-          .updateOne({
-            electionType: electionType.column,
-            electionLocation: electionType.value,
-            electionDistrict: district,
-          })
-          .set({
-            counts: counts,
-          });
-      } else {
-        await l2Count.create({
-          electionType: electionType.column,
-          electionLocation: electionType.value,
-          electionDistrict: district,
-          counts: counts,
-        });
-      }
-    } catch (e) {
-      console.log('error saving l2Count', e);
-    }
-  }
-}
-
 async function completePathToVictory(slug, pathToVictoryResponse) {
   console.log('completing path to victory for', slug);
   console.log('pathToVictoryResponse', pathToVictoryResponse);
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
     const { user } = campaign;
-    let name;
-    if (user) {
-      name = await sails.helpers.user.name(user);
-    } else {
-      console.log('no user found for campaign', slug);
-    }
-    const variables = JSON.stringify({
-      name: name ? name : 'Friend',
-      link: `${appBase}/dashboard`,
-    });
 
     let p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
@@ -463,6 +302,15 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       await Campaign.updateOne({ id: campaign.id }).set({
         pathToVictory: p2v.id,
       });
+    }
+
+    let p2vStatus = 'Waiting';
+    if (
+      pathToVictoryResponse?.counts?.total &&
+      pathToVictoryResponse.counts.total > 0 &&
+      pathToVictoryResponse.counts.projectedTurnout > 0
+    ) {
+      p2vStatus = 'Complete';
     }
 
     const p2vData = p2v.data || {};
@@ -482,19 +330,32 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
         electionType: pathToVictoryResponse.electionType,
         electionLocation: pathToVictoryResponse.electionLocation,
         p2vCompleteDate: moment().format('YYYY-MM-DD'),
-        p2vStatus: 'Complete',
+        p2vStatus,
       },
     });
 
-    if (appBase === 'https://goodparty.org') {
-      console.log('sending email to user', user.email);
-      await sails.helpers.mailgun.mailgunTemplateSender(
-        user.email,
-        'Exciting News: Your Customized Campaign Plan is Updated!',
-        'candidate-victory-ready',
-        variables,
-        'jared@goodparty.org',
-      );
+    if (p2vStatus === 'Complete') {
+      let name;
+      if (user) {
+        name = await sails.helpers.user.name(user);
+      } else {
+        console.log('no user found for campaign', slug);
+      }
+      const variables = JSON.stringify({
+        name: name ? name : 'Friend',
+        link: `${appBase}/dashboard`,
+      });
+
+      if (appBase === 'https://goodparty.org') {
+        console.log('sending email to user', user.email);
+        await sails.helpers.mailgun.mailgunTemplateSender(
+          user.email,
+          'Exciting News: Your Customized Campaign Plan is Updated!',
+          'candidate-victory-ready',
+          variables,
+          'jared@goodparty.org',
+        );
+      }
     }
   } catch (e) {
     console.log('error updating campaign', e);

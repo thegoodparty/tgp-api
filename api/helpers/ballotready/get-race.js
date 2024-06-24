@@ -45,6 +45,7 @@ async function getRaceById(raceId) {
                     state
                 }
                 position {
+                    id
                     description
                     judicial
                     level
