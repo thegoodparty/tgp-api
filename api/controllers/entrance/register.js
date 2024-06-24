@@ -93,6 +93,14 @@ module.exports = {
         password,
       } = inputs;
 
+      const appBase = sails.config.custom.appBase || sails.config.appBase;
+      const appHost = appBase.split('://')[1];
+      let domain = appHost;
+      if (appHost.includes(':')) {
+        // support for localhost.
+        domain = appHost.split(':')[0];
+      }
+
       if (!phone && !email) {
         return exits.badRequest({
           message: 'Phone or Email are required.',
@@ -206,17 +214,17 @@ module.exports = {
       await sails.helpers.crm.updateUser(user);
 
       this.res.cookie('token', token, {
-        domain: '.goodparty.org', // Root domain
-        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS
+        domain: domain,
+        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
         httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
-        sameSite: 'None', // Allows the cookie to be sent with cross-site requests
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
       });
 
       this.res.cookie('user', JSON.stringify(user), {
-        domain: '.goodparty.org', // Root domain
-        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS
-        httpOnly: false, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
-        sameSite: 'None', // Allows the cookie to be sent with cross-site requests
+        domain: domain,
+        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
+        httpOnly: false, // We allow frontend to access the user cookie
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
       });
 
       return exits.success({
