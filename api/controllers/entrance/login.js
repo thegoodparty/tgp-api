@@ -66,7 +66,7 @@ module.exports = {
         this.res.cookie('user', JSON.stringify(user), {
           domain: '.goodparty.org', // Root domain
           secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS
-          httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
+          httpOnly: false, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
           sameSite: 'None', // Allows the cookie to be sent with cross-site requests
         });
 
@@ -97,7 +97,7 @@ module.exports = {
         this.res.cookie('user', JSON.stringify(user), {
           domain: '.goodparty.org', // Root domain
           secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS
-          httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
+          httpOnly: false, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
           sameSite: 'None', // Allows the cookie to be sent with cross-site requests
         });
 
