@@ -39,6 +39,7 @@ module.exports.http = {
 
     order: [
       'cookieParser',
+      'tokenExtractor',
       'session',
       'bodyParser',
       'compress',
@@ -60,5 +61,18 @@ module.exports.http = {
     //   var middlewareFn = skipper({ strict: true });
     //   return middlewareFn;
     // })(),
+
+    // cookieParser: cookieParser(),
+
+    // Custom middleware to extract the jwt token from the "token" cookie and add it as an authorization header to the request
+    tokenExtractor: function (req, res, next) {
+      const token = req.cookies.token; // Get the token from the cookie
+
+      if (token) {
+        req.headers.authorization = `Bearer ${token}`; // Set the token as an Authorization header
+      }
+
+      return next();
+    },
   },
 };
