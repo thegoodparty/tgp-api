@@ -33,4 +33,10 @@ module.exports.session = {
   // isSessionDisabled: function (req){
   //   return !!req.path.match(req._sails.LOOKS_LIKE_ASSET_RX);
   // },
+
+  cookie: {
+    secure: true, // Ensures the cookie is only sent over HTTPS
+    httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
+    sameSite: 'None', // Allows the cookie to be sent with cross-site requests
+  },
 };
