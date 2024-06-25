@@ -39,7 +39,7 @@ module.exports = {
         domain: domain,
         expires: new Date(0), // Set the cookie to expire immediately
         secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-        httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
+        httpOnly: false, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
       });
       return exits.success();
