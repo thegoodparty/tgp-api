@@ -12,7 +12,7 @@ module.exports = {
         domain = 'localhost';
       } else {
         domain = '.goodparty.org';
-        if (appBase === 'https://prod.goodparty.org') {
+        if (appBase === 'https://goodparty.org') {
           userCookieName = 'user_prod';
           tokenCookieName = 'token_prod';
         } else if (appBase === 'https://dev.goodparty.org') {
