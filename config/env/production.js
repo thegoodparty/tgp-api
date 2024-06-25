@@ -16,11 +16,5 @@ module.exports = {
     ssl: {
       rejectUnauthorized: false,
     },
-    http: {
-      trustProxy: true, // We need this because EB runs ALB which proxies requests via nginx.
-    },
-    session: {
-      secure: true, // Ensure cookies are only sent over HTTPS
-    },
   },
 };
