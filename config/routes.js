@@ -31,6 +31,7 @@ module.exports.routes = {
   'GET    /api/v1/content/blog-articles-by-tag': 'content/blog-articles-by-tag',
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
+  'GET    /api/v1/entrance/logout': 'entrance/logout',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
   // 'GET    /api/v1/entrance/verify-recaptcha': 'entrance/verify-recaptcha',
   'PUT    /api/v1/entrance/twitter-login': 'entrance/twitter-login',
