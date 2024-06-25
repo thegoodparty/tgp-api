@@ -24,10 +24,18 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { domain, tokenCookieName } =
+      const { domain, userCookieName, tokenCookieName } =
         await sails.helpers.user.getCookieDomain();
 
       this.res.cookie(tokenCookieName, '', {
+        domain: domain,
+        expires: new Date(0), // Set the cookie to expire immediately
+        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
+        httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
+      });
+
+      this.res.cookie(userCookieName, '', {
         domain: domain,
         expires: new Date(0), // Set the cookie to expire immediately
         secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
