@@ -76,11 +76,7 @@ module.exports.http = {
         tokenCookieName = 'token_qa';
       }
 
-      if (
-        req.cookies &&
-        req.cookies[tokenCookieName] &&
-        !req.cookies?.impersonateToken
-      ) {
+      if (req.cookies && req.cookies[tokenCookieName]) {
         const token = req.cookies[tokenCookieName]; // Get the token from the cookie
         if (token) {
           req.headers.authorization = `Bearer ${token}`; // Set the token as an Authorization header
