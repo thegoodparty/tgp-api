@@ -67,7 +67,7 @@ module.exports.http = {
     // Custom middleware to extract the jwt token from the "token" cookie and add it as an authorization header to the request
     tokenExtractor: function (req, res, next) {
       const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const tokenCookieName = 'token';
+      let tokenCookieName = 'token';
       if (appBase === 'https://goodparty.org') {
         tokenCookieName = 'token_prod';
       } else if (appBase === 'https://dev.goodparty.org') {
