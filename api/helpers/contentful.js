@@ -200,12 +200,6 @@ function mapResponse(items) {
         }
         mappedResponse.redirects[item.fields.pathname] =
           item.fields.redirectUrl;
-
-        // mappedResponse.redirects.push({
-        //   id: elementId,
-        //   pathname: item.fields.pathname,
-        //   redirectUrl: item.fields.redirectUrl,
-        // });
       } else if (itemId === 'blogSection') {
         if (!mappedResponse.blogSections) {
           mappedResponse.blogSections = [];
