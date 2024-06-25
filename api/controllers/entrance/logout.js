@@ -34,8 +34,6 @@ module.exports = {
         httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
       });
-      // redirect the user to /
-      this.res.redirect('/');
       return exits.success();
     } catch (e) {
       console.log('error at user/logout');
