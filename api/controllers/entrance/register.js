@@ -93,13 +93,8 @@ module.exports = {
         password,
       } = inputs;
 
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      const appHost = appBase.split('://')[1];
-      let domain = appHost;
-      if (appHost.includes(':')) {
-        // support for localhost.
-        domain = appHost.split(':')[0];
-      }
+      const { domain, userCookieName, tokenCookieName } =
+        await sails.helpers.user.getCookieDomain();
 
       if (!phone && !email) {
         return exits.badRequest({
@@ -213,14 +208,14 @@ module.exports = {
       //  add user to our CRM.
       await sails.helpers.crm.updateUser(user);
 
-      this.res.cookie('token', token, {
+      this.res.cookie(tokenCookieName, token, {
         domain: domain,
         secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
         httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
         sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
       });
 
-      this.res.cookie('user', JSON.stringify(user), {
+      this.res.cookie(userCookieName, JSON.stringify(user), {
         domain: domain,
         secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
         httpOnly: false, // We allow frontend to access the user cookie
