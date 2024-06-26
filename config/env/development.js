@@ -137,11 +137,11 @@ module.exports = {
      * > Be sure to use the right protocol!  ("http://" vs. "https://")         *
      *                                                                          *
      ***************************************************************************/
-    cors: {
-      allRoutes: true,
-      allowOrigins: 'http://localhost:4000',
-      allowCredentials: true,
-    },
+    // cors: {
+    //   allRoutes: true,
+    //   allowOrigins: 'http://localhost:4000',
+    //   allowCredentials: true,
+    // },
   },
 
   /***************************************************************************
@@ -294,6 +294,25 @@ module.exports = {
      *                                                                          *
      ***************************************************************************/
     // trustProxy: true,
+
+    middleware: {
+      // Override the HTTPS requirement for production when working in development
+      requireHttps: function (req, res, next) {
+        return next();
+      },
+
+      order: [
+        'cookieParser',
+        'session',
+        'bodyParser',
+        'compress',
+        'poweredBy',
+        'requireHttps',
+        'router',
+        'www',
+        'favicon',
+      ],
+    },
   },
 
   /**************************************************************************

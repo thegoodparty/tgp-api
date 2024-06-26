@@ -42,7 +42,6 @@ module.exports.routes = {
 
   'PUT    /api/v1/user': 'user/update',
   'PUT    /api/v1/user/refresh': 'user/refresh',
-  'PUT    /api/v1/user/logout': 'user/logout',
   'DELETE    /api/v1/user': 'user/delete',
   // 'POST    /api/v1/user/avatar': 'user/upload-avatar',
   'POST    /api/v1/user/avatar': 'user/upload-image',

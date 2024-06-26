@@ -1,5 +1,3 @@
-const { PassThrough } = require('stream');
-
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 

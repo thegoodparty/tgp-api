@@ -93,9 +93,6 @@ module.exports = {
         password,
       } = inputs;
 
-      const { domain, userCookieName, tokenCookieName } =
-        await sails.helpers.user.getCookieDomain();
-
       if (!phone && !email) {
         return exits.badRequest({
           message: 'Phone or Email are required.',
@@ -208,26 +205,11 @@ module.exports = {
       //  add user to our CRM.
       await sails.helpers.crm.updateUser(user);
 
-      this.res.cookie(tokenCookieName, token, {
-        domain: domain,
-        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-        httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
-      });
-
-      this.res.cookie(userCookieName, JSON.stringify(user), {
-        domain: domain,
-        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-        httpOnly: false, // We allow frontend to access the user cookie
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
-      });
-
       return exits.success({
         user,
         token,
       });
     } catch (e) {
-      // await sails.helpers.slack.errorLoggerHelper('Error at entrance/register', e);
       console.log('register error', e);
       try {
         if (e.cause.details.includes('`name`')) {
