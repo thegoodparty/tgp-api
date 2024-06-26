@@ -4,6 +4,11 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const path = require('path');
 
+let csvFilePath = path.join(
+  __dirname,
+  '../../../data/geoPoliticalEntities/dec23/uscounties_v1.73_short.csv',
+);
+
 if (
   appBase === 'https://goodparty.org' ||
   appBase === 'https://qa.goodparty.org'

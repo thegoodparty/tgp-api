@@ -1,6 +1,5 @@
 const AWS = require('aws-sdk');
 const csvParser = require('csv-parser');
-const slugify = require('slugify');
 const async = require('async');
 
 const accessKeyId =
@@ -14,13 +13,19 @@ AWS.config.update({
   secretAccessKey,
 });
 
-const s3Bucket = 'goodparty-ballotready';
+const s3Bucket = 'goodparty-ballotpedia';
 
 const s3 = new AWS.S3();
 
 let maxRows;
 // let maxRows = 25; // good for local dev.
 let count = 0;
+
+const profiling = {
+  existing: 0,
+  multipleResults: 0,
+  noResults: 0,
+};
 
 module.exports = {
   inputs: {},
@@ -41,19 +46,23 @@ module.exports = {
       let files = [];
 
       files = await getLatestFiles(s3Bucket, 200);
+      console.log('files', files);
       const objectKey = findLatestCandidatesFile(files);
+      console.log('objectKey', objectKey);
+
       await sails.helpers.slack.errorLoggerHelper(
-        'data-processing/starting candidate seed',
+        'data-processing/starting ballotpedia candidate enhance',
         {
           objectKey,
         },
       );
       await processCsvFromS3(s3Bucket, objectKey, processRow);
       await sails.helpers.slack.errorLoggerHelper(
-        'data-processing/ finished seed candidates',
-        {},
+        'data-processing/ finished ballotpedia candidate enhance',
+        profiling,
       );
-      return exits.success({ message: 'ok' });
+      console.log('profiling', profiling);
+      return exits.success({ message: 'ok', profiling });
     } catch (e) {
       console.log('error at data-processing/ballot-s3');
       console.log(e);
@@ -170,46 +179,6 @@ Row example:
 
 async function processRow(row) {
   try {
-    console.log('row.', row);
-    // save all the fields to BallotCandidate Model and the entire row as brData
-    const {
-      id,
-      // candidacy_id,
-      candidate_id,
-      election_id,
-      position_id,
-      first_name,
-      middle_name,
-      last_name,
-      state,
-      position_name,
-      normalized_position_name,
-      is_judicial,
-      is_retention,
-      is_unexpired,
-      phone,
-      email,
-      election_day,
-      level,
-      tier,
-      parties,
-      election_result,
-      race_id,
-      election_name,
-    } = row;
-
-    const slug = slugify(`${first_name}-${last_name}-${position_name}`, {
-      lower: true,
-    });
-
-    let party = parties;
-    if (parties) {
-      const match = parties.match(/"name"=>\s*"([^"]+)"/);
-      if (match && match[1]) {
-        party = match[1];
-      }
-    }
-
     if (maxRows) {
       count++;
       if (count > maxRows) {
@@ -217,41 +186,45 @@ async function processRow(row) {
       }
     }
 
-    const dbCandidate = await BallotCandidate.findOrCreate(
-      {
-        brCandidateId: candidate_id,
-      },
-      {
-        brCandidateId: candidate_id,
-        slug,
-        firstName: first_name,
-      },
-    );
-    await BallotCandidate.updateOne({ id: dbCandidate.id }).set({
-      brCandidateId: candidate_id,
-      slug,
-      electionId: election_id,
-      positionId: position_id,
+    // console.log('row.', row);
+    // save all the fields to BallotCandidate Model and the entire row as brData
+
+    const { first_name, last_name, state, candidate_id } = row;
+
+    const candidateCount = await BallotCandidate.count({
       firstName: first_name,
-      middleName: middle_name,
       lastName: last_name,
       state,
-      positionName: position_name,
-      electionName: election_name,
-      normalizedPositionName: normalized_position_name,
-      isJudicial: is_judicial === 'true',
-      isRetention: is_retention === 'true',
-      isUnexpired: is_unexpired === 'true',
-      phone,
-      email,
-      electionDay: election_day,
-      level,
-      tier,
-      party,
-      electionResult: election_result,
-      brData: row,
-      raceId: race_id,
     });
+
+    console.log('candidateCount', candidateCount);
+
+    if (candidateCount > 1) {
+      profiling.multipleResults++;
+      await sails.helpers.slack.errorLoggerHelper(
+        'bp-candidates multiple results',
+        { candidate_id, first_name, last_name, state },
+      );
+      return;
+    }
+
+    if (candidateCount === 1) {
+      profiling.existing++;
+      await BallotCandidate.updateOne({
+        firstName: first_name,
+        lastName: last_name,
+        state,
+      }).set({
+        bpCandidateId: candidate_id,
+        bpData: row,
+      });
+      return;
+    }
+
+    if (candidateCount === 0) {
+      profiling.noResults++;
+      return;
+    }
   } catch (e) {
     console.log('error at data-processing/ballot-s3 processRow');
     console.log(e);
@@ -287,7 +260,7 @@ async function getLatestFiles(bucket, maxKeys) {
 function findLatestCandidatesFile(files) {
   for (let i = 0; i < files.length; i++) {
     const key = files[i]?.Key;
-    if (key?.startsWith('candidacies_v3')) {
+    if (key?.startsWith('ballotpedia_results')) {
       return key;
     }
   }
