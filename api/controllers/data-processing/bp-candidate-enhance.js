@@ -195,6 +195,7 @@ async function processRow(row) {
       firstName: first_name,
       lastName: last_name,
       state,
+      bpCandidateId: { '!=': '' },
     });
 
     console.log('candidateCount', candidateCount);
@@ -214,6 +215,7 @@ async function processRow(row) {
         firstName: first_name,
         lastName: last_name,
         state,
+        bpCandidateId: { '!=': '' },
       }).set({
         bpCandidateId: candidate_id,
         bpData: row,
