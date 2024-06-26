@@ -1,6 +1,7 @@
 const AWS = require('aws-sdk');
 const csvParser = require('csv-parser');
 const async = require('async');
+const slugify = require('slugify');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -224,7 +225,32 @@ async function processRow(row) {
     }
 
     if (candidateCount === 0) {
+      const {
+        office_name,
+        campaign_email,
+        other_email,
+        campaign_phone,
+        party_affiliation,
+        election_date,
+        district_type,
+      } = row;
       profiling.noResults++;
+      const slug = slugify(`${first_name}-${last_name}-${office_name}`, {
+        lower: true,
+      });
+      await BallotCandidate.create({
+        slug,
+        firstName: first_name,
+        lastName: last_name,
+        state,
+        bpCandidateId: candidate_id,
+        email: campaign_email || other_email || '',
+        phone: campaign_phone || '',
+        party: party_affiliation || '',
+        electionDay: election_date,
+        level: district_type,
+        bpData: row,
+      });
       return;
     }
   } catch (e) {
@@ -268,3 +294,8 @@ function findLatestCandidatesFile(files) {
   }
   return null;
 }
+
+// bp row
+/*
+election_year	state	office_id	office_name	office_level	office_branch	district_id	district_ocdid	district_name	district_type	parent_district_id	parent_district_name	race_id	race_type	seats_up_for_election	race_url	election_date_id	election_date	election_date_district_type	stage_id	stage	stage_party	is_partisan_primary	stage_is_canceled	stage_is_ranked_choice	stage_write_in_other_votes	candidate_id	person_id	name	first_name	last_name	ballotpedia_url	gender	party_affiliation	is_incumbent	candidate_status	is_write_in	is_withdrawn_still_on_ballot	votes_for	votes_against	delegates_pledged	ranked_choice_voting_round	campaign_email	other_email	campaign_website	personal_website	campaign_phone		
+*/
