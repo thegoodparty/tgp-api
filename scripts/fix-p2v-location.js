@@ -38,7 +38,7 @@ module.exports = {
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
     for (const row of rows) {
-      let campaignId = row.id;
+      let campaignId = row.campaign;
       await runP2V(campaignId);
     }
     return exits.success({
