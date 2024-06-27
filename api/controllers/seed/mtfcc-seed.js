@@ -40,7 +40,7 @@ module.exports = {
 
       const spreadsheetId = '1Ye6wwrGLVQQL32Jjq6BwPcpEhqKwpygrKBm2j_c_fvk';
 
-      // Read rows from the sheet
+      // Read rows from the sheet.
       const readResponse = await sheets.spreadsheets.values.get({
         spreadsheetId,
         range: 'mtfcc-mapping',
