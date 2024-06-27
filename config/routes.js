@@ -22,6 +22,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/split': 'seed/split-large-csv',
   'GET    /api/v1/seed/reduce': 'seed/reduce-large-csv',
   'GET    /api/v1/seed/races': 'seed/races',
+  'GET    /api/v1/seed/mtfcc-seed': 'seed/mtfcc-seed',
   'GET    /api/v1/seed/fix-campaigns-no-users': 'seed/fix-campaigns-no-users',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
