@@ -49,8 +49,8 @@ module.exports = {
       const rows = readResponse.data.values;
 
       let processedCount = 0;
-      // for (let i = 1; i < rows.length; i++) {
-      for (let i = 1; i < 25; i++) {
+      for (let i = 1; i < rows.length; i++) {
+        // for (let i = 1; i < 25; i++) {
         const row = rows[i];
         await processRow(row);
         processedCount++;
