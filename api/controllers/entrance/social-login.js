@@ -5,10 +5,6 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
-const {
-  of,
-} = require('@hubspot/api-client/lib/codegen/communication_preferences/rxjsStub');
-
 module.exports = {
   friendlyName: 'Login user',
 
@@ -78,9 +74,6 @@ module.exports = {
         });
       }
 
-      const { domain, userCookieName, tokenCookieName } =
-        await sails.helpers.user.getCookieDomain();
-
       let user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
         // register
@@ -103,20 +96,6 @@ module.exports = {
           console.log('Error at entrance/social-login', e);
         }
 
-        this.res.cookie(tokenCookieName, token, {
-          domain: domain,
-          secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-          httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
-        });
-
-        this.res.cookie(userCookieName, JSON.stringify(user), {
-          domain: domain,
-          secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-          httpOnly: false, // We allow frontend to access the user cookie
-          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
-        });
-
         return exits.success({
           user,
           token,
@@ -135,28 +114,14 @@ module.exports = {
         email: lowerCaseEmail,
       });
 
-      this.res.cookie(tokenCookieName, token, {
-        domain: domain,
-        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-        httpOnly: true, // Ensures the cookie is only accessible via HTTP(S), not JavaScript
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict', // Allows the cookie to be sent with cross-site requests
-      });
-
-      this.res.cookie(userCookieName, JSON.stringify(user), {
-        domain: domain,
-        secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS on production
-        httpOnly: false, // We allow frontend to access the user cookie
-        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Strict',
-      });
-
       return exits.success({
         user,
         token,
+        newUser: false,
       });
     } catch (err) {
       console.log('login error');
       console.log(err);
-      // await sails.helpers.slack.errorLoggerHelper('Error at entrance/social-login', err);
       return exits.badRequest({
         message: 'Login Error',
       });

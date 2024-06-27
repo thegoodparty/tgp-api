@@ -39,7 +39,6 @@ module.exports.http = {
 
     order: [
       'cookieParser',
-      'tokenExtractor',
       'session',
       'bodyParser',
       'compress',
@@ -63,29 +62,5 @@ module.exports.http = {
     // })(),
 
     // cookieParser: cookieParser(),
-
-    // Custom middleware to extract the jwt token from the "token" cookie and add it as an authorization header to the request
-    tokenExtractor: function (req, res, next) {
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      let tokenCookieName = 'token';
-      if (appBase === 'https://goodparty.org') {
-        tokenCookieName = 'token_prod';
-      } else if (appBase === 'https://dev.goodparty.org') {
-        tokenCookieName = 'token_dev';
-      } else if (appBase === 'https://qa.goodparty.org') {
-        tokenCookieName = 'token_qa';
-      }
-
-      if (req.cookies && req.cookies[tokenCookieName]) {
-        // make sure there is no Authorization header already set
-        if (!req.headers.authorization) {
-          const token = req.cookies[tokenCookieName]; // Get the token from the cookie
-          if (token) {
-            req.headers.authorization = `Bearer ${token}`; // Set the token as an Authorization header
-          }
-        }
-      }
-      return next();
-    },
   },
 };
