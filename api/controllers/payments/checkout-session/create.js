@@ -34,7 +34,7 @@ module.exports = {
       ],
       mode: 'subscription',
       success_url: `${appBase}/dashboard/pro-sign-up/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appBase}/dashboard`,
+      cancel_url: this.req.headers.referer || `${appBase}/dashboard`,
     });
 
     const { url: redirectUrl } = session;
