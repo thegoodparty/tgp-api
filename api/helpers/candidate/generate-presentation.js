@@ -90,7 +90,6 @@ module.exports = {
         party,
         state,
         ...(p2vData || {}),
-        // about,
         officeDescription,
         term,
         salary,
@@ -112,7 +111,7 @@ module.exports = {
       data.socialUrls = socialUrls;
 
       // keep about last so we send all the data to the AI
-      const about = await generateAboutAi(data);
+      const about = await generateAbout(data);
       data.about = about;
 
       return exits.success(data);
@@ -141,24 +140,52 @@ async function resolveMtfcc(mtfcc, geoId) {
   return geoData;
 }
 
-async function generateAboutAi(data) {
-  let messages = [
-    {
-      role: 'system',
-      content: 'You are a helpful political assistant.',
-    },
-    {
-      role: 'user',
-      content: `I need you to generate one paragraph of summary about this candidate. this is data about the candidate: ${JSON.stringify(
-        data,
-      )}`,
-    },
-  ];
+async function generateAbout(data) {
+  // based on the data generate a tokenized phrase like this: use html <br/><br/> for line breaks
+  // topIssues is an array of objects with issue, stance, referenceUrl
+  /*
+<<First Name>> <<Last Name>> is running for <<office name>> in <<city>>, <<state>> (if judge/state legislative/congress, put District name, state).  <<last name>> is running as a <<party>> candidate, making them eligible to receive GoodParty.org's support. <<office name>> is responsible for <<office responsibilities>>.
+break
+If endorsements are known: <<Last name>> is endorsed by <<endorsing organizations>>.
+If endorsements are unknown: Empty
+break
+If top issues are known: <<Last name>> is running on <<issue list>>
+If issues are unknown: Empty
+break
+<<Last name>> is running for a <<term length>> year term.
+*/
 
-  const completion = await sails.helpers.ai.createCompletion(messages);
-  if (completion && completion.content) {
-    return completion.content;
+  const {
+    firstName,
+    lastName,
+    office,
+    city,
+    state,
+    officeDescription,
+    endorsements,
+    topIssues,
+    term,
+  } = data;
+
+  let about = `${firstName} ${lastName} is running for ${office}`;
+  if (city) {
+    about += ` in ${city}, ${state}`;
+  } else {
+    about += ` in ${state}`;
   }
+  about += `, making them eligible to receive GoodParty.org's support. ${office} is responsible for ${officeDescription}.<br/><br/>`; // eslint-disable-line
+  if (endorsements && endorsements.length) {
+    about += `${lastName} is endorsed by ${endorsements.join(', ')}.<br/><br/>`;
+  }
+  if (topIssues && topIssues.length) {
+    about += `${lastName} is running on ${topIssues
+      .map((i) => i.issue)
+      .join(', ')}.<br/><br/>`;
+  }
+  if (term) {
+    about += `${lastName} is running for a ${term.toLowerCase()} term.`;
+  }
+  return about;
 }
 
 function parseUrl(urls) {
