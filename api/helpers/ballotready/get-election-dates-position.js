@@ -62,20 +62,16 @@ module.exports = {
         }
     }`;
 
-      const { races } = await sails.helpers.graphql.queryHelper(query);
-      sails.helpers.log(slug, 'getElectionDates graphql result', races);
-      //   const results = races?.edges || [];
-      //   for (let i = 0; i < results.length; i++) {
-      //     const result = results[i];
-      //     const { position, election } = result.node;
-      //     if (position?.name && election?.electionDay) {
-      //       if (position.name.toLowerCase() === officeName.toLowerCase()) {
-      //         if (!electionDates.includes(election.electionDay)) {
-      //           electionDates.push(election.electionDay);
-      //         }
-      //       }
-      //     }
-      //   }
+      const { node } = await sails.helpers.graphql.queryHelper(query);
+      // sails.helpers.log(slug, 'getElectionDates graphql result', JSON.stringify(node, null, 2));
+      const results = node.races?.nodes || [];
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        const { election } = result;
+        if (!electionDates.includes(election.electionDay)) {
+          electionDates.push(election.electionDay);
+        }
+      }
       sails.helpers.log(slug, 'electionDates', electionDates);
 
       return exits.success(electionDates);

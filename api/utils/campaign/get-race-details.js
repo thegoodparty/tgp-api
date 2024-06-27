@@ -1,7 +1,7 @@
-async function getRaceDetails(raceId, slug, zip) {
+async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   let data = {};
 
-  sails.helpers.log('getting race from ballotReady api...');
+  sails.helpers.log(slug, 'getting race from ballotReady api...');
 
   let race;
   try {
@@ -10,7 +10,7 @@ async function getRaceDetails(raceId, slug, zip) {
     sails.helpers.log(slug, 'error getting race details', e);
     return;
   }
-  sails.helpers.log('ballotReady Race', race);
+  sails.helpers.log(slug, 'ballotReady Race', race);
 
   let electionDate; // the date of the election
   let termLength = 4;
@@ -33,9 +33,9 @@ async function getRaceDetails(raceId, slug, zip) {
   try {
     electionLevel = await sails.helpers.ballotready.getRaceLevel(level);
   } catch (e) {
-    sails.helpers.log('error getting election level', e);
+    sails.helpers.log(slug, 'error getting election level', e);
   }
-  sails.helpers.log('electionLevel', electionLevel);
+  sails.helpers.log(slug, 'electionLevel', electionLevel);
 
   const officeName = race?.position?.name;
   if (!officeName) {
@@ -59,7 +59,7 @@ async function getRaceDetails(raceId, slug, zip) {
     level,
   );
   if (!locationResp) {
-    sails.helpers.log('error getting ai location.');
+    sails.helpers.log(slug, 'error getting ai location.');
     return;
   }
 
@@ -78,12 +78,12 @@ async function getRaceDetails(raceId, slug, zip) {
       }
     }
   }
-  sails.helpers.log('locationResp', locationResp);
-  sails.helpers.log('county', county);
-  sails.helpers.log('city', city);
+  sails.helpers.log(slug, 'locationResp', locationResp);
+  sails.helpers.log(slug, 'county', county);
+  sails.helpers.log(slug, 'city', city);
 
   let priorElectionDates = [];
-  if (partisanType !== 'partisan') {
+  if (partisanType !== 'partisan' && getElectionDates) {
     // priorElectionDates = await sails.helpers.ballotready.getElectionDatesPosition(
     //   slug,
     //   positionId,

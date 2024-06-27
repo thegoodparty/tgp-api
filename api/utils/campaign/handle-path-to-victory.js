@@ -15,6 +15,9 @@ const handlePathToVictory = async ({
   let slug = '';
   //create or update each election and position
 
+  console.log('entered handlePathToVictory');
+  console.log('campaignId', campaignId);
+
   let pathToVictoryResponse = {
     electionType: '',
     electionLocation: '',
@@ -29,9 +32,7 @@ const handlePathToVictory = async ({
 
   let campaign;
   try {
-    campaign = await Campaign.findOne({ id: campaignId }).populate(
-      'pathToVictory',
-    );
+    campaign = await Campaign.findOne({ id: campaignId });
   } catch (e) {
     console.log('error getting campaign', e);
   }

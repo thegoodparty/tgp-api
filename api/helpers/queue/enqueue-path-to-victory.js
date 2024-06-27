@@ -39,7 +39,7 @@ module.exports = {
           slug,
           `getting race details campaignId ${campaignId} raceId ${raceId} zip ${details.zip}`,
         );
-        const data = await getRaceDetails(raceId, details.zip, slug);
+        const data = await getRaceDetails(raceId, slug, details.zip);
         if (!data) {
           await sails.helpers.slack.slackHelper(
             `Failed to get race data for ${slug}`,
