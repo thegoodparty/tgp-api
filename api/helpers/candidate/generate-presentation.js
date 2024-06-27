@@ -52,7 +52,7 @@ module.exports = {
         brData,
       } = candidate;
 
-      const about = 'whatever'; //TODO: generate AI about here
+      // const about = 'whatever'; //TODO: generate AI about here
       let officeDescription;
       let salary;
       let term;
@@ -88,10 +88,9 @@ module.exports = {
         middleName,
         office: positionName,
         party,
-        city: 'City name',
         state,
         ...(p2vData || {}),
-        about,
+        // about,
         officeDescription,
         term,
         salary,
@@ -101,6 +100,21 @@ module.exports = {
         claimed: !!campaign,
       };
 
+      const { mtfcc, geo_id, urls } = brData;
+      const geoData = await resolveMtfcc(mtfcc, geo_id);
+      data.geoData = geoData;
+      if (geoData?.city) {
+        data.city = geoData.city;
+      }
+
+      const socialUrls = parseUrl(urls);
+
+      data.socialUrls = socialUrls;
+
+      // keep about last so we send all the data to the AI
+      const about = await generateAboutAi(data);
+      data.about = about;
+
       return exits.success(data);
     } catch (e) {
       console.log('error in helpers/candidate/generate-presentation', e);
@@ -108,6 +122,65 @@ module.exports = {
     }
   },
 };
+async function resolveMtfcc(mtfcc, geoId) {
+  let geoData;
+  if (mtfcc && geoId) {
+    const census = await CensusEntity.findOne({ mtfcc, geoId });
+    if (census) {
+      geoData = {
+        name: census.name,
+        type: census.mtfccType,
+      };
+      if (census.mtfccType !== 'State or Equivalent Feature') {
+        geoData.city = census.name;
+      }
+    }
+  }
+  return geoData;
+}
+
+async function generateAboutAi(data) {
+  let messages = [
+    {
+      role: 'system',
+      content: 'You are a helpful political assistant.',
+    },
+    {
+      role: 'user',
+      content: `I need you to generate one paragraph of summary about this candidate. this is data about the candidate: ${JSON.stringify(
+        data,
+      )}`,
+    },
+  ];
+
+  const completion = await sails.helpers.ai.createCompletion(messages);
+  if (completion && completion.content) {
+    return completion.content;
+  }
+}
+
+function parseUrl(urls) {
+  //urls: '[{"type"=>"facebook", "website"=>"https://www.facebook.com/DevineForSenate"}, {"type"=>"government", "website"=>"https://www.scstatehouse.gov/member.php?code=0477840852"}, {"type"=>"linkedin", "website"=>"https://www.linkedin.com/in/tameikaisaacdevine/"}, {"type"=>"twitter", "website"=>"https://twitter.com/TIDEVINE"}, {"type"=>"website", "website"=>"https://devineforsenate.com/"}]',
+  let parsedUrls;
+  try {
+    if (!urls) {
+      return;
+    }
+    const cleanUrls = urls.replace(/=>/g, ':');
+    parsedUrls = JSON.parse(cleanUrls);
+    if (parsedUrls && parsedUrls.length) {
+      parsedUrls = parsedUrls.map((url) => {
+        return {
+          type: url.type,
+          url: url.website,
+        };
+      });
+    }
+  } catch (e) {
+    console.log('error parsing urls', e);
+  }
+  return parsedUrls;
+}
 
 /*
 candidate example:
@@ -455,4 +528,49 @@ const exampleCandidatePresentation = {
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
   ],
+};
+
+const b = {
+  id: '896352',
+  candidacy_id: '896352',
+  election_id: '5186',
+  election_name: 'South Carolina Primary Election',
+  election_day: '2024-06-11',
+  position_id: '48548',
+  mtfcc: 'G5210',
+  geo_id: '45019',
+  position_name: 'South Carolina State Senate - District 19',
+  sub_area_name: 'District',
+  sub_area_value: '19',
+  sub_area_name_secondary: '',
+  sub_area_value_secondary: '',
+  state: 'SC',
+  level: 'state',
+  tier: '2',
+  is_judicial: 'false',
+  is_retention: 'false',
+  number_of_seats: '1',
+  normalized_position_id: '600',
+  normalized_position_name: 'State Senator',
+  race_id: '1593289',
+  geofence_id: '1184057',
+  geofence_is_not_exact: 'false',
+  is_primary: 'true',
+  is_runoff: 'false',
+  is_unexpired: 'false',
+  candidate_id: '600701',
+  first_name: 'Tameika',
+  middle_name: 'Isaac',
+  nickname: '',
+  last_name: 'Devine',
+  suffix: '',
+  phone: '803-254-8868',
+  email: 'info@devineforsenate.com',
+  image_url:
+    'https://assets.civicengine.com/uploads/candidate/headshot/600701/600701.jpg',
+  parties: '[{"name"=>"Democratic", "short_name"=>"D"}]',
+  urls: '[{"type"=>"facebook", "website"=>"https://www.facebook.com/DevineForSenate"}, {"type"=>"government", "website"=>"https://www.scstatehouse.gov/member.php?code=0477840852"}, {"type"=>"linkedin", "website"=>"https://www.linkedin.com/in/tameikaisaacdevine/"}, {"type"=>"twitter", "website"=>"https://twitter.com/TIDEVINE"}, {"type"=>"website", "website"=>"https://devineforsenate.com/"}]',
+  election_result: 'PRIMARY_WIN',
+  candidacy_created_at: '2024-04-29 10:09:15.615',
+  candidacy_updated_at: '2024-06-17 17:28:48.261',
 };
