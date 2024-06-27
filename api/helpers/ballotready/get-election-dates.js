@@ -1,17 +1,24 @@
 /* eslint-disable object-shorthand */
-const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
+    // can be candidate slug or campaign slug.
+    slug: {
+      type: 'string',
+      required: true,
+    },
     officeName: {
       type: 'string',
+      required: true,
     },
     zip: {
       type: 'string',
+      required: true,
     },
-    // note: level is ballotLevel (not level)
+    // note: level is ballotLevel (not level -- level is the simplified lowercase one)
     level: {
       type: 'string',
+      required: true,
     },
   },
 
@@ -27,9 +34,8 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    const { slug, officeName, zip, level } = inputs;
     try {
-      const { officeName, zip, level } = inputs;
-
       let electionDates = [];
 
       // get todays date in format YYYY-MM-DD
@@ -59,6 +65,7 @@ module.exports = {
         }`;
 
       const { races } = await sails.helpers.graphql.queryHelper(query);
+      sails.helpers.log(slug, 'getElectionDates graphql result', races);
       const results = races?.edges || [];
       for (let i = 0; i < results.length; i++) {
         const result = results[i];
@@ -71,11 +78,11 @@ module.exports = {
           }
         }
       }
-      console.log('electionDates', electionDates);
+      sails.helpers.log(slug, 'electionDates', electionDates);
 
       return exits.success(electionDates);
     } catch (e) {
-      console.log('error at extract-location-ai helper', e);
+      sails.helpers.log(slug, 'error at extract-location-ai helper', e);
       return exits.success(false);
     }
   },
