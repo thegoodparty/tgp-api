@@ -56,6 +56,8 @@ async function getRaceById(raceId) {
                     subAreaName
                     subAreaValue
                     tier
+                    mtfcc
+                    geoId
                     electionFrequencies {
                         frequency
                     }

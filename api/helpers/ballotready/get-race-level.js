@@ -32,6 +32,7 @@ module.exports = {
       // "town"
       // "township"
       // "village"
+      level = level.toLowerCase();
       if (
         level &&
         level !== 'federal' &&

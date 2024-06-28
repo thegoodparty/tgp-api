@@ -196,6 +196,7 @@ module.exports = {
       } catch (e) {
         console.log('error at extract-location-ai helper', e);
       }
+      console.log('extract ai location response', decodedContent);
       return exits.success(decodedContent);
     } catch (e) {
       console.log('error at extract-location-ai helper', e);

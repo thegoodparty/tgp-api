@@ -16,12 +16,16 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   let termLength = 4;
   let level = 'city';
   let positionId;
+  let mtfcc;
+  let geoId;
 
   try {
     electionDate = race?.election?.electionDay;
     termLength = race?.position?.electionFrequencies[0].frequency[0];
     level = race?.position?.level.toLowerCase();
     positionId = race?.position.id;
+    mtfcc = race?.position.mtfcc;
+    geoId = race?.position.geoId;
   } catch (e) {
     sails.helpers.log(slug, 'error getting election date', e);
   }
@@ -54,30 +58,41 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
       : undefined;
   const electionState = race?.election?.state;
 
-  const locationResp = await sails.helpers.ballotready.extractLocationAi(
-    officeName + ' - ' + electionState,
-    level,
-  );
-  if (!locationResp) {
-    sails.helpers.log(slug, 'error getting ai location.');
-    return;
-  }
-
+  let locationResp;
   let county;
   let city;
-  if (locationResp?.level) {
-    if (locationResp.level === 'county') {
-      county = locationResp.county;
-    } else {
-      if (
-        locationResp.county &&
-        locationResp.hasOwnProperty(locationResp.level)
-      ) {
-        city = locationResp[locationResp.level];
+
+  if (level !== 'state' && level !== 'federal') {
+    locationResp = await sails.helpers.ballotready.extractLocationAi(
+      officeName + ' - ' + electionState,
+      level,
+    );
+
+    // Experimental -- but might be useful.
+    // This doesn't really give a city name perse
+    // But we can use it maybe combined with the AI.
+    // if (mtfcc && geoId && electionLevel === 'city') {
+    //   let geoData = await sails.helpers.ballotready.resolveMtfcc(mtfcc, geoId);
+    //   if (geoData?.city) {
+    //     city = geoData.city;
+    //   }
+    // }
+
+    if (locationResp?.level) {
+      if (locationResp.level === 'county') {
         county = locationResp.county;
+      } else {
+        if (
+          locationResp.county &&
+          locationResp.hasOwnProperty(locationResp.level)
+        ) {
+          city = locationResp[locationResp.level];
+          county = locationResp.county;
+        }
       }
     }
   }
+
   sails.helpers.log(slug, 'locationResp', locationResp);
   sails.helpers.log(slug, 'county', county);
   sails.helpers.log(slug, 'city', city);

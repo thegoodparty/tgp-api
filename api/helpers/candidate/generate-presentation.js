@@ -101,6 +101,13 @@ module.exports = {
 
       const { mtfcc, geo_id, urls } = brData;
       const geoData = await resolveMtfcc(mtfcc, geo_id);
+
+      // todo: switch to the helper? but it may get updated soon
+      // const geoData = await sails.helpers.ballotready.resolveMtfcc(
+      //   mtfcc,
+      //   geo_id,
+      // );
+
       data.geoData = geoData;
       if (geoData?.city) {
         data.city = geoData.city;
