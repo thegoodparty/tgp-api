@@ -32,7 +32,15 @@ module.exports = {
     try {
       const { name, office, bustCache } = inputs;
       const slug = `${name}-${office}`;
-      let candidate = await BallotCandidate.findOne({ slug });
+      let candidate = await BallotCandidate.findOne({
+        where: {
+          and: [
+            { slug },
+            { party: { '!=': 'Republican' } },
+            { party: { '!=': 'Democratic' } },
+          ],
+        },
+      });
       if (!candidate) {
         return exits.notFound();
       }
