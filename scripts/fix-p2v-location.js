@@ -25,8 +25,8 @@ module.exports = {
         and c.details->>'electionDate' is not null
         and c.details->>'raceId' is not null
         and (pathtovictory.data->>'p2vStatus'='Complete')
-        and pathtovictory.data->>'p2vNotNeeded' is null
-        and pathtovictory.data->>'electionLocation' is null
+        and (pathtovictory.data->>'p2vNotNeeded' is null or pathtovictory.data->>'p2vNotNeeded'='false')
+        and (pathtovictory.data->>'electionLocation' is null or pathtovictory.data->>'electionLocation'='')
         order by c.id desc;
     `);
     // const p2vs = await sails.sendNativeQuery(`
@@ -48,12 +48,14 @@ module.exports = {
 };
 
 async function runP2V(campaignId) {
-  const campaign = await Campaign.findOne({ id: campaignId });
+  const campaign = await Campaign.findOne({ id: campaignId }).populate(
+    'pathToVictory',
+  );
   const { slug, details } = campaign;
   const data = await getRaceDetails(details.raceId, slug, details.zip, false);
   data.campaignId = campaignId;
   sails.helpers.log(slug, 'data', data);
-  const pathToVictoryResponse = await handlePathToVictory({ ...data });
+  const { pathToVictoryResponse } = await handlePathToVictory({ ...data });
   sails.helpers.log(slug, 'pathToVictoryResponse', pathToVictoryResponse);
 
   if (
@@ -69,8 +71,11 @@ async function runP2V(campaignId) {
       pathToVictoryResponse.electionLocation,
     );
     await pathToVictory.updateOne({ campaign: campaignId }).set({
-      electionType: pathToVictoryResponse.electionType,
-      electionLocation: pathToVictoryResponse.electionLocation,
+      data: {
+        ...campaign.pathToVictory.data,
+        electionType: pathToVictoryResponse.electionType,
+        electionLocation: pathToVictoryResponse.electionLocation,
+      },
     });
   }
 }
