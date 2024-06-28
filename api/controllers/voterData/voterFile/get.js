@@ -47,10 +47,10 @@ module.exports = {
       }
       const { pathToVictory } = campaign;
       console.log('Path to Victory:', pathToVictory);
-      if (
-        !pathToVictory?.data?.electionType ||
-        !pathToVictory?.data?.electionLocation
-      ) {
+      let canDownload = await sails.helpers.campaign.canDownloadVoterFile(
+        campaign.id,
+      );
+      if (!canDownload) {
         await sails.helpers.slack.errorLoggerHelper(
           'Voter file get error - no path to victory set.',
           {},
@@ -58,6 +58,7 @@ module.exports = {
         console.log('Path to Victory is not set.', campaign);
         return exits.badRequest({ message: 'Path to Victory is not set.' });
       }
+
       let resolvedType = type;
       if (type === 'custom') {
         const channel = customFilters.channel;
