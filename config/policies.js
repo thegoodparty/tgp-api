@@ -27,6 +27,7 @@ module.exports.policies = {
   'campaign/onboarding/cancel-launch-request': ['isAuthenticated', 'isAdmin'],
   'campaign/list': ['isAuthenticated', 'isAdmin'],
   'campaign/find-by-slug': ['isAuthenticated', 'isAdmin'],
+  'campaign/cron/*': ['isAuthenticated'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   'topIssues/byLocation/find': ['isAuthenticated'],
   'ai/test': ['isAuthenticated', 'isAdmin'],

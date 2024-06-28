@@ -26,7 +26,28 @@ module.exports = async function (req, res, next) {
     return res.status(401).json({ err: 'No Authorization header was found' });
   }
   try {
-    const decoded = await sails.helpers.jwtVerify(token);
+    let decoded;
+
+    try {
+      decoded = await sails.helpers.jwtVerify(token);
+    } catch (err) {
+      //Check if this is a cron job request
+      console.log(`token =>`, token);
+      console.log(`sails.config.custom =>`, sails.config.custom);
+      console.log(
+        `sails.config.custom.appApiSecret =>`,
+        sails.config.custom.appApiSecret,
+      );
+      console.log(
+        `token === sails.config.custom.appApiSecret =>`,
+        token === sails.config.custom.appApiSecret,
+      );
+      if (token === sails.config.custom.appApiSecret) {
+        return next();
+      }
+      throw err;
+    }
+
     const user = decoded.data;
     //check that the user exists in our system and the token matches.
     const userRecord = await User.findOne({ id: user.id });

@@ -84,6 +84,10 @@ module.exports.routes = {
   'POST /api/v1/campaign/ein-support-document/:campaignId':
     'campaign/ein-support-document-upload',
 
+  // campaign crons
+  'GET /api/v1/campaign/cron/scheduled-emails':
+    'campaign/cron/scheduled-emails',
+
   // volunteerInvitation
 
   'POST   /api/v1/campaign/volunteer/invitation':
