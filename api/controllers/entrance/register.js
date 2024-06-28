@@ -210,7 +210,6 @@ module.exports = {
         token,
       });
     } catch (e) {
-      // await sails.helpers.slack.errorLoggerHelper('Error at entrance/register', e);
       console.log('register error', e);
       try {
         if (e.cause.details.includes('`name`')) {

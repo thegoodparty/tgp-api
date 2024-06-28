@@ -55,6 +55,7 @@ module.exports = {
           email: lowerCaseEmail,
         });
         await sails.helpers.crm.updateUser(user);
+
         return exits.success({
           user,
           token,
