@@ -27,7 +27,7 @@ module.exports = {
         and (pathtovictory.data->>'p2vStatus'='Complete')
         and pathtovictory.data->>'p2vNotNeeded' is null
         and pathtovictory.data->>'electionLocation' is null
-        order by c.id desc LIMIT 1;
+        order by c.id desc;
     `);
     // const p2vs = await sails.sendNativeQuery(`
     //   select *
