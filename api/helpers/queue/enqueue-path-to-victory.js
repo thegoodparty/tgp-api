@@ -136,8 +136,6 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
           \nemail: ${user.email}
           \nslug: ${slug}\n
           \nadmin link: ${appBase}/admin/victory-path/${slug}
-          \n
-          \n<@U01AY0VQFPE> and <@U03RY5HHYQ5>
           `,
         },
       },

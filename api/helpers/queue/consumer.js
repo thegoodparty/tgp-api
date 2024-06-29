@@ -218,8 +218,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
         body:
           candidateSlackMessage +
           pathToVictorySlackMessage +
-          turnoutSlackMessage +
-          alertSlackMessage,
+          turnoutSlackMessage,
       },
       'victory',
     );
@@ -249,11 +248,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     await sails.helpers.slack.slackHelper(
       {
         title: 'Path To Victory',
-        body:
-          candidateSlackMessage +
-          pathToVictorySlackMessage +
-          debugMessage +
-          alertSlackMessage,
+        body: candidateSlackMessage + pathToVictorySlackMessage + debugMessage,
       },
       'victory-issues',
     );
@@ -277,7 +272,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     await sails.helpers.slack.slackHelper(
       {
         title: 'Path To Victory',
-        body: candidateSlackMessage + debugMessage + alertSlackMessage,
+        body: candidateSlackMessage + debugMessage,
       },
       'victory-issues',
     );
@@ -360,21 +355,6 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
   } catch (e) {
     console.log('error updating campaign', e);
   }
-}
-
-function simpleSlackMessage(text, body) {
-  return {
-    text,
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: body,
-        },
-      },
-    ],
-  };
 }
 
 async function handleGenerateAiContent(message) {
