@@ -1,7 +1,3 @@
-/* eslint-disable object-shorthand */
-
-const appBase = sails.config.custom.appBase || sails.config.appBase;
-
 module.exports = {
   inputs: {
     campaignId: {
@@ -63,7 +59,7 @@ module.exports = {
     } catch (e) {
       console.log('Error in link candidate-campaign helper', e);
       await sails.helpers.slack.errorLoggerHelper(
-        `Error at link candidate-campaign helper with campaign ${campaign.slug}`,
+        `Error at link candidate-campaign helper with campaign ${inputs.campaignId}`,
         e,
       );
       return exits.success('No match found - error');
