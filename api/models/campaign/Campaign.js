@@ -69,6 +69,11 @@ module.exports = {
       via: 'campaign',
     },
 
+    // one to one relationship
+    ballotCandidate: {
+      model: 'BallotCandidate',
+    },
+
     // one to many relationship to candidateIssueItem
     candidatePositions: {
       collection: 'candidatePosition',

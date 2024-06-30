@@ -38,6 +38,7 @@ module.exports = {
             { slug },
             { party: { '!=': 'Republican' } },
             { party: { '!=': 'Democratic' } },
+            { campaign: null },
           ],
         },
       });
@@ -45,7 +46,6 @@ module.exports = {
         return exits.notFound();
       }
       if (candidate.presentationData && !bustCache) {
-        // console.log('Returning cached candidate', candidate.presentationData);
         return exits.success({
           candidate: candidate.presentationData,
         });
