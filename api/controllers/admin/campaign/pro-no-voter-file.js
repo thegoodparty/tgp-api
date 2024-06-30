@@ -34,11 +34,11 @@ module.exports = {
     } catch (e) {
       console.log(e);
       await sails.helpers.slack.errorLoggerHelper(
-        'Error at admin/delete-user',
+        'Error at admin/pro-no-voter-file',
         e,
       );
       return exits.badRequest({
-        message: 'Error Deleting User',
+        message: 'Error admin/pro-no-voter-file',
       });
     }
   },

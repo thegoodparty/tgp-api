@@ -52,6 +52,8 @@ module.exports = {
         },
       });
 
+      await sails.helpers.campaign.linkCandidateCampaign(campaignRecord.id);
+
       await sails.helpers.crm.updateCampaign(updated);
       await sails.helpers.fullstory.customAttr(updated.id);
 
