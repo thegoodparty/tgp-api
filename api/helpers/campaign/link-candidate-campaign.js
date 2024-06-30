@@ -17,10 +17,15 @@ module.exports = {
 
       const campaign = await Campaign.find({
         id: campaignId,
+        user: { '!=': null },
       }).populate('user');
 
-      const { firstName, lastName } = campaign.user;
+      const { firstName, lastName } = campaign.user || {};
       const state = campaign.details?.state;
+
+      if (!firstName || !lastName || !state) {
+        return exits.success('No match found');
+      }
 
       const candidates = await BallotCandidate.find({
         firstName,
