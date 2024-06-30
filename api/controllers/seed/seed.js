@@ -13,9 +13,11 @@ module.exports = {
     try {
       const campaigns = await Campaign.find({
         select: ['id', 'slug'],
-        ballotCandidate: null,
-        isActive: true,
-        user: { '!=': null },
+        where: {
+          ballotCandidate: null,
+          isActive: true,
+          user: { '!=': null },
+        },
       });
 
       for (let i = 0; i < campaigns.length; i++) {
