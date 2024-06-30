@@ -187,6 +187,8 @@ module.exports.routes = {
   'GET  /api/v1/voter-data/voter-file': 'voterData/voterFile/get',
   'GET  /api/v1/voter-data/voter-file/wake-up': 'voterData/voterFile/wake-up',
   'PUT  /api/v1/voter-data/voter-file/count': 'voterData/voterFile/count',
+  'GET  /api/v1/voter-data/voter-file/can-download':
+    'voterData/voterFile/can-download',
   'GET  /api/v1/voter-data/voter-file/geo-location-cron':
     'voterData/voterFile/geo-location-cron',
 
