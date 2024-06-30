@@ -15,7 +15,7 @@ module.exports = {
     try {
       const { campaignId } = inputs;
 
-      const campaign = await Campaign.find({
+      const campaign = await Campaign.findOne({
         id: campaignId,
         user: { '!=': null },
       }).populate('user');
