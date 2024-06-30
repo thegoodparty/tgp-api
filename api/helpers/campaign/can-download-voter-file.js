@@ -44,7 +44,7 @@ module.exports = {
       }
     } catch (e) {
       console.log('error at can-download-voter-file', e);
-      return exits.success({ message: 'ok' });
+      return exits.success(false);
     }
   },
 };
