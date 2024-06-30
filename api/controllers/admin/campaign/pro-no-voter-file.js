@@ -13,7 +13,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const campaigns = await Campaign.findOne({
+      const campaigns = await Campaign.find({
         where: { user: { '!=': null }, isPro: true },
       })
         .populate('user')
