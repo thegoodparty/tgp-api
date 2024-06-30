@@ -66,6 +66,8 @@ module.exports.routes = {
     'admin/candidate/deactivate-candidate-by-campaign',
   'POST   /api/v1/admin/candidate-enhance': 'admin/candidate-enhance',
   'GET /api/v1/admin/p2v-stats': 'admin/p2v-stats/get',
+  'GET /api/v1/admin/campaign/pro-no-voter-file':
+    'admin/campaign/pro-no-voter-file',
 
   'GET   /api/v1/subscribe/email': 'subscribe/subscribe-email',
 
