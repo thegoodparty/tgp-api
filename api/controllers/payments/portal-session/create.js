@@ -47,7 +47,7 @@ module.exports = {
       campaign.id,
     );
     if (!canDownload) {
-      // alert Jared and Rob
+      // alert Jared and Rob.
       const alertSlackMessage = `<@U01AY0VQFPE> and <@U03RY5HHYQ5>`;
       await sails.helpers.slack.slackHelper(
         {
