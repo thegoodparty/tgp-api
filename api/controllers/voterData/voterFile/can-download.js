@@ -19,8 +19,7 @@ module.exports = {
       const canDownload = await sails.helpers.campaign.canDownloadVoterFile(
         campaign.id,
       );
-      return exits.success(false);
-      // return exits.success(canDownload);
+      return exits.success(canDownload);
     } catch (error) {
       console.error('Error at can download:', error);
       return exits.success(false);
