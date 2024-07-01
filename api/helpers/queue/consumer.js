@@ -245,13 +245,13 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     // Was not able to get the turnout numbers.
     // TODO: possibly add more debug info here. Which election dates did we try to get turnout numbers for?
     const debugMessage = 'Was not able to get the turnout numbers.\n';
-    await sails.helpers.slack.slackHelper(
-      {
-        title: 'Path To Victory',
-        body: candidateSlackMessage + pathToVictorySlackMessage + debugMessage,
-      },
-      'victory-issues',
-    );
+    // await sails.helpers.slack.slackHelper(
+    //   {
+    //     title: 'Path To Victory',
+    //     body: candidateSlackMessage + pathToVictorySlackMessage + debugMessage,
+    //   },
+    //   'victory-issues',
+    // );
     // We now call the completePathToVictory function to update the campaign with the pathToVictory data.
     // However, in this case, it will not set the p2vStatus to 'Complete' or email the user.
     // This is because we were not able to get the turnout numbers.
@@ -269,13 +269,13 @@ async function analyzePathToVictoryResponse(p2vResponse) {
       debugMessage +=
         'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);
     }
-    await sails.helpers.slack.slackHelper(
-      {
-        title: 'Path To Victory',
-        body: candidateSlackMessage + debugMessage,
-      },
-      'victory-issues',
-    );
+    // await sails.helpers.slack.slackHelper(
+    //   {
+    //     title: 'Path To Victory',
+    //     body: candidateSlackMessage + debugMessage,
+    //   },
+    //   'victory-issues',
+    // );
   }
 }
 
