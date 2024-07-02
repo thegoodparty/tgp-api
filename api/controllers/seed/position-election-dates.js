@@ -30,6 +30,7 @@ module.exports = {
         hasNextPage = pageInfo.hasNextPage;
         nextCursor = pageInfo.endCursor;
         totalPages += 1;
+        await sleep(500);
       }
 
       await sails.helpers.slack.errorLoggerHelper(
@@ -113,4 +114,8 @@ async function queryPage(nextCursor) {
     }
   }
   return pageInfo;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
