@@ -16,6 +16,9 @@ module.exports = {
     data: {
       type: 'json',
     },
+    electionDates: {
+      type: 'json',
+    },
     ballotElection: {
       model: 'ballotElection',
     },
