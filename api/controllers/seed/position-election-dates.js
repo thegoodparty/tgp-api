@@ -59,7 +59,9 @@ module.exports = {
 async function queryPage(nextCursor) {
   const query = `
       query Races {
-        races${nextCursor ? `(after: "${nextCursor}")` : ''}{
+        races( filterBy: { electionDay: { lt: "2025-01-01" } } ${
+          nextCursor ? `, after: "${nextCursor}"` : ''
+        }){
             edges {
                 node {
                     election {
@@ -69,6 +71,11 @@ async function queryPage(nextCursor) {
                     position {
                         id
                     }
+                    id
+                    isPartisan
+                    isPrimary
+                    isRunoff
+                    isUnexpired   
                 }
             }
             pageInfo {
@@ -90,6 +97,16 @@ async function queryPage(nextCursor) {
     try {
       const result = results[i].node;
       const { election, position } = result;
+
+      console.log({
+        electionDay: election.electionDay,
+        electionId: election.id,
+        isPartisan: result.isPartisan,
+        isPrimary: result.isPrimary,
+        isRunoff: result.isRunoff,
+        isUnexpired: result.isUnexpired,
+        raceId: result.id,
+      });
       const ballotPosition = await BallotPosition.findOne({
         select: ['electionDates'],
         where: { ballotHashId: position.id },
@@ -99,7 +116,15 @@ async function queryPage(nextCursor) {
         continue;
       }
       const electionDates = ballotPosition.electionDates || [];
-      electionDates.push(election);
+      electionDates.push({
+        electionDay: election.electionDay,
+        electionId: election.id,
+        isPartisan: result.isPartisan,
+        isPrimary: result.isPrimary,
+        isRunoff: result.isRunoff,
+        isUnexpired: result.isUnexpired,
+        raceId: result.id,
+      });
       await BallotPosition.updateOne({ id: ballotPosition.id }).set({
         electionDates,
       });
