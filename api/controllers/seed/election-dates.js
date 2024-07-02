@@ -39,7 +39,7 @@ async function addResult(result) {
     { positionId: result.node.position.id },
     { electionDay: result.node.election.electionDay },
     {
-      ballotId: result.node.position.id,
+      positionId: result.node.position.id,
       officeName: result.node.position.name,
       electionDay: result.node.election.electionDay,
       mtfcc: result.node.position.mtfcc,
