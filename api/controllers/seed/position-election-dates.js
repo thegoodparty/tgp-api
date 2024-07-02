@@ -91,7 +91,7 @@ async function queryPage(nextCursor) {
       const { election, position } = result;
       const ballotPosition = await BallotPosition.findOne({
         select: ['electionDates'],
-        where: { ballotId: position.id },
+        where: { ballotHashId: position.id },
       });
       if (!ballotPosition) {
         console.log('BallotPosition not found');
@@ -99,7 +99,7 @@ async function queryPage(nextCursor) {
       }
       const electionDates = ballotPosition.electionDates || [];
       electionDates.push(election);
-      await BallotPosition.updateOne({ ballotId: position.id }).set({
+      await BallotPosition.updateOne({ id: ballotPosition.id }).set({
         electionDates,
       });
     } catch (e) {
