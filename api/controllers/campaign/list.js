@@ -84,7 +84,7 @@ module.exports = {
           pathToVictory.data as "pathToVictory"
         FROM public.campaign
         JOIN public."user" ON "user".id = campaign.user
-        JOIN public."pathtovictory" ON "pathtovictory".id = campaign."pathToVictory"
+        LEFT JOIN public."pathtovictory" ON "pathtovictory".id = campaign."pathToVictory"
         WHERE campaign.user IS NOT NULL
         ${buildQueryWhereClause({
           state,
@@ -100,7 +100,6 @@ module.exports = {
         ORDER BY campaign.id DESC;`;
 
         const campaigns = await sails.sendNativeQuery(query);
-
         // we need to match the format of the response from the ORM
         let cleanCampaigns = [];
         if (campaigns.rows) {
