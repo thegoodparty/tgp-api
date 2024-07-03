@@ -59,7 +59,9 @@ async function runP2V(candidateId) {
   const data = await getRaceDetails(ballotRaceId, slug, '', false);
   sails.helpers.log(slug, 'data', data);
 
-  const position = await BallotPosition.findOne({ ballotId: positionId });
+  const position = await BallotPosition.findOne({
+    ballotId: positionId.toString(),
+  });
   let electionDates = [];
   if (position.electionDates && position.electionDates.length > 0) {
     for (const electionDateObj of position.electionDates) {
@@ -71,7 +73,9 @@ async function runP2V(candidateId) {
       }
     }
     console.log('electionDates', electionDates);
-    data.priorElectionDates = electionDates;
+    if (electionDates.length > 0) {
+      data.priorElectionDates = electionDates;
+    }
   }
 
   const { pathToVictoryResponse } = await handlePathToVictory({ ...data });
