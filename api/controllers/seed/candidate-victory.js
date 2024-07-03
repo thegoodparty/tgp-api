@@ -17,12 +17,11 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     const p2vs = await sails.sendNativeQuery(`
-        select id
+        select count(*)
         from public.ballotcandidate
         where "p2vData" is null
-        and "positionId" is not null
-        and "raceId" is not null
-        order by id desc;
+        and "positionId" is not null and "positionId" != ''
+        and "raceId" is not null and "raceId" != ''
     `);
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
