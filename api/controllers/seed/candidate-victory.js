@@ -18,7 +18,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     const p2vs = await sails.sendNativeQuery(`
-        select count(*)
+        select id
         from public.ballotcandidate
         where "p2vData" is null
         and "positionId" is not null and "positionId" != ''
