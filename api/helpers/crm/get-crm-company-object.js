@@ -34,15 +34,7 @@ const getP2VValues = (p2vData = {}) => {
 
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
-  const {
-    data,
-    aiContent,
-    details,
-    isActive,
-    isVerified,
-    dateVerified,
-    isPro,
-  } = campaign || {};
+  const { data, aiContent, details, isActive, isPro } = campaign || {};
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
@@ -68,7 +60,11 @@ const getCrmCompanyObject = async (inputs, exits) => {
     primaryElectionDate,
     filingPeriodsStart,
     filingPeriodsEnd,
+    isProUpdatedAt,
   } = details || {};
+
+  const canDownloadVoterFile =
+    await sails.helpers.campaign.canDownloadVoterFile(campaign.id);
 
   const name = await determineName(campaign.user);
 
@@ -87,12 +83,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     ? await sails.helpers.zip.shortToLongState(state)
     : undefined;
 
-  const verifiedCandidate = isVerified ? 'Yes' : 'No';
-
-  const formattedDate =
-    dateVerified !== null
-      ? moment(new Date(dateVerified)).format('YYYY-MM-DD')
-      : null;
+  const formatDateForCRM = (date) =>
+    date !== null ? moment(new Date(date)).format('YYYY-MM-DD') : null;
 
   const filing_start = filingPeriodsStart
     ? moment(filingPeriodsStart).format('YYYY-MM-DD')
@@ -129,17 +121,17 @@ const getCrmCompanyObject = async (inputs, exits) => {
     online_impressions: reportedVoterGoals?.digital || 0,
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
-    // pro_candidate: isPro ? 'Yes' : 'No',
+    pro_candidate: isPro ? 'Yes' : 'No',
+    pro_upgrade_date: formatDateForCRM(isProUpdatedAt) || undefined,
     filing_start,
     filing_end,
-    // ...(isVerified !== null ? { verified_candidates: verifiedCandidate } : {}),
-    // ...(formattedDate !== null ? { date_verified: formattedDate } : {}),
     ...(website ? { website } : {}),
     ...(level ? { ai_office_level: level } : {}),
     ...(ballotLevel ? { office_level: ballotLevel } : {}),
     ...(runForOffice ? { running: runForOffice } : {}),
     ...getP2VValues(p2v?.data),
     win_number: winNumber,
+    voter_data_adoption: canDownloadVoterFile ? 'Unlocked' : 'Locked',
   };
 
   delete properties.winnumber;
