@@ -1,5 +1,6 @@
 const handlePathToVictory = require('../../utils/campaign/handle-path-to-victory');
 const getRaceDetails = require('../../utils/campaign/get-race-details');
+const moment = require('moment');
 
 module.exports = {
   friendlyName: 'Candidate p2v',
@@ -22,6 +23,7 @@ module.exports = {
         where "p2vData" is null
         and "positionId" is not null and "positionId" != ''
         and "raceId" is not null and "raceId" != ''
+        and party != 'Republican' and party != 'Democratic'
     `);
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
@@ -78,13 +80,23 @@ async function runP2V(candidateId) {
 
   if (
     pathToVictoryResponse &&
-    pathToVictoryResponse.electionLocation &&
-    pathToVictoryResponse.electionLocation !== '' &&
     pathToVictoryResponse?.counts?.total &&
     pathToVictoryResponse.counts.total > 0
   ) {
     await BallotCandidate.updateOne({ id: candidateId }).set({
-      p2vData: pathToVictoryResponse,
+      p2vData: {
+        totalRegisteredVoters: pathToVictoryResponse.counts.total,
+        republicans: pathToVictoryResponse.counts.republican,
+        democrats: pathToVictoryResponse.counts.democrat,
+        indies: pathToVictoryResponse.counts.independent,
+        averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+        projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+        winNumber: pathToVictoryResponse.counts.winNumber,
+        voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+        electionType: pathToVictoryResponse.electionType,
+        electionLocation: pathToVictoryResponse.electionLocation,
+        p2vCompleteDate: moment().format('YYYY-MM-DD'),
+      },
     });
   }
 }
