@@ -27,7 +27,11 @@ module.exports = {
     console.log('rows', rows.length);
     for (const row of rows) {
       let candidateId = row.id;
-      await runP2V(candidateId);
+      if (candidateId && candidateId > 0) {
+        await runP2V(candidateId);
+      } else {
+        console.log('invalid candidateId', candidateId);
+      }
     }
     return exits.success({
       message: 'ok',
@@ -38,6 +42,12 @@ module.exports = {
 async function runP2V(candidateId) {
   const candidate = await BallotCandidate.findOne({ id: candidateId });
   const { raceId, slug, positionId } = candidate;
+  if (!raceId || !slug || !positionId) {
+    console.log(
+      `invalid race ${raceId} or slug ${slug} or positionId ${positionId}`,
+    );
+    return;
+  }
 
   let ballotRaceId = await sails.helpers.ballotready.encodeId(
     raceId,
