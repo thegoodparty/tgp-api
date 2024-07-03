@@ -57,7 +57,6 @@ async function runP2V(candidateId) {
   );
 
   const data = await getRaceDetails(ballotRaceId, slug, '', false);
-  data.campaignId = campaignId;
   sails.helpers.log(slug, 'data', data);
 
   const position = await BallotPosition.findOne({ ballotId: positionId });
