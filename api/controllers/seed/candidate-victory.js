@@ -1,6 +1,5 @@
 const handlePathToVictory = require('../../utils/campaign/handle-path-to-victory');
 const getRaceDetails = require('../../utils/campaign/get-race-details');
-const { exits } = require('../../helpers/campaign/office-helper');
 
 module.exports = {
   friendlyName: 'Candidate p2v',
@@ -21,8 +20,8 @@ module.exports = {
         select id
         from public.ballotcandidate
         where "p2vData" is null
-        and positionid is not null
-        and raceid is not null
+        and "positionId" is not null
+        and "raceId" is not null
         order by id desc;
     `);
     const rows = p2vs?.rows;
