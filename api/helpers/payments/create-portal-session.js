@@ -1,3 +1,7 @@
+console.log(
+  `sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey =>`,
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
+);
 const stripe = require('stripe')(
   sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
 );
@@ -35,6 +39,11 @@ module.exports = {
 
       return exits.success(portalSession);
     } catch (error) {
+      console.error(
+        'Error thrown trying to create payment portal session => ',
+        error,
+      );
+      console.error(error);
       return exits.error('Could not create payment portal session');
     }
   },
