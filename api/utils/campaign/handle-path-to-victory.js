@@ -1,5 +1,5 @@
 const handlePathToVictory = async ({
-  campaignId,
+  slug,
   officeName,
   electionDate,
   electionTerm,
@@ -12,12 +12,6 @@ const handlePathToVictory = async ({
   partisanType,
   priorElectionDates,
 }) => {
-  let slug = '';
-  //create or update each election and position
-
-  console.log('entered handlePathToVictory');
-  console.log('campaignId', campaignId);
-
   let pathToVictoryResponse = {
     electionType: '',
     electionLocation: '',
@@ -30,19 +24,7 @@ const handlePathToVictory = async ({
     },
   };
 
-  let campaign;
-  try {
-    campaign = await Campaign.findOne({ id: campaignId });
-  } catch (e) {
-    console.log('error getting campaign', e);
-  }
-  if (!campaign) {
-    console.log('error: no campaign found');
-    return;
-  }
-  slug = campaign.slug;
-  // sails.helpers.log(slug, 'campaign', campaign);
-  sails.helpers.log(slug, 'handling p2v for campaignId', campaignId);
+  sails.helpers.log(slug, 'starting p2v');
 
   try {
     const officeResponse = await sails.helpers.campaign.officeHelper(
@@ -123,7 +105,7 @@ const handlePathToVictory = async ({
     }
 
     return {
-      campaign,
+      slug,
       pathToVictoryResponse,
       officeResponse,
       officeName,

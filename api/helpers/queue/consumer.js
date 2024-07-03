@@ -142,8 +142,9 @@ async function handlePathToVictoryMessage(message) {
       ...message,
     });
     console.log('p2vResponse', p2vResponse);
-
-    await analyzePathToVictoryResponse({ ...p2vResponse });
+    let campaignId = message.campaignId;
+    let campaign = await Campaign.findOne({ id: campaignId });
+    await analyzePathToVictoryResponse({ campaign, ...p2vResponse });
   } catch (e) {
     console.log('error in consumer/handlePathToVictoryMessage', e);
     await sails.helpers.slack.errorLoggerHelper(

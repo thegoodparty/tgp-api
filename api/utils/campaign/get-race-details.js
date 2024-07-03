@@ -112,6 +112,7 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   }
   sails.helpers.log('priorElectionDates', priorElectionDates);
 
+  data.slug = slug;
   data.officeName = officeName;
   data.electionDate = electionDate;
   data.electionTerm = termLength;
