@@ -1,6 +1,4 @@
-const formData = require('form-data');
-const Mailgun = require('mailgun.js');
-const mailgun = new Mailgun(formData);
+const { sendEmailWithRetry } = require('../../utils/email/sendEmailWithRetry');
 
 module.exports = {
   friendlyName: 'MAIL GUN Sender',
@@ -40,28 +38,18 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { message, messageHeader, email, name, subject, fromEmail } =
-        inputs;
+      const { message, messageHeader, email, subject, fromEmail } = inputs;
 
-      const mailgunApiKey =
-        sails.config.custom.MAILGUN_API || sails.config.MAILGUN_API;
-
-      const domain = 'mg.goodparty.org';
-      const mg = mailgun.client({ key: mailgunApiKey, username: 'api' });
-
-      // const validFromEmail =
-      //   fromEmail || 'The Good Party <noreply@goodparty.org>';
       const validFromEmail =
         fromEmail || 'GoodParty.org <noreply@goodparty.org>';
 
-      const data = {
+      await sendEmailWithRetry({
         from: validFromEmail,
         to: email,
         subject,
         text: message,
         html: html(message, messageHeader, subject),
-      };
-      const msg = await mg.messages.create(domain, data);
+      });
 
       return exits.success();
     } catch (e) {
