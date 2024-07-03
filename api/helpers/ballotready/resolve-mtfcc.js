@@ -29,10 +29,32 @@ module.exports = {
           name: census.name,
           type: census.mtfccType,
         };
+
         // todo: this can be improved for county recognition
         // and other types of entities (school board, etc)
-        if (census.mtfccType !== 'State or Equivalent Feature') {
+
+        // if (census.mtfccType !== 'State or Equivalent Feature') {
+        //   geoData.city = census.name;
+        // }
+        if (census.mtfccType === 'Incorporated Place') {
           geoData.city = census.name;
+        } else if (census.mtfccType === 'County or Equivalent Feature') {
+          // todo: strip County from name.
+          geoData.county = census.name;
+        } else if (census.mtfccType === 'State or Equivalent Feature') {
+          geoData.state = census.name;
+        } else if (census.mtfccType === 'County Subdivision') {
+          if (census.name.toLowerCase().includes('township')) {
+            geoData.township = census.name;
+          } else if (census.name.toLowerCase().includes('town')) {
+            geoData.town = census.name;
+          } else if (census.name.toLowerCase().includes('city')) {
+            geoData.city = census.name;
+          } else if (census.name.toLowerCase().includes('village')) {
+            geoData.village = census.name;
+          } else if (census.name.toLowerCase().includes('borough')) {
+            geoData.borough = census.name;
+          }
         }
       }
     }
