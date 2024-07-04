@@ -1,398 +1,250 @@
 module.exports = {
+  friendlyName: 'count voters in a voter file',
+
   inputs: {
-    slug: {
+    type: {
       type: 'string',
       required: true,
+      isIn: [
+        'full',
+        'doorKnocking',
+        'sms',
+        'directMail',
+        'telemarketing',
+        'custom',
+      ],
     },
-    filters: {
-      type: 'json',
+    customFilters: {
+      type: 'string',
     },
   },
 
   exits: {
     success: {
       description: 'ok',
-      responseType: 'ok',
+    },
+    serverError: {
+      description: 'There was a problem on the server.',
     },
     badRequest: {
-      description: 'badRequest',
-      responseType: 'badRequest',
+      description: 'Bad request',
     },
   },
+
   fn: async function (inputs, exits) {
     try {
-      const { slug, filters } = inputs;
-      const campaign = await Campaign.findOne({ slug }).populate(
-        'pathToVictory',
+      const { type } = inputs;
+      let customFilters;
+      if (inputs.customFilters && inputs.customFilters !== 'undefined') {
+        customFilters = JSON.parse(inputs.customFilters);
+      }
+      const { user } = this.req;
+      const campaign = await sails.helpers.campaign.byUser(user);
+      if (!campaign) {
+        return exits.badRequest('No campaign');
+      }
+      let canDownload = await sails.helpers.campaign.canDownloadVoterFile(
+        campaign.id,
       );
-      const { details, pathToVictory } = campaign;
-
-      if (
-        !pathToVictory?.data?.electionType ||
-        !pathToVictory?.data?.electionLocation
-      ) {
+      if (!canDownload) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Voter file get error - no path to victory set.',
+          {},
+        );
         console.log('Path to Victory is not set.', campaign);
         return exits.badRequest({ message: 'Path to Victory is not set.' });
       }
-      await Campaign.updateOne({ id: campaign.id }).set({
-        data: { ...campaign.data, hasVoterFile: 'processing' },
-      });
-      let independentStateParties = getIndependentStateParties(details.state);
-      const combinedFilters = {
-        Parties_Description: independentStateParties,
-        ...filters,
-      };
 
-      const count = await sails.helpers.voter.voterDataHelper(
-        campaign.id,
-        details.state,
-        pathToVictory.data.electionType,
-        pathToVictory.data.electionLocation,
-        combinedFilters,
-        false, // limitApproved
-        true, // countOnly
-      );
+      let resolvedType = type;
+      if (type === 'custom') {
+        const channel = customFilters.channel;
+        if (channel === 'Door Knocking') {
+          resolvedType = 'doorKnocking';
+        } else if (channel === 'SMS Texting') {
+          resolvedType = 'sms';
+        } else if (channel === 'Direct Mail') {
+          resolvedType = 'directMail';
+        } else if (channel === 'Telemarketing') {
+          resolvedType = 'telemarketing';
+        }
+      }
+      const query = typeToQuery(resolvedType, campaign, customFilters);
 
-      return exits.success({
-        count: count || 0,
-      });
-    } catch (e) {
-      console.log(e);
-      await sails.helpers.slack.errorLoggerHelper(
-        'Error purchasing voter file.',
-        e,
-      );
-      return exits.badRequest({ message: 'Error purchasing voter file.' });
+      console.log('Constructed Query:', query);
+      const sqlResponse = await sails.helpers.voter.queryHelper(query);
+      return exits.success({ count: sqlResponse?.rows[0]?.count });
+    } catch (error) {
+      console.error('Error voter file count:', error);
+      return exits.serverError(error);
     }
   },
 };
 
-function getIndependentStateParties(state) {
-  // this list was generated from sails.helpers.campaign.getParties();
-  let allParties = {
-    AL: ['Non-Partisan'],
-    AK: [
-      'Constitution',
-      'Non-Partisan',
-      'Other',
-      'Green Libertarian',
-      'Independence',
-      'Libertarian',
-    ],
-    AZ: [
-      'Conservative',
-      'American',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Liberal',
-      'Registered Independent',
-      'Moderate',
-      'Natural Law',
-      'Libertarian',
-      'Tea',
-    ],
-    AR: ['Non-Partisan', 'Green', 'Reform', 'Libertarian'],
-    CA: [
-      'American Independent',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Peace and Freedom',
-      'Natural Law',
-      'Libertarian',
-      'Reform',
-    ],
-    CO: ['Constitution', 'Non-Partisan', 'Green', 'Other', 'Libertarian'],
-    CT: [
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Registered Independent',
-      'Libertarian',
-      'Working Family Party',
-    ],
-    DE: [
-      'No Labels',
-      'Conservative',
-      'American',
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Other',
-      'Liberal',
-      'Registered Independent',
-      'Natural Law',
-      'Libertarian',
-      'Working Family Party',
-      'Reform',
-      'Socialist Labor',
-    ],
-    DC: ['Non-Partisan', 'Green', 'Other', 'Libertarian'],
-    FL: [
-      'Conservative',
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Other',
-      'Registered Independent',
-      'Socialist',
-      'Libertarian',
-    ],
-    GA: ['Non-Partisan'],
-    HI: ['Non-Partisan'],
-    ID: ['Constitution', 'Non-Partisan', 'Libertarian'],
-    IL: [
-      'Citizens Republican',
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Harold Washington Democrat',
-      'Registered Independent',
-      'Moderate',
-      'Citizens',
-      'Harold Washington Republican',
-      'Harold Washington',
-      'Reform',
-      'Libertarian',
-      'Prohibition',
-    ],
-    IN: ['Non-Partisan', 'Other'],
-    IA: ['Non-Partisan', 'Green', 'Libertarian'],
-    KS: ['Non-Partisan', 'Libertarian'],
-    KY: [
-      'Constitution',
-      'Green',
-      'Other',
-      'Registered Independent',
-      'Libertarian',
-      'Reform',
-      'Socialist Labor',
-    ],
-    LA: ['Non-Partisan', 'Green', 'Libertarian'],
-    ME: ['Non-Partisan', 'Green', 'Other', 'Libertarian'],
-    MD: [
-      'Conservative',
-      'Communist',
-      'Bull Moose',
-      'American Independent',
-      'Alliance',
-      'Constitution',
-      'Bread and Roses',
-      'American',
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Anarchist',
-      'Other',
-      'Liberal',
-      'Christian',
-      'Registered Independent',
-      'Peace and Freedom',
-      'Peoples',
-      'Populist',
-      'Right to Life',
-      'Natural Law',
-      'Social Democrat',
-      'Natural Party',
-      'Socialist',
-      'Libertarian',
-      "Worker's Party",
-      'Individualist',
-      'Reform',
-      'Whig',
-      'Taxpayers',
-      'Patriot',
-      'Tax',
-    ],
-    MA: [
-      'Conservative',
-      'American Independent',
-      'Constitution',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Natural Law',
-      'Socialist',
-      'Libertarian',
-      'Rainbow',
-      'Working Family Party',
-      'Reform',
-      'Prohibition',
-    ],
-    MI: ['Non-Partisan'],
-    MN: ['Non-Partisan'],
-    MS: ['Non-Partisan', 'Green', 'Other'],
-    MO: ['Non-Partisan', 'Libertarian'],
-    MT: ['Non-Partisan'],
-    NE: ['Non-Partisan', 'Other', 'Libertarian'],
-    NV: [
-      'American Independent',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Natural Law',
-      'Libertarian',
-    ],
-    NH: ['Non-Partisan'],
-    NJ: [
-      'Conservative',
-      'Constitution',
-      'Non-Partisan',
-      'Green',
-      'Natural Law',
-      'Socialist',
-      'Libertarian',
-      'Reform',
-    ],
-    NM: [
-      'Conservative',
-      'Communist',
-      'American Independent',
-      'Alliance',
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Other',
-      'Liberal',
-      'Registered Independent',
-      'Peace and Freedom',
-      'Socialist',
-      'Libertarian',
-      'Working Family Party',
-      'Prohibition',
-      'Socialist Labor',
-      'Taxpayers',
-    ],
-    NY: [
-      'Conservative',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Independence',
-      "Women's Equality Party",
-      'Libertarian',
-      'Working Family Party',
-      'Reform',
-    ],
-    NC: ['No Labels', 'Non-Partisan', 'Green', 'Libertarian'],
-    ND: ['Non-Partisan'],
-    OH: [
-      'Constitution',
-      'Non-Partisan',
-      'Green',
-      'Natural Law',
-      'Socialist',
-      'Libertarian',
-      'Reform',
-    ],
-    OK: ['Non-Partisan', 'Libertarian'],
-    OR: [
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Other',
-      'Registered Independent',
-      'Progressive',
-      'Libertarian',
-      'Working Family Party',
-    ],
-    PA: [
-      'Conservative',
-      'Communist',
-      'Bull Moose',
-      'American Independent',
-      'Constitution',
-      'Free Choice',
-      'American',
-      'Non-Partisan',
-      'Constitutional',
-      'Freedom',
-      'Green',
-      'Consumer',
-      'Anarchist',
-      'Other',
-      'Federalist',
-      'Liberal',
-      'Labor',
-      'Christian',
-      'Registered Independent',
-      'Peace and Freedom',
-      'Populist',
-      'Right to Life',
-      'Natural Law',
-      'Independence',
-      'Social Democrat',
-      'Independent Republican',
-      'Socialist',
-      'Progressive',
-      'Independent Democrat',
-      'Libertarian',
-      'Patriot',
-      'Reform',
-      'Socialist Labor',
-      'Whig',
-      'Prohibition',
-      'Rainbow',
-      'Taxpayers',
-    ],
-    RI: ['Non-Partisan'],
-    SC: ['Non-Partisan'],
-    SD: [
-      'No Labels',
-      'Conservative',
-      'Communist',
-      'Bull Moose',
-      'Constitution',
-      'American',
-      'Non-Partisan',
-      'Constitutional',
-      'Green',
-      'Other',
-      'Federalist',
-      'Liberal',
-      'Registered Independent',
-      'Moderate',
-      'Socialist',
-      'Progressive',
-      'Libertarian',
-      'Whig',
-      'Tea',
-      'Reform',
-      'Individualist',
-    ],
-    TN: ['Non-Partisan'],
-    TX: ['Non-Partisan'],
-    UT: [
-      'American Independent',
-      'Constitution',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Libertarian',
-    ],
-    VT: ['Non-Partisan'],
-    VA: ['Non-Partisan'],
-    WA: ['Non-Partisan'],
-    WV: [
-      'Constitution',
-      'Non-Partisan',
-      'Green',
-      'Other',
-      'Registered Independent',
-      'Mountain',
-      'Libertarian',
-    ],
-    WI: ['Non-Partisan'],
-    WY: [
-      'American Independent',
-      'Constitution',
-      'Non-Partisan',
-      'Other',
-      'Natural Law',
-      'Libertarian',
-    ],
+function typeToQuery(type, campaign, customFilters) {
+  const state = campaign.details.state;
+  let whereClause = '';
+  let nestedWhereClause = '';
+  const l2ColumnName = campaign.pathToVictory.data.electionType;
+  const l2ColumnValue = campaign.pathToVictory.data.electionLocation;
+
+  if (l2ColumnName && l2ColumnValue) {
+    // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
+    let cleanValue = l2ColumnValue.split('##').pop().replace(' (EST.)', '');
+    whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
+  }
+
+  if (type === 'sms') {
+    whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+  }
+
+  if (type === 'directMail') {
+    nestedWhereClause = 'a';
+
+    whereClause += ` AND EXISTS (
+      SELECT 1
+      FROM public."Voter${state}" b
+      WHERE a."Mailing_Families_FamilyID" = b."Mailing_Families_FamilyID"
+      GROUP BY b."Mailing_Families_FamilyID"
+      HAVING COUNT(*) = 1
+    )`;
+  }
+
+  if (type === 'telemarketing') {
+    whereClause += ` AND "VoterTelephones_LandlineFormatted" IS NOT NULL`;
+  }
+
+  if (customFilters?.filters && customFilters.filters.length > 0) {
+    /*
+     custom filter format:
+     {
+      channel: "Door Knocking"
+      filters: ['audience_superVoters', 'audience_likelyVoters', 'party_independent', 'age_18-25', 'age_25-35']
+      purpose: "GOTV"
+  }
+    */
+    whereClause += customFiltersToQuery(customFilters.filters);
+  }
+
+  return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+}
+
+function customFiltersToQuery(filters) {
+  const filterConditions = {
+    audience: [],
+    party: [],
+    age: [],
+    gender: [],
   };
-  let stateParties = allParties[state];
-  return stateParties;
+
+  filters.forEach((filter) => {
+    switch (filter) {
+      case 'audience_superVoters':
+        filterConditions.audience.push(`CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END > 75`);
+        break;
+      case 'audience_likelyVoters':
+        filterConditions.audience.push(`(CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END > 50 AND 
+                                        CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END <= 75)`);
+        break;
+      case 'audience_unreliableVoters':
+        filterConditions.audience.push(`(CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END > 25 AND 
+                                        CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END <= 50)`);
+        break;
+      case 'audience_unlikelyVoters':
+        filterConditions.audience.push(`CASE 
+                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                          ELSE NULL
+                                        END <= 25`);
+        break;
+      case 'audience_firstTimeVoters':
+        filterConditions.audience.push(
+          '"Voters_VotingPerformanceEvenYearGeneral" IS NULL',
+        );
+        break;
+      case 'party_independent':
+        filterConditions.party.push(
+          '("Parties_Description" = \'Non-Partisan\' OR "Parties_Description" = \'Other\')',
+        );
+        break;
+      case 'party_democrat':
+        filterConditions.party.push('"Parties_Description" = \'Democrat\'');
+        break;
+      case 'party_republican':
+        filterConditions.party.push('"Parties_Description" = \'Republican\'');
+        break;
+      case 'age_18-25':
+        filterConditions.age.push(
+          '("Voters_Age"::integer >= 18 AND "Voters_Age"::integer <= 25)',
+        );
+        break;
+      case 'age_25-35':
+        filterConditions.age.push(
+          '("Voters_Age"::integer > 25 AND "Voters_Age"::integer <= 35)',
+        );
+        break;
+      case 'age_35-50':
+        filterConditions.age.push(
+          '("Voters_Age"::integer > 35 AND "Voters_Age"::integer <= 50)',
+        );
+        break;
+      case 'age_50+':
+        filterConditions.age.push('"Voters_Age"::integer > 50');
+        break;
+      case 'gender_male':
+        filterConditions.gender.push('"Voters_Gender" = \'M\'');
+        break;
+      case 'gender_female':
+        filterConditions.gender.push('"Voters_Gender" = \'F\'');
+        break;
+      case 'gender_unknown':
+        filterConditions.gender.push('"Voters_Gender" IS NULL');
+        break;
+    }
+  });
+
+  // Combine conditions for each category with OR and wrap them in parentheses
+  const audienceCondition = filterConditions.audience.length
+    ? `(${filterConditions.audience.join(' OR ')})`
+    : null;
+  const partyCondition = filterConditions.party.length
+    ? `(${filterConditions.party.join(' OR ')})`
+    : null;
+  const ageCondition = filterConditions.age.length
+    ? `(${filterConditions.age.join(' OR ')})`
+    : null;
+  const genderCondition = filterConditions.gender.length
+    ? `(${filterConditions.gender.join(' OR ')})`
+    : null;
+
+  // Combine all categories with AND
+  const finalCondition = [
+    audienceCondition,
+    partyCondition,
+    ageCondition,
+    genderCondition,
+  ]
+    .filter(Boolean)
+    .join(' AND ');
+
+  return finalCondition ? ` AND ${finalCondition}` : '';
 }

@@ -45,8 +45,6 @@ module.exports = {
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
-      const { pathToVictory } = campaign;
-      console.log('Path to Victory:', pathToVictory);
       let canDownload = await sails.helpers.campaign.canDownloadVoterFile(
         campaign.id,
       );
