@@ -8,8 +8,10 @@ module.exports = {
       isIn: [
         'full',
         'doorKnocking',
+        'doorknocking',
         'sms',
         'directMail',
+        'directmail',
         'telemarketing',
         'custom',
       ],
@@ -33,7 +35,13 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { type } = inputs;
+      let { type } = inputs;
+      if (type === 'doorknocking') {
+        type = 'doorKnocking';
+      }
+      if (type === 'directmail') {
+        type = 'directMail';
+      }
       let customFilters;
       if (inputs.customFilters && inputs.customFilters !== 'undefined') {
         customFilters = JSON.parse(inputs.customFilters);
