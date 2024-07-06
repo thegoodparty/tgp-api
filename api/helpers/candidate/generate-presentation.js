@@ -89,7 +89,7 @@ module.exports = {
         office: positionName,
         party,
         state,
-        ...(p2vData || {}),
+        p2vData,
         officeDescription,
         term,
         salary,
