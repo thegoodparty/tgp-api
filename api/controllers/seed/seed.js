@@ -5,25 +5,15 @@ module.exports = {
   exits: {},
 
   async fn(inputs, exits) {
-    const stats = {
-      notFound: 0,
-      nameStateMatch: 0,
-      raceIdMatch: 0,
-    };
     try {
       const campaigns = await Campaign.find({
-        select: ['id', 'slug'],
-        where: {
-          ballotCandidate: null,
-          isActive: true,
-          user: { '!=': null },
-        },
+        id: { '>': 7995 },
       });
 
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
         try {
-          await sails.helpers.campaign.linkCandidateCampaign(campaign.id);
+          await sails.helpers.crm.updateCampaign(campaign);
         } catch (e) {
           console.log('Error in seed campaign', e);
           await sails.helpers.slack.errorLoggerHelper(
@@ -32,13 +22,12 @@ module.exports = {
           );
         }
       }
-      await sails.helpers.slack.errorLoggerHelper(
-        `matched campaign with candidates.`,
-        { stats },
-      );
+      await sails.helpers.slack.errorLoggerHelper(`Done updating hubspot`, {
+        total: campaigns.length,
+      });
       return exits.success({
         message: 'matched campaign with candidates.',
-        stats,
+        total: campaigns.length,
       });
     } catch (e) {
       console.log('Error in seed', e);
@@ -47,7 +36,6 @@ module.exports = {
         message: 'Error in seed',
         e,
         error: JSON.stringify(e),
-        stats,
       });
     }
   },
