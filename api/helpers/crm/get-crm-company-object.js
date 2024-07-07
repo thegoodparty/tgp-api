@@ -84,7 +84,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     : undefined;
 
   const formatDateForCRM = (date) =>
-    date !== null ? moment(new Date(date)).format('YYYY-MM-DD') : null;
+    date !== null ? new Date(date).getTime() : undefined;
 
   const filing_start = filingPeriodsStart
     ? moment(filingPeriodsStart).format('YYYY-MM-DD')
@@ -122,7 +122,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',
-    pro_upgrade_date: formatDateForCRM(isProUpdatedAt) || undefined,
+    pro_upgrade_date: formatDateForCRM(isProUpdatedAt),
     filing_start,
     filing_end,
     ...(website ? { website } : {}),
