@@ -63,7 +63,7 @@ module.exports = {
           ${alertSlackMessage}
           `,
         },
-        'victory-issues',
+        'politics',
       );
     }
     return exits.success({
