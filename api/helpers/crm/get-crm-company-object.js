@@ -75,6 +75,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
   const primaryElectionDateMs = formatDateForCRM(primaryElectionDate);
   const isProUpdatedAtMs = formatDateForCRM(isProUpdatedAt);
   const p2vCompleteDateMs = formatDateForCRM(p2vCompleteDate);
+  const filingStartMs = formatDateForCRM(filingPeriodsStart);
+  const filingEndMs = formatDateForCRM(filingPeriodsEnd);
 
   const resolvedOffice = office === 'Other' ? otherOffice : office;
 
@@ -111,12 +113,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',
     pro_upgrade_date: isProUpdatedAtMs,
-    filing_start: filingPeriodsStart
-      ? moment(filingPeriodsStart).format('YYYY-MM-DD')
-      : null,
-    filing_end: filingPeriodsEnd
-      ? moment(filingPeriodsEnd).format('YYYY-MM-DD')
-      : null,
+    filing_start: filingStartMs,
+    filing_end: filingEndMs,
     ...(website ? { website } : {}),
     ...(level ? { ai_office_level: level } : {}),
     ...(ballotLevel ? { office_level: ballotLevel } : {}),
