@@ -57,7 +57,7 @@ module.exports = {
       const {
         electionDate,
         primaryElectionDate,
-        level,
+        ballotLevel,
         state,
         pledged,
         party,
@@ -128,7 +128,7 @@ module.exports = {
             properties: {
               electionDate, // Date as a string
               primaryElectionDate,
-              level,
+              level: ballotLevel ? ballotLevel.toLowerCase() : undefined,
               state,
               pledged,
               party,
