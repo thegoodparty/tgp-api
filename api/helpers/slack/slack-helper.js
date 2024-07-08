@@ -74,6 +74,14 @@ module.exports = {
 
         slackChannelId =
           sails.config.custom.slackAiChannelId || sails.config.slackAiChannelId;
+      } else if (channel === 'politics') {
+        token =
+          sails.config.custom.slackPoliticsChannelToken ||
+          sails.config.slackPoliticsChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackPoliticsChannelId ||
+          sails.config.slackPoliticsChannelId;
       } else {
         token =
           sails.config.custom.slackContentChannelToken ||
