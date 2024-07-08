@@ -55,7 +55,7 @@ module.exports = {
           type: campaign ? 'Campaign' : 'User',
           lifecyclestage: campaign ? 'customer' : 'opportunity',
           active_candidate: campaign ? 'Yes' : 'No',
-          live_candidate: campaign && campaign?.launchStatus === 'launched',
+          live_candidate: campaign && campaign?.isActive,
           source: 'GoodParty.org Site',
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,

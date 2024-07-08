@@ -7,7 +7,7 @@ module.exports = {
   async fn(inputs, exits) {
     try {
       const campaigns = await Campaign.find({
-        id: { '>': 7995 },
+        id: { '>': 7000 },
       });
 
       for (let i = 0; i < campaigns.length; i++) {
