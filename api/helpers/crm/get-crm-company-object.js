@@ -107,7 +107,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     last_step: isActive ? 'onboarding-complete' : currentStep,
     last_step_date: lastStepDate || undefined,
     zip,
-    pledge_status: pledged ? 'Yes' : 'No',
+    pledge_status: pledged ? 'yes' : 'no',
     is_active: !!name,
     live_candidate: isActive,
     p2v_complete_date: p2vCompleteDate || undefined,
