@@ -231,8 +231,11 @@ function typeToQuery(type, campaign, customFilters) {
     // measure performance after index is added
 
     nestedWhereClause = 'a';
+    if (whereClause !== '') {
+      whereClause += ' AND ';
+    }
 
-    whereClause += ` AND EXISTS (
+    whereClause += ` EXISTS (
       SELECT 1
       FROM public."Voter${state}" b
       WHERE a."Mailing_Families_FamilyID" = b."Mailing_Families_FamilyID"
