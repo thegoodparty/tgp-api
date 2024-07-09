@@ -64,6 +64,7 @@
     "sails-hook-orm": "^2.1.1",
     "sails-hook-sockets": "^2.0.3",
     "sails-postgresql": "^5.0.1",
+    "skipper": "^0.9.4",
     "skipper-s3": "^0.6.0",
     "slugify": "^1.6.6",
     "sqs-consumer": "^5.7.0",

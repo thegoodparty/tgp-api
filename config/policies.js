@@ -61,4 +61,5 @@ module.exports.policies = {
   'job/*': true,
   'jobs/*': true,
   'voterData/voterFile/geo-location-cron': true,
+  'payments/events': true,
 };
