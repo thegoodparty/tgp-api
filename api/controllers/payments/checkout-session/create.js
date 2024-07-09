@@ -1,6 +1,5 @@
-const stripe = require('stripe')(
-  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
-);
+const stripeKey = sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey
+const stripe = require('stripe')(stripeKey);
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
@@ -20,7 +19,12 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const prices = await stripe.prices.list();
+    const product = await stripe.products.retrieve(
+      stripeKey?.includes('live')
+        ? 'prod_QCGFVVUhD6q2Jo'
+        : 'prod_QAR4xrqUhyHHqX',
+    );
+    const { default_price: price } = product;
 
     const session = await stripe.checkout.sessions.create({
       billing_address_collection: 'auto',
@@ -28,7 +32,7 @@ module.exports = {
         {
           // We should never have more than 1 price for Pro. But if we do, this
           //  will need to be more intelligent.
-          price: prices.data[0].id,
+          price,
           quantity: 1,
         },
       ],
