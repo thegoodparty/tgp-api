@@ -108,7 +108,11 @@ function typeToQuery(type, campaign, customFilters) {
   if (type === 'directMail') {
     nestedWhereClause = 'a';
 
-    whereClause += ` AND EXISTS (
+    if (whereClause !== '') {
+      whereClause += ' AND ';
+    }
+
+    whereClause += ` EXISTS (
       SELECT 1
       FROM public."Voter${state}" b
       WHERE a."Mailing_Families_FamilyID" = b."Mailing_Families_FamilyID"
