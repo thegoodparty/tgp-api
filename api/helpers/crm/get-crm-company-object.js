@@ -68,31 +68,21 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   const name = await determineName(campaign.user);
 
-  //UNIX formatted timestamps in milliseconds
-  const electionDateMs = electionDate
-    ? new Date(electionDate).getTime()
-    : undefined;
+  const formatDateForCRM = (date) =>
+    date ? moment(date).startOf('day').valueOf().toString() : undefined;
 
-  const primaryElectionDateMs = primaryElectionDate
-    ? new Date(primaryElectionDate).getTime()
-    : undefined;
+  const electionDateMs = formatDateForCRM(electionDate);
+  const primaryElectionDateMs = formatDateForCRM(primaryElectionDate);
+  const isProUpdatedAtMs = formatDateForCRM(isProUpdatedAt);
+  const p2vCompleteDateMs = formatDateForCRM(p2vCompleteDate);
+  const filingStartMs = formatDateForCRM(filingPeriodsStart);
+  const filingEndMs = formatDateForCRM(filingPeriodsEnd);
 
   const resolvedOffice = office === 'Other' ? otherOffice : office;
 
   const longState = state
     ? await sails.helpers.zip.shortToLongState(state)
     : undefined;
-
-  const formatDateForCRM = (date) =>
-    date !== null ? moment(new Date(date)).format('YYYY-MM-DD') : null;
-
-  const filing_start = filingPeriodsStart
-    ? moment(filingPeriodsStart).format('YYYY-MM-DD')
-    : null;
-
-  const filing_end = filingPeriodsEnd
-    ? moment(filingPeriodsEnd).format('YYYY-MM-DD')
-    : null;
 
   const properties = {
     name,
@@ -110,8 +100,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     pledge_status: pledged ? 'yes' : 'no',
     is_active: !!name,
     live_candidate: isActive,
-    p2v_complete_date: p2vCompleteDate || undefined,
-    p2v_status: p2vStatus || 'Locked', // TODO: invesigate why this is not accurate
+    p2v_complete_date: p2vCompleteDateMs,
+    p2v_status: p2vStatus || 'Locked', // TODO: investigate why this is not accurate
     election_date: electionDateMs,
     primary_date: primaryElectionDateMs,
     doors_knocked: reportedVoterGoals?.doorKnocking || 0,
@@ -122,9 +112,9 @@ const getCrmCompanyObject = async (inputs, exits) => {
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',
-    pro_upgrade_date: formatDateForCRM(isProUpdatedAt) || undefined,
-    filing_start,
-    filing_end,
+    pro_upgrade_date: isProUpdatedAtMs,
+    filing_start: filingStartMs,
+    filing_end: filingEndMs,
     ...(website ? { website } : {}),
     ...(level ? { ai_office_level: level } : {}),
     ...(ballotLevel ? { office_level: ballotLevel } : {}),
