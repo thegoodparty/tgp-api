@@ -20,6 +20,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    voicemail: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -34,7 +37,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { budget, audience, script, date, message } = inputs;
+      const { budget, audience, script, date, message, voicemail } = inputs;
       const { user } = this.req;
       const { firstName, lastName, email } = user;
 
@@ -47,6 +50,7 @@ module.exports = {
 ￮ User: ${firstName} ${lastName} (${email})
 ￮ Script Key: ${script}
 ￮ Audience: ${JSON.stringify(audience)}
+${voicemail ? '￮ Voicemail: Yes' : ''}
 `,
         },
         'politics',
