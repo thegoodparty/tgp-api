@@ -127,6 +127,16 @@ module.exports = {
       console.log('phoneindex already exists');
     }
 
+    // ElectionType indexes
+    try {
+      // composite index
+      await sails.getDatastore().sendNativeQuery(`
+              CREATE UNIQUE INDEX electiontypeindex ON public.electiontype ("name", "state")
+            `);
+    } catch (error) {
+      console.log('electiontypeindex already exists');
+    }
+
     // Report back to Sails that the migration was successful
     return exits.success();
   },
