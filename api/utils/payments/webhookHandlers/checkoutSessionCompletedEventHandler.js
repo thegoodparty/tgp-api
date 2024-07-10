@@ -23,7 +23,7 @@ const checkoutSessionCompletedEventHandler = async (event) => {
   }
   const campaign = await sails.helpers.campaign.byUser(user);
   await Promise.allSettled([
-    patchUserMetaData(user, { customerId }),
+    patchUserMetaData(user, { customerId, checkoutSession: null }),
     setCampaignSubscriptionId(campaign, subscriptionId),
     setUserCampaignIsPro(campaign),
     sendProConfirmationEmail(user, campaign),
