@@ -7,7 +7,13 @@ module.exports = {
 
   description: 'Run p2v for Candidates.',
 
-  inputs: {},
+  inputs: {
+    limit: {
+      type: 'number',
+      description: 'Limit the number of candidates to process',
+      defaultsTo: 0,
+    },
+  },
 
   exits: {
     success: {
@@ -17,7 +23,8 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const p2vs = await sails.sendNativeQuery(`
+    const { limit } = inputs;
+    let p2vQuery = `
         select id
         from public.ballotcandidate
         where "p2vData" is null
@@ -25,7 +32,11 @@ module.exports = {
         and "raceId" is not null and "raceId" != ''
         and party != 'Republican' and party != 'Democratic'
         order by id desc
-    `);
+    `;
+    if (limit > 0) {
+      p2vQuery += ` limit ${limit}`;
+    }
+    let p2vs = await sails.sendNativeQuery(p2vQuery);
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
     for (const row of rows) {
