@@ -299,7 +299,9 @@ async function searchMiscDistricts(officeName, state) {
         const officeWords = officeLower.split(' ');
         const districtWords = formattedDistrict.split(' ');
         const similarity = jaccardSimilarity(officeWords, districtWords);
-        similarityScores[district] = similarity;
+        if (similarity && similarity > 0.3) {
+          similarityScores[district] = similarity;
+        }
       }
     }
   }

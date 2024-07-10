@@ -141,29 +141,35 @@ module.exports = {
     try {
       for (const state of states) {
         console.log('seeding state', state);
-        let columns = await getSearchColumns(state);
-        console.log(`columns for ${state}`, columns);
         for (const category of Object.keys(miscellaneousDistricts)) {
           console.log('seeding category', category);
           for (const district of miscellaneousDistricts[category]) {
             try {
-              if (columns.length > 0) {
-                console.log('checking district', district);
-                if (columns.includes(district.replace(/_/g, ' '))) {
-                  console.log('FOUND! district', district);
-                  await ElectionType.findOrCreate(
-                    {
-                      name: district,
-                      state: state,
-                      category: category,
-                    },
-                    {
-                      name: district,
-                      state: state,
-                      category: category,
-                    },
-                  );
-                }
+              //   if (columns.length > 0) {
+              console.log('checking district', district);
+              let columnValues = await querySearchColumn(district, state);
+              console.log('columnValues', columnValues.length);
+              //   if (columns.includes(district.replace(/_/g, ' '))) {
+              const blankValues = [`${state}##`, `${state}####`, '', ' '];
+              const filteredValues = columnValues.filter(
+                (value) => !blankValues.includes(value),
+              );
+              console.log('filteredValues', filteredValues.length);
+              if (filteredValues.length > 1) {
+                console.log('FOUND! district', district);
+                await ElectionType.findOrCreate(
+                  {
+                    name: district,
+                    state: state,
+                    category: category,
+                  },
+                  {
+                    name: district,
+                    state: state,
+                    category: category,
+                  },
+                );
+                // }
               }
             } catch (e) {
               console.log('error at seed election types', e);
@@ -180,6 +186,7 @@ module.exports = {
   },
 };
 
+// This was deprecated because it returns too many columns with blank results.
 async function getSearchColumns(electionState) {
   let searchColumns = [];
   try {
@@ -195,4 +202,18 @@ async function getSearchColumns(electionState) {
     console.log('error at getSearchColumns', e);
   }
   return searchColumns;
+}
+
+async function querySearchColumn(searchColumn, electionState) {
+  let searchValues = [];
+  try {
+    let searchUrl = `https://api.l2datamapping.com/api/v2/customer/application/column/values/1OSR/VM_${electionState}/${searchColumn}?id=1OSR&apikey=${l2ApiKey}`;
+    const response = await axios.get(searchUrl);
+    if (response?.data?.values && response.data.values.length > 0) {
+      searchValues = response.data.values;
+    }
+  } catch (e) {
+    console.log('error at querySearchColumn', e);
+  }
+  return searchValues;
 }
