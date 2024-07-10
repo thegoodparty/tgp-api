@@ -276,7 +276,9 @@ function typeToQuery(type, campaign, customFilters) {
     whereClause += customFiltersToQuery(customFilters.filters);
   }
 
-  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause}  ${
+    whereClause !== '' ? `WHERE ${whereClause}` : ''
+  }`;
 }
 
 function customFiltersToQuery(filters) {

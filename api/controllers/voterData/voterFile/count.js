@@ -137,7 +137,9 @@ function typeToQuery(type, campaign, customFilters) {
     whereClause += customFiltersToQuery(customFilters.filters);
   }
 
-  return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+  return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} ${
+    whereClause !== '' ? `WHERE ${whereClause}` : ''
+  }`;
 }
 
 function customFiltersToQuery(filters) {
