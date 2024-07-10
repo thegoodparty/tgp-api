@@ -300,6 +300,7 @@ async function searchMiscDistricts(officeName, state) {
         const districtWords = formattedDistrict.split(' ');
         const similarity = jaccardSimilarity(officeWords, districtWords);
         if (similarity && similarity > 0.3) {
+          console.log('similarity', district, similarity);
           similarityScores[district] = similarity;
         }
       }
