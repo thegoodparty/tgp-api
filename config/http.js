@@ -37,10 +37,17 @@ module.exports.http = {
       return next();
     },
 
+    customBodyParser: function (req, res, next) {
+      if (req.headers['stripe-signature']) {
+        return next();
+      }
+      return require('skipper')()(req, res, next);
+    },
+
     order: [
       'cookieParser',
       'session',
-      'bodyParser',
+      'customBodyParser',
       'compress',
       'poweredBy',
       'requireHttps',

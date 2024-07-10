@@ -1,7 +1,4 @@
-const stripe = require('stripe')(
-  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey,
-);
-
+const { stripeSingleton } = require('../../utils/payments/stripeSingleton');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
@@ -24,10 +21,12 @@ module.exports = {
     }
 
     try {
-      const portalSession = await stripe.billingPortal.sessions.create({
-        customer: customerId,
-        return_url: `${appBase}/profile`,
-      });
+      const portalSession = await stripeSingleton.billingPortal.sessions.create(
+        {
+          customer: customerId,
+          return_url: `${appBase}/profile`,
+        },
+      );
 
       if (!portalSession) {
         throw 'Could not create payment portal session';
