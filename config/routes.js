@@ -198,7 +198,7 @@ module.exports.routes = {
     'voterData/voterFile/geo-location-cron',
 
   // test ai
-  'POST   /api/v1/ai/test': 'ai/test',
+  'GET   /api/v1/ai/test': 'ai/test',
   'GET   /api/v1/ai/load': 'ai/load',
 
   // races
@@ -263,9 +263,7 @@ module.exports.routes = {
   // Payment Processor Integrations
   'POST /api/v1/payments/purchase/checkout-session':
     'payments/checkout-session/create',
-  'PATCH /api/v1/payments/purchase/checkout-session/:sessionId':
-    'payments/checkout-session/update',
-  'GET /api/v1/payments/purchase/portal-session': 'payments/portal-session/get',
   'POST /api/v1/payments/purchase/portal-session':
     'payments/portal-session/create',
+  'POST /api/v1/payments/events': 'payments/events',
 };

@@ -28,6 +28,7 @@ const handlePathToVictory = async ({
 
   try {
     const officeResponse = await sails.helpers.campaign.officeHelper(
+      slug,
       officeName,
       electionLevel,
       electionState,

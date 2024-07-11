@@ -1,5 +1,7 @@
-const stripeKey = sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey
-const stripe = require('stripe')(stripeKey);
+const { patchUserMetaData } = require('../../../utils/user/patchUserMetaData');
+const { stripeSingleton } = require('../../../utils/payments/stripeSingleton');
+const stripeKey =
+  sails.config.custom.stripeSecretKey || sails.config.stripeSecretKey;
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
@@ -19,14 +21,17 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const product = await stripe.products.retrieve(
+    const product = await stripeSingleton.products.retrieve(
       stripeKey?.includes('live')
         ? 'prod_QCGFVVUhD6q2Jo'
         : 'prod_QAR4xrqUhyHHqX',
     );
     const { default_price: price } = product;
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripeSingleton.checkout.sessions.create({
+      metadata: {
+        userId: this.req.user.id,
+      },
       billing_address_collection: 'auto',
       line_items: [
         {
@@ -41,7 +46,9 @@ module.exports = {
       cancel_url: this.req.headers.referer || `${appBase}/dashboard`,
     });
 
-    const { url: redirectUrl } = session;
+    const { url: redirectUrl, id: checkoutSessionId } = session;
+
+    await patchUserMetaData(this.req.user, { checkoutSessionId });
 
     return exits.success({
       redirectUrl,

@@ -1,13 +1,7 @@
-const { Configuration, OpenAIApi } = require('openai');
-// const { encode } = require('gpt-3-encoder');
+const { OpenAI } = require('openai');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
-
-const configuration = new Configuration({
-  apiKey: openAiKey,
-});
-
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI({ apiKey: openAiKey });
 
 module.exports = {
   inputs: {
@@ -53,12 +47,12 @@ module.exports = {
       const model = 'gpt-4o';
 
       // console.log('creating chat completion....', messages);
-      completion = await openai.createChatCompletion({
+      completion = await openai.chat.completions.create({
         model,
         messages,
-        max_tokens: maxTokens,
         top_p: topP,
         temperature,
+        max_tokens: maxTokens,
       });
     } catch (error) {
       console.log('Error in helpers/ai/create-compilation', error);
@@ -75,10 +69,10 @@ module.exports = {
 
     if (
       completion &&
-      completion.data.choices &&
-      completion.data.choices[0].message.content
+      completion.choices &&
+      completion.choices[0].message.content
     ) {
-      let content = completion.data.choices[0].message.content;
+      let content = completion.choices[0].message.content;
       if (content.includes('```html')) {
         content = content.match(/```html([\s\S]*?)```/)[1];
       }
@@ -87,7 +81,7 @@ module.exports = {
 
       return exits.success({
         content: content,
-        tokens: completion.data.usage.total_tokens,
+        tokens: completion.usage.total_tokens,
       });
     } else {
       console.log('completion failure');

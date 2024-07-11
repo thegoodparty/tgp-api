@@ -2,10 +2,16 @@ const axios = require('axios');
 
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 
+const getChatCompletion = require('../../utils/ai/get-chat-completion');
+
 module.exports = {
   friendlyName: 'Office Helper',
 
   inputs: {
+    slug: {
+      type: 'string',
+      required: true,
+    },
     officeName: {
       type: 'string',
       required: true,
@@ -51,6 +57,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const {
+        slug,
         officeName,
         electionLevel,
         electionState,
@@ -75,12 +82,13 @@ module.exports = {
       }
       let searchColumns = [];
       let foundMiscDistricts = [];
+      sails.helpers.log(slug, `Searching misc districts for ${officeName}`);
       foundMiscDistricts = await searchMiscDistricts(officeName, electionState);
 
       if (foundMiscDistricts.length > 0) {
         searchColumns = foundMiscDistricts;
       }
-      console.log('searchColumns', searchColumns);
+      sails.helpers.log(slug, 'searchColumns', searchColumns);
 
       // STEP 1: determine if there is a subAreaName / District
       let districtValue = getDistrictValue(
@@ -140,7 +148,7 @@ module.exports = {
           electionTypes = [{ column: '', value: '' }];
         }
       }
-      console.log('electionTypes', electionTypes);
+      sails.helpers.log(slug, 'electionTypes', electionTypes);
 
       let electionDistricts = {};
       // STEP 3 : If its a Municipality/County then Determine any district / ward / sub area
@@ -269,6 +277,48 @@ function determineSearchColumns(electionLevel, officeName) {
 }
 
 async function searchMiscDistricts(officeName, state) {
+  // Populate the miscellaneous districts from the database.
+  const results = await ElectionType.find({ state });
+
+  if (!results || results.length === 0) {
+    console.log(
+      `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
+    );
+    await sails.helpers.sendSlackMessage(
+      `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
+    );
+    return [];
+  }
+
+  let miscellaneousDistricts = [];
+  for (const result of results) {
+    if (result?.name && result?.category) {
+      miscellaneousDistricts.push(result.name);
+    }
+  }
+
+  // Use AI to find the best matches for the office name.
+  let foundMiscDistricts = [];
+  const matchResp = await matchSearchColumns(
+    miscellaneousDistricts,
+    officeName,
+  );
+  console.log('matchResp', matchResp);
+  if (matchResp && matchResp?.content) {
+    try {
+      const contentJson = JSON.parse(matchResp.content);
+      console.log('columns', contentJson.columns);
+      foundMiscDistricts = contentJson?.columns || [];
+    } catch (e) {
+      console.log('error parsing matchResp', e);
+    }
+  }
+
+  return foundMiscDistricts;
+}
+
+// Deprecated.
+async function searchMiscDistrictsSimilarity(officeName, state) {
   const results = await ElectionType.find({ state });
   let miscellaneousDistricts = {};
   for (const result of results) {
@@ -394,6 +444,50 @@ async function querySearchColumn(searchColumn, electionState) {
     console.log('error at querySearchColumn', e);
   }
   return searchValues;
+}
+
+async function matchSearchColumns(searchColumns, searchString) {
+  const functionDefinition = {
+    type: 'function',
+    function: {
+      name: 'matchColumns',
+      description: 'Determine the columns that best match the office name.',
+      parameters: {
+        type: 'object',
+        properties: {
+          columns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+            description: 'The list of columns that best match the office name.',
+            maxItems: 5,
+          },
+        },
+        required: ['columns'],
+      },
+    },
+  };
+
+  const completion = await getChatCompletion(
+    [
+      {
+        role: 'system',
+        content:
+          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position.',
+      },
+      {
+        role: 'user',
+        content: `Find the top 5 columns that matches the following office: "${searchString}.\n\nColumns: ${searchColumns}"`,
+      },
+    ],
+    'gpt-4o',
+    0.1,
+    0.1,
+    [functionDefinition],
+  );
+
+  return completion;
 }
 
 async function matchSearchValues(searchValues, searchString) {
