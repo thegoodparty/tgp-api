@@ -39,14 +39,22 @@ module.exports = {
     let p2vs = await sails.sendNativeQuery(p2vQuery);
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
-    for (const row of rows) {
-      let candidateId = row.id;
-      if (candidateId && candidateId > 0) {
-        await runP2V(candidateId);
-      } else {
-        console.log('invalid candidateId', candidateId);
-      }
+
+    const batch_size = 5;
+    for (let i = 0; i < rows.length; i += batch_size) {
+      const batch = rows.slice(i, i + batch_size);
+      await Promise.all(
+        batch.map(async (row) => {
+          let candidateId = row.id;
+          if (candidateId && candidateId > 0) {
+            await runP2V(candidateId);
+          } else {
+            console.log('invalid candidateId', candidateId);
+          }
+        }),
+      );
     }
+
     return exits.success({
       message: 'ok',
     });
