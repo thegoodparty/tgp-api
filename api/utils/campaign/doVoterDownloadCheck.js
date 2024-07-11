@@ -1,3 +1,4 @@
+const { appEnvironment, PRODUCTION_ENV } = require('../appEnvironment');
 const doVoterDownloadCheck = async ({ id: campaignId, slug: campaignSlug }) => {
   const canDownload = await sails.helpers.campaign.canDownloadVoterFile(
     campaignId,
@@ -13,7 +14,7 @@ const doVoterDownloadCheck = async ({ id: campaignId, slug: campaignSlug }) => {
           ${alertSlackMessage}
           `,
       },
-      'victory-issues',
+      appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
     );
   }
 };

@@ -5,6 +5,7 @@ const { getUserByCustomerId } = require('../../user/getUserByCustomerId');
 const {
   setCampaignSubscriptionId,
 } = require('../../campaign/setCampaignSubscriptionId');
+const { appEnvironment, PRODUCTION_ENV } = require('../../appEnvironment');
 
 const resumeCampaignProSubscription = async (event) => {
   const subscription = event.data.object;
@@ -24,6 +25,13 @@ const resumeCampaignProSubscription = async (event) => {
   await Promise.allSettled([
     setCampaignSubscriptionId(campaign, subscriptionId),
     setUserCampaignIsPro(campaign),
+    sails.helpers.slack.slackHelper(
+      {
+        title: 'Pro Plan Resumed',
+        body: `PRO PLAN RESUMED: \`${name}\` w/ email ${user.email} and campaign slug \`${campaign.slug}\` RESUMED their pro subscription!`,
+      },
+      appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
+    ),
     sendProConfirmationEmail(user, campaign),
     doVoterDownloadCheck(campaign),
   ]);
