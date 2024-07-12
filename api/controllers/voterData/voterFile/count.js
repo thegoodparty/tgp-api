@@ -97,7 +97,7 @@ function typeToQuery(type, campaign, customFilters) {
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
-    let cleanValue = l2ColumnValue.split('##').pop().replace(' (EST.)', '');
+    let cleanValue = extractLocation(l2ColumnValue);
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
 
@@ -259,4 +259,15 @@ function customFiltersToQuery(filters) {
     .join(' AND ');
 
   return finalCondition ? ` AND ${finalCondition}` : '';
+}
+
+function extractLocation(input) {
+  console.log('Extracting location from:', input);
+  // Remove any trailing '##' from the input string
+  let extracted = input.replace(/##$/, '');
+
+  // Split the string by '##', take the last element, and remove ' (EST.)' if present
+  const res = extracted.split('##').pop().replace(' (EST.)', '');
+  console.log('Extracted:', res);
+  return res;
 }
