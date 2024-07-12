@@ -7,7 +7,13 @@ module.exports = {
 
   description: 'Run p2v for Candidates.',
 
-  inputs: {},
+  inputs: {
+    limit: {
+      type: 'number',
+      description: 'Limit the number of candidates to process',
+      defaultsTo: 0,
+    },
+  },
 
   exits: {
     success: {
@@ -17,24 +23,38 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const p2vs = await sails.sendNativeQuery(`
+    const { limit } = inputs;
+    let p2vQuery = `
         select id
         from public.ballotcandidate
         where "p2vData" is null
         and "positionId" is not null and "positionId" != ''
         and "raceId" is not null and "raceId" != ''
         and party != 'Republican' and party != 'Democratic'
-    `);
+        order by id desc
+    `;
+    if (limit > 0) {
+      p2vQuery += ` limit ${limit}`;
+    }
+    let p2vs = await sails.sendNativeQuery(p2vQuery);
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
-    for (const row of rows) {
-      let candidateId = row.id;
-      if (candidateId && candidateId > 0) {
-        await runP2V(candidateId);
-      } else {
-        console.log('invalid candidateId', candidateId);
-      }
+
+    const batch_size = 5;
+    for (let i = 0; i < rows.length; i += batch_size) {
+      const batch = rows.slice(i, i + batch_size);
+      await Promise.all(
+        batch.map(async (row) => {
+          let candidateId = row.id;
+          if (candidateId && candidateId > 0) {
+            await runP2V(candidateId);
+          } else {
+            console.log('invalid candidateId', candidateId);
+          }
+        }),
+      );
     }
+
     return exits.success({
       message: 'ok',
     });
@@ -46,7 +66,7 @@ async function runP2V(candidateId) {
   const { raceId, slug, positionId } = candidate;
   if (!raceId || !slug || !positionId) {
     console.log(
-      `invalid race ${raceId} or slug ${slug} or positionId ${positionId}`,
+      `invalid raceId, slug, or positionId for candidateId ${candidateId}`,
     );
     return;
   }
@@ -56,16 +76,31 @@ async function runP2V(candidateId) {
     'PositionElection',
   );
 
-  const data = await getRaceDetails(ballotRaceId, slug, '', false);
+  let data = await getRaceDetails(ballotRaceId, slug, '', false);
   sails.helpers.log(slug, 'data', data);
+  if (!data || !data?.slug || !data?.electionLevel) {
+    console.log('invalid race data', data);
+    return;
+  }
 
-  const position = await BallotPosition.findOne({
-    ballotId: positionId.toString(),
-  });
+  let position;
+  try {
+    position = await BallotPosition.findOne({
+      ballotId: positionId.toString(),
+    });
+  } catch (e) {
+    console.log('error getting position', e);
+  }
+
   let electionDates = [];
-  if (position.electionDates && position.electionDates.length > 0) {
+  if (
+    position &&
+    position?.electionDates &&
+    position.electionDates.length > 0
+  ) {
     for (const electionDateObj of position.electionDates) {
       if (
+        electionDateObj?.electionDay &&
         electionDateObj?.isPrimary === false &&
         electionDateObj?.isRunoff === false
       ) {
@@ -86,20 +121,24 @@ async function runP2V(candidateId) {
     pathToVictoryResponse?.counts?.total &&
     pathToVictoryResponse.counts.total > 0
   ) {
-    await BallotCandidate.updateOne({ id: candidateId }).set({
-      p2vData: {
-        totalRegisteredVoters: pathToVictoryResponse.counts.total,
-        republicans: pathToVictoryResponse.counts.republican,
-        democrats: pathToVictoryResponse.counts.democrat,
-        indies: pathToVictoryResponse.counts.independent,
-        averageTurnout: pathToVictoryResponse.counts.averageTurnout,
-        projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
-        winNumber: pathToVictoryResponse.counts.winNumber,
-        voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
-        electionType: pathToVictoryResponse.electionType,
-        electionLocation: pathToVictoryResponse.electionLocation,
-        p2vCompleteDate: moment().format('YYYY-MM-DD'),
-      },
-    });
+    try {
+      await BallotCandidate.updateOne({ id: candidateId }).set({
+        p2vData: {
+          totalRegisteredVoters: pathToVictoryResponse.counts.total,
+          republicans: pathToVictoryResponse.counts.republican,
+          democrats: pathToVictoryResponse.counts.democrat,
+          indies: pathToVictoryResponse.counts.independent,
+          averageTurnout: pathToVictoryResponse.counts.averageTurnout,
+          projectedTurnout: pathToVictoryResponse.counts.projectedTurnout,
+          winNumber: pathToVictoryResponse.counts.winNumber,
+          voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
+          electionType: pathToVictoryResponse.electionType,
+          electionLocation: pathToVictoryResponse.electionLocation,
+          p2vCompleteDate: moment().format('YYYY-MM-DD'),
+        },
+      });
+    } catch (e) {
+      console.log('error updating candidate', e);
+    }
   }
 }

@@ -103,14 +103,17 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
     //   slug,
     //   positionId,
     // );
+
+    // todo: replace this with logic from the candidate-victory.js
+    // to get election dates from the position object.
     priorElectionDates = await sails.helpers.ballotready.getElectionDates(
       slug,
       officeName,
       zip,
       race?.position?.level,
     );
+    // sails.helpers.log('priorElectionDates', priorElectionDates);
   }
-  sails.helpers.log('priorElectionDates', priorElectionDates);
 
   data.slug = slug;
   data.officeName = officeName;

@@ -22,6 +22,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/split': 'seed/split-large-csv',
   'GET    /api/v1/seed/reduce': 'seed/reduce-large-csv',
   'GET    /api/v1/seed/races': 'seed/races',
+  'GET    /api/v1/seed/election-types': 'seed/election-types',
   'GET    /api/v1/seed/position-election-dates': 'seed/position-election-dates',
   'GET    /api/v1/seed/candidate-victory': 'seed/candidate-victory',
   'GET    /api/v1/seed/mtfcc-seed': 'seed/mtfcc-seed',
@@ -188,6 +189,8 @@ module.exports.routes = {
   'POST  /api/v1/voter-data/voter-file': 'voterData/voterFile/create',
   'GET  /api/v1/voter-data/voter-file': 'voterData/voterFile/get',
   'GET  /api/v1/voter-data/voter-file/wake-up': 'voterData/voterFile/wake-up',
+  'POST  /api/v1/voter-data/voter-file/schedule':
+    'voterData/voterFile/schedule',
   'PUT  /api/v1/voter-data/voter-file/count': 'voterData/voterFile/count',
   'GET  /api/v1/voter-data/voter-file/can-download':
     'voterData/voterFile/can-download',
@@ -195,7 +198,7 @@ module.exports.routes = {
     'voterData/voterFile/geo-location-cron',
 
   // test ai
-  'POST   /api/v1/ai/test': 'ai/test',
+  'GET   /api/v1/ai/test': 'ai/test',
   'GET   /api/v1/ai/load': 'ai/load',
 
   // races
@@ -260,9 +263,7 @@ module.exports.routes = {
   // Payment Processor Integrations
   'POST /api/v1/payments/purchase/checkout-session':
     'payments/checkout-session/create',
-  'PATCH /api/v1/payments/purchase/checkout-session/:sessionId':
-    'payments/checkout-session/update',
-  'GET /api/v1/payments/purchase/portal-session': 'payments/portal-session/get',
   'POST /api/v1/payments/purchase/portal-session':
     'payments/portal-session/create',
+  'POST /api/v1/payments/events': 'payments/events',
 };

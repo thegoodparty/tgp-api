@@ -59,6 +59,7 @@ module.exports = {
       console.log(`processing ${race.data.position_name}`);
 
       const officeResponse = await sails.helpers.campaign.officeHelper(
+        'test',
         race.data.position_name,
         race.level,
         race.state,

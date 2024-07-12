@@ -304,7 +304,7 @@ module.exports = {
       order: [
         'cookieParser',
         'session',
-        'bodyParser',
+        'customBodyParser',
         'compress',
         'poweredBy',
         'requireHttps',

@@ -2,10 +2,16 @@ const axios = require('axios');
 
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 
+const getChatCompletion = require('../../utils/ai/get-chat-completion');
+
 module.exports = {
   friendlyName: 'Office Helper',
 
   inputs: {
+    slug: {
+      type: 'string',
+      required: true,
+    },
     officeName: {
       type: 'string',
       required: true,
@@ -51,6 +57,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const {
+        slug,
         officeName,
         electionLevel,
         electionState,
@@ -75,12 +82,13 @@ module.exports = {
       }
       let searchColumns = [];
       let foundMiscDistricts = [];
-      foundMiscDistricts = searchMiscDistricts(officeName);
+      sails.helpers.log(slug, `Searching misc districts for ${officeName}`);
+      foundMiscDistricts = await searchMiscDistricts(officeName, electionState);
 
       if (foundMiscDistricts.length > 0) {
         searchColumns = foundMiscDistricts;
       }
-      console.log('searchColumns', searchColumns);
+      sails.helpers.log(slug, 'searchColumns', searchColumns);
 
       // STEP 1: determine if there is a subAreaName / District
       let districtValue = getDistrictValue(
@@ -140,7 +148,7 @@ module.exports = {
           electionTypes = [{ column: '', value: '' }];
         }
       }
-      console.log('electionTypes', electionTypes);
+      sails.helpers.log(slug, 'electionTypes', electionTypes);
 
       let electionDistricts = {};
       // STEP 3 : If its a Municipality/County then Determine any district / ward / sub area
@@ -268,95 +276,102 @@ function determineSearchColumns(electionLevel, officeName) {
   return searchColumns;
 }
 
-function searchMiscDistricts(officeName) {
-  const miscellaneousDistricts = {
-    City: [
-      'City_Council_Commissioner_District',
-      'City_Mayoral_District',
-      'Election_Commissioner_District',
-      'Proposed_City_Commissioner_District',
-    ],
-    State: [
-      'State_Senate_District',
-      'State_House_District',
-      'US_Congressional_District',
-    ],
-    Education: [
-      'City_School_District',
-      'College_Board_District',
-      'Community_College_Commissioner_District',
-      'Community_College_SubDistrict',
-      'County_Board_of_Education_District',
-      'County_Board_of_Education_SubDistrict',
-      'County_Community_College_District',
-      'County_Legislative_District',
-      'County_Superintendent_of_Schools_District',
-      'County_Unified_School_District',
-      'Board_of_Education_District',
-      'Board_of_Education_SubDistrict',
-      'Education_Commission_District',
-      'Educational_Service_District',
-      'Elementary_School_District',
-      'Elementary_School_SubDistrict',
-      'Exempted_Village_School_District',
-      'High_School_District',
-      'High_School_SubDistrict',
-      'Middle_School_District',
-      'Proposed_Elementary_School_District',
-      'Proposed_Unified_School_District',
-      'Regional_Office_of_Education_District',
-      'School_Board_District',
-      'School_District',
-      'School_District_Vocational',
-      'School_Facilities_Improvement_District',
-      'School_Subdistrict',
-      'Service_Area_District',
-      'Superintendent_of_Schools_District',
-      'Unified_School_District',
-      'Unified_School_SubDistrict',
-    ],
-    Judicial: [
-      'District_Attorney',
-      'Judicial_Appellate_District',
-      'Judicial_Circuit_Court_District',
-      'Judicial_County_Board_of_Review_District',
-      'Judicial_County_Court_District',
-      'Judicial_District',
-      'Judicial_District_Court_District',
-      'Judicial_Family_Court_District',
-      'Judicial_Jury_District',
-      'Judicial_Juvenile_Court_District',
-      'Judicial_Sub_Circuit_District',
-      'Judicial_Superior_Court_District',
-      'Judicial_Supreme_Court_District',
-      'Municipal_Court_District',
-      'Judicial_Magistrate_Division',
-    ],
-  };
+async function searchMiscDistricts(officeName, state) {
+  // Populate the miscellaneous districts from the database.
+  const results = await ElectionType.find({ state });
+
+  if (!results || results.length === 0) {
+    console.log(
+      `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
+    );
+    await sails.helpers.sendSlackMessage(
+      `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
+    );
+    return [];
+  }
+
+  let miscellaneousDistricts = [];
+  for (const result of results) {
+    if (result?.name && result?.category) {
+      miscellaneousDistricts.push(result.name);
+    }
+  }
+
+  // Use AI to find the best matches for the office name.
+  let foundMiscDistricts = [];
+  const matchResp = await matchSearchColumns(
+    miscellaneousDistricts,
+    officeName,
+  );
+  console.log('matchResp', matchResp);
+  if (matchResp && matchResp?.content) {
+    try {
+      const contentJson = JSON.parse(matchResp.content);
+      console.log('columns', contentJson.columns);
+      foundMiscDistricts = contentJson?.columns || [];
+    } catch (e) {
+      console.log('error parsing matchResp', e);
+    }
+  }
+
+  return foundMiscDistricts;
+}
+
+// Deprecated.
+async function searchMiscDistrictsSimilarity(officeName, state) {
+  const results = await ElectionType.find({ state });
+  let miscellaneousDistricts = {};
+  for (const result of results) {
+    if (result?.name && result?.category) {
+      if (!miscellaneousDistricts[result.category]) {
+        miscellaneousDistricts[result.category] = [];
+      }
+      miscellaneousDistricts[result.category].push(result.name);
+    }
+  }
 
   let foundMiscDistricts = [];
+  let similarityScores = {};
   for (const districtType of Object.keys(miscellaneousDistricts)) {
     for (const district of miscellaneousDistricts[districtType]) {
-      formattedDistrict = district.replace(/_/g, ' ');
-      formattedDistrict = formattedDistrict.replace(/\ District/g, '');
-      formattedDistrict = formattedDistrict.replace(/Judicial\ /g, '');
+      let formattedDistrict = district.replace(/_/g, ' ');
+      formattedDistrict = normalizeString(formattedDistrict);
+      formattedDistrict = formattedDistrict.replace(/\ district/g, '');
+      formattedDistrict = formattedDistrict.replace(/judicial\ /g, '');
+      formattedDistrict = formattedDistrict.replace(/apellate/g, 'appeals');
 
-      // TODO: Replace Apellate with Appeals.
-      // TODO: modify this to use jaccard similarity or another fuzzy match (levenshtein distance)
-      // where array A and array B are a set of words from the officeName and formattedDistrict (with punctuation removed) and casing normalized.
-      // const similarity = jaccardSimilarity(arrayA, arrayB);
-      // console.log(`Jaccard Similarity: ${similarity}`);
-      // and then select only the highest similarity.
-      if (
-        formattedDistrict !== '' &&
-        officeName.toLowerCase().includes(formattedDistrict.toLowerCase())
-      ) {
+      const officeLower = normalizeString(officeName);
+      if (formattedDistrict !== '' && officeLower.includes(formattedDistrict)) {
         console.log('found district', formattedDistrict);
         foundMiscDistricts.push(district);
+      } else {
+        // todo: consider detecting the type/category of district and only searching for that type.
+        const officeWords = officeLower.split(' ');
+        const districtWords = formattedDistrict.split(' ');
+        const similarity = jaccardSimilarity(officeWords, districtWords);
+        if (similarity && similarity > 0.3) {
+          console.log('similarity', district, similarity);
+          similarityScores[district] = similarity;
+        }
       }
     }
   }
+
+  if (Object.keys(similarityScores).length === 0) {
+    return foundMiscDistricts;
+  }
+  // sort the similarity scores and add the top 3 to the foundMiscDistricts
+  const sortedSimilarityScores = Object.keys(similarityScores).sort(
+    (a, b) => similarityScores[b] - similarityScores[a],
+  );
+  const topScores = sortedSimilarityScores.slice(0, 3);
+  console.log('topScores', topScores);
+  foundMiscDistricts = foundMiscDistricts.concat(topScores);
   return foundMiscDistricts;
+}
+
+function normalizeString(str) {
+  return str.toLowerCase().replace(/[^a-z0-9]\ /g, '');
 }
 
 function jaccardSimilarity(array1, array2) {
@@ -429,6 +444,50 @@ async function querySearchColumn(searchColumn, electionState) {
     console.log('error at querySearchColumn', e);
   }
   return searchValues;
+}
+
+async function matchSearchColumns(searchColumns, searchString) {
+  const functionDefinition = {
+    type: 'function',
+    function: {
+      name: 'matchColumns',
+      description: 'Determine the columns that best match the office name.',
+      parameters: {
+        type: 'object',
+        properties: {
+          columns: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+            description: 'The list of columns that best match the office name.',
+            maxItems: 5,
+          },
+        },
+        required: ['columns'],
+      },
+    },
+  };
+
+  const completion = await getChatCompletion(
+    [
+      {
+        role: 'system',
+        content:
+          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position.',
+      },
+      {
+        role: 'user',
+        content: `Find the top 5 columns that matches the following office: "${searchString}.\n\nColumns: ${searchColumns}"`,
+      },
+    ],
+    'gpt-4o',
+    0.1,
+    0.1,
+    [functionDefinition],
+  );
+
+  return completion;
 }
 
 async function matchSearchValues(searchValues, searchString) {

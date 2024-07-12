@@ -41,11 +41,11 @@ module.exports = {
         );
         const data = await getRaceDetails(raceId, slug, details.zip);
         if (!data) {
-          // await sails.helpers.slack.slackHelper(
-          //   `Failed to get race data for ${slug}`,
-          //   'victory-issues',
-          //   true,
-          // );
+          await sails.helpers.slack.slackHelper(
+            `Failed to get race data for ${slug}`,
+            'victory-issues',
+            true,
+          );
           return exits.success({ message: 'not ok' });
         }
         sails.helpers.log(slug, 'race data', data);
@@ -142,5 +142,5 @@ async function sendVictoryIssuesSlackMessage(campaign, user) {
     ],
   };
 
-  // await sails.helpers.slack.slackHelper(slackMessage, 'victory-issues', false);
+  await sails.helpers.slack.slackHelper(slackMessage, 'victory-issues', false);
 }
