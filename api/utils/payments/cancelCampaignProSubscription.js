@@ -6,7 +6,6 @@ const { appEnvironment, PRODUCTION_ENV } = require('../appEnvironment');
 
 const cancelCampaignProSubscription = async function (campaign, user) {
   const name = await sails.helpers.user.name(user);
-  console.log(`cancelCampaignProSubscription...`);
   await setCampaignSubscriptionId(campaign, null);
   await setUserCampaignIsPro(campaign, false);
   await sails.helpers.slack.slackHelper(
