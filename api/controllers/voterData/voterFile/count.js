@@ -199,7 +199,7 @@ function customFiltersToQuery(filters) {
         );
         break;
       case 'party_democrat':
-        filterConditions.party.push('"Parties_Description" = \'Democrat\'');
+        filterConditions.party.push('"Parties_Description" = \'Democratic\'');
         break;
       case 'party_republican':
         filterConditions.party.push('"Parties_Description" = \'Republican\'');
