@@ -171,7 +171,7 @@ module.exports = {
       return exits.success(csvContent);
     } catch (error) {
       console.log('error at downloadCsv', error);
-      return exits.serverError(err);
+      return exits.serverError(error);
     }
   },
 };

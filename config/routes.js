@@ -90,6 +90,7 @@ module.exports.routes = {
     'campaign/ein-support-document-upload',
   'POST /api/v1/campaign/ein-support-document/:campaignId':
     'campaign/ein-support-document-upload',
+  'GET /api/v1/campaign/election-events': 'campaign/election-events',
 
   // volunteerInvitation
 

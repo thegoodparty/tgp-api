@@ -2,10 +2,8 @@ const {
   getCampaignBySubscriptionId,
 } = require('../../campaign/getCampaignBySubscriptionId');
 const {
-  setCampaignSubscriptionId,
-} = require('../../campaign/setCampaignSubscriptionId');
-const { setUserCampaignIsPro } = require('../../campaign/setUserCampaignIsPro');
-const { appEnvironment, PRODUCTION_ENV } = require('../../appEnvironment');
+  cancelCampaignProSubscription,
+} = require('../cancelCampaignProSubscription');
 
 const endCampaignProSubscription = async (event) => {
   const subscription = event.data.object;
@@ -23,18 +21,7 @@ const endCampaignProSubscription = async (event) => {
   if (!user) {
     throw 'No user found with given campaign user id';
   }
-  const name = `${user.firstName}${user.firstName ? ` ${user.lastName}` : ''}`;
-  await Promise.allSettled([
-    setCampaignSubscriptionId(campaign, null),
-    setUserCampaignIsPro(campaign, false),
-    sails.helpers.slack.slackHelper(
-      {
-        title: 'Pro Plan Cancellation',
-        body: `PRO PLAN CANCELLATION: \`${name}\` w/ email ${user.email} and campaign slug \`${campaign.slug}\` ended their pro subscription!`,
-      },
-      appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
-    ),
-  ]);
+  await cancelCampaignProSubscription(campaign, user);
 };
 
 module.exports = {
