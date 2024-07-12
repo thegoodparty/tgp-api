@@ -288,11 +288,14 @@ function typeToQuery(type, campaign, customFilters) {
 }
 
 function extractLocation(input) {
+  console.log('Extracting location from:', input);
   // Remove any trailing '##' from the input string
-  input = input.replace(/##$/, '');
+  let extracted = input.replace(/##$/, '');
 
   // Split the string by '##', take the last element, and remove ' (EST.)' if present
-  return input.split('##').pop().replace(' (EST.)', '');
+  const res = extracted.split('##').pop().replace(' (EST.)', '');
+  console.log('Extracted:', res);
+  return res;
 }
 
 function customFiltersToQuery(filters) {
