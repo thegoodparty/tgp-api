@@ -98,7 +98,7 @@ function typeToQuery(type, campaign, customFilters) {
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
-    let cleanValue = l2ColumnValue.split('##').pop().replace(' (EST.)', '');
+    let cleanValue = extractLocation(l2ColumnValue);
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
   let columns = `"LALVOTERID", 
@@ -285,6 +285,14 @@ function typeToQuery(type, campaign, customFilters) {
   }
 
   return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+}
+
+function extractLocation(input) {
+  // Remove any trailing '##' from the input string
+  input = input.replace(/##$/, '');
+
+  // Split the string by '##', take the last element, and remove ' (EST.)' if present
+  return input.split('##').pop().replace(' (EST.)', '');
 }
 
 function customFiltersToQuery(filters) {
