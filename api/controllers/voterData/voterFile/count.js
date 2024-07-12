@@ -26,7 +26,7 @@ module.exports = {
       description: 'ok',
     },
     serverError: {
-      description: 'There was a problem on the server.',
+      description: 'There was a problem on the server',
     },
     badRequest: {
       description: 'Bad request',
