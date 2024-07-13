@@ -113,6 +113,7 @@ function typeToQuery(type, campaign, customFilters, fixColumns = false) {
       cleanValue = fixCityCountyColumns(cleanValue);
     }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
+    console.log('Where clause:', whereClause);
   }
 
   if (type === 'sms') {
@@ -277,7 +278,9 @@ function customFiltersToQuery(filters) {
 
 function fixCityCountyColumns(value) {
   // if value starts with CITY_ return CITY
+  console.log('Fixing city county columns:', value);
   if (value.startsWith('City_')) {
+    console.log('returning City');
     return 'City';
   }
   if (value.startsWith('County_')) {
