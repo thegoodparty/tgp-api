@@ -76,20 +76,18 @@ module.exports = {
           resolvedType = 'telemarketing';
         }
       }
-      const query = typeToQuery(resolvedType, campaign, customFilters);
+      let query = typeToQuery(resolvedType, campaign, customFilters);
 
       console.log('Constructed Query:', query);
-      const sqlResponse = await sails.helpers.voter.queryHelper(query);
-      const count = sqlResponse?.rows[0]?.count;
+      let sqlResponse = await sails.helpers.voter.queryHelper(query);
+      let count = sqlResponse?.rows[0]?.count;
       if (count && count > 0) {
         return exits.success({ count });
-      } else {
-        const query = typeToQuery(resolvedType, campaign, customFilters, true);
-        const sqlResponse = await sails.helpers.voter.queryHelper(query);
-        const count = sqlResponse?.rows[0]?.count;
-        return exits.success({ count });
       }
-      return exits.success({ count: 0 });
+      query = typeToQuery(resolvedType, campaign, customFilters, true);
+      sqlResponse = await sails.helpers.voter.queryHelper(query);
+      count = sqlResponse?.rows[0]?.count;
+      return exits.success({ count });
     } catch (error) {
       console.error('Error voter file count:', error);
       return exits.serverError(error);
@@ -275,11 +273,11 @@ function customFiltersToQuery(filters) {
 
 function fixCityCountyColumns(value) {
   // if value starts with CITY_ return CITY
-  if (value.startsWith('CITY_')) {
-    return 'CITY';
+  if (value.startsWith('City_')) {
+    return 'City';
   }
-  if (value.startsWith('COUNTY_')) {
-    return 'COUNTY';
+  if (value.startsWith('County_')) {
+    return 'County';
   }
   return value;
 }
