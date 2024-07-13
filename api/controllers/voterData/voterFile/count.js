@@ -26,7 +26,7 @@ module.exports = {
       description: 'ok',
     },
     serverError: {
-      description: 'There was a problem on the server.',
+      description: 'There was a problem on the server',
     },
     badRequest: {
       description: 'Bad request',
@@ -76,11 +76,22 @@ module.exports = {
           resolvedType = 'telemarketing';
         }
       }
-      const query = typeToQuery(resolvedType, campaign, customFilters);
+      let query = typeToQuery(resolvedType, campaign, customFilters);
 
       console.log('Constructed Query:', query);
-      const sqlResponse = await sails.helpers.voter.queryHelper(query);
-      return exits.success({ count: sqlResponse?.rows[0]?.count });
+      let sqlResponse = await sails.helpers.voter.queryHelper(query);
+      let count = sqlResponse?.rows[0]?.count;
+      console.log('count:', count);
+      if (count > 0) {
+        return exits.success({ count });
+      }
+      console.log('count is 0, trying with fixed columns');
+      query = typeToQuery(resolvedType, campaign, customFilters, true);
+      console.log('Constructed Query with fixed columns:', query);
+      sqlResponse = await sails.helpers.voter.queryHelper(query);
+      count = sqlResponse?.rows[0]?.count;
+      console.log('count2:', count);
+      return exits.success({ count });
     } catch (error) {
       console.error('Error voter file count:', error);
       return exits.serverError(error);
@@ -88,16 +99,19 @@ module.exports = {
   },
 };
 
-function typeToQuery(type, campaign, customFilters) {
+function typeToQuery(type, campaign, customFilters, fixColumns) {
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
-  const l2ColumnName = campaign.pathToVictory.data.electionType;
+  let l2ColumnName = campaign.pathToVictory.data.electionType;
   const l2ColumnValue = campaign.pathToVictory.data.electionLocation;
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
-    let cleanValue = l2ColumnValue.split('##').pop().replace(' (EST.)', '');
+    let cleanValue = extractLocation(l2ColumnValue);
+    if (fixColumns) {
+      l2ColumnName = fixCityCountyColumns(l2ColumnName);
+    }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
 
@@ -261,4 +275,26 @@ function customFiltersToQuery(filters) {
     .join(' AND ');
 
   return finalCondition ? ` AND ${finalCondition}` : '';
+}
+
+function fixCityCountyColumns(value) {
+  // if value starts with CITY_ return CITY
+  if (value.startsWith('City_')) {
+    return 'City';
+  }
+  if (value.startsWith('County_')) {
+    return 'County';
+  }
+  return value;
+}
+
+function extractLocation(input) {
+  console.log('Extracting location from:', input);
+  // Remove any trailing '##' from the input string
+  let extracted = input.replace(/##$/, '');
+
+  // Split the string by '##', take the last element, and remove ' (EST.)' if present
+  const res = extracted.split('##').pop().replace(' (EST.)', '');
+  console.log('Extracted:', res);
+  return res;
 }
