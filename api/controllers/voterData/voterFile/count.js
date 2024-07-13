@@ -81,12 +81,16 @@ module.exports = {
       console.log('Constructed Query:', query);
       let sqlResponse = await sails.helpers.voter.queryHelper(query);
       let count = sqlResponse?.rows[0]?.count;
-      if (count && count > 0) {
+      console.log('count:', count);
+      if (count > 0) {
         return exits.success({ count });
       }
+      console.log('count is 0, trying with fixed columns');
       query = typeToQuery(resolvedType, campaign, customFilters, true);
+      console.log('Constructed Query with fixed columns:', query);
       sqlResponse = await sails.helpers.voter.queryHelper(query);
       count = sqlResponse?.rows[0]?.count;
+      console.log('count2:', count);
       return exits.success({ count });
     } catch (error) {
       console.error('Error voter file count:', error);
