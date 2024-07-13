@@ -80,7 +80,16 @@ module.exports = {
 
       console.log('Constructed Query:', query);
       const sqlResponse = await sails.helpers.voter.queryHelper(query);
-      return exits.success({ count: sqlResponse?.rows[0]?.count });
+      const count = sqlResponse?.rows[0]?.count;
+      if (count && count > 0) {
+        return exits.success({ count });
+      } else {
+        const query = typeToQuery(resolvedType, campaign, customFilters, true);
+        const sqlResponse = await sails.helpers.voter.queryHelper(query);
+        const count = sqlResponse?.rows[0]?.count;
+        return exits.success({ count });
+      }
+      return exits.success({ count: 0 });
     } catch (error) {
       console.error('Error voter file count:', error);
       return exits.serverError(error);
@@ -88,7 +97,7 @@ module.exports = {
   },
 };
 
-function typeToQuery(type, campaign, customFilters) {
+function typeToQuery(type, campaign, customFilters, fixColumns = false) {
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
@@ -98,6 +107,9 @@ function typeToQuery(type, campaign, customFilters) {
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
     let cleanValue = extractLocation(l2ColumnValue);
+    if (fixColumns) {
+      cleanValue = fixCityCountyColumns(cleanValue);
+    }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
 
@@ -259,6 +271,17 @@ function customFiltersToQuery(filters) {
     .join(' AND ');
 
   return finalCondition ? ` AND ${finalCondition}` : '';
+}
+
+function fixCityCountyColumns(value) {
+  // if value starts with CITY_ return CITY
+  if (value.startsWith('CITY_')) {
+    return 'CITY';
+  }
+  if (value.startsWith('COUNTY_')) {
+    return 'COUNTY';
+  }
+  return value;
 }
 
 function extractLocation(input) {
