@@ -305,10 +305,14 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }
 
   if (justCount) {
-    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${
+      whereClause !== '' ? `WHERE ${whereClause}` : ''
+    }`;
   }
 
-  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${
+    whereClause !== '' ? `WHERE ${whereClause}` : ''
+  }`;
 }
 
 function extractLocation(input) {
