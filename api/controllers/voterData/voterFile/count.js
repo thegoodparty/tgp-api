@@ -99,21 +99,20 @@ module.exports = {
   },
 };
 
-function typeToQuery(type, campaign, customFilters, fixColumns = false) {
+function typeToQuery(type, campaign, customFilters, fixColumns) {
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
-  const l2ColumnName = campaign.pathToVictory.data.electionType;
+  let l2ColumnName = campaign.pathToVictory.data.electionType;
   const l2ColumnValue = campaign.pathToVictory.data.electionLocation;
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
     let cleanValue = extractLocation(l2ColumnValue);
     if (fixColumns) {
-      cleanValue = fixCityCountyColumns(cleanValue);
+      l2ColumnName = fixCityCountyColumns(l2ColumnName);
     }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
-    console.log('Where clause:', whereClause);
   }
 
   if (type === 'sms') {
@@ -278,9 +277,7 @@ function customFiltersToQuery(filters) {
 
 function fixCityCountyColumns(value) {
   // if value starts with CITY_ return CITY
-  console.log('Fixing city county columns:', value);
   if (value.startsWith('City_')) {
-    console.log('returning City');
     return 'City';
   }
   if (value.startsWith('County_')) {
