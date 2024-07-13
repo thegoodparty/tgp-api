@@ -78,8 +78,25 @@ module.exports = {
           resolvedType = 'telemarketing';
         }
       }
-      const query = typeToQuery(resolvedType, campaign, customFilters);
+      const countQuery = typeToQuery(
+        resolvedType,
+        campaign,
+        customFilters,
+        true,
+      );
+      let withFixcolumns = false;
+      let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
+      if (sqlResponse.rows[0].count === 0) {
+        withFixcolumns = true;
+      }
 
+      const query = typeToQuery(
+        resolvedType,
+        campaign,
+        customFilters,
+        false,
+        true,
+      );
       console.log('Constructed Query:', query);
       return await sails.helpers.voter.csvStreamHelper(query, this.res);
     } catch (error) {
@@ -89,16 +106,19 @@ module.exports = {
   },
 };
 
-function typeToQuery(type, campaign, customFilters) {
+function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
-  const l2ColumnName = campaign.pathToVictory.data.electionType;
+  let l2ColumnName = campaign.pathToVictory.data.electionType;
   const l2ColumnValue = campaign.pathToVictory.data.electionLocation;
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
     let cleanValue = extractLocation(l2ColumnValue);
+    if (fixColumns) {
+      l2ColumnName = fixCityCountyColumns(l2ColumnName);
+    }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
   let columns = `"LALVOTERID", 
@@ -284,6 +304,10 @@ function typeToQuery(type, campaign, customFilters) {
     whereClause += customFiltersToQuery(customFilters.filters);
   }
 
+  if (justCount) {
+    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
+  }
+
   return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${whereClause}`;
 }
 
@@ -296,6 +320,17 @@ function extractLocation(input) {
   const res = extracted.split('##').pop().replace(' (EST.)', '');
   console.log('Extracted:', res);
   return res;
+}
+
+function fixCityCountyColumns(value) {
+  // if value starts with CITY_ return CITY
+  if (value.startsWith('City_')) {
+    return 'City';
+  }
+  if (value.startsWith('County_')) {
+    return 'County';
+  }
+  return value;
 }
 
 function customFiltersToQuery(filters) {
