@@ -134,3 +134,4 @@ cache/*
 storage/*
 data/ai/*
 data/candidates/*.csv
+.env
