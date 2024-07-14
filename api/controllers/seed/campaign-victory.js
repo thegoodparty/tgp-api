@@ -29,16 +29,15 @@ module.exports = {
   fn: async function (inputs, exits) {
     const { limit, slug } = inputs;
     let p2vQuery = `
-        select c.id
-        from public.campaign as c
-        inner join public.pathtovictory as pathtovictory on c.id = pathtovictory.campaign
-        where c.details->>'pledged'='true'
-        and (c.details->>'runForOffice'='yes' or c.details->>'knowRun'='true')
-        and c.details->>'electionDate' is not null
-        and c.details->>'raceId' is not null
-        and (pathtovictory.data->>'p2vStatus'='Complete')
-        and (pathtovictory.data->>'p2vNotNeeded' is null or pathtovictory.data->>'p2vNotNeeded'='false')
-        and (pathtovictory.data->>'electionLocation' is null or pathtovictory.data->>'electionLocation'='')
+    select c.id
+    from public.campaign as c
+    inner join public.pathtovictory as pathtovictory on c.id = pathtovictory.campaign
+    where c.details->>'pledged'='true'
+    and (c.details->>'runForOffice'='yes' or c.details->>'knowRun'='true')
+    and c.details->>'electionDate' is not null
+    and c.details->>'raceId' is not null
+    and (pathtovictory.data->>'p2vStatus'='Waiting' OR pathtovictory.data->>'p2vStatus' is null)
+    and pathtovictory.data->>'p2vNotNeeded' is null
     `;
     if (slug) {
       p2vQuery += ` and c.slug = '${slug}'`;
