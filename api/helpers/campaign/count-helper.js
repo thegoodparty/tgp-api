@@ -73,7 +73,7 @@ module.exports = {
       }
 
       let counts = await getPartisanCounts(electionState, searchJson);
-      console.log('counts', counts);
+      // console.log('counts', counts);
 
       if (counts.total === 0) {
         // don't get electionHistory if we don't have a match.
@@ -167,7 +167,7 @@ module.exports = {
 
       // update counts with the average and projected turnouts.
       counts = getProjectedTurnout(counts, turnoutCounts);
-      console.log('counts', counts);
+      // console.log('counts', counts);
 
       return exits.success(counts);
     } catch (e) {

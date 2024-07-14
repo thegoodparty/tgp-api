@@ -75,6 +75,6 @@ async function getRaceById(raceId) {
     }
     `;
   const { node } = await sails.helpers.graphql.queryHelper(query);
-  console.log('node', node);
+  // console.log('node', node);
   return node;
 }

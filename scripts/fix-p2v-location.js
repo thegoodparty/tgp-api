@@ -70,7 +70,7 @@ async function runP2V(campaignId) {
       'setting electionLocation',
       pathToVictoryResponse.electionLocation,
     );
-    await pathToVictory.updateOne({ campaign: campaignId }).set({
+    await PathToVictory.updateOne({ campaign: campaignId }).set({
       data: {
         ...campaign.pathToVictory.data,
         electionType: pathToVictoryResponse.electionType,

@@ -87,7 +87,7 @@ const handlePathToVictory = async ({
           partisanType,
           priorElectionDates,
         );
-        sails.helpers.log(slug, 'counts', counts);
+        // sails.helpers.log(slug, 'counts', counts);
 
         if (counts && counts?.total && counts.total > 0) {
           pathToVictoryResponse.electionType = electionType.column;

@@ -56,6 +56,7 @@ module.exports = {
       });
     } catch (error) {
       console.log('Error in helpers/ai/create-compilation', error);
+      console.log('error response', error?.response);
       if (
         error.response &&
         error.response.data &&
@@ -66,6 +67,7 @@ module.exports = {
         return exits.success({ content: '', tokens: 0 });
       }
     }
+    // console.log('completion', JSON.stringify(completion));
 
     if (
       completion &&

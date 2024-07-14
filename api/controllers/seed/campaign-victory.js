@@ -3,19 +3,19 @@ const getRaceDetails = require('../../utils/campaign/get-race-details');
 const moment = require('moment');
 
 module.exports = {
-  friendlyName: 'Candidate p2v',
+  friendlyName: 'Campaign p2v',
 
-  description: 'Run p2v for Candidates.',
+  description: 'Run p2v for Campaigns.',
 
   inputs: {
     limit: {
       type: 'number',
-      description: 'Limit the number of candidates to process',
+      description: 'Limit the number of campaigns to process',
       defaultsTo: 0,
     },
     slug: {
       type: 'string',
-      description: 'Slug for a specific candidate',
+      description: 'Slug for a specific campaign',
     },
   },
 
@@ -29,17 +29,21 @@ module.exports = {
   fn: async function (inputs, exits) {
     const { limit, slug } = inputs;
     let p2vQuery = `
-        select id
-        from public.ballotcandidate
-        where "p2vData" is null
-        and "positionId" is not null and "positionId" != ''
-        and "raceId" is not null and "raceId" != ''
-        and party != 'Republican' and party != 'Democratic'        
+        select c.id
+        from public.campaign as c
+        inner join public.pathtovictory as pathtovictory on c.id = pathtovictory.campaign
+        where c.details->>'pledged'='true'
+        and (c.details->>'runForOffice'='yes' or c.details->>'knowRun'='true')
+        and c.details->>'electionDate' is not null
+        and c.details->>'raceId' is not null
+        and (pathtovictory.data->>'p2vStatus'='Complete')
+        and (pathtovictory.data->>'p2vNotNeeded' is null or pathtovictory.data->>'p2vNotNeeded'='false')
+        and (pathtovictory.data->>'electionLocation' is null or pathtovictory.data->>'electionLocation'='')
     `;
     if (slug) {
-      p2vQuery += ` and slug = '${slug}'`;
+      p2vQuery += ` and c.slug = '${slug}'`;
     }
-    p2vQuery += ' order by id desc';
+    p2vQuery += ' order by c.id desc';
     if (limit > 0) {
       p2vQuery += ` limit ${limit}`;
     }
@@ -48,23 +52,18 @@ module.exports = {
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
 
-    const batch_size = 5;
-    for (let i = 0; i < rows.length; i += batch_size) {
-      const batch = rows.slice(i, i + batch_size);
-      await Promise.all(
-        batch.map(async (row) => {
-          let candidateId = row.id;
-          if (candidateId && candidateId > 0) {
-            try {
-              await runP2V(candidateId);
-            } catch (error) {
-              console.error('Error processing candidateId', candidateId, error);
-            }
-          } else {
-            console.log('invalid candidateId', candidateId);
-          }
-        }),
-      );
+    for (const row of rows) {
+      console.log('row', row);
+      let campaignId = row.id;
+      if (campaignId && campaignId > 0) {
+        try {
+          await runP2V(campaignId);
+        } catch (error) {
+          console.error('Error processing campaignId', campaignId, error);
+        }
+      } else {
+        console.log('invalid campaignId', campaignId);
+      }
     }
 
     return exits.success({
@@ -73,29 +72,25 @@ module.exports = {
   },
 };
 
-async function runP2V(candidateId) {
-  const candidate = await BallotCandidate.findOne({ id: candidateId });
-  const { raceId, slug, positionId } = candidate;
+async function runP2V(campaignId) {
+  const campaign = await Campaign.findOne({ id: campaignId });
+  const { slug, details } = campaign;
+  const { raceId, positionId } = details;
   if (!raceId || !slug || !positionId) {
     console.log(
-      `invalid raceId, slug, or positionId for candidateId ${candidateId}`,
+      `invalid raceId, slug, or positionId for campaignId ${campaignId}`,
     );
     return;
   }
 
-  let ballotRaceId = await sails.helpers.ballotready.encodeId(
-    raceId,
-    'PositionElection',
-  );
-
-  let data = await getRaceDetails(ballotRaceId, slug, '', false);
+  let data = await getRaceDetails(raceId, slug, '', false);
   // sails.helpers.log(slug, 'data', data);
   if (!data || !data?.slug || !data?.electionLevel) {
-    sails.helpers.log(slug, `Failed to get Race for candidate ${candidateId}`);
+    sails.helpers.log(slug, `Failed to get Race for campaign ${campaignId}`);
     await sails.helpers.slack.slackHelper(
       {
         title: 'getRaceDetails Error.',
-        body: `Error! ${slug}. Failed to get Race for candidate ${candidateId}`,
+        body: `Error! ${slug}. Failed to get Race for campaign ${campaignId}`,
       },
       'victory-issues',
     );
@@ -104,13 +99,13 @@ async function runP2V(candidateId) {
 
   sails.helpers.log(
     slug,
-    `processing candidateId: ${candidateId}. office: ${data.officeName}. state: ${data.electionState}. level: ${data.electionLevel}`,
+    `processing campaignId: ${campaignId}. office: ${data.officeName}. state: ${data.electionState}. level: ${data.electionLevel}`,
   );
 
   let position;
   try {
     position = await BallotPosition.findOne({
-      ballotId: positionId.toString(),
+      ballotHashId: positionId.toString(),
     });
   } catch (e) {
     console.log('error getting position', e);
@@ -146,8 +141,8 @@ async function runP2V(candidateId) {
     pathToVictoryResponse.counts.total > 0
   ) {
     try {
-      await BallotCandidate.updateOne({ id: candidateId }).set({
-        p2vData: {
+      await PathToVictory.updateOne({ campaign: campaignId }).set({
+        data: {
           totalRegisteredVoters: pathToVictoryResponse.counts.total,
           republicans: pathToVictoryResponse.counts.republican,
           democrats: pathToVictoryResponse.counts.democrat,
@@ -159,10 +154,11 @@ async function runP2V(candidateId) {
           electionType: pathToVictoryResponse.electionType,
           electionLocation: pathToVictoryResponse.electionLocation,
           p2vCompleteDate: moment().format('YYYY-MM-DD'),
+          p2vStatus: 'Complete',
         },
       });
     } catch (e) {
-      console.log('error updating candidate', e);
+      console.log('error updating campaign', e);
     }
   }
 }

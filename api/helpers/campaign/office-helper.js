@@ -83,15 +83,20 @@ module.exports = {
       let searchColumns = [];
       let foundMiscDistricts = [];
       sails.helpers.log(slug, `Searching misc districts for ${officeName}`);
-      foundMiscDistricts = await searchMiscDistricts(officeName, electionState);
+      foundMiscDistricts = await searchMiscDistricts(
+        slug,
+        officeName,
+        electionState,
+      );
 
       if (foundMiscDistricts.length > 0) {
         searchColumns = foundMiscDistricts;
       }
-      sails.helpers.log(slug, 'searchColumns', searchColumns);
+      sails.helpers.log(slug, 'miscDistricts', searchColumns);
 
       // STEP 1: determine if there is a subAreaName / District
       let districtValue = getDistrictValue(
+        slug,
         officeName,
         subAreaName,
         subAreaValue,
@@ -107,6 +112,7 @@ module.exports = {
       let electionTypes = [];
 
       let searchString = getSearchString(
+        slug,
         officeName,
         subAreaName,
         subAreaValue,
@@ -117,6 +123,7 @@ module.exports = {
       if (searchColumns.length > 0) {
         // electionSearch = formattedDistrictValue;
         electionTypes = await getSearchColumn(
+          slug,
           searchColumns,
           electionState,
           searchString,
@@ -125,6 +132,10 @@ module.exports = {
 
       // If we don't find a misc district we fall back to state/county/city.
       if (electionTypes.length === 0) {
+        sails.helpers.log(
+          slug,
+          'no miscDistrict found. falling back to state/county/city',
+        );
         // if (electionLevel === 'county' && electionCounty) {
         //   electionSearch = electionCounty;
         // } else if (electionLevel === 'city' && electionMunicipality) {
@@ -134,9 +145,15 @@ module.exports = {
         //   electionSearch = electionState; // await sails.helpers.zip.shortToLongState(electionState);
         //   electionSearch2 = formattedDistrictValue;
         // }
-        let searchColumns = determineSearchColumns(electionLevel, officeName);
+        let searchColumns = await determineSearchColumns(
+          slug,
+          electionLevel,
+          officeName,
+        );
         if (searchColumns.length > 0) {
+          sails.helpers.log(slug, 'determined searchColumns', searchColumns);
           electionTypes = await getSearchColumn(
+            slug,
             searchColumns,
             electionState,
             searchString,
@@ -161,12 +178,24 @@ module.exports = {
         districtValue
       ) {
         electionDistricts = await determineElectionDistricts(
+          slug,
           officeName,
           electionTypes,
           electionState,
           searchString,
           //districtValue,
         );
+      }
+
+      try {
+        sails.helpers.log(
+          slug,
+          `electionTypes: ${JSON.stringify(
+            electionTypes,
+          )}. electionDistricts: ${JSON.stringify(electionDistricts)}`,
+        );
+      } catch (e) {
+        console.log('json error logging electionTypes', e);
       }
 
       return exits.success({
@@ -181,6 +210,7 @@ module.exports = {
 };
 
 async function determineElectionDistricts(
+  slug,
   officeName,
   electionTypes,
   electionState,
@@ -208,26 +238,39 @@ async function determineElectionDistricts(
 
   for (const column of electionTypes) {
     if (districtMap[column.column]) {
-      console.log('searching for sub columns', districtMap[column.column]);
+      sails.helpers.log(
+        slug,
+        'searching for sub columns',
+        districtMap[column.column],
+      );
 
       let subColumns = await getSearchColumn(
+        slug,
         districtMap[column.column],
         electionState,
         searchString,
         column.value, // ie: 'CA##RIVERSIDE CITY'
       );
       if (subColumns.length > 0) {
-        console.log('found sub columns', subColumns);
+        sails.helpers.log(slug, 'found sub columns', subColumns);
         electionDistricts[column.column] = subColumns;
         break;
       }
     }
   }
-  console.log('electionDistricts (officeHelper)', electionDistricts);
+  sails.helpers.log(
+    slug,
+    'electionDistricts (officeHelper)',
+    electionDistricts,
+  );
   return electionDistricts;
 }
 
-function determineSearchColumns(electionLevel, officeName) {
+async function determineSearchColumns(slug, electionLevel, officeName) {
+  sails.helpers.log(
+    slug,
+    `determining Search Columns for ${officeName}. level: ${electionLevel}`,
+  );
   let searchColumns = [];
   if (electionLevel === 'federal') {
     if (officeName.includes('President of the United States')) {
@@ -268,6 +311,13 @@ function determineSearchColumns(electionLevel, officeName) {
       ];
     }
   } else {
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Path To Victory',
+        body: `Error! ${slug} Invalid electionLevel ${electionLevel}`,
+      },
+      'victory-issues',
+    );
     return exits.badRequest({
       error: true,
       message: 'Invalid electionLevel',
@@ -276,16 +326,21 @@ function determineSearchColumns(electionLevel, officeName) {
   return searchColumns;
 }
 
-async function searchMiscDistricts(officeName, state) {
+async function searchMiscDistricts(slug, officeName, state) {
   // Populate the miscellaneous districts from the database.
   const results = await ElectionType.find({ state });
 
   if (!results || results.length === 0) {
-    console.log(
+    sails.helpers.log(
+      slug,
       `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
     );
-    await sails.helpers.sendSlackMessage(
-      `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Path To Victory',
+        body: `Error! ${slug} No ElectionType results found for state ${state}. You may need to run seed election-types.`,
+      },
+      'victory-issues',
     );
     return [];
   }
@@ -300,92 +355,25 @@ async function searchMiscDistricts(officeName, state) {
   // Use AI to find the best matches for the office name.
   let foundMiscDistricts = [];
   const matchResp = await matchSearchColumns(
+    slug,
     miscellaneousDistricts,
     officeName,
   );
-  console.log('matchResp', matchResp);
   if (matchResp && matchResp?.content) {
     try {
       const contentJson = JSON.parse(matchResp.content);
-      console.log('columns', contentJson.columns);
+      sails.helpers.log(slug, 'columns', contentJson.columns);
       foundMiscDistricts = contentJson?.columns || [];
+      sails.helpers.log(slug, 'found miscDistricts', matchResp);
     } catch (e) {
-      console.log('error parsing matchResp', e);
+      sails.helpers.log(slug, 'error parsing matchResp', e);
     }
   }
 
   return foundMiscDistricts;
 }
 
-// Deprecated.
-async function searchMiscDistrictsSimilarity(officeName, state) {
-  const results = await ElectionType.find({ state });
-  let miscellaneousDistricts = {};
-  for (const result of results) {
-    if (result?.name && result?.category) {
-      if (!miscellaneousDistricts[result.category]) {
-        miscellaneousDistricts[result.category] = [];
-      }
-      miscellaneousDistricts[result.category].push(result.name);
-    }
-  }
-
-  let foundMiscDistricts = [];
-  let similarityScores = {};
-  for (const districtType of Object.keys(miscellaneousDistricts)) {
-    for (const district of miscellaneousDistricts[districtType]) {
-      let formattedDistrict = district.replace(/_/g, ' ');
-      formattedDistrict = normalizeString(formattedDistrict);
-      formattedDistrict = formattedDistrict.replace(/\ district/g, '');
-      formattedDistrict = formattedDistrict.replace(/judicial\ /g, '');
-      formattedDistrict = formattedDistrict.replace(/apellate/g, 'appeals');
-
-      const officeLower = normalizeString(officeName);
-      if (formattedDistrict !== '' && officeLower.includes(formattedDistrict)) {
-        console.log('found district', formattedDistrict);
-        foundMiscDistricts.push(district);
-      } else {
-        // todo: consider detecting the type/category of district and only searching for that type.
-        const officeWords = officeLower.split(' ');
-        const districtWords = formattedDistrict.split(' ');
-        const similarity = jaccardSimilarity(officeWords, districtWords);
-        if (similarity && similarity > 0.3) {
-          console.log('similarity', district, similarity);
-          similarityScores[district] = similarity;
-        }
-      }
-    }
-  }
-
-  if (Object.keys(similarityScores).length === 0) {
-    return foundMiscDistricts;
-  }
-  // sort the similarity scores and add the top 3 to the foundMiscDistricts
-  const sortedSimilarityScores = Object.keys(similarityScores).sort(
-    (a, b) => similarityScores[b] - similarityScores[a],
-  );
-  const topScores = sortedSimilarityScores.slice(0, 3);
-  console.log('topScores', topScores);
-  foundMiscDistricts = foundMiscDistricts.concat(topScores);
-  return foundMiscDistricts;
-}
-
-function normalizeString(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]\ /g, '');
-}
-
-function jaccardSimilarity(array1, array2) {
-  const set1 = new Set(array1);
-  const set2 = new Set(array2);
-
-  const intersection = new Set([...set1].filter((x) => set2.has(x)));
-  const union = new Set([...set1, ...set2]);
-
-  const similarity = intersection.size / union.size;
-  return similarity;
-}
-
-function getDistrictValue(officeName, subAreaName, subAreaValue) {
+function getDistrictValue(slug, officeName, subAreaName, subAreaValue) {
   let districtWords = [
     'District',
     'Ward',
@@ -404,6 +392,11 @@ function getDistrictValue(officeName, subAreaName, subAreaValue) {
     'Office',
     'Post',
   ];
+
+  sails.helpers.log(
+    slug,
+    `getting DistrictValue: ${officeName}. subAreaName: ${subAreaName}. subAreaValue: ${subAreaValue}`,
+  );
 
   let districtValue;
   if (subAreaName || subAreaValue) {
@@ -432,7 +425,7 @@ function getDistrictValue(officeName, subAreaName, subAreaValue) {
   return districtValue;
 }
 
-async function querySearchColumn(searchColumn, electionState) {
+async function querySearchColumn(slug, searchColumn, electionState) {
   let searchValues = [];
   try {
     let searchUrl = `https://api.l2datamapping.com/api/v2/customer/application/column/values/1OSR/VM_${electionState}/${searchColumn}?id=1OSR&apikey=${l2ApiKey}`;
@@ -441,12 +434,16 @@ async function querySearchColumn(searchColumn, electionState) {
       searchValues = response.data.values;
     }
   } catch (e) {
-    console.log('error at querySearchColumn', e);
+    sails.helpers.log(slug, 'error at querySearchColumn', e);
   }
   return searchValues;
 }
 
-async function matchSearchColumns(searchColumns, searchString) {
+async function matchSearchColumns(slug, searchColumns, searchString) {
+  sails.helpers.log(
+    slug,
+    `Doing AI search for ${searchString} against ${searchColumns.length} columns`,
+  );
   const functionDefinition = {
     type: 'function',
     function: {
@@ -490,7 +487,7 @@ async function matchSearchColumns(searchColumns, searchString) {
   return completion;
 }
 
-async function matchSearchValues(searchValues, searchString) {
+async function matchSearchValues(slug, searchValues, searchString) {
   let messages = [
     {
       role: 'system',
@@ -513,9 +510,19 @@ async function matchSearchValues(searchValues, searchString) {
 
   const content = completion?.content;
   const tokens = completion?.tokens;
+  console.log('content', content);
+  console.log('tokens', tokens);
   if (!tokens || tokens === 0) {
     // ai failed. throw an error here, we catch it in consumer.
     // and re-throw it so we can try again via the SQS queue.
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'AI Failed',
+        body: `Error! ${slug} AI failed to find a match for ${searchString}.`,
+      },
+      'victory-issues',
+    );
+    sails.helpers.log(slug, 'No Response from AI! For', searchValues);
     throw new Error('no response from AI');
   }
 
@@ -524,6 +531,7 @@ async function matchSearchValues(searchValues, searchString) {
   }
 }
 function getSearchString(
+  slug,
   officeName,
   subAreaName,
   subAreaValue,
@@ -547,29 +555,54 @@ function getSearchString(
   if (electionState) {
     searchString += `- ${electionState}`;
   }
+  sails.helpers.log(slug, `searchString: ${searchString}`);
   return searchString;
 }
 
 async function getSearchColumn(
+  slug,
   searchColumns,
   electionState,
   searchString,
   searchString2,
 ) {
   let foundColumns = [];
-  //   console.log('searchColumns', searchColumns);
-  //   console.log('searchString', searchString);
-  //   console.log('searchString2', searchString2);
+  //   sails.helpers.log(slug, 'searchColumns', searchColumns);
+  //   sails.helpers.log(slug, 'searchString', searchString);
+  //   sails.helpers.log(slug, 'searchString2', searchString2);
   let search = searchString;
   if (searchString2) {
     search = `${searchString} ${searchString2}`;
   }
+  sails.helpers.log(
+    slug,
+    `searching for ${search} in ${searchColumns.length} columns`,
+  );
   for (const searchColumn of searchColumns) {
-    let searchValues = await querySearchColumn(searchColumn, electionState);
+    let searchValues = await querySearchColumn(
+      slug,
+      searchColumn,
+      electionState,
+    );
     // strip out any searchValues that are a blank string ""
     searchValues = searchValues.filter((value) => value !== '');
+    sails.helpers.log(
+      slug,
+      `found ${searchValues.length} searchValues for ${searchColumn}`,
+    );
     if (searchValues.length > 0) {
-      const match = await matchSearchValues(searchValues.join('\n'), search);
+      sails.helpers.log(
+        slug,
+        `There are searchValues for ${searchColumn}`,
+        searchValues,
+      );
+      sails.helpers.log(slug, `Using AI to find the best match ...`);
+      const match = await matchSearchValues(
+        slug,
+        searchValues.join('\n'),
+        search,
+      );
+      sails.helpers.log(slug, 'match', match);
       if (
         match &&
         match !== '' &&
@@ -581,26 +614,15 @@ async function getSearchColumn(
           value: match.replaceAll('"', ''),
         });
       }
-    }
 
-    // for (const searchValue of searchValues) {
-    //   if (searchValue.toLowerCase().includes(searchString.toLowerCase())) {
-    //     // console.log(`found (searchValue) ${searchValue} for ${searchString}`);
-    //     if (searchString2) {
-    //       if (searchValue.toLowerCase().includes(searchString2.toLowerCase())) {
-    //         // console.log(
-    //         //   `found (searchValue2) ${searchValue} for ${searchString2}`,
-    //         // );
-    //         foundColumns.push({ column: searchColumn, value: searchValue });
-    //       }
-    //     } else {
-    //       foundColumns.push({ column: searchColumn, value: searchValue });
-    //     }
-    //   }
-    // }
+      // Special case for "At Large" positions.
+      if (foundColumns.length === 0 && searchString.includes('At Large')) {
+        foundColumns.push({ column: searchColumn, value: searchValues[0] });
+      }
+    }
   }
 
-  console.log('office helper foundColumns', foundColumns);
+  sails.helpers.log(slug, 'office helper foundColumns', foundColumns);
 
   return foundColumns;
 }
