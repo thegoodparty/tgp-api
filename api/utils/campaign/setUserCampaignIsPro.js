@@ -1,4 +1,3 @@
-const { appEnvironment, PRODUCTION_ENV } = require('../appEnvironment');
 const setUserCampaignIsPro = async (campaign, isPro = true) => {
   await Promise.allSettled([
     Campaign.updateOne({ id: campaign.id }).set({ isPro }),

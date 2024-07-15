@@ -23,6 +23,9 @@ module.exports = {
     cc: {
       type: 'string',
     },
+    from: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -36,9 +39,9 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { to, subject, template, variables, cc } = inputs;
+      const { from, to, subject, template, variables, cc } = inputs;
       const data = {
-        from: 'GoodParty.org <noreply@goodparty.org>',
+        from: from || 'GoodParty.org <noreply@goodparty.org>',
         to,
         subject,
         template,
@@ -47,7 +50,6 @@ module.exports = {
       if (cc) {
         data.cc = cc;
       }
-
       await sendEmailWithRetry(data);
       return exits.success({ message: 'email sent successfully' });
     } catch (e) {
@@ -55,7 +57,7 @@ module.exports = {
         'error sending mail - template',
         { error: e, inputs },
       );
-      console.log('error sending mail - template', e);
+      console.error('error sending mail - template', e);
 
       throw 'badRequest';
     }

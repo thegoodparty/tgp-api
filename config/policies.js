@@ -31,6 +31,7 @@ module.exports.policies = {
   'topIssues/byLocation/find': ['isAuthenticated'],
   'ai/test': ['isAuthenticated', 'isAdmin'],
   'ai/load': ['isAuthenticated', 'isAdmin'],
+  'campaign/election-events': ['isAuthorizedCron'],
 
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
