@@ -311,7 +311,7 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
     }`;
   }
 
-  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${
+  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} ${
     whereClause !== '' ? `WHERE ${whereClause}` : ''
   }`;
 }
