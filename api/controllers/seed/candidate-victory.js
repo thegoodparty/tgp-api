@@ -13,6 +13,11 @@ module.exports = {
       description: 'Limit the number of candidates to process',
       defaultsTo: 0,
     },
+    lt: {
+      type: 'number',
+      description: 'Limit the id to less than this number',
+      defaultsTo: 0,
+    },
     slug: {
       type: 'string',
       description: 'Slug for a specific candidate',
@@ -27,7 +32,7 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { limit, slug } = inputs;
+    const { limit, lt, slug } = inputs;
     let p2vQuery = `
         select id
         from public.ballotcandidate
@@ -38,6 +43,9 @@ module.exports = {
     `;
     if (slug) {
       p2vQuery += ` and slug = '${slug}'`;
+    }
+    if (lt > 0) {
+      p2vQuery += ` and id < ${lt}`;
     }
     p2vQuery += ' order by id desc';
     if (limit > 0) {
