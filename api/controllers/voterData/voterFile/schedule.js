@@ -1,3 +1,8 @@
+const {
+  appEnvironment,
+  PRODUCTION_ENV,
+} = require('../../../utils/appEnvironment');
+
 module.exports = {
   inputs: {
     budget: {
@@ -53,7 +58,7 @@ module.exports = {
 ${voicemail ? '￮ Voicemail: Yes' : ''}
 `,
         },
-        'politics',
+        appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
       );
 
       return exits.success({ message: 'ok' });

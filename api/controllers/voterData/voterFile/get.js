@@ -66,7 +66,7 @@ module.exports = {
       }
 
       let resolvedType = type;
-      if (type === 'custom') {
+      if (type === 'custom' && customFilters) {
         const channel = customFilters.channel;
         if (channel === 'Door Knocking') {
           resolvedType = 'doorKnocking';
@@ -84,10 +84,10 @@ module.exports = {
         customFilters,
         true,
       );
-      let withFixcolumns = false;
+      let withFixColumns = false;
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
       if (sqlResponse.rows[0].count === 0) {
-        withFixcolumns = true;
+        withFixColumns = true;
       }
 
       const query = typeToQuery(
@@ -95,7 +95,7 @@ module.exports = {
         campaign,
         customFilters,
         false,
-        true,
+        withFixColumns,
       );
       console.log('Constructed Query:', query);
       return await sails.helpers.voter.csvStreamHelper(query, this.res);
