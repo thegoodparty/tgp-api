@@ -380,15 +380,20 @@ function customFiltersToQuery(filters) {
                                         END <= 50)`);
         break;
       case 'audience_unlikelyVoters':
-        filterConditions.audience.push(`CASE 
-                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
-                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
-                                          ELSE NULL
-                                        END <= 25`);
+        filterConditions.audience.push(`(CASE 
+                                              WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                              THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                              ELSE NULL
+                                            END > 1 AND 
+                                            CASE 
+                                              WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                              THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                              ELSE NULL
+                                            END <= 25)`);
         break;
       case 'audience_firstTimeVoters':
         filterConditions.audience.push(
-          '"Voters_VotingPerformanceEvenYearGeneral" IS NULL',
+          `"Voters_VotingPerformanceEvenYearGeneral" IN ('0%', 'Not Eligible', '')`,
         );
         break;
       case 'party_independent':
