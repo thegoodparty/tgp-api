@@ -6,6 +6,7 @@ const { setUserCampaignIsPro } = require('../../campaign/setUserCampaignIsPro');
 const { sendProConfirmationEmail } = require('../sendProConfirmationEmail');
 const { doVoterDownloadCheck } = require('../../campaign/doVoterDownloadCheck');
 const { appEnvironment, PRODUCTION_ENV } = require('../../appEnvironment');
+
 const checkoutSessionCompletedEventHandler = async (event) => {
   const session = event.data.object;
   const { customer: customerId, subscription: subscriptionId } = session;
