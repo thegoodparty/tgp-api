@@ -85,6 +85,7 @@ module.exports = {
         true,
       );
       let withFixColumns = false;
+      console.log('countQuery:', countQuery);
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
       if (sqlResponse.rows[0].count === 0) {
         withFixColumns = true;
@@ -305,12 +306,12 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }
 
   if (justCount) {
-    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${
+    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} ${
       whereClause !== '' ? `WHERE ${whereClause}` : ''
     }`;
   }
 
-  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} WHERE ${
+  return `SELECT ${columns} FROM public."Voter${state}" ${nestedWhereClause} ${
     whereClause !== '' ? `WHERE ${whereClause}` : ''
   }`;
 }
@@ -379,15 +380,20 @@ function customFiltersToQuery(filters) {
                                         END <= 50)`);
         break;
       case 'audience_unlikelyVoters':
-        filterConditions.audience.push(`CASE 
-                                          WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
-                                          THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
-                                          ELSE NULL
-                                        END <= 25`);
+        filterConditions.audience.push(`(CASE 
+                                              WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                              THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                              ELSE NULL
+                                            END > 1 AND 
+                                            CASE 
+                                              WHEN "Voters_VotingPerformanceEvenYearGeneral" ~ '^[0-9]+%$' 
+                                              THEN CAST(REPLACE("Voters_VotingPerformanceEvenYearGeneral", '%', '') AS numeric)
+                                              ELSE NULL
+                                            END <= 25)`);
         break;
       case 'audience_firstTimeVoters':
         filterConditions.audience.push(
-          '"Voters_VotingPerformanceEvenYearGeneral" IS NULL',
+          `"Voters_VotingPerformanceEvenYearGeneral" IN ('0%', 'Not Eligible', '')`,
         );
         break;
       case 'party_independent':
