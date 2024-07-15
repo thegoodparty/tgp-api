@@ -85,6 +85,7 @@ module.exports = {
         true,
       );
       let withFixColumns = false;
+      console.log('countQuery:', countQuery);
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
       if (sqlResponse.rows[0].count === 0) {
         withFixColumns = true;
@@ -305,7 +306,7 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }
 
   if (justCount) {
-    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} WHERE ${
+    return `SELECT COUNT(*) FROM public."Voter${state}" ${nestedWhereClause} ${
       whereClause !== '' ? `WHERE ${whereClause}` : ''
     }`;
   }
