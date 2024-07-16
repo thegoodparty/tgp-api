@@ -193,6 +193,8 @@ module.exports.routes = {
   'GET  /api/v1/voter-data/voter-file/wake-up': 'voterData/voterFile/wake-up',
   'POST  /api/v1/voter-data/voter-file/schedule':
     'voterData/voterFile/schedule',
+  'POST  /api/v1/voter-data/voter-file/help-message':
+    'voterData/voterFile/help-message',
   'PUT  /api/v1/voter-data/voter-file/count': 'voterData/voterFile/count',
   'GET  /api/v1/voter-data/voter-file/can-download':
     'voterData/voterFile/can-download',

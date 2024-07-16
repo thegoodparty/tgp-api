@@ -5,28 +5,13 @@ const {
 
 module.exports = {
   inputs: {
-    budget: {
-      type: 'number',
-      required: true,
-    },
-    audience: {
-      type: 'json',
-      required: true,
-    },
-    script: {
-      type: 'string',
-      required: true,
-    },
-    date: {
+    type: {
       type: 'string',
       required: true,
     },
     message: {
       type: 'string',
       required: true,
-    },
-    voicemail: {
-      type: 'boolean',
     },
   },
 
@@ -42,20 +27,16 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { budget, audience, script, date, message, voicemail } = inputs;
+      const { type, message } = inputs;
       const { user } = this.req;
       const { firstName, lastName, email } = user;
 
       await sails.helpers.slack.slackHelper(
         {
-          body: `${firstName} ${lastName} (${email}) is requesting to schedule a campaign.
-￮ Budget: $${budget}
-￮ Date: ${date}
+          body: `${firstName} ${lastName} (${email}) needs assistance with ${type} voter file.
+￮ Type: ${type}
 ￮ Message: ${message}
 ￮ User: ${firstName} ${lastName} (${email})
-￮ Script Key: ${script}
-￮ Audience: ${JSON.stringify(audience)}
-${voicemail ? '￮ Voicemail: Yes' : ''}
 `,
         },
         appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
@@ -63,7 +44,7 @@ ${voicemail ? '￮ Voicemail: Yes' : ''}
 
       return exits.success({ message: 'ok' });
     } catch (error) {
-      console.error('Error voter file schedule:', error);
+      console.error('Error voter file help:', error);
       return exits.serverError(error);
     }
   },
