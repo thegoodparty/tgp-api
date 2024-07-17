@@ -1,6 +1,3 @@
-const { Client } = require('pg');
-const { PassThrough } = require('stream');
-
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
@@ -70,66 +67,14 @@ module.exports = {
         !generalElectionDateStart &&
         !generalElectionDateEnd
       ) {
-        // const query = await Campaign.find({
-        //   where: { user: { '!=': null } },
-        // })
-        //   .populate('user')
-        //   .populate('pathToVictory');
+        const campaigns = await Campaign.find({
+          where: { user: { '!=': null } },
+        })
+          .populate('user')
+          .populate('pathToVictory');
 
-        const client = new Client({
-          connectionString: sails.config.datastores.default.url,
-        });
-
-        await client.connect();
-
-        const query = `
-          SELECT 
-        c.*, u.*, p.*
-      FROM 
-        public.campaign c
-      LEFT JOIN 
-        public.user u ON c.user = u.id
-      LEFT JOIN 
-        public.pathtovictory p ON c."pathToVictory" = p.id
-      WHERE 
-        c.user IS NOT NULL
-        `;
-
-        const passThroughStream = new PassThrough();
-        let isFirstChunk = true;
-
-        this.res.set('Content-Type', 'application/json');
-        this.res.write('[');
-
-        const queryStream = client.query(new Client.Query(query));
-
-        queryStream.on('row', (row) => {
-          if (!isFirstChunk) {
-            passThroughStream.write(',');
-          }
-          passThroughStream.write(JSON.stringify(row));
-          isFirstChunk = false;
-        });
-
-        queryStream.on('end', async () => {
-          passThroughStream.write(']');
-          passThroughStream.end();
-          await client.end();
-        });
-
-        queryStream.on('error', async (err) => {
-          passThroughStream.emit('error', err);
-          await client.end();
-        });
-
-        passThroughStream.on('error', (err) => {
-          return exits.error(err);
-        });
-
-        passThroughStream.pipe(this.res).on('finish', () => {
-          // Ensure that the response is properly ended
-          this.res.end();
-          // return exits.success();
+        return exits.success({
+          campaigns,
         });
       } else {
         const query = `
