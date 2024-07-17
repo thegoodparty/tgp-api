@@ -19,7 +19,7 @@ module.exports = {
         WHERE data->>'projectedTurnout' is not null and data->>'projectedTurnout' != ''
         AND data->>'averageTurnout' is not null and data->>'averageTurnout' != ''
         AND ((data->>'projectedTurnout')::numeric < 100 OR (data->>'averageTurnout')::numeric < 100)
-        order by id desc limit 1;
+        order by id desc;
     `);
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
