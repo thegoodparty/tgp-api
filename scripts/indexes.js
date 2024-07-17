@@ -137,6 +137,16 @@ module.exports = {
       console.log('electiontypeindex already exists');
     }
 
+    // CensusEntity indexes
+    try {
+      // composite index
+      await sails.getDatastore().sendNativeQuery(`
+              CREATE UNIQUE INDEX censusentityindex ON public.censusentity ("mtfcc", "geoId", "name")
+            `);
+    } catch (error) {
+      console.log('censusentityindex already exists');
+    }
+
     // Report back to Sails that the migration was successful
     return exits.success();
   },

@@ -63,20 +63,95 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   let city;
 
   if (level !== 'state' && level !== 'federal') {
-    locationResp = await sails.helpers.ballotready.extractLocationAi(
-      officeName + ' - ' + electionState,
-      level,
-    );
+    // We use the mtfcc and geoId to get the city and county
+    // and a more accurate electionLevel
+    sails.helpers.log(slug, `mtfcc: ${mtfcc}, geoId: ${geoId}`);
+    if (mtfcc && geoId) {
+      let geoData = await sails.helpers.ballotready.resolveMtfcc(mtfcc, geoId);
+      sails.helpers.log(slug, 'geoData', geoData);
+      if (geoData?.city) {
+        city = geoData.city;
+        if (electionLevel !== 'city') {
+          await sails.helpers.slack.slackHelper(
+            {
+              title: 'getRaceDetails Info.',
+              body: `Info: ${slug}. MTFCC Found city ${geoData.city} but electionLevel is ${electionLevel}. Overriding electionLevel to city.`,
+            },
+            'victory-issues',
+          );
+          electionLevel = 'city';
+        }
+      }
+      if (geoData?.county) {
+        if (electionLevel !== 'county') {
+          await sails.helpers.slack.slackHelper(
+            {
+              title: 'getRaceDetails Info.',
+              body: `Info: ${slug}. MTFCC Found county ${geoData.county} but electionLevel is ${electionLevel}. Overriding electionLevel to county.`,
+            },
+            'victory-issues',
+          );
+          county = geoData.county;
+          electionLevel = 'county';
+        }
+      }
+      if (geoData?.state) {
+        if (electionLevel !== 'state') {
+          await sails.helpers.slack.slackHelper(
+            {
+              title: 'getRaceDetails Info.',
+              body: `Info: ${slug}. MTFCC Found state ${geoData.state} but electionLevel is ${electionLevel}. Overriding electionLevel to state.`,
+            },
+            'victory-issues',
+          );
+          electionLevel = 'state';
+        }
+      }
+      // TODO: electionLevel='local' could cause issues upstream
+      // so we are leaving electionLevel as city for now.
+      if (geoData?.township) {
+        city = geoData.township;
+        // electionLevel = 'local';
+        electionLevel = 'city';
+      }
+      if (geoData?.town) {
+        city = geoData.town;
+        // electionLevel = 'local';
+        electionLevel = 'city';
+      }
+      if (geoData?.village) {
+        city = geoData.village;
+        // electionLevel = 'local';
+        electionLevel = 'city';
+      }
+      if (geoData?.borough) {
+        city = geoData.borough;
+        // electionLevel = 'local';
+        electionLevel = 'city';
+      }
+    }
 
-    // Experimental -- but might be useful.
-    // This doesn't really give a city name perse
-    // But we can use it maybe combined with the AI.
-    // if (mtfcc && geoId && electionLevel === 'city') {
-    //   let geoData = await sails.helpers.ballotready.resolveMtfcc(mtfcc, geoId);
-    //   if (geoData?.city) {
-    //     city = geoData.city;
-    //   }
-    // }
+    if (city && city !== '') {
+      city = city.replace(/ CCD$/, '');
+      city = city.replace(/ City$/, '');
+      // Note: we don't remove Town/Township/Village/Borough
+      // because we want to keep that info for ai column matching.
+    }
+    if (county && county !== '') {
+      county = county.replace(/ County$/, '');
+    }
+
+    if (
+      (electionLevel === 'city' && !city) ||
+      (electionLevel === 'county' && !county)
+    ) {
+      // If we couldn't get city/county with mtfcc/geo then use the AI.
+      locationResp = await sails.helpers.ballotready.extractLocationAi(
+        officeName + ' - ' + electionState,
+        level,
+      );
+      sails.helpers.log(slug, 'locationResp', locationResp);
+    }
 
     if (locationResp?.level) {
       if (locationResp.level === 'county') {
@@ -93,7 +168,6 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
     }
   }
 
-  sails.helpers.log(slug, 'locationResp', locationResp);
   if (county) {
     sails.helpers.log(slug, 'Found county', county);
   }

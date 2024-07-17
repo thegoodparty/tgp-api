@@ -18,7 +18,7 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { mtfcc, geoId } = inputs;
+    let { mtfcc, geoId } = inputs;
     let geoData;
     // geoId is a string that an start with 0, so we need remove that 0
     geoId = geoId ? parseInt(geoId, 10).toString() : undefined;
