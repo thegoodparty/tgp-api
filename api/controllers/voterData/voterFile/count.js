@@ -80,7 +80,7 @@ module.exports = {
 
       console.log('Constructed Query:', query);
       let sqlResponse = await sails.helpers.voter.queryHelper(query);
-      let count = sqlResponse?.rows[0]?.count;
+      let count = parseInt(sqlResponse?.rows[0]?.count);
       console.log('count:', count);
       if (count > 0) {
         return exits.success({ count });

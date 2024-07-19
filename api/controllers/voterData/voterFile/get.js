@@ -85,18 +85,13 @@ module.exports = {
         true,
       );
       let withFixColumns = false;
-      console.log('countQuery:', countQuery);
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
-      if (sqlResponse.rows[0].count == 0) {
+      if (parseInt(sqlResponse.rows[0].count) === 0) {
         // is it a string?
         withFixColumns = true;
       }
 
-      console.log(
-        'sqlResponse.rows[0].count type',
-        typeof sqlResponse.rows[0].count,
-      );
-      console.log('withFixColumns', withFixColumns);
+      console.log('count', sqlResponse.rows[0].count);
 
       const query = typeToQuery(
         resolvedType,
@@ -115,7 +110,6 @@ module.exports = {
 };
 
 function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
-  console.log('typeToQuery:', type, fixColumns);
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
