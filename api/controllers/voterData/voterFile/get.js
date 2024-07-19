@@ -85,11 +85,13 @@ module.exports = {
         true,
       );
       let withFixColumns = false;
-      console.log('countQuery:', countQuery);
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
-      if (sqlResponse.rows[0].count === 0) {
+      if (parseInt(sqlResponse.rows[0].count) === 0) {
+        // is it a string?
         withFixColumns = true;
       }
+
+      console.log('count', sqlResponse.rows[0].count);
 
       const query = typeToQuery(
         resolvedType,
@@ -118,7 +120,9 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
     let cleanValue = extractLocation(l2ColumnValue);
     if (fixColumns) {
+      console.log('before fix columns:', l2ColumnName);
       l2ColumnName = fixCityCountyColumns(l2ColumnName);
+      console.log('after fix columns:', l2ColumnName);
     }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
