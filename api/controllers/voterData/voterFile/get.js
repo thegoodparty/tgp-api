@@ -91,6 +91,9 @@ module.exports = {
         withFixColumns = true;
       }
 
+      console.log('sqlResponse.rows[0].count', sqlResponse.rows[0].count);
+      console.log('withFixColumns', withFixColumns);
+
       const query = typeToQuery(
         resolvedType,
         campaign,
@@ -108,6 +111,7 @@ module.exports = {
 };
 
 function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
+  console.log('typeToQuery:', type, fixColumns);
   const state = campaign.details.state;
   let whereClause = '';
   let nestedWhereClause = '';
@@ -118,7 +122,9 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
     let cleanValue = extractLocation(l2ColumnValue);
     if (fixColumns) {
+      console.log('before fix columns:', l2ColumnName);
       l2ColumnName = fixCityCountyColumns(l2ColumnName);
+      console.log('after fix columns:', l2ColumnName);
     }
     whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
   }
