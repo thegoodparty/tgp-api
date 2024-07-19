@@ -87,11 +87,15 @@ module.exports = {
       let withFixColumns = false;
       console.log('countQuery:', countQuery);
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
-      if (sqlResponse.rows[0].count === 0) {
+      if (sqlResponse.rows[0].count == 0) {
+        // is it a string?
         withFixColumns = true;
       }
 
-      console.log('sqlResponse.rows[0].count', sqlResponse.rows[0].count);
+      console.log(
+        'sqlResponse.rows[0].count type',
+        typeof sqlResponse.rows[0].count,
+      );
       console.log('withFixColumns', withFixColumns);
 
       const query = typeToQuery(
