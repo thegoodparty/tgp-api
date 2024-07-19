@@ -201,6 +201,7 @@ module.exports.routes = {
     'voterData/voterFile/can-download',
   'GET  /api/v1/voter-data/voter-file/geo-location-cron':
     'voterData/voterFile/geo-location-cron',
+  'GET  /api/v1/voter-data/locations': 'voterData/locations',
 
   // test ai
   'GET   /api/v1/ai/test': 'ai/test',
