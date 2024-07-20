@@ -112,7 +112,7 @@ function typeToQuery(type, campaign, customFilters, fixColumns) {
     if (fixColumns) {
       l2ColumnName = fixCityCountyColumns(l2ColumnName);
     }
-    whereClause += `"${l2ColumnName}" = '${cleanValue}' `;
+    whereClause += `"${l2ColumnName}" = '${cleanValue}' OR "${l2ColumnName}" = '${cleanValue} (EST.)' `;
   }
 
   if (type === 'sms') {
