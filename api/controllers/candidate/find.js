@@ -42,7 +42,7 @@ module.exports = {
             { positionId: { '!=': null } },
             { raceId: { '!=': '' } },
             { raceId: { '!=': null } },
-            { campaign: null },
+            2,
           ],
         },
       });
