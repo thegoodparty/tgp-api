@@ -1,6 +1,6 @@
 const {
-  getEinSupportDocumentFilename,
-} = require('../../utils/campaign/get-ein-support-document-filename');
+  getEinSupportDocumentFolderName,
+} = require('../../utils/campaign/get-ein-support-document-folder-name');
 const {
   uploadSingleFileToS3,
 } = require('../../utils/upload-single-file-to-s3');
@@ -61,29 +61,29 @@ module.exports = {
     if (!campaignRecord) {
       return exits.forbidden();
     }
-
-    const fileName = getEinSupportDocumentFilename(campaignRecord);
+    const folderName = getEinSupportDocumentFolderName(campaignRecord);
     // TODO: restrict access to these files for admins only to view
-    const bucket = `ein-supporting-documents`;
+    const bucket = `ein-supporting-documents/${folderName}`;
 
     let uploadedFile = null;
     try {
       uploadedFile = await uploadSingleFileToS3({
         file: document,
         bucket,
-        fileName,
       });
     } catch (e) {
       sails.log.error('Error uploading EIN supporting document', e);
       return failure('Error uploading EIN supporting document');
     }
 
+    const uploadedFilename = `${folderName}/${uploadedFile.fd}`;
+
     try {
       await sails.helpers.campaign.patch(
         campaignRecord.id,
         'details',
         'einSupportingDocument',
-        fileName,
+        uploadedFilename,
       );
     } catch (e) {
       sails.log.error(
@@ -95,7 +95,7 @@ module.exports = {
 
     return success({
       message: 'Document uploaded successfully',
-      uploadedFilename: uploadedFile.fd,
+      uploadedFilename,
     });
   },
 };
