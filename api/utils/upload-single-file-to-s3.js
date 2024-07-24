@@ -1,15 +1,9 @@
-const fs = require('fs');
 const skipperS3 = require('skipper-s3');
 
 const key = sails.config.custom.s3Key || sails.config.s3Key;
 const secret = sails.config.custom.s3Secret || sails.config.s3Secret;
 
-const uploadSingleFileToS3 = async function ({
-  file,
-  bucket,
-  fileName = '',
-  headers = {},
-}) {
+const uploadSingleFileToS3 = async function ({ file, bucket, headers = {} }) {
   if (!file) {
     const e = new Error('No File provided');
     sails.log.error(e);
@@ -34,7 +28,7 @@ const uploadSingleFileToS3 = async function ({
           ...headers,
         },
         //Override the filename for easy lookup later
-        saveAs: (file, cb) => cb(null, fileName || file.filename),
+        saveAs: (file, cb) => cb(null, file.filename),
       },
       (err, uploadedFiles) => {
         if (err) {
