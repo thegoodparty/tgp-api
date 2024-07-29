@@ -30,7 +30,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { name, office, bustCache } = inputs;
+      let { name, office, bustCache } = inputs;
       const slug = `${name}-${office}`;
       let candidate = await BallotCandidate.findOne({
         where: {
@@ -48,6 +48,19 @@ module.exports = {
       if (!candidate) {
         return exits.notFound();
       }
+
+      // force update based on date (when fixing a bug).
+      if (candidate.presentationData) {
+        const now = new Date();
+        if (!candidate.presentationData.updatedAt) {
+          bustCache = true;
+        } else {
+          if (candidate.presentationData.updatedAt < now) {
+            bustCache = true;
+          }
+        }
+      }
+
       if (candidate.presentationData && !bustCache) {
         return exits.success({
           candidate: candidate.presentationData,

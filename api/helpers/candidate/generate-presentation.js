@@ -97,6 +97,7 @@ module.exports = {
         topIssues,
         image,
         claimed: !!campaign,
+        updatedAt: new Date(),
       };
 
       const { mtfcc, geo_id, urls } = brData;
@@ -180,7 +181,7 @@ break
   } else {
     about += ` in ${state}`;
   }
-  about += `, making them eligible to receive GoodParty.org's support. ${office} is responsible for ${officeDescription}.<br/><br/>`; // eslint-disable-line
+  about += `, making them eligible to receive GoodParty.org's support. ${office} is responsible for ${officeDescription}<br/><br/>`; // eslint-disable-line
   if (endorsements && endorsements.length) {
     about += `${lastName} is endorsed by ${endorsements.join(', ')}.<br/><br/>`;
   }
@@ -190,7 +191,9 @@ break
       .join(', ')}.<br/><br/>`;
   }
   if (term) {
-    about += `${lastName} is running for a ${term.toLowerCase()} term.`;
+    about += `${lastName} is running for a ${term
+      .toLowerCase()
+      .replace('years', 'year')} term.`;
   }
   return about;
 }
