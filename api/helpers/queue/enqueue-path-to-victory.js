@@ -1,4 +1,4 @@
-const getRaceDetails = require('../../utils/campaign/get-race-details');
+const getRaceDetails = require('../../utils/campaign/getRaceDetails');
 
 // Enqueue a message to the queue to process the path to victory for a campaign.
 module.exports = {

@@ -1,5 +1,5 @@
-const handlePathToVictory = require('../api/utils/campaign/handle-path-to-victory');
-const getRaceDetails = require('../api/utils/campaign/get-race-details');
+const handlePathToVictory = require('../api/utils/campaign/handlePathToVictory');
+const getRaceDetails = require('../api/utils/campaign/getRaceDetails');
 
 module.exports = {
   friendlyName: 'Fix p2v',

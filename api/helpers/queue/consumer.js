@@ -10,7 +10,7 @@ const secretAccessKey =
 const queueUrl = sails.config.custom.queueUrl || sails.config.queueUrl;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
-const handlePathToVictory = require('../../utils/campaign/handle-path-to-victory');
+const handlePathToVictory = require('../../utils/campaign/handlePathToVictory');
 
 let queue;
 AWS.config.update({

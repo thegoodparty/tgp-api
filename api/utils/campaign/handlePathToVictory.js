@@ -27,6 +27,44 @@ const handlePathToVictory = async ({
   sails.helpers.log(slug, 'starting p2v');
 
   try {
+    let searchColumns = await sails.helpers.campaign.searchMiscDistricts(
+      slug,
+      officeName,
+      electionLevel,
+      electionState,
+    );
+
+    // STEP 1: determine if there is a subAreaName / District
+    let districtValue = getDistrictValue(
+      slug,
+      officeName,
+      subAreaName,
+      subAreaValue,
+    );
+
+    // STEP 2: Figure out the main search column (City, County, etc.) and value
+    // This also applies to the miscellaneous districts.
+    let electionTypes = [];
+
+    let searchString = getSearchString(
+      slug,
+      officeName,
+      subAreaName,
+      subAreaValue,
+      electionCounty,
+      electionMunicipality,
+      electionState,
+    );
+    if (searchColumns.length > 0) {
+      // electionSearch = formattedDistrictValue;
+      electionTypes = await getSearchColumn(
+        slug,
+        searchColumns,
+        electionState,
+        searchString,
+      );
+    }
+
     const officeResponse = await sails.helpers.campaign.officeHelper(
       slug,
       officeName,
@@ -39,7 +77,6 @@ const handlePathToVictory = async ({
     );
     sails.helpers.log(slug, 'officeResponse', officeResponse);
 
-    let electionTypes;
     let electionDistricts;
     if (officeResponse && officeResponse?.electionTypes) {
       electionTypes = officeResponse.electionTypes;

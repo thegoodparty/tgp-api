@@ -1,8 +1,5 @@
 const axios = require('axios');
-
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
-
-const getChatCompletion = require('../../utils/ai/get-chat-completion');
 
 module.exports = {
   friendlyName: 'Office Helper',
@@ -66,69 +63,6 @@ module.exports = {
         subAreaName,
         subAreaValue,
       } = inputs;
-
-      if (electionLevel === 'federal') {
-        if (
-          officeName.includes('President of the United States') ||
-          officeName.includes('Senate') ||
-          officeName.includes('Governor')
-        ) {
-          return exits.success({
-            // Handle special case where we want the entire state or country.
-            electionTypes: [{ column: '', value: '' }],
-            electionDistricts: {},
-          });
-        }
-      }
-      let searchColumns = [];
-      let foundMiscDistricts = [];
-      sails.helpers.log(slug, `Searching misc districts for ${officeName}`);
-      foundMiscDistricts = await searchMiscDistricts(
-        slug,
-        officeName,
-        electionState,
-      );
-
-      if (foundMiscDistricts.length > 0) {
-        searchColumns = foundMiscDistricts;
-      }
-      sails.helpers.log(slug, 'miscDistricts', searchColumns);
-
-      // STEP 1: determine if there is a subAreaName / District
-      let districtValue = getDistrictValue(
-        slug,
-        officeName,
-        subAreaName,
-        subAreaValue,
-      );
-
-      // let formattedDistrictValue = districtValue;
-      // if (districtValue && districtValue.length === 1) {
-      //   formattedDistrictValue = `0${districtValue}`;
-      // }
-
-      // STEP 2: Figure out the main search column (City, County, etc.) and value
-      // This also applies to the miscellaneous districts.
-      let electionTypes = [];
-
-      let searchString = getSearchString(
-        slug,
-        officeName,
-        subAreaName,
-        subAreaValue,
-        electionCounty,
-        electionMunicipality,
-        electionState,
-      );
-      if (searchColumns.length > 0) {
-        // electionSearch = formattedDistrictValue;
-        electionTypes = await getSearchColumn(
-          slug,
-          searchColumns,
-          electionState,
-          searchString,
-        );
-      }
 
       // If we don't find a misc district we fall back to state/county/city.
       if (electionTypes.length === 0) {
@@ -326,53 +260,6 @@ async function determineSearchColumns(slug, electionLevel, officeName) {
   return searchColumns;
 }
 
-async function searchMiscDistricts(slug, officeName, state) {
-  // Populate the miscellaneous districts from the database.
-  const results = await ElectionType.find({ state });
-
-  if (!results || results.length === 0) {
-    sails.helpers.log(
-      slug,
-      `Error! No ElectionType results found for state ${state}. You may need to run seed election-types.`,
-    );
-    await sails.helpers.slack.slackHelper(
-      {
-        title: 'Path To Victory',
-        body: `Error! ${slug} No ElectionType results found for state ${state}. You may need to run seed election-types.`,
-      },
-      'victory-issues',
-    );
-    return [];
-  }
-
-  let miscellaneousDistricts = [];
-  for (const result of results) {
-    if (result?.name && result?.category) {
-      miscellaneousDistricts.push(result.name);
-    }
-  }
-
-  // Use AI to find the best matches for the office name.
-  let foundMiscDistricts = [];
-  const matchResp = await matchSearchColumns(
-    slug,
-    miscellaneousDistricts,
-    officeName,
-  );
-  if (matchResp && matchResp?.content) {
-    try {
-      const contentJson = JSON.parse(matchResp.content);
-      sails.helpers.log(slug, 'columns', contentJson.columns);
-      foundMiscDistricts = contentJson?.columns || [];
-      sails.helpers.log(slug, 'found miscDistricts', matchResp);
-    } catch (e) {
-      sails.helpers.log(slug, 'error parsing matchResp', e);
-    }
-  }
-
-  return foundMiscDistricts;
-}
-
 function getDistrictValue(slug, officeName, subAreaName, subAreaValue) {
   let districtWords = [
     'District',
@@ -439,97 +326,6 @@ async function querySearchColumn(slug, searchColumn, electionState) {
   return searchValues;
 }
 
-async function matchSearchColumns(slug, searchColumns, searchString) {
-  sails.helpers.log(
-    slug,
-    `Doing AI search for ${searchString} against ${searchColumns.length} columns`,
-  );
-  const functionDefinition = {
-    type: 'function',
-    function: {
-      name: 'matchColumns',
-      description: 'Determine the columns that best match the office name.',
-      parameters: {
-        type: 'object',
-        properties: {
-          columns: {
-            type: 'array',
-            items: {
-              type: 'string',
-            },
-            description: 'The list of columns that best match the office name.',
-            maxItems: 5,
-          },
-        },
-        required: ['columns'],
-      },
-    },
-  };
-
-  const completion = await getChatCompletion(
-    [
-      {
-        role: 'system',
-        content:
-          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position.',
-      },
-      {
-        role: 'user',
-        content: `Find the top 5 columns that matches the following office: "${searchString}.\n\nColumns: ${searchColumns}"`,
-      },
-    ],
-    'gpt-4o',
-    0.1,
-    0.1,
-    [functionDefinition],
-  );
-
-  return completion;
-}
-
-async function matchSearchValues(slug, searchValues, searchString) {
-  let messages = [
-    {
-      role: 'system',
-      content: `
-      you are a helpful political assistant whose job is to find the label that most closely matches the input. You will return only the matching label in your response and nothing else. If none of the labels are a good match then you will return "". If there is a good match return the entire label including any hashtags. 
-        `,
-    },
-    {
-      role: 'user',
-      content: `find the label that matches the following office: "${searchString}.\n\nLabels: ${searchValues}"`,
-    },
-  ];
-
-  const completion = await sails.helpers.ai.createCompletion(
-    messages,
-    100,
-    0.1,
-    0.1,
-  );
-
-  const content = completion?.content;
-  const tokens = completion?.tokens;
-  console.log('content', content);
-  console.log('tokens', tokens);
-  if (!tokens || tokens === 0) {
-    // ai failed. throw an error here, we catch it in consumer.
-    // and re-throw it so we can try again via the SQS queue.
-    await sails.helpers.slack.slackHelper(
-      {
-        title: 'AI Failed',
-        body: `Error! ${slug} AI failed to find a match for ${searchString}.`,
-      },
-      'victory-issues',
-    );
-    sails.helpers.log(slug, 'No Response from AI! For', searchValues);
-    throw new Error('no response from AI');
-  }
-
-  if (content && content !== '') {
-    return content.replace(/"/g, '');
-  }
-}
 function getSearchString(
   slug,
   officeName,
@@ -557,72 +353,4 @@ function getSearchString(
   }
   sails.helpers.log(slug, `searchString: ${searchString}`);
   return searchString;
-}
-
-async function getSearchColumn(
-  slug,
-  searchColumns,
-  electionState,
-  searchString,
-  searchString2,
-) {
-  let foundColumns = [];
-  //   sails.helpers.log(slug, 'searchColumns', searchColumns);
-  //   sails.helpers.log(slug, 'searchString', searchString);
-  //   sails.helpers.log(slug, 'searchString2', searchString2);
-  let search = searchString;
-  if (searchString2) {
-    search = `${searchString} ${searchString2}`;
-  }
-  sails.helpers.log(
-    slug,
-    `searching for ${search} in ${searchColumns.length} columns`,
-  );
-  for (const searchColumn of searchColumns) {
-    let searchValues = await querySearchColumn(
-      slug,
-      searchColumn,
-      electionState,
-    );
-    // strip out any searchValues that are a blank string ""
-    searchValues = searchValues.filter((value) => value !== '');
-    sails.helpers.log(
-      slug,
-      `found ${searchValues.length} searchValues for ${searchColumn}`,
-    );
-    if (searchValues.length > 0) {
-      sails.helpers.log(
-        slug,
-        `There are searchValues for ${searchColumn}`,
-        searchValues,
-      );
-      sails.helpers.log(slug, `Using AI to find the best match ...`);
-      const match = await matchSearchValues(
-        slug,
-        searchValues.join('\n'),
-        search,
-      );
-      sails.helpers.log(slug, 'match', match);
-      if (
-        match &&
-        match !== '' &&
-        match !== `${electionState}##` &&
-        match !== `${electionState}####`
-      ) {
-        foundColumns.push({
-          column: searchColumn,
-          value: match.replaceAll('"', ''),
-        });
-      }
-
-      // Special case for "At Large" positions.
-      if (foundColumns.length === 0 && searchString.includes('At Large')) {
-        foundColumns.push({ column: searchColumn, value: searchValues[0] });
-      }
-    }
-  }
-
-  sails.helpers.log(slug, 'office helper foundColumns', foundColumns);
-
-  return foundColumns;
 }
