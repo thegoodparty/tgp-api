@@ -31,7 +31,7 @@ module.exports = {
 
       const nextYear = moment()
         .startOf('year')
-        .add(1, 'year')
+        .add(2, 'year')
         .format('M D, YYYY');
 
       const now = moment().format('M D, YYYY');
