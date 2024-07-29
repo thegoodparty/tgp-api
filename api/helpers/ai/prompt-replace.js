@@ -117,7 +117,12 @@ module.exports = {
           replace: details.statementName,
         },
       );
+
       if (campaign.pathToVictory) {
+        const pathToVictory = await PathToVictory.findOne({
+          campaign: campaign.id,
+        });
+
         const {
           projectedTurnout,
           winNumber,
@@ -138,7 +143,7 @@ module.exports = {
           totalRegisteredVoters,
           budgetLow,
           budgetHigh,
-        } = campaign.pathToVictory;
+        } = pathToVictory.data;
         replaceArr.push(
           {
             find: 'projectedTurnout',
