@@ -16,12 +16,8 @@ module.exports = {
             { email: { '!=': '' } },
           ],
         },
-      }).limit(10);
+      });
       for (let i = 0; i < candidates.length; i++) {
-        await sails.helpers.slack.errorLoggerHelper(
-          'Trying to update candidate',
-          candidates[i],
-        );
         console.log('Trying to update candidate', candidates[i]);
         await sails.helpers.crm.updateCandidate(candidates[i].id);
       }
