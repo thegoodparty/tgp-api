@@ -61,7 +61,7 @@ module.exports = {
           win_number: winNumber,
           democrat_voters: democrats,
           republican_voters: republicans,
-          // independent_voters: indies,
+          independent_voters: indies,
           total_voters: totalRegisteredVoters,
           average_turnout: averageTurnout,
           projected_turnout: projectedTurnout,
