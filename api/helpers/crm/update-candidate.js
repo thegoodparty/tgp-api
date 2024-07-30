@@ -67,7 +67,6 @@ module.exports = {
           projected_turnout: projectedTurnout,
           voter_contact_goal: voterContactGoal,
           candidate_page_url: `https://goodparty.org/candidate/${slug}`,
-          p2v_status: 'Complete',
         },
       };
 
