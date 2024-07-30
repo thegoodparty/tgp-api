@@ -1,16 +1,14 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
 const hubspot = require('@hubspot/api-client');
 const slugify = require('slugify');
-const moment = require('moment');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
-const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
-    candidate: {
-      type: 'json',
+    id: {
+      type: 'number',
       required: true,
     },
   },
@@ -31,152 +29,92 @@ module.exports = {
       }
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
-      const { candidate } = inputs;
-      const data = JSON.parse(candidate.data);
-      const slug = slugify(`${data.firstName} ${data.lastName}`);
-
-      const endorsementsCount = await Endorsement.count({
-        candidate: candidate.id,
+      const { id } = inputs;
+      const candidate = await BallotCandidate.findOne({
+        where: { id, p2vData: { '!=': null } },
       });
+      if (!candidate) {
+        return exits.success('no candidate found');
+      }
+      if (!candidate.email) {
+        return exits.success('candidate has no email');
+      }
 
-      const candidatePositions = await CandidatePosition.find({
-        candidate: candidate.id,
-      })
-        .sort([{ order: 'ASC' }])
-        .populate('topIssue')
-        .populate('position');
-
-      let topIssues = '';
-      candidatePositions.forEach((candPosition) => {
-        topIssues += `Top Issue: ${candPosition.topIssue?.name} | Position: ${candPosition.position?.name} | Candidate Position: ${candPosition.description} \n`;
-      });
-
+      const { email, p2vData, firstName, lastName, office } = candidate;
+      const slug = `${slugify(firstName)}-${slugify(lastName)}/${slugify(
+        office,
+      )}`;
       const {
-        firstName,
-        lastName,
-        race,
-        isActive,
-        about,
-        party,
-        zip,
-        state,
-        facebook,
-        twitter,
-        tiktok,
-        instagram,
-        heroVideo,
-        isClaimed,
-        lastPortalVisit,
-        votesNeeded,
-      } = data;
-      const longState = state
-        ? await sails.helpers.zip.shortToLongState(state)
-        : undefined;
-      const companyObj = {
+        totalRegisteredVoters,
+        republicans,
+        democrats,
+        indies,
+        averageTurnout,
+        projectedTurnout,
+        winNumber,
+        voterContactGoal,
+      } = p2vData;
+
+      const contactObj = {
         properties: {
-          name: `${firstName} ${lastName} for ${race}`,
-          candidate_name: `${firstName} ${lastName}`,
-          campaign_id: candidate.id,
-          is_active: !!isActive,
-          candidate_office: race,
-          about_us: about,
-          candidate_party: partyResolver(party),
-          state: longState,
-          zip,
-          twitter_url: twitter,
-          tiktok_url: tiktok,
-          facebook_url: facebook,
-          instagram_url: instagram,
-          video_added: heroVideo ? 'yes' : 'no',
-          claimed_active: !!isClaimed,
-          type: 'CAMPAIGN',
-          candidate_email: candidate.contact.contactEmail,
-          phone: candidate.contact.contactPhone,
-          domain: `${appBase}/candidate/${slug}/${candidate.id}`,
-          installed_button: totalImpressions,
-          featured_endorsements: endorsementsCount,
-          top_issues: topIssues,
-          modify_page: moment().format('YYYY-MM-DD'),
-          last_portal_visit: lastPortalVisit,
-          mentions: totalFeed,
-          votes_needed: votesNeeded,
+          email,
+          win_number: winNumber,
+          democrat_voters: democrats,
+          republican_voters: republicans,
+          independent_voters: indies,
+          total_voters: totalRegisteredVoters,
+          average_turnout: averageTurnout,
+          projected_turnout: projectedTurnout,
+          voter_contact_goal: voterContactGoal,
+          candidate_page_url: `https://goodparty.org/candidate/${slug}`,
+          p2v_status: 'Complete',
         },
       };
 
-      const existingId = candidate.contact.hubspotId;
-      if (existingId) {
-        await hubspotClient.crm.companies.basicApi.update(
-          existingId,
-          companyObj,
-        );
-        return exits.success(existingId);
-      } else {
-        // update user record with the id from the crm
-        const createCompanyResponse =
-          await hubspotClient.crm.companies.basicApi.create(companyObj);
+      let contactId;
 
-        const hubspotId = createCompanyResponse.id;
-        await Candidate.updateOne({ id: candidate.id }).set({
-          data: JSON.stringify({
-            ...data,
-          }),
-          contact: { ...candidate.contact, hubspotId },
-        });
-        return exits.success(hubspotId);
+      try {
+        const contact = await hubspotClient.crm.contacts.basicApi.getById(
+          email,
+          ['id', 'email'],
+          undefined,
+          undefined,
+          undefined,
+          'email',
+        );
+        contactId = contact.id;
+      } catch (e) {
+        // this is not really an error, it just indicates that the user has never filled a form.
+        console.log('could not find contact by email.', e);
+        await sails.helpers.slack.errorLoggerHelper(
+          'could not find contact by email.',
+          e,
+        );
+        return exits.success('no hubspot contact found');
       }
+
+      if (contactId) {
+        try {
+          await hubspotClient.crm.contacts.basicApi.update(
+            contactId,
+            contactObj,
+          );
+        } catch (e) {
+          console.log('error updating contact', e);
+          await sails.helpers.slack.errorLoggerHelper(
+            'error on crm update candidate helper',
+            e,
+          );
+        }
+      }
+      return exits.success('ok');
     } catch (e) {
-      console.log('hubspot error - update candidate', e);
+      console.log('error on crm update user helper', e);
       await sails.helpers.slack.errorLoggerHelper(
-        'Error updating hubspot- update-candidate',
+        'error on crm update user helper',
         e,
       );
       return exits.success('not ok');
     }
   },
-};
-
-const partyResolver = (partyLetter, otherParty) => {
-  if (!partyLetter) {
-    return '';
-  }
-  if (partyLetter === 'Other' && otherParty) {
-    return otherParty;
-  }
-  if (partyLetter === 'D') {
-    return 'Democratic';
-  }
-  if (partyLetter === 'R') {
-    return 'Republican';
-  }
-  if (partyLetter === 'GP') {
-    return 'Green';
-  }
-  if (partyLetter === 'LP' || partyLetter === 'L') {
-    return 'Libertarian';
-  }
-  if (partyLetter === 'LI') {
-    return 'Liberation';
-  }
-  if (partyLetter === 'I') {
-    return 'Independent';
-  }
-  if (partyLetter === 'VC') {
-    return 'Vetting Challengers';
-  }
-  if (partyLetter === 'U') {
-    return 'Unity';
-  }
-  if (partyLetter === 'UUP') {
-    return 'United Utah';
-  }
-  if (partyLetter === 'W') {
-    return 'Working Families';
-  }
-  if (partyLetter === 'S') {
-    return 'SAM';
-  }
-  if (partyLetter === 'F') {
-    return 'Forward';
-  }
-  return partyLetter;
 };

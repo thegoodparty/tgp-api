@@ -50,8 +50,6 @@ module.exports = {
         });
       }
 
-      await sails.helpers.crm.updateCandidate(candidate);
-
       return exits.success({
         message: 'updated',
       });

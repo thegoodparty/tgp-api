@@ -6,28 +6,28 @@ module.exports = {
 
   async fn(inputs, exits) {
     try {
-      const campaigns = await Campaign.find({
-        id: { '>': 7000 },
-      });
-
-      for (let i = 0; i < campaigns.length; i++) {
-        const campaign = campaigns[i];
-        try {
-          await sails.helpers.crm.updateCampaign(campaign);
-        } catch (e) {
-          console.log('Error in seed campaign', e);
-          await sails.helpers.slack.errorLoggerHelper(
-            `Error at seed with campaign ${campaign.slug}`,
-            e,
-          );
-        }
+      const candidates = await BallotCandidate.find({
+        select: ['id', 'email'],
+        where: {
+          and: [
+            { party: { '!=': 'Republican' } },
+            { party: { '!=': 'Democratic' } },
+            { p2vData: { '!=': null } },
+            { email: { '!=': '' } },
+          ],
+        },
+      }).limit(10);
+      for (let i = 0; i < candidates.length; i++) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Trying to update candidate',
+          candidates[i],
+        );
+        console.log('Trying to update candidate', candidates[i]);
+        await sails.helpers.crm.updateCandidate(candidates[i]);
       }
-      await sails.helpers.slack.errorLoggerHelper(`Done updating hubspot`, {
-        total: campaigns.length,
-      });
       return exits.success({
-        message: 'matched campaign with candidates.',
-        total: campaigns.length,
+        message: 'updated',
+        total: candidates.length,
       });
     } catch (e) {
       console.log('Error in seed', e);
