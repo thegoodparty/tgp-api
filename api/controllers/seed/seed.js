@@ -23,7 +23,7 @@ module.exports = {
           candidates[i],
         );
         console.log('Trying to update candidate', candidates[i]);
-        await sails.helpers.crm.updateCandidate(candidates[i]);
+        await sails.helpers.crm.updateCandidate(candidates[i].id);
       }
       return exits.success({
         message: 'updated',
