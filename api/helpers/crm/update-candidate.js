@@ -40,10 +40,10 @@ module.exports = {
         return exits.success('candidate has no email');
       }
 
-      const { email, p2vData, firstName, lastName, office } = candidate;
-      const slug = `${slugify(firstName)}-${slugify(lastName)}/${slugify(
-        office,
-      )}`;
+      const { email, p2vData, firstName, lastName, positionName } = candidate;
+      const slug = `${slugify(`${firstName}-${lastName}`, {
+        lower: true,
+      })}/${slugify(positionName, { lower: true })}`;
       const {
         totalRegisteredVoters,
         republicans,
