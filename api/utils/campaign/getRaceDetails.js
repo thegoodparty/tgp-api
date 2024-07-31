@@ -177,20 +177,36 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
 
   let priorElectionDates = [];
   if (partisanType !== 'partisan' && getElectionDates) {
-    // priorElectionDates = await sails.helpers.ballotready.getElectionDatesPosition(
-    //   slug,
-    //   positionId,
-    // );
+    if (positionId) {
+      const ballotPosition = await BallotPosition.findOne({
+        ballotHashId: positionId.toString(),
+      });
+      if (ballotPosition && ballotPosition?.ballotId) {
+        const ballotPositionId = ballotPosition?.ballotId;
+        priorElectionDates =
+          await sails.helpers.ballotready.getElectionDatesPosition(
+            slug,
+            ballotPositionId,
+          );
+        sails.helpers.log(
+          `priorElectionDates from PositionId ${ballotPositionId} `,
+          priorElectionDates,
+        );
+      }
+    }
 
-    // todo: replace this with logic from the candidate-victory.js
-    // to get election dates from the position object.
-    priorElectionDates = await sails.helpers.ballotready.getElectionDates(
-      slug,
-      officeName,
-      zip,
-      race?.position?.level,
-    );
-    // sails.helpers.log('priorElectionDates', priorElectionDates);
+    if ((!priorElectionDates || priorElectionDates.length === 0) && zip) {
+      priorElectionDates = await sails.helpers.ballotready.getElectionDates(
+        slug,
+        officeName,
+        zip,
+        race?.position?.level,
+      );
+      sails.helpers.log(
+        `priorElectionDates from zip ${zip}`,
+        priorElectionDates,
+      );
+    }
   }
 
   data.slug = slug;
