@@ -15,6 +15,8 @@ module.exports = {
         'directMail',
         'directmail',
         'telemarketing',
+        'digitalAds',
+        'digitalads',
         'custom',
       ],
     },
@@ -43,6 +45,9 @@ module.exports = {
       }
       if (type === 'directmail') {
         type = 'directMail';
+      }
+      if (type === 'digitalads') {
+        type = 'digitalAds';
       }
       let customFilters;
       if (inputs.customFilters && inputs.customFilters !== 'undefined') {
@@ -76,6 +81,8 @@ module.exports = {
           resolvedType = 'directMail';
         } else if (channel === 'Telemarketing') {
           resolvedType = 'telemarketing';
+        } else if (channel === 'Facebook') {
+          resolvedType = 'digitalAds';
         }
       }
       const countQuery = typeToQuery(
@@ -124,7 +131,7 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
       l2ColumnName = fixCityCountyColumns(l2ColumnName);
       console.log('after fix columns:', l2ColumnName);
     }
-    whereClause += `"${l2ColumnName}" = '${cleanValue}' OR "${l2ColumnName}" = '${cleanValue} (EST.)' `;
+    whereClause += `("${l2ColumnName}" = '${cleanValue}' OR "${l2ColumnName}" = '${cleanValue} (EST.)') `;
   }
   let columns = `"LALVOTERID", 
   "Voters_FirstName", 
@@ -198,6 +205,17 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
 
   if (type === 'sms') {
     columns += `, "VoterTelephones_CellPhoneFormatted"`;
+
+    whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+  }
+  if (type === 'digitalAds') {
+    columns += `, "VoterTelephones_CellPhoneFormatted",
+    "Residence_Addresses_AddressLine", 
+    "Residence_Addresses_ExtraAddressLine", 
+    "Residence_Addresses_HouseNumber",
+    "Residence_Addresses_City", 
+    "Residence_Addresses_State", 
+    "Residence_Addresses_Zip"`;
 
     whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }

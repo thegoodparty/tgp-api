@@ -13,6 +13,8 @@ module.exports = {
         'directMail',
         'directmail',
         'telemarketing',
+        'digitalAds',
+        'digitalads',
         'custom',
       ],
     },
@@ -41,6 +43,9 @@ module.exports = {
       }
       if (type === 'directmail') {
         type = 'directMail';
+      }
+      if (type === 'digitalads') {
+        type = 'digitalAds';
       }
       let customFilters;
       if (inputs.customFilters && inputs.customFilters !== 'undefined') {
@@ -74,6 +79,8 @@ module.exports = {
           resolvedType = 'directMail';
         } else if (channel === 'Telemarketing') {
           resolvedType = 'telemarketing';
+        } else if (channel === 'Facebook') {
+          resolvedType = 'digitalAds';
         }
       }
       let query = typeToQuery(resolvedType, campaign, customFilters);
@@ -112,10 +119,12 @@ function typeToQuery(type, campaign, customFilters, fixColumns) {
     if (fixColumns) {
       l2ColumnName = fixCityCountyColumns(l2ColumnName);
     }
-    whereClause += `"${l2ColumnName}" = '${cleanValue}' OR "${l2ColumnName}" = '${cleanValue} (EST.)' `;
+    whereClause += `("${l2ColumnName}" = '${cleanValue}' OR "${l2ColumnName}" = '${cleanValue} (EST.)') `;
   }
 
-  if (type === 'sms') {
+  console.log('type:', type);
+
+  if (type === 'sms' || type === 'digitalAds') {
     whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }
 
