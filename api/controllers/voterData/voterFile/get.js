@@ -128,16 +128,14 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }
   let columns = `"LALVOTERID", 
   "Voters_FirstName", 
-  "Voters_MiddleName", 
   "Voters_LastName", 
-  "Voters_NameSuffix", 
   "Parties_Description",
   "Voters_Gender",
-  "Voters_Age"`;
+  "Voters_Age",
+  "Voters_VotingPerformanceEvenYearGeneral"`;
 
   if (type === 'full') {
-    columns += `, "Voters_VotingPerformanceEvenYearGeneral", 
-    "Voters_VotingPerformanceEvenYearPrimary", 
+    columns += `, "Voters_VotingPerformanceEvenYearPrimary", 
     "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
     "Residence_Addresses_ApartmentType", 
     "EthnicGroups_EthnicGroup1Desc", 
@@ -188,40 +186,18 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }
 
   if (type === 'doorKnocking') {
-    columns += `, "Voters_VotingPerformanceEvenYearGeneral", 
-    "Voters_VotingPerformanceEvenYearPrimary", 
-    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
-    "Residence_Addresses_ApartmentType", 
-    "EthnicGroups_EthnicGroup1Desc", 
-    "Languages_Description", 
-    "Residence_Addresses_Latitude", 
+    columns += `, "Residence_Addresses_Latitude", 
     "Residence_Addresses_Longitude", 
-    "Residence_HHParties_Description", 
-    "Mailing_Families_HHCount", 
-    "Voters_SequenceOddEven",
     "Residence_Addresses_AddressLine", 
     "Residence_Addresses_ExtraAddressLine", 
     "Residence_Addresses_HouseNumber",
     "Residence_Addresses_City", 
     "Residence_Addresses_State", 
-    "Residence_Addresses_Zip", 
-    "Residence_Addresses_ZipPlus4"`;
+    "Residence_Addresses_Zip"`;
   }
 
   if (type === 'sms') {
-    columns += `, "VoterTelephones_CellPhoneFormatted", 
-    "VoterTelephones_CellConfidenceCode", 
-    "Voters_VotingPerformanceEvenYearGeneral",
-    "Voters_VotingPerformanceEvenYearPrimary",
-    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
-    "VoterParties_Change_Changed_Party",
-    "Residence_Addresses_AddressLine", 
-    "Residence_Addresses_ExtraAddressLine", 
-    "Residence_Addresses_HouseNumber",
-    "Residence_Addresses_City", 
-    "Residence_Addresses_State", 
-    "Residence_Addresses_Zip", 
-    "Residence_Addresses_ZipPlus4"`;
+    columns += `, "VoterTelephones_CellPhoneFormatted"`;
 
     whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
   }
@@ -233,25 +209,7 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
     "Mailing_Addresses_State", 
     "Mailing_Addresses_Zip", 
     "Mailing_Addresses_ZipPlus4", 
-    "Mailing_Addresses_DPBC", 
-    "Mailing_Addresses_CheckDigit", 
-    "Mailing_Addresses_HouseNumber", 
-    "Mailing_Addresses_PrefixDirection", 
-    "Mailing_Addresses_StreetName", 
-    "Mailing_Addresses_Designator", 
-    "Mailing_Addresses_SuffixDirection", 
-    "Mailing_Addresses_ApartmentNum", 
-    "Mailing_Addresses_ApartmentType", 
-    "MaritalStatus_Description", 
-    "Mailing_Families_FamilyID",
-    "Mailing_Families_HHCount",
-    "Mailing_HHParties_Description",
-    "Voters_VotingPerformanceEvenYearGeneral", 
-    "Voters_VotingPerformanceEvenYearPrimary", 
-    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
-    "EthnicGroups_EthnicGroup1Desc",
-    "Languages_Description"
-    `;
+    "Mailing_Families_HHCount"`;
 
     // unique households
     // whereClause += ` AND "Mailing_Families_FamilyID" IN (
@@ -278,21 +236,8 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }
 
   if (type === 'telemarketing') {
-    columns += `, "VoterTelephones_CellPhoneFormatted", 
-    "VoterTelephones_CellConfidenceCode", 
-    "VoterTelephones_LandlineFormatted",
-    "VoterTelephones_LandlineConfidenceCode",
-    "Voters_VotingPerformanceEvenYearGeneral",
-    "Voters_VotingPerformanceEvenYearPrimary",
-    "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
-    "VoterParties_Change_Changed_Party",
-    "Residence_Addresses_AddressLine", 
-    "Residence_Addresses_ExtraAddressLine", 
-    "Residence_Addresses_HouseNumber",
-    "Residence_Addresses_City", 
-    "Residence_Addresses_State", 
-    "Residence_Addresses_Zip", 
-    "Residence_Addresses_ZipPlus4"`;
+    columns += `, "VoterTelephones_LandlineFormatted",
+    "Languages_Description"`;
 
     whereClause += ` AND "VoterTelephones_LandlineFormatted" IS NOT NULL`;
   }
