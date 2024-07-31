@@ -1,5 +1,5 @@
-const handlePathToVictory = require('../../utils/campaign/handle-path-to-victory');
-const getRaceDetails = require('../../utils/campaign/get-race-details');
+const handlePathToVictory = require('../../utils/campaign/handlePathToVictory');
+const getRaceDetails = require('../../utils/campaign/getRaceDetails');
 const moment = require('moment');
 
 module.exports = {

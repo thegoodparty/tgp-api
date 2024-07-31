@@ -1,4 +1,4 @@
-const getRaceDetails = require('../../utils/campaign/get-race-details');
+const getRaceDetails = require('../../utils/campaign/getRaceDetails');
 
 // Enqueue a message to the queue to process the path to victory for a campaign.
 module.exports = {
@@ -89,6 +89,24 @@ module.exports = {
           }
         }
         return exits.success({ message: 'ok' });
+      }
+
+      if (campaign.pathToVictory) {
+        const p2vObject = await PathToVictory.findOne({
+          id: campaign.pathToVictory,
+        });
+        if (p2vObject && p2vObject?.data) {
+          // if electionType and electionLocation are already specified
+          // we can skip those steps and just do the counts.
+          if (
+            p2vObject.data?.electionType !== undefined &&
+            p2vObject.data?.electionLocation !== undefined
+          ) {
+            queueMessage.data.electionType = p2vObject.data.electionType;
+            queueMessage.data.electionLocation =
+              p2vObject.data.electionLocation;
+          }
+        }
       }
 
       console.log('queueMessage', queueMessage);
