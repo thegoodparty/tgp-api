@@ -64,6 +64,19 @@ module.exports = {
         error.response.data.error.message
       ) {
         console.log('error message', error.response.data.error.message);
+        let errorString = '';
+        try {
+          errorString = JSON.stringify(error.response);
+        } catch (e) {
+          console.log('error getting json of error response', e);
+        }
+        await sails.helpers.slack.slackHelper(
+          {
+            title: 'Error in AI',
+            message: `Error in AI completion. Error: ${errorString}`,
+          },
+          'dev',
+        );
         return exits.success({ content: '', tokens: 0 });
       }
     }
@@ -87,6 +100,13 @@ module.exports = {
       });
     } else {
       console.log('completion failure');
+      await sails.helpers.slack.slackHelper(
+        {
+          title: 'Error in AI',
+          message: 'Error in AI completion. No message content.',
+        },
+        'dev',
+      );
       return exits.success({ content: '', tokens: 0 });
     }
   },
