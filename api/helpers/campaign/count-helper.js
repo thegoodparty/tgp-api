@@ -26,9 +26,6 @@ module.exports = {
     electionLocation: {
       type: 'string',
     },
-    electionDistrict: {
-      type: 'string',
-    },
     partisanType: {
       type: 'string',
     },
@@ -54,7 +51,6 @@ module.exports = {
         electionState,
         electionType,
         electionLocation,
-        electionDistrict,
         partisanType,
         priorElectionDates,
       } = inputs;
@@ -67,9 +63,6 @@ module.exports = {
 
       if (electionType && electionType !== '') {
         searchJson.filters[electionType] = electionLocation;
-      }
-      if (electionDistrict && electionDistrict !== '') {
-        searchJson.filters[electionType] = electionDistrict;
       }
 
       let counts = await getPartisanCounts(electionState, searchJson);
@@ -234,9 +227,9 @@ function getProjectedTurnout(counts, turnoutCounts) {
   counts.projectedTurnoutPercent =
     (projectedTurnoutPercent * 100).toFixed(2).toString() + '%';
 
-  // Currently win number is projected turnout x .5001 and voter contact is win number x 5
+  // Currently win number is projected turnout x .51 and voter contact is win number x 5
   if (projectedTurnout && projectedTurnout > 0) {
-    const winNumber = Math.ceil(projectedTurnout * 0.5001).toFixed(2);
+    const winNumber = Math.ceil(projectedTurnout * 0.51).toFixed(2);
     const voterContactGoal = Math.ceil(winNumber * 5).toFixed(2);
     counts.winNumber = winNumber;
     counts.voterContactGoal = voterContactGoal;

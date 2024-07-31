@@ -1,4 +1,4 @@
-const getChatCompletion = require('../../utils/ai/get-chat-completion');
+const getChatCompletion = require('../../utils/ai/getChatCompletion');
 
 module.exports = {
   friendlyName: 'Test ai',
