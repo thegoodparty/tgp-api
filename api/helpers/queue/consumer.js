@@ -159,7 +159,6 @@ async function analyzePathToVictoryResponse(p2vResponse) {
   const {
     campaign,
     pathToVictoryResponse,
-    officeResponse,
     officeName,
     electionDate,
     electionTerm,
@@ -262,10 +261,6 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     }
   } else {
     let debugMessage = 'No Path To Victory Found.\n';
-    if (officeResponse) {
-      debugMessage += 'Developer/Debug Data:\n';
-      debugMessage += 'officeResponse: ' + JSON.stringify(officeResponse);
-    }
     if (pathToVictoryResponse) {
       debugMessage +=
         'pathToVictoryResponse: ' + JSON.stringify(pathToVictoryResponse);

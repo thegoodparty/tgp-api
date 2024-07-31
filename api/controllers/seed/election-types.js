@@ -186,24 +186,6 @@ module.exports = {
   },
 };
 
-// This was deprecated because it returns too many columns with blank results.
-async function getSearchColumns(electionState) {
-  let searchColumns = [];
-  try {
-    let searchUrl = `https://api.l2datamapping.com/api/v2/customer/application/columns/1OSR/VM_${electionState}/?id=1OSR&apikey=${l2ApiKey}`;
-    const response = await axios.get(searchUrl);
-    if (response?.data?.columns && response.data.columns.length > 0) {
-      const columnData = response.data.columns;
-      for (const columnObj of columnData) {
-        searchColumns.push(columnObj.name);
-      }
-    }
-  } catch (e) {
-    console.log('error at getSearchColumns', e);
-  }
-  return searchColumns;
-}
-
 async function querySearchColumn(searchColumn, electionState) {
   let searchValues = [];
   try {

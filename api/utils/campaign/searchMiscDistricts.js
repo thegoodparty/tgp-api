@@ -1,4 +1,4 @@
-const getChatCompletion = require('./ai/get-chat-completion');
+const getChatCompletion = require('../ai/getChatCompletion');
 
 async function searchMiscDistricts(
   slug,
@@ -8,21 +8,8 @@ async function searchMiscDistricts(
 ) {
   let searchColumns = [];
   try {
-    if (electionLevel === 'federal') {
-      if (
-        officeName.includes('President of the United States') ||
-        officeName.includes('Senate') ||
-        officeName.includes('Governor')
-      ) {
-        return exits.success({
-          // Handle special case where we want the entire state or country.
-          electionTypes: [{ column: '', value: '' }],
-          electionDistricts: {},
-        });
-      }
-    }
     sails.helpers.log(slug, `Searching misc districts for ${officeName}`);
-    searchColumns = await searchMiscDistricts(slug, officeName, electionState);
+    searchColumns = await findMiscDistricts(slug, officeName, electionState);
 
     sails.helpers.log(slug, 'miscDistricts', searchColumns);
     return searchColumns;
@@ -126,3 +113,5 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
 
   return completion;
 }
+
+module.exports = searchMiscDistricts;

@@ -1,3 +1,7 @@
+const searchMiscDistricts = require('./searchMiscDistricts');
+const searchLocationDistricts = require('./searchLocationDistricts');
+const getSearchColumn = require('./getSearchColumn');
+
 const handlePathToVictory = async ({
   slug,
   officeName,
@@ -11,6 +15,8 @@ const handlePathToVictory = async ({
   subAreaValue,
   partisanType,
   priorElectionDates,
+  electionType,
+  electionLocation,
 }) => {
   let pathToVictoryResponse = {
     electionType: '',
@@ -27,125 +33,126 @@ const handlePathToVictory = async ({
   sails.helpers.log(slug, 'starting p2v');
 
   try {
-    let searchColumns = await sails.helpers.campaign.searchMiscDistricts(
-      slug,
-      officeName,
-      electionLevel,
-      electionState,
-    );
+    let searchColumns = [];
+    let searchString = '';
 
-    // STEP 1: determine if there is a subAreaName / District
-    let districtValue = getDistrictValue(
-      slug,
-      officeName,
-      subAreaName,
-      subAreaValue,
-    );
+    if (!electionType || !electionLocation) {
+      if (
+        !officeName.includes('At Large') &&
+        !officeName.includes('President of the United States') &&
+        !officeName.includes('Senate') &&
+        !officeName.includes('Governor')
+      ) {
+        searchColumns = await searchMiscDistricts(
+          slug,
+          officeName,
+          electionLevel,
+          electionState,
+        );
+      }
 
-    // STEP 2: Figure out the main search column (City, County, etc.) and value
-    // This also applies to the miscellaneous districts.
-    let electionTypes = [];
-
-    let searchString = getSearchString(
-      slug,
-      officeName,
-      subAreaName,
-      subAreaValue,
-      electionCounty,
-      electionMunicipality,
-      electionState,
-    );
-    if (searchColumns.length > 0) {
-      // electionSearch = formattedDistrictValue;
-      electionTypes = await getSearchColumn(
+      let locationColumns = await searchLocationDistricts(
         slug,
-        searchColumns,
-        electionState,
-        searchString,
+        electionLevel,
+        officeName,
+        subAreaName,
+        subAreaValue,
       );
-    }
 
-    const officeResponse = await sails.helpers.campaign.officeHelper(
-      slug,
-      officeName,
-      electionLevel,
-      electionState,
-      electionCounty,
-      electionMunicipality,
-      subAreaName,
-      subAreaValue,
-    );
-    sails.helpers.log(slug, 'officeResponse', officeResponse);
+      if (locationColumns.length > 0) {
+        sails.helpers.log(slug, 'locationColumns', locationColumns);
+        // prioritize misc districts over location districts.
+        searchColumns = searchColumns.concat(locationColumns);
+      }
 
-    let electionDistricts;
-    if (officeResponse && officeResponse?.electionTypes) {
-      electionTypes = officeResponse.electionTypes;
-    }
-    if (officeResponse && officeResponse?.electionDistricts) {
-      electionDistricts = officeResponse.electionDistricts;
-    }
+      sails.helpers.log(slug, 'searchColumns', searchColumns);
 
-    sails.helpers.log(slug, 'electionTypes', electionTypes);
-    sails.helpers.log(slug, 'electionDistricts', electionDistricts);
+      if (searchColumns.length > 0) {
+        searchString = getSearchString(
+          slug,
+          officeName,
+          subAreaName,
+          subAreaValue,
+          electionCounty,
+          electionMunicipality,
+          electionState,
+        );
+      }
+    } else {
+      // if electionType and electionLocation are already specified
+      searchColumns = [''];
+    }
 
     let attempts = 0;
-    if (electionTypes && electionTypes.length > 0) {
-      for (let electionType of electionTypes) {
-        // for now we only try the top district in the list.
-        let district;
-        sails.helpers.log(
+    for (const searchColumn of searchColumns) {
+      let columnResponse;
+
+      if (
+        electionLevel === 'federal' &&
+        (officeName.includes('President of the United States') ||
+          officeName.includes('Senate') ||
+          officeName.includes('Governor'))
+      ) {
+        electionType = '';
+        electionLocation = '';
+      } else if (electionType && electionLocation) {
+        // if already specified, skip the search.
+      } else {
+        columnResponse = await getSearchColumn(
           slug,
-          `checking if electionDistricts has ${electionType}`,
-        );
-        let electionTypeName = electionType.column;
-        if (
-          electionDistricts &&
-          electionDistricts.hasOwnProperty(electionTypeName) &&
-          electionDistricts[electionTypeName].length > 0
-        ) {
-          district = electionDistricts[electionTypeName][0].value;
-          electionType = electionDistricts[electionTypeName][0];
-        }
-        sails.helpers.log(slug, 'district', district);
-        sails.helpers.log(slug, 'electionType', electionType);
-
-        if (officeName === 'President of the United States') {
-          // special case for President.
-          electionState = 'US';
-        }
-
-        const counts = await sails.helpers.campaign.countHelper(
-          electionTerm,
-          electionDate ? electionDate : new Date().toISOString().slice(0, 10),
+          searchColumn,
           electionState,
-          electionType.column,
-          electionType.value,
-          district,
-          partisanType,
-          priorElectionDates,
+          searchString,
         );
-        // sails.helpers.log(slug, 'counts', counts);
+        if (!columnResponse) {
+          continue;
+        }
+        electionType = columnResponse.column;
+        electionLocation = columnResponse.value;
+      }
 
-        if (counts && counts?.total && counts.total > 0) {
-          pathToVictoryResponse.electionType = electionType.column;
-          pathToVictoryResponse.electionLocation = electionType.value;
-          pathToVictoryResponse.electionDistrict = district;
-          pathToVictoryResponse.counts = counts;
-          await saveL2Counts(counts, electionType, district);
-          break;
-        }
-        attempts++;
-        if (attempts > 10) {
-          // we now limit electionTypes to 10.
-          break;
-        }
+      if (electionType === undefined || electionLocation === undefined) {
+        continue;
+      }
+
+      sails.helpers.log(
+        slug,
+        `Found Column! Election Type: ${electionType}. Location: ${electionLocation}  Attempting to get counts ...`,
+      );
+
+      if (officeName === 'President of the United States') {
+        // special case for President.
+        electionState = 'US';
+      }
+
+      const counts = await sails.helpers.campaign.countHelper(
+        electionTerm,
+        electionDate ? electionDate : new Date().toISOString().slice(0, 10),
+        electionState,
+        electionType,
+        electionLocation,
+        partisanType,
+        priorElectionDates,
+      );
+      // sails.helpers.log(slug, 'counts', counts);
+
+      if (counts && counts?.total && counts.total > 0) {
+        pathToVictoryResponse.electionType = electionType;
+        pathToVictoryResponse.electionLocation = electionLocation;
+        pathToVictoryResponse.counts = counts;
+        await saveL2Counts(counts, electionType, electionLocation);
+        break;
+      }
+      attempts++;
+      if (attempts > 10) {
+        // we now limit searchColumn attempts to 10.
+        break;
       }
     }
 
     return {
       slug,
       pathToVictoryResponse,
-      officeResponse,
       officeName,
       electionDate,
       electionTerm,
@@ -164,29 +171,28 @@ const handlePathToVictory = async ({
   }
 };
 
-async function saveL2Counts(counts, electionType, district) {
-  if (electionType && electionType?.column && electionType.column !== '') {
+async function saveL2Counts(counts, electionType, electionLocation) {
+  if (electionType && electionLocation && electionType !== '') {
     try {
       const existingObj = await l2Count.findOne({
-        electionType: electionType.column,
-        electionLocation: electionType.value,
-        electionDistrict: district,
+        electionType: electionType,
+        electionLocation: electionLocation,
       });
       if (existingObj) {
         await l2Count
           .updateOne({
-            electionType: electionType.column,
-            electionLocation: electionType.value,
-            electionDistrict: district,
+            electionType: electionType,
+            electionLocation: electionLocation,
+            electionDistrict: '',
           })
           .set({
             counts: counts,
           });
       } else {
         await l2Count.create({
-          electionType: electionType.column,
-          electionLocation: electionType.value,
-          electionDistrict: district,
+          electionType: electionType,
+          electionLocation: electionLocation,
+          electionDistrict: '',
           counts: counts,
         });
       }
@@ -194,6 +200,35 @@ async function saveL2Counts(counts, electionType, district) {
       console.log('error saving l2Count', e);
     }
   }
+}
+
+function getSearchString(
+  slug,
+  officeName,
+  subAreaName,
+  subAreaValue,
+  electionCounty,
+  electionMunicipality,
+  electionState,
+) {
+  let searchString = officeName;
+  if (subAreaName) {
+    searchString += `- ${subAreaName}`;
+  }
+  if (subAreaValue) {
+    searchString += `- ${subAreaValue}`;
+  }
+  if (electionCounty) {
+    searchString += `- ${electionCounty}`;
+  }
+  if (electionMunicipality) {
+    searchString += `- ${electionMunicipality}`;
+  }
+  if (electionState) {
+    searchString += `- ${electionState}`;
+  }
+  sails.helpers.log(slug, `searchString: ${searchString}`);
+  return searchString;
 }
 
 module.exports = handlePathToVictory;
