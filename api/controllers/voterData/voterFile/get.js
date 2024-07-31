@@ -131,11 +131,11 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   "Voters_LastName", 
   "Parties_Description",
   "Voters_Gender",
-  "Voters_Age",
-  "Voters_VotingPerformanceEvenYearGeneral"`;
+  "Voters_Age"`;
 
   if (type === 'full') {
-    columns += `, "Voters_VotingPerformanceEvenYearPrimary", 
+    columns += `, "Voters_VotingPerformanceEvenYearGeneral",
+    "Voters_VotingPerformanceEvenYearPrimary", 
     "Voters_VotingPerformanceEvenYearGeneralAndPrimary",
     "Residence_Addresses_ApartmentType", 
     "EthnicGroups_EthnicGroup1Desc", 
