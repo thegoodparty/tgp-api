@@ -27,51 +27,32 @@ module.exports = {
     try {
       const { slug, positionId } = inputs;
 
+      let position;
+      try {
+        position = await BallotPosition.findOne({
+          ballotId: positionId.toString(),
+        });
+      } catch (e) {
+        console.log('error getting position', e);
+      }
+
       let electionDates = [];
-
-      // get todays date in format YYYY-MM-DD
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = (today.getMonth() + 1).toString().padStart(2, '0');
-      const day = today.getDate().toString().padStart(2, '0');
-      const dateToday = `${year}-${month}-${day}`;
-
-      const query = `
-      query Node {
-        node(id: "${positionId}") {
-            ... on Position {
-                races(filterBy: { electionDay: { lt: "${dateToday}" } }) {
-                    nodes {
-                        createdAt
-                        databaseId
-                        id
-                        isDisabled
-                        isPartisan
-                        isPrimary
-                        isRecall
-                        isRunoff
-                        isUnexpired
-                        seats
-                        updatedAt
-                        election {
-                            electionDay
-                        }
-                    }
-                }
-            }
-        }
-    }`;
-
-      const { node } = await sails.helpers.graphql.queryHelper(query);
-      // sails.helpers.log(slug, 'getElectionDates graphql result', JSON.stringify(node, null, 2));
-      const results = node.races?.nodes || [];
-      for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        const { election } = result;
-        if (!electionDates.includes(election.electionDay)) {
-          electionDates.push(election.electionDay);
+      if (
+        position &&
+        position?.electionDates &&
+        position.electionDates.length > 0
+      ) {
+        for (const electionDateObj of position.electionDates) {
+          if (
+            electionDateObj?.electionDay &&
+            electionDateObj?.isPrimary === false &&
+            electionDateObj?.isRunoff === false
+          ) {
+            electionDates.push(electionDateObj.electionDay);
+          }
         }
       }
+
       sails.helpers.log(slug, 'electionDates', electionDates);
 
       return exits.success(electionDates);

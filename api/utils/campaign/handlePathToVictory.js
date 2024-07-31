@@ -41,7 +41,8 @@ const handlePathToVictory = async ({
         !officeName.includes('At Large') &&
         !officeName.includes('President of the United States') &&
         !officeName.includes('Senate') &&
-        !officeName.includes('Governor')
+        !officeName.includes('Governor') &&
+        !officeName.includes('Mayor')
       ) {
         searchColumns = await searchMiscDistricts(
           slug,
