@@ -30,7 +30,7 @@ async function searchLocationDistricts(
     searchColumns.length > 0 &&
     districtValue
   ) {
-    subColumns = determineElectionDistricts(slug, searchColumns);
+    subColumns = determineElectionDistricts(slug, searchColumns, officeName);
   }
 
   if (subColumns.length > 0) {
@@ -43,7 +43,7 @@ async function searchLocationDistricts(
   return searchColumns;
 }
 
-function determineElectionDistricts(slug, searchColumns) {
+function determineElectionDistricts(slug, searchColumns, officeName) {
   let subColumns = [];
 
   // This district map is used to determine which sub columns to search for.
