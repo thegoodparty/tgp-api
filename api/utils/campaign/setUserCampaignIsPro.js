@@ -8,6 +8,7 @@ const setUserCampaignIsPro = async (campaign, isPro = true) => {
       Date.now(),
     ),
   ]);
+  await sails.helpers.crm.updateCampaign(campaign);
 };
 
 module.exports = {
