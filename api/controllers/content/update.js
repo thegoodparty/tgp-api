@@ -57,10 +57,8 @@ module.exports = {
     try {
       // fetch content from the api
       const content = await sails.helpers.contentful();
-
-      // console.log(Object.keys(content));
-
       const keys = Object.keys(content);
+
       for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
         const value = content[key];
@@ -68,8 +66,10 @@ module.exports = {
         if (schemaConfig[key]) {
           const { subKey } = schemaConfig[key];
           for (let j = 0; j < value.length; j++) {
-            // console.log('key, subKey, value', key, subKey, value[j]);
-            await updateOrCreate(key, subKey, value[j]);
+            await updateOrCreate(key, subKey, {
+              ...value[j],
+              order: j,
+            });
           }
         } else {
           //just save it
