@@ -11,49 +11,26 @@ module.exports = {
   description: 'register a user with email and name',
 
   inputs: {
+    firstName: {
+      type: 'string',
+      required: true,
+    },
+    lastName: {
+      type: 'string',
+      required: true,
+    },
     email: {
       type: 'string',
       isEmail: true,
+      required: true,
     },
     phone: {
-      type: 'string',
-    },
-
-    name: {
-      description: 'User Name',
       type: 'string',
       required: true,
     },
     zip: {
       type: 'string',
-    },
-    source: {
-      type: 'string',
-    },
-    uri: {
-      type: 'string',
-    },
-
-    socialId: {
-      type: 'string',
-      required: false,
-      description: 'Social Channel Id',
-    },
-
-    socialProvider: {
-      type: 'string',
-      required: false,
-      description: 'Social Channel',
-    },
-    socialPic: {
-      type: 'string',
-      required: false,
-      description: 'Social Channel profile image url',
-    },
-    socialToken: {
-      description: 'Social Token that needs to be verified',
-      type: 'string',
-      required: false,
+      required: true,
     },
 
     password: {
@@ -73,6 +50,11 @@ module.exports = {
       description: 'register Failed',
       responseType: 'badRequest',
     },
+    conflict: {
+      description: 'conflict',
+      responseType: 'conflict',
+      responseCode: 409,
+    },
   },
   fn: async function (inputs, exits) {
     // Look up the user whose ID was specified in the request.
@@ -80,129 +62,43 @@ module.exports = {
     // the machine runner does this for us and returns `badRequest`
     // if validation fails.
     try {
-      const {
+      let { firstName, lastName, email, phone, zip, password } = inputs;
+      email = email.toLowerCase().trim();
+      firstName = firstName.trim();
+      lastName = lastName.trim();
+      phone = phone.trim();
+      zip = zip.trim();
+      password = password.trim();
+
+      const exists = await User.findOne({
         email,
-        zip,
-        phone,
-        socialId,
-        socialProvider,
-        socialPic,
-        socialToken,
-        source,
-        uri,
-        password,
-      } = inputs;
-
-      if (!phone && !email) {
-        return exits.badRequest({
-          message: 'Phone or Email are required.',
+      });
+      if (exists) {
+        return exits.conflict({
+          message: `An account for ${email} already exists. Try logging instead.`,
+          exists: true,
         });
-      }
-      const lowerCaseEmail = email ? email.toLowerCase() : email;
-      const name = inputs.name.trim();
-
-      if (!socialPic && !socialProvider && !socialId && !zip) {
-        return exits.badRequest({
-          message: 'Zip code is required.',
-        });
-      }
-      if (!socialPic && !socialProvider && !socialId && !password) {
-        return exits.badRequest({
-          message: 'Password is required.',
-        });
-      }
-      if (email) {
-        const exists = await User.findOne({
-          email: lowerCaseEmail,
-        });
-        try {
-          await submitCrmForm(name, email, phone, source, uri);
-        } catch (e) {
-          //do nothing
-        }
-
-        if (exists) {
-          return exits.badRequest({
-            message: `An account for ${lowerCaseEmail} already exists. Try logging instead.`,
-            exists: true,
-          });
-        }
-      } else if (phone) {
-        const exists = await User.findOne({
-          phone,
-        });
-        if (exists) {
-          const formatPhone = await sails.helpers.formatPhone(phone);
-          return exits.badRequest({
-            message: `An account for ${formatPhone} already exists. Try logging instead.`,
-            exists: true,
-          });
-        }
-      }
-
-      // const phoneExists = await User.findOne({
-      //   phone,
-      // });
-      // if (phoneExists) {
-      //   return exits.badRequest({
-      //     message: `${phone} already exists in our system. Try login instead`,
-      //     exists: true,
-      //   });
-      // }
-
-      const userAttr = {
-        name,
-      };
-      if (zip) {
-        userAttr.zip = zip;
-      }
-      if (lowerCaseEmail) {
-        userAttr.email = lowerCaseEmail;
-      }
-      if (phone) {
-        userAttr.phone = phone;
-      }
-
-      if (socialId) {
-        userAttr.socialId = socialId;
-      }
-      if (socialProvider) {
-        userAttr.socialProvider = socialProvider;
-      }
-      if (socialPic) {
-        userAttr.avatar = socialPic;
-      }
-
-      if (password) {
-        userAttr.password = password;
-      }
-
-      if (socialPic || socialProvider || socialId) {
-        try {
-          await sails.helpers.verifySocialToken(
-            lowerCaseEmail,
-            socialToken,
-            socialProvider,
-          );
-          userAttr.isEmailVerified = true;
-        } catch (e) {
-          return exits.badRequest({
-            message: 'Invalid Token',
-          });
-        }
       }
 
       const user = await User.create({
-        ...userAttr,
+        name: `${firstName} ${lastName}`,
+        firstName,
+        lastName,
+        email,
+        zip,
+        phone,
+        password,
+        hasPassword: true,
       }).fetch();
 
       const token = await sails.helpers.jwtSign({
         id: user.id,
-        email: lowerCaseEmail,
+        email,
         phone,
       });
 
       //  add user to our CRM.
+      await submitCrmForm(firstName, lastName, email, phone);
       await sails.helpers.crm.updateUser(user);
 
       return exits.success({
@@ -226,25 +122,22 @@ module.exports = {
   },
 };
 
-async function submitCrmForm(name, email, phone, source, uri) {
-  if (!email) {
-    // candidate page doesn't require email
-    return;
-  }
-  const firstName = name.split(' ')[0];
-  const lastName = name.split(' ').length > 0 && name.split(' ')[1];
+async function submitCrmForm(
+  firstName,
+  lastName,
+  email,
+  phone,
+  uri = 'https://goodparty.org/sign-up',
+) {
   const crmFields = [
     { name: 'firstName', value: firstName, objectTypeId: '0-1' },
     { name: 'lastName', value: lastName, objectTypeId: '0-1' },
     { name: 'email', value: email, objectTypeId: '0-1' },
+    { name: 'phone', value: phone, objectTypeId: '0-1' },
   ];
-  if (phone) {
-    crmFields.push({ name: 'phone', value: phone, objectTypeId: '0-1' });
-  }
-
   const formId = '37d98f01-7062-405f-b0d1-c95179057db1';
 
-  let resolvedSource = source || 'registerPage';
+  let resolvedSource = 'registerPage';
 
   await sails.helpers.crm.submitForm(formId, crmFields, resolvedSource, uri);
 }
