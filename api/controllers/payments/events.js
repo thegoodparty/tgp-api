@@ -12,6 +12,9 @@ const {
 const {
   endCampaignProSubscription,
 } = require('../../utils/payments/webhookHandlers/endCampaignProSubscription');
+const {
+  campaignProSubscriptionUpdated,
+} = require('../../utils/campaign/campaignProSubscriptionUpdated');
 
 const endpointSecret =
   sails.config.custom.stripeWebSocketSecret ||
@@ -60,6 +63,9 @@ module.exports = {
           break;
         case 'customer.subscription.resumed':
           await resumeCampaignProSubscription(event);
+          break;
+        case 'customer.subscription.updated':
+          await campaignProSubscriptionUpdated(event);
           break;
         default:
           console.log(`Unhandled event type: ${event.type}`);

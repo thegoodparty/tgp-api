@@ -79,13 +79,17 @@ module.exports = {
       } else {
         const query = `
         SELECT
-          campaign.*,
-          "user"."firstName" as "firstName", "user"."lastName" as "lastName", "user".phone as phone, "user".email as email,
-          pathToVictory.data as "pathToVictory"
-        FROM public.campaign
-        JOIN public."user" ON "user".id = campaign.user
-        LEFT JOIN public."pathtovictory" ON "pathtovictory".id = campaign."pathToVictory"
-        WHERE campaign.user IS NOT NULL
+          c.*,
+          u."firstName" as "firstName",
+          u."lastName" as "lastName",
+          u.phone as "phone",
+          u.email as "email",
+          u."metaData",
+          p.data as "pathToVictory"
+        FROM public.campaign AS c
+        JOIN public."user" AS u ON u.id = c.user
+        LEFT JOIN public."pathtovictory" as p ON p.id = c."pathToVictory"
+        WHERE c.user IS NOT NULL
         ${buildQueryWhereClause({
           state,
           slug,
@@ -97,8 +101,7 @@ module.exports = {
           generalElectionDateStart,
           generalElectionDateEnd,
         })}
-        ORDER BY campaign.id DESC;`;
-
+        ORDER BY c.id DESC;`;
         const campaigns = await sails.sendNativeQuery(query);
         // we need to match the format of the response from the ORM
         let cleanCampaigns = [];
@@ -107,13 +110,21 @@ module.exports = {
             if (campaign.pathToVictory) {
               campaign.pathToVictory = { data: campaign.pathToVictory };
             }
+            const userMeta = JSON.parse(campaign.metaData || '{}');
             campaign.user = {
               firstName: campaign.firstName,
               lastName: campaign.lastName,
               phone: campaign.phone,
               email: campaign.email,
+              // We need to parseInt because for some God awful reason the ORM returns it as a string
+              lastVisited: parseInt(userMeta.lastVisited),
             };
-            return campaign;
+            return {
+              ...campaign,
+              // We need to parseInt because for some God awful reason the ORM returns it as a string
+              createdAt: parseInt(campaign.createdAt),
+              updatedAt: parseInt(campaign.updatedAt),
+            };
           });
         }
 
@@ -140,39 +151,33 @@ function buildQueryWhereClause({
   generalElectionDateEnd,
 }) {
   return `
-  ${slug ? ` AND campaign.slug = '${slug}'` : ''}
-  ${email ? ` AND "user".email ILIKE '%${email}%'` : ''}
-  ${state ? ` AND campaign.details->>'state' = '${state}'` : ''}
-  ${
-    level
-      ? ` AND campaign.details->>'ballotLevel' = '${level.toUpperCase()}'`
-      : ''
-  }
+  ${slug ? ` AND c.slug = '${slug}'` : ''}
+  ${email ? ` AND u.email ILIKE '%${email}%'` : ''}
+  ${state ? ` AND c.details->>'state' = '${state}'` : ''}
+  ${level ? ` AND c.details->>'ballotLevel' = '${level.toUpperCase()}'` : ''}
   ${
     campaignStatus
-      ? ` AND campaign."isActive" = ${
-          campaignStatus === 'active' ? 'true' : 'false'
-        }`
+      ? ` AND c."isActive" = ${campaignStatus === 'active' ? 'true' : 'false'}`
       : ''
   }
   ${
     primaryElectionDateStart
-      ? ` AND campaign.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'`
+      ? ` AND c.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'`
       : ''
   }
   ${
     primaryElectionDateEnd
-      ? ` AND campaign.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'`
+      ? ` AND c.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'`
       : ''
   }
   ${
     generalElectionDateStart
-      ? ` AND campaign.details->>'electionDate' >= '${generalElectionDateStart}'`
+      ? ` AND c.details->>'electionDate' >= '${generalElectionDateStart}'`
       : ''
   }
   ${
     generalElectionDateEnd
-      ? ` AND campaign.details->>'electionDate' <= '${generalElectionDateEnd}'`
+      ? ` AND c.details->>'electionDate' <= '${generalElectionDateEnd}'`
       : ''
   }
 `;

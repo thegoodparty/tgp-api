@@ -44,6 +44,13 @@ async function getChatCompletion(
     };
   } catch (error) {
     console.log('error', error);
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Error in AI',
+        message: `Error in getChatCompletion. Error: ${error}`,
+      },
+      'dev',
+    );
   }
   return {
     content: '',

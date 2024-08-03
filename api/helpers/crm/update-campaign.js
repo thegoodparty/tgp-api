@@ -35,7 +35,8 @@ module.exports = {
       }
 
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-      const { campaign } = inputs;
+      let { campaign } = inputs;
+      campaign = await Campaign.findOne({ id: campaign.id });
       const { data } = campaign || {};
       const companyObj = await sails.helpers.crm.getCrmCompanyObject(campaign);
       const name = companyObj.properties.name;

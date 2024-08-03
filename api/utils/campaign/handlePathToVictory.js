@@ -41,7 +41,8 @@ const handlePathToVictory = async ({
         !officeName.includes('At Large') &&
         !officeName.includes('President of the United States') &&
         !officeName.includes('Senate') &&
-        !officeName.includes('Governor')
+        !officeName.includes('Governor') &&
+        !officeName.includes('Mayor')
       ) {
         searchColumns = await searchMiscDistricts(
           slug,
@@ -90,9 +91,11 @@ const handlePathToVictory = async ({
       if (
         electionLevel === 'federal' &&
         (officeName.includes('President of the United States') ||
-          officeName.includes('Senate') ||
-          officeName.includes('Governor'))
+          officeName.includes('Senate'))
       ) {
+        electionType = '';
+        electionLocation = '';
+      } else if (officeName.includes('Governor')) {
         electionType = '';
         electionLocation = '';
       } else if (electionType && electionLocation) {
