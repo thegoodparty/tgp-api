@@ -35,7 +35,8 @@ module.exports = {
       }
       const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
-      const { user, loginEvent, updateEvent } = inputs;
+      let { user, loginEvent, updateEvent } = inputs;
+      user = await User.findOne({ id: user.id });
       const { id, firstName, lastName, email, phone, uuid, zip } = user;
 
       const campaigns = await Campaign.find({
