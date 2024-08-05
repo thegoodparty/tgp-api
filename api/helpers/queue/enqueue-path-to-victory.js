@@ -67,6 +67,7 @@ module.exports = {
               partisanType: data?.partisanType ?? details.details.partisanType,
               priorElectionDates:
                 data?.priorElectionDates ?? details.details.priorElectionDates,
+              tier: data?.tier ?? details.details.tier,
             },
           });
         }
