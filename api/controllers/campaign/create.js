@@ -40,6 +40,9 @@ module.exports = {
         data,
         isActive: false,
         user: user.id,
+        details: {
+          zip: user.zip,
+        },
       });
       await submitCrmForm(user.firstName, user.lastName, user.email);
 
