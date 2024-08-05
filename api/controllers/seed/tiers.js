@@ -1,7 +1,8 @@
 module.exports = {
-  friendlyName: 'Get pro voter counts',
+  friendlyName: 'Seed position tier data',
 
-  description: 'Get pro voter count and type by hubspot ids.',
+  description:
+    'Seed position tier data for any campaign that has a raceId but no tier',
 
   inputs: {},
 
