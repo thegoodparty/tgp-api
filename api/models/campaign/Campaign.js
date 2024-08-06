@@ -46,6 +46,12 @@ module.exports = {
       defaultsTo: false,
       allowNull: true,
     },
+
+    isDemo: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
+
     didWin: {
       type: 'boolean',
       allowNull: true,
