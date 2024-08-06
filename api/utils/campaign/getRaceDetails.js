@@ -18,6 +18,7 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   let positionId;
   let mtfcc;
   let geoId;
+  let tier;
 
   try {
     electionDate = race?.election?.electionDay;
@@ -26,6 +27,7 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
     positionId = race?.position.id;
     mtfcc = race?.position.mtfcc;
     geoId = race?.position.geoId;
+    tier = race?.position.tier;
   } catch (e) {
     sails.helpers.log(slug, 'error getting election date', e);
   }
@@ -222,6 +224,7 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   data.partisanType = partisanType;
   data.priorElectionDates = priorElectionDates;
   data.positionId = positionId;
+  data.tier = tier;
   return data;
 }
 
