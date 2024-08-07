@@ -210,7 +210,7 @@ function mapResponse(items) {
       } else if (
         [
           'privacyPage',
-          'termsAndConditions',
+          'termsOfService',
           'pledge',
           'onboardingPrompts',
         ].includes(itemId)
