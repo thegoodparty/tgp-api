@@ -1,5 +1,5 @@
 const contentful = require('contentful');
-const { isInteger, camelCase } = require('lodash');
+const { camelCase } = require('lodash');
 const documentToPlainTextString =
   require('@contentful/rich-text-plain-text-renderer').documentToPlainTextString;
 
@@ -184,8 +184,6 @@ function mapResponse(items) {
         faqOrder.forEach((article) => {
           faqsOrder.push(article.sys.id);
         });
-      } else if (itemId === 'pledge') {
-        mappedResponse.pledge = item.fields;
       } else if (itemId === 'articleCategory') {
         if (!mappedResponse.articleCategories) {
           mappedResponse.articleCategories = [];
@@ -209,8 +207,15 @@ function mapResponse(items) {
           id: elementId,
           slug: item.fields.slug,
         });
-      } else if (itemId === 'privacyPage') {
-        mappedResponse.privacyPage = item.fields;
+      } else if (
+        [
+          'privacyPage',
+          'termsOfService',
+          'pledge',
+          'onboardingPrompts',
+        ].includes(itemId)
+      ) {
+        mappedResponse[itemId] = item.fields;
       } else if (itemId === 'promptInputFields') {
         if (!mappedResponse.promptInputFields) {
           mappedResponse.promptInputFields = {};
@@ -241,8 +246,6 @@ function mapResponse(items) {
         mappedResponse.promptInputFields[key] = entry;
 
         // mappedResponse.privacyPage = item.fields;
-      } else if (itemId === 'onboardingPrompts') {
-        mappedResponse.onboardingPrompts = item.fields;
       } else if (itemId === 'aiContentTemplate') {
         if (!mappedResponse.candidateContentPrompts) {
           // legacy name. Keeping it to limit blast radius

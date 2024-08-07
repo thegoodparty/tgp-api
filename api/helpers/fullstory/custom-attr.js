@@ -53,7 +53,7 @@ module.exports = {
 
       const { data, details, isVerified, isPro, aiContent } = campaign || {};
 
-      const { currentStep } = data || {};
+      const { currentStep, reportedVoterGoals } = data || {};
       const {
         electionDate,
         primaryElectionDate,
@@ -64,6 +64,8 @@ module.exports = {
         filingPeriodsStart,
         filingPeriodsEnd,
       } = details || {};
+
+      const { doorKnocking, calls, digital } = reportedVoterGoals || {};
 
       const electionDateMonth = electionDate
         ? moment(electionDate).format('MMMYY')
@@ -141,6 +143,9 @@ module.exports = {
               primaryElectionDateStr: primaryElectionDateMonth,
               filingPeriodsStartMonth,
               filingPeriodsEndMonth,
+              doorKnocked: doorKnocking || 0,
+              callsMade: calls || 0,
+              onlineImpressions: digital || 0,
             },
           },
           {

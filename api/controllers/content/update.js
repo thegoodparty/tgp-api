@@ -5,6 +5,9 @@
  * @help        :: See https://sailsjs.com/documentation/concepts/actions-and-controllers
  */
 
+// TODO: abstract this out so it can also be used in `helpers/contentful.js`, extracting each
+//  conditional content type processor into a function property on the schemaConfig object for that
+//  given type.
 const schemaConfig = {
   faqArticles: {
     subKey: 'id',
@@ -57,6 +60,7 @@ module.exports = {
     try {
       // fetch content from the api
       const content = await sails.helpers.contentful();
+      console.log(Object.keys(content));
       const keys = Object.keys(content);
 
       for (let i = 0; i < keys.length; i++) {
