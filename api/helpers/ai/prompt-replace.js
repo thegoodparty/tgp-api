@@ -266,12 +266,12 @@ module.exports = {
       }
 
       replaceArr.forEach((item) => {
-        let replaceItem = '';
-        if (item?.replace) {
-          replaceItem = item.replace.toString().trim();
-        }
         try {
-          newPrompt = replaceAll(newPrompt, item.find, replaceItem);
+          newPrompt = replaceAll(
+            newPrompt,
+            item.find,
+            item.replace ? item.replace.toString().trim() : '',
+          );
         } catch (e) {
           console.log('error at prompt replace', e);
         }
