@@ -268,7 +268,6 @@ module.exports = {
       replaceArr.forEach((item) => {
         let replaceItem = '';
         if (item?.replace) {
-          console.log('item replace', item.replace);
           replaceItem = item.replace.toString().trim();
         }
         try {
