@@ -1,8 +1,4 @@
 module.exports = {
-  friendlyName: 'Update User',
-
-  description: 'update name and email for a logged in user.',
-
   inputs: {
     meta: {
       type: 'json',
