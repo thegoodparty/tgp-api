@@ -2,23 +2,23 @@ module.exports = {
   inputs: {
     appId: {
       type: 'string',
-      required: true,
+      // required: true,
     },
     objectId: {
       type: 'string',
-      required: true,
+      // required: true,
     },
     subscriptionType: {
       type: 'string',
-      required: true,
+      // required: true,
     },
     propertyName: {
       type: 'string',
-      required: true,
+      // required: true,
     },
     propertyValue: {
       type: 'string',
-      required: true,
+      // required: true,
     },
   },
 
