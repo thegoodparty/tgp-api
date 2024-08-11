@@ -184,6 +184,9 @@ module.exports.routes = {
   // messaging webhook
   'POST   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
 
+  // crm webhook
+  'POST   /api/v1/hubspot-webhook': 'crm/hubspot-webhook',
+
   // ballotData
   'GET   /api/v1/ballot-data/races': 'campaign/ballotData/races',
 
