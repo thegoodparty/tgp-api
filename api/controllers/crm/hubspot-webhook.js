@@ -43,7 +43,7 @@ module.exports = {
       const { objectId, appId, subscriptionType, propertyName, propertyValue } =
         inputs;
 
-      const payload = req.body;
+      const payload = this.req.body || {};
 
       await sails.helpers.slack.errorLoggerHelper('CRM hubspot webhook', {
         objectId,
@@ -60,7 +60,7 @@ module.exports = {
       });
     } catch (e) {
       console.log('error at jobs/get', e);
-      return exits.notFound();
+      return exits.badRequest();
     }
   },
 };
