@@ -40,20 +40,26 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { objectId, appId, subscriptionType, propertyName, propertyValue } =
-        inputs;
+      const payload = this.req.body;
+      if (payload && payload.length > 0) {
+        for (let i = 0; i < payload.length; i++) {
+          const {
+            objectId,
+            appId,
+            subscriptionType,
+            propertyName,
+            propertyValue,
+          } = payload[i];
 
-      const payload = this.req.body || {};
-
-      await sails.helpers.slack.errorLoggerHelper('CRM hubspot webhook', {
-        objectId,
-        appId,
-        subscriptionType,
-        propertyName,
-        propertyValue,
-        allParams: this.req.allParams(),
-        payload,
-      });
+          await sails.helpers.slack.errorLoggerHelper('CRM hubspot webhook', {
+            objectId,
+            appId,
+            subscriptionType,
+            propertyName,
+            propertyValue,
+          });
+        }
+      }
 
       return exits.success({
         message: 'ok',
