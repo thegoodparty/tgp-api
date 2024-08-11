@@ -41,17 +41,12 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const payload = this.req.body;
+
       if (payload && payload.length > 0) {
         for (let i = 0; i < payload.length; i++) {
-          const {
-            objectId,
-            appId,
-            subscriptionType,
-            propertyName,
-            propertyValue,
-          } = payload[i];
+          const { objectId, propertyName, propertyValue } = payload[i];
 
-          await sails.helpers.slack.errorLoggerHelper('CRM hubspot webhook', {
+          await handleUpdateCampaign({
             objectId,
             appId,
             subscriptionType,
@@ -65,8 +60,41 @@ module.exports = {
         message: 'ok',
       });
     } catch (e) {
-      console.log('error at jobs/get', e);
+      console.log('error at crm/hubspot-webhook', e);
       return exits.badRequest();
     }
   },
 };
+
+async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
+  const campaign = await getCampaign(objectId);
+  if (!campaign) {
+    return;
+  }
+  if (!campaign.data.hubSpotUpdates) {
+    campaign.data.hubSpotUpdates = {};
+  }
+  campaign.data.hubSpotUpdates[propertyName] = propertyValue;
+  await Campaign.updateOne({ id: campaign.id }).set({
+    data: campaign.data,
+  });
+  await sails.helpers.slack.errorLoggerHelper(
+    'hubspot webhook - updated campaign',
+    { slug: campaign.slug },
+  );
+}
+
+async function getCampaign(objectId) {
+  try {
+    let query = `SELECT *
+      FROM public.campaign
+      WHERE data->>'hubspotId' = '${objectId}';
+  `;
+    const sqlResponse = await sails.sendNativeQuery(query);
+    results = sqlResponse?.rows[0];
+    return results;
+  } catch (e) {
+    await sails.helpers.slack.errorLoggerHelper('error at get campaign', { e });
+    return false;
+  }
+}
