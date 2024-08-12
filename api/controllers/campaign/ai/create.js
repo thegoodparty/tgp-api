@@ -120,6 +120,7 @@ module.exports = {
         data: {
           slug,
           key,
+          regenerate,
         },
       };
 
