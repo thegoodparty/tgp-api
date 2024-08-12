@@ -23,6 +23,9 @@ module.exports = {
     customFilters: {
       type: 'string',
     },
+    countOnly: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -39,7 +42,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      let { type } = inputs;
+      let { type, countOnly } = inputs;
       if (type === 'doorknocking') {
         type = 'doorKnocking';
       }
@@ -93,9 +96,25 @@ module.exports = {
       );
       let withFixColumns = false;
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
-      if (parseInt(sqlResponse.rows[0].count) === 0) {
-        // is it a string?
+      let count = parseInt(sqlResponse.rows[0].count);
+      if (count === 0) {
+        // is it a string?.
         withFixColumns = true;
+      }
+      if (countOnly && count !== 0) {
+        return exits.success({ count });
+      }
+      if (countOnly && count === 0) {
+        const countQuery = typeToQuery(
+          resolvedType,
+          campaign,
+          customFilters,
+          true,
+          true,
+        );
+        let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
+        let count = parseInt(sqlResponse.rows[0].count);
+        return exits.success({ count });
       }
 
       console.log('count', sqlResponse.rows[0].count);

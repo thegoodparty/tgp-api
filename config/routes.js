@@ -187,6 +187,9 @@ module.exports.routes = {
   // messaging webhook
   'POST   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
 
+  // crm webhook
+  'POST   /api/v1/hubspot-webhook': 'crm/hubspot-webhook',
+
   // ballotData
   'GET   /api/v1/ballot-data/races': 'campaign/ballotData/races',
 
@@ -200,7 +203,6 @@ module.exports.routes = {
     'voterData/voterFile/schedule',
   'POST  /api/v1/voter-data/voter-file/help-message':
     'voterData/voterFile/help-message',
-  'PUT  /api/v1/voter-data/voter-file/count': 'voterData/voterFile/count',
   'GET  /api/v1/voter-data/voter-file/can-download':
     'voterData/voterFile/can-download',
   'GET  /api/v1/voter-data/voter-file/geo-location-cron':

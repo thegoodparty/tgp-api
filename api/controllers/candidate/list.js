@@ -33,6 +33,7 @@ module.exports = {
             { state: state.toUpperCase() },
             { party: { '!=': 'Republican' } },
             { party: { '!=': 'Democratic' } },
+            { party: { '!=': 'Democratic-Farmer-Labor' } },
             { positionId: { '!=': '' } },
             { positionId: { '!=': null } },
             { raceId: { '!=': '' } },
