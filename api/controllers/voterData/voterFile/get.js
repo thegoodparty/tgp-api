@@ -98,7 +98,7 @@ module.exports = {
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
       let count = parseInt(sqlResponse.rows[0].count);
       if (count === 0) {
-        // is it a string?
+        // is it a string?.
         withFixColumns = true;
       }
       if (countOnly && count !== 0) {
