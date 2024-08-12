@@ -1,89 +1,80 @@
 const { findSlug } = require('../../utils/campaign/findSlug');
 const { createCrmUser } = require('../../utils/campaign/createCrmUser');
+const { dateToISO8601DateString } = require('../../utils/dates');
+const {
+  sendCampaignLaunchEmail,
+} = require('../../utils/campaign/event-handlers/sendCampaignLaunchEmail');
 
-// const attr = [
-//   { key: 'details.positionId', value: position?.id },
-//   { key: 'details.electionId', value: election?.id },
-//   { key: 'details.raceId', value: id },
-//   { key: 'details.state', value: election?.state },
-//   { key: 'details.office', value: 'Other' },
-//   { key: 'details.otherOffice', value: position?.name },
-//   {
-//     key: 'details.officeTermLength',
-//     value: calcTerm(position),
-//   },
-//   { key: 'details.ballotLevel', value: position?.level },
-//   {
-//     key: 'details.primaryElectionDate',
-//     value: election?.primaryElectionDate,
-//   },
-//   {
-//     key: 'details.electionDate',
-//     value: election?.electionDay,
-//   },
-//   {
-//     key: 'details.partisanType',
-//     value: position?.partisanType,
-//   },
-//   {
-//     key: 'details.primaryElectionId',
-//     value: election?.primaryElectionId,
-//   },
-//   {
-//     key: 'details.hasPrimary',
-//     value: position?.hasPrimary,
-//   },
-//   {
-//     key: 'details.filingPeriodsStart',
-//     value:
-//       filingPeriods && filingPeriods.length > 0
-//         ? filingPeriods[0].startOn
-//         : undefined,
-//   },
-//   {
-//     key: 'details.filingPeriodsEnd',
-//     value:
-//       filingPeriods && filingPeriods.length > 0
-//         ? filingPeriods[0].endOn
-//         : undefined,
-//   },
-//   // reset the electionType and electionLocation
-//   // so it can run a full p2v.
-//   {
-//     key: 'pathToVictory.electionType',
-//     value: undefined,
-//   },
-//   {
-//     key: 'pathToVictory.electionLocation',
-//     value: undefined,
-//   },
-// ];
+const get8WeeksFutureDate = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 7 * 8);
+  return date;
+};
 
 const DEMO_PERSONAS_DATA = {
   matthew: {
     name: 'Matthew McConaughey',
-    zip: 49301,
-    details: {
-      // positionId:,
-      // electionId:,
-      // raceId:,
-      // state:,
-      // office:,
-      // otherOffice: ,
-      // officeTermLength:,
-      // ballotLevel:,
-      // primaryElectionDate:,
-      // electionDate:,
-      // partisanType:,
-      // primaryElectionId:,
-      // hasPrimary:,
-      // filingPeriodsStart:,
-      // filingPeriodsEnd:,
+    campaignDetails: {
+      zip: 49301,
+      positionId: 'Z2lkOi8vYmFsbG90LWZhY3RvcnkvUG9zaXRpb24vMTMyODM3',
+      electionId: 'Z2lkOi8vYmFsbG90LWZhY3RvcnkvRWxlY3Rpb24vNjAxMA==',
+      raceId: 'Z2lkOi8vYmFsbG90LWZhY3RvcnkvUG9zaXRpb25FbGVjdGlvbi8yMDk5MDgy',
+      state: 'TX',
+      office: 'Other',
+      otherOffice: 'Austin City Mayor',
+      officeTermLength: '4 years',
+      ballotLevel: 'CITY',
+      partisanType: 'nonpartisan',
+      hasPrimary: false,
+      filingPeriodsStart: '2026-07-18',
+      filingPeriodsEnd: '2026-08-17',
+    },
+    pathToVictoryData: {
+      p2vStatus: 'Complete',
+      electionLocation: 'TX##AUSTIN CITY (EST.)',
+      electionType: 'City',
+      totalRegisteredVoters: 563805,
+      republicans: 91800,
+      democrats: 363628,
+      indies: 108377,
+      averageTurnout: 299645,
+      projectedTurnout: 298817,
+      winNumber: 152397.0,
+      voterContactGoal: 761985.0,
+      p2vCompleteDate: '2024-08-01',
     },
   },
   taylor: {
     name: 'Taylor Swift',
-    zip: 37122,
+    campaignDetails: {
+      zip: 37122,
+      positionId: 'Z2lkOi8vYmFsbG90LWZhY3RvcnkvUG9zaXRpb24vNDYyMjk=',
+      electionId: 'Z2lkOi8vYmFsbG90LWZhY3RvcnkvRWxlY3Rpb24vNDcyMw==',
+      raceId: 'Z2lkOi8vYmFsbG90LWZhY3RvcnkvUG9zaXRpb25FbGVjdGlvbi8xNTIwNTY4',
+      state: 'TN',
+      office: 'Other',
+      otherOffice: 'U.S. Senate - Tennessee',
+      officeTermLength: '6 years',
+      ballotLevel: 'FEDERAL',
+      partisanType: 'partisan',
+      hasPrimary: true,
+      filingPeriodsStart: '2024-06-17',
+      filingPeriodsEnd: '2024-08-15',
+    },
+    pathToVictoryData: {
+      p2vStatus: 'Complete',
+      totalRegisteredVoters: 4249323,
+      republicans: 1492766,
+      democrats: 803080,
+      indies: 1953477,
+      averageTurnout: 1618418,
+      projectedTurnout: 1652219,
+      winNumber: '826275.00',
+      voterContactGoal: '4131375.00',
+      electionType: '',
+      electionLocation: '',
+      p2vCompleteDate: '2024-07-19',
+    },
   },
 };
 
@@ -111,35 +102,42 @@ module.exports = {
       }
 
       const slug = await findSlug(demoPersonaData.name);
-      const data = {
-        slug,
-        currentStep: 'onboarding-complete',
-        launchStatus: 'launched',
-        name: demoPersonaData.name,
-      };
 
       const campaign = await Campaign.create({
         slug,
-        data,
+        data: {
+          slug,
+          currentStep: 'onboarding-complete',
+          launchStatus: 'launched',
+          name: demoPersonaData.name,
+        },
         isActive: true,
         isDemo: true,
         user: user.id,
         details: {
-          zip: demoPersonaData.zip,
+          pledged: true,
+          party: 'Independent',
+          electionDate: dateToISO8601DateString(get8WeeksFutureDate()),
+          ...demoPersonaData.campaignDetails,
         },
       }).fetch();
       await createCrmUser(user.firstName, user.lastName, user.email);
 
       const p2v = await PathToVictory.create({
         campaign: campaign.id,
-        data: { p2vStatus: 'Waiting' },
+        data: demoPersonaData.pathToVictoryData,
       }).fetch();
 
       await Campaign.updateOne({ id: campaign.id }).set({
         pathToVictory: p2v.id,
       });
 
-      await sails.helpers.queue.enqueuePathToVictory(campaign.id);
+      await sails.helpers.campaign.linkCandidateCampaign(campaign.id);
+
+      await sails.helpers.crm.updateCampaign(campaign);
+      await sails.helpers.fullstory.customAttr(campaign.id);
+
+      await sendCampaignLaunchEmail(slug);
 
       return exits.success({
         slug,

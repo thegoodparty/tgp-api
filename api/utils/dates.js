@@ -17,6 +17,12 @@ const convertISO8601DateStringToUSDateString = (dateString) => {
   return `${month}/${day}/${year}`;
 };
 
+const dateToISO8601DateString = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    '0',
+  )}-${String(date.getDate()).padStart(2, '0')}`;
+
 const US_DATE_REGEX = /^\d{2}\/\d{2}\/\d{4}$/;
 const formatUSDateString = (dateString) => {
   if (!US_DATE_REGEX.test(dateString)) {
@@ -31,5 +37,6 @@ const formatUSDateString = (dateString) => {
 module.exports = {
   getFormattedDateString,
   convertISO8601DateStringToUSDateString,
+  dateToISO8601DateString,
   formatUSDateString,
 };
