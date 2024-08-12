@@ -85,9 +85,13 @@ module.exports = {
       // we should update the existing version.
 
       let updateExistingVersion = false;
-      if (regenerate === false) {
+      if (
+        regenerate === false &&
+        foundKey === true &&
+        versions[key].length > 0
+      ) {
         const lastVersion = versions[key][0];
-        const lastVersionDate = new Date(lastVersion.date);
+        const lastVersionDate = new Date(lastVersion?.date || 0);
         const now = new Date();
         const diff = now - lastVersionDate;
         if (diff < 300000) {
