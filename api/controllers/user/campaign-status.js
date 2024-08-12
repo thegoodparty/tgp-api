@@ -17,18 +17,18 @@ module.exports = {
       const { metaData } = user;
       const now = new Date();
       const timestamp = now.getTime();
-      let updated = metaData ? JSON.parse(metaData) : {};
-      updated = {
-        ...updated,
+      let updatedMeta = metaData ? JSON.parse(metaData) : {};
+      updatedMeta = {
+        ...updatedMeta,
         lastVisited: timestamp,
       };
 
       await User.updateOne({ id: user.id }).set({
-        metaData: JSON.stringify(updated),
+        metaData: JSON.stringify(updatedMeta),
       });
 
-      const campaignRecord = await sails.helpers.campaign.byUser(user);
-      if (!campaignRecord) {
+      const campaign = await sails.helpers.campaign.byUser(user);
+      if (!campaign) {
         // check if the user is a volunteer
         const volunteer = await CampaignVolunteer.findOne({ user: user.id });
         if (volunteer) {
@@ -37,17 +37,22 @@ module.exports = {
             // profile: volunteer.campaign,
           });
         }
+        let step = 'account-type';
+        if (updatedMeta.accountType === 'browsing') {
+          step = 'browsing';
+        }
         return exits.success({
           status: false,
+          step,
         });
       }
 
-      const campaign = campaignRecord.data;
+      const { data, details } = campaign;
 
-      await Campaign.updateOne({ slug: campaignRecord.slug }).set({
-        data: { ...campaign, lastVisited: timestamp },
+      await Campaign.updateOne({ slug: campaign.slug }).set({
+        data: { ...data, lastVisited: timestamp },
       });
-      if (campaignRecord.isActive) {
+      if (campaign.isActive) {
         return exits.success({
           status: 'candidate',
           profile: campaign.slug,
@@ -55,28 +60,19 @@ module.exports = {
         });
       }
       let step = 1;
-      if (campaign?.details?.phone) {
+      if (details?.office) {
         step = 2;
       }
-      if (
-        campaign?.details?.runForOffice ||
-        campaign?.details?.campaignCommittee
-      ) {
+      if (details?.party || details?.otherParty) {
         step = 3;
       }
-      if (campaign?.details?.party || campaign?.details?.otherParty) {
+      if (details?.pledged) {
         step = 4;
-      }
-      if (campaign?.details?.zip) {
-        step = 5;
-      }
-      if (campaign?.details?.office) {
-        step = 6;
       }
 
       return exits.success({
         status: 'onboarding',
-        slug: campaign.slug,
+        slug: data.slug,
         step,
       });
     } catch (e) {
