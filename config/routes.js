@@ -200,7 +200,6 @@ module.exports.routes = {
     'voterData/voterFile/schedule',
   'POST  /api/v1/voter-data/voter-file/help-message':
     'voterData/voterFile/help-message',
-  'PUT  /api/v1/voter-data/voter-file/count': 'voterData/voterFile/count',
   'GET  /api/v1/voter-data/voter-file/can-download':
     'voterData/voterFile/can-download',
   'GET  /api/v1/voter-data/voter-file/geo-location-cron':
