@@ -52,6 +52,10 @@ module.exports = {
       let fsUserId;
 
       const { data, details, isVerified, isPro, aiContent } = campaign || {};
+      let aiContentKeys = [];
+      if (aiContent) {
+        aiContentKeys = Object.keys(aiContent);
+      }
 
       const { currentStep, reportedVoterGoals, hubSpotUpdates } = data || {};
       const {
@@ -124,30 +128,34 @@ module.exports = {
       console.log('fsUserId', fsUserId);
       if (fsUserId) {
         // Update the user with custom properties
+        const properties = {
+          electionDate, // Date as a string
+          primaryElectionDate,
+          level: ballotLevel ? ballotLevel.toLowerCase() : undefined,
+          state,
+          pledged,
+          party,
+          currentStep,
+          isVerified,
+          isPro,
+          aiContentCount: aiContent ? Object.keys(aiContent).length : 0,
+          p2vStatus,
+          electionDateStr: electionDateMonth,
+          primaryElectionDateStr: primaryElectionDateMonth,
+          filingPeriodsStartMonth,
+          filingPeriodsEndMonth,
+          doorKnocked: doorKnocking || 0,
+          callsMade: calls || 0,
+          onlineImpressions: digital || 0,
+          ...(hubSpotUpdates || {}),
+        };
+        for (let i = 0; i < aiContentKeys.length; i++) {
+          properties[`ai-content-${aiContentKeys[i]}`] = true;
+        }
         await axios.post(
           `https://api.fullstory.com/v2/users/${fsUserId}`,
           {
-            properties: {
-              electionDate, // Date as a string
-              primaryElectionDate,
-              level: ballotLevel ? ballotLevel.toLowerCase() : undefined,
-              state,
-              pledged,
-              party,
-              currentStep,
-              isVerified,
-              isPro,
-              aiContentCount: aiContent ? Object.keys(aiContent).length : 0,
-              p2vStatus,
-              electionDateStr: electionDateMonth,
-              primaryElectionDateStr: primaryElectionDateMonth,
-              filingPeriodsStartMonth,
-              filingPeriodsEndMonth,
-              doorKnocked: doorKnocking || 0,
-              callsMade: calls || 0,
-              onlineImpressions: digital || 0,
-              ...(hubSpotUpdates || {}),
-            },
+            properties,
           },
           {
             headers,
