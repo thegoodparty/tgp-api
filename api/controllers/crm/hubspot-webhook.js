@@ -1,26 +1,5 @@
 module.exports = {
-  inputs: {
-    appId: {
-      type: 'string',
-      // required: true,
-    },
-    objectId: {
-      type: 'string',
-      // required: true,
-    },
-    subscriptionType: {
-      type: 'string',
-      // required: true,
-    },
-    propertyName: {
-      type: 'string',
-      // required: true,
-    },
-    propertyValue: {
-      type: 'string',
-      // required: true,
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -48,7 +27,6 @@ module.exports = {
           try {
             await handleUpdateCampaign({
               objectId,
-              appId,
               subscriptionType,
               propertyName,
               propertyValue,
