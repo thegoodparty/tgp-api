@@ -14,11 +14,6 @@ module.exports = {
     success: {
       description: 'ok',
     },
-
-    badRequest: {
-      description: 'badRequest',
-      responseType: 'badRequest',
-    },
   },
 
   fn: async function (inputs, exits) {
@@ -148,7 +143,7 @@ module.exports = {
       }
     } catch (e) {
       console.log('error in add-race', e);
-      return exits.badRequest({
+      return exits.success({
         message: 'Error in addRace',
         error: JSON.stringify(e),
       });

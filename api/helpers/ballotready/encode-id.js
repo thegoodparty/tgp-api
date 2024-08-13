@@ -12,11 +12,6 @@ module.exports = {
   exits: {
     success: {
       description: 'ok',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'Bad Request',
-      responseType: 'badRequest',
     },
   },
 
@@ -38,7 +33,7 @@ module.exports = {
         const encoded = Buffer.from(str).toString('base64');
         return exits.success(encoded);
       } else {
-        return exits.badRequest('Invalid model');
+        return exits.success(false);
       }
     } catch (e) {
       console.log('error at encrypt-id', e);

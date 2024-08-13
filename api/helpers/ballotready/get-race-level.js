@@ -8,11 +8,6 @@ module.exports = {
   exits: {
     success: {
       description: 'ok',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'Bad Request',
-      responseType: 'badRequest',
     },
   },
 
