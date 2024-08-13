@@ -23,12 +23,16 @@ module.exports = {
       const campaigns = await Campaign.find();
       for (let i = 0; i < campaigns.length; i++) {
         try {
-          sleep(1000);
           const campaign = campaigns[i];
+          if (campaign.data?.hubSpotUpdates) {
+            continue;
+          }
           const company = await sails.helpers.crm.getCompany(campaign);
           if (!company) {
             continue;
           }
+          sleep(400);
+
           const { properties } = company;
           const {
             past_candidate,
