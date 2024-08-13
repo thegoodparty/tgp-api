@@ -45,14 +45,21 @@ module.exports = {
       if (payload && payload.length > 0) {
         for (let i = 0; i < payload.length; i++) {
           const { objectId, propertyName, propertyValue } = payload[i];
-
-          await handleUpdateCampaign({
-            objectId,
-            appId,
-            subscriptionType,
-            propertyName,
-            propertyValue,
-          });
+          try {
+            await handleUpdateCampaign({
+              objectId,
+              appId,
+              subscriptionType,
+              propertyName,
+              propertyValue,
+            });
+          } catch (error) {
+            console.log('error at crm/hubspot-webhook', error);
+            await sails.helpers.slack.errorLoggerHelper(
+              'error at crm/hubspot-webhook',
+              { error, payload: payload[i] },
+            );
+          }
         }
       }
 
