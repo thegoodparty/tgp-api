@@ -86,12 +86,13 @@ async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
     data: campaign.data,
   };
   if (propertyName === 'verified_candidates') {
-    if (propertyValue === 'Yes') {
-      updatedCampaign.isVerified = true;
-    } else {
-      updatedCampaign.isVerified = false;
-    }
+    updatedCampaign.isVerified = propertyValue === 'Yes';
   }
+
+  if (propertyName === 'pro_candidate') {
+    updatedCampaign.isPro = propertyValue === 'Yes';
+  }
+
   await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
   await sails.helpers.slack.errorLoggerHelper(
     'hubspot webhook - updated campaign',
