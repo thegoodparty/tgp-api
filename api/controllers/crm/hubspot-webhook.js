@@ -85,11 +85,11 @@ async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
   const updatedCampaign = {
     data: campaign.data,
   };
-  if (propertyName === 'verified_candidates') {
+  if (propertyName === 'verified_candidates' && !campaign.isVerified) {
     updatedCampaign.isVerified = propertyValue === 'Yes';
   }
 
-  if (propertyName === 'pro_candidate') {
+  if (propertyName === 'pro_candidate' && !campaign.isPro) {
     updatedCampaign.isPro = propertyValue === 'Yes';
   }
 

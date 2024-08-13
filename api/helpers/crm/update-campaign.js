@@ -16,10 +16,6 @@ module.exports = {
     success: {
       description: 'ok',
     },
-
-    badRequest: {
-      description: 'Error',
-    },
   },
   fn: async function (inputs, exits) {
     try {

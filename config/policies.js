@@ -65,4 +65,5 @@ module.exports.policies = {
   'voterData/voterFile/geo-location-cron': true,
   'payments/events': true,
   'crm/hubspot-webhook': true,
+  'crm/sync': true,
 };
