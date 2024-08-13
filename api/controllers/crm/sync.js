@@ -19,9 +19,11 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      let updated = 0;
       const campaigns = await Campaign.find();
       for (let i = 0; i < campaigns.length; i++) {
         try {
+          sleep(1000);
           const campaign = campaigns[i];
           const company = await sails.helpers.crm.getCompany(campaign);
           if (!company) {
@@ -74,6 +76,7 @@ module.exports = {
             updatedCampaign.isPro = true;
           }
           await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
+          updated++;
         } catch (e) {
           console.log('error at crm/sync', e);
           await sails.helpers.slack.errorLoggerHelper('error at crm/sync', {
@@ -82,9 +85,12 @@ module.exports = {
           });
         }
       }
-
+      await sails.helpers.slack.errorLoggerHelper('completed crm/sync', {
+        updated,
+      });
       return exits.success({
         message: 'ok',
+        updated,
       });
     } catch (e) {
       console.log('error at crm/sync', e);
@@ -92,3 +98,7 @@ module.exports = {
     }
   },
 };
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
