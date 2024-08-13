@@ -53,7 +53,7 @@ module.exports = {
 
       const { data, details, isVerified, isPro, aiContent } = campaign || {};
 
-      const { currentStep, reportedVoterGoals } = data || {};
+      const { currentStep, reportedVoterGoals, hubSpotUpdates } = data || {};
       const {
         electionDate,
         primaryElectionDate,
@@ -146,6 +146,7 @@ module.exports = {
               doorKnocked: doorKnocking || 0,
               callsMade: calls || 0,
               onlineImpressions: digital || 0,
+              ...(hubSpotUpdates || {}),
             },
           },
           {
