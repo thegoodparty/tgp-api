@@ -32,6 +32,12 @@ module.exports = {
       }
 
       const hubspotId = data.hubspotId;
+      await sails.helpers.slack.errorLoggerHelper(
+        ' crm/sync get company with',
+        {
+          hubspotId,
+        },
+      );
       const properties = [
         'past_candidate',
         'incumbent',
@@ -58,7 +64,7 @@ module.exports = {
     } catch (e) {
       console.log('hubspot error - update-campaign', e);
       await sails.helpers.slack.errorLoggerHelper(
-        'Uncaught error in update-campaign',
+        'hubspot error - update-campaign',
         e,
       );
       return exits.success(false);
