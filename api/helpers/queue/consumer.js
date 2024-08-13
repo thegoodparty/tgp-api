@@ -354,7 +354,7 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
 }
 
 async function handleGenerateAiContent(message) {
-  const { slug, key } = message;
+  const { slug, key, regenerate } = message;
 
   let campaign = await Campaign.findOne({ slug });
   let aiContent = campaign.aiContent;
@@ -423,12 +423,17 @@ async function handleGenerateAiContent(message) {
         content: chatResponse,
       };
 
+      console.log('saving campaign version', key);
+      console.log('inputValues', inputValues);
+      console.log('oldVersion', oldVersion);
+
       await sails.helpers.ai.saveCampaignVersion(
         aiContent,
         key,
         campaign.id,
         inputValues,
         oldVersion,
+        regenerate ? regenerate : false,
       );
 
       if (

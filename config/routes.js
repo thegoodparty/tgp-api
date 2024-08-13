@@ -107,8 +107,6 @@ module.exports.routes = {
     'campaign/volunteer/invitation/list-by-user',
   'DELETE   /api/v1/campaign/volunteer/invitation':
     'campaign/volunteer/invitation/delete',
-  'PUT   /api/v1/campaign/volunteer/invitation/accept':
-    'campaign/volunteer/invitation/accept',
 
   // campaignVolunteer
   'GET   /api/v1/campaign/volunteers': 'campaign/volunteer/list',
@@ -187,8 +185,9 @@ module.exports.routes = {
   // messaging webhook
   'POST   /api/v1/twilio-webhook': 'messaging/twilio-webhook',
 
-  // crm webhook
+  // crm
   'POST   /api/v1/hubspot-webhook': 'crm/hubspot-webhook',
+  'GET   /api/v1/crm/sync': 'crm/sync',
 
   // ballotData
   'GET   /api/v1/ballot-data/races': 'campaign/ballotData/races',

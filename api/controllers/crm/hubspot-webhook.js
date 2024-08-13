@@ -1,26 +1,5 @@
 module.exports = {
-  inputs: {
-    appId: {
-      type: 'string',
-      // required: true,
-    },
-    objectId: {
-      type: 'string',
-      // required: true,
-    },
-    subscriptionType: {
-      type: 'string',
-      // required: true,
-    },
-    propertyName: {
-      type: 'string',
-      // required: true,
-    },
-    propertyValue: {
-      type: 'string',
-      // required: true,
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -45,14 +24,19 @@ module.exports = {
       if (payload && payload.length > 0) {
         for (let i = 0; i < payload.length; i++) {
           const { objectId, propertyName, propertyValue } = payload[i];
-
-          await handleUpdateCampaign({
-            objectId,
-            appId,
-            subscriptionType,
-            propertyName,
-            propertyValue,
-          });
+          try {
+            await handleUpdateCampaign({
+              objectId,
+              propertyName,
+              propertyValue,
+            });
+          } catch (error) {
+            console.log('error at crm/hubspot-webhook', error);
+            await sails.helpers.slack.errorLoggerHelper(
+              'error at crm/hubspot-webhook',
+              { error, payload: payload[i] },
+            );
+          }
         }
       }
 
@@ -75,9 +59,18 @@ async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
     campaign.data.hubSpotUpdates = {};
   }
   campaign.data.hubSpotUpdates[propertyName] = propertyValue;
-  await Campaign.updateOne({ id: campaign.id }).set({
+  const updatedCampaign = {
     data: campaign.data,
-  });
+  };
+  if (propertyName === 'verified_candidates' && !campaign.isVerified) {
+    updatedCampaign.isVerified = propertyValue === 'Yes';
+  }
+
+  if (propertyName === 'pro_candidate' && !campaign.isPro) {
+    updatedCampaign.isPro = propertyValue === 'Yes';
+  }
+
+  await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
   await sails.helpers.slack.errorLoggerHelper(
     'hubspot webhook - updated campaign',
     { slug: campaign.slug },

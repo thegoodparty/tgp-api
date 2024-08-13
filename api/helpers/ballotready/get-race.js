@@ -8,10 +8,6 @@ module.exports = {
     success: {
       description: 'ok',
     },
-    badRequest: {
-      description: 'badRequest',
-      responseType: 'badRequest',
-    },
   },
 
   fn: async function (inputs, exits) {
@@ -22,7 +18,7 @@ module.exports = {
       race = await getRaceById(raceId);
     } catch (error) {
       console.log('Error in getRaceById', error);
-      return exits.badRequest({
+      throw new Error({
         message: 'Error in getRaceById',
         error: JSON.stringify(error),
       });

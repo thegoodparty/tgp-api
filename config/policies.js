@@ -24,7 +24,6 @@ module.exports.policies = {
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-delete': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-update': ['isAuthenticated', 'isAdmin'],
-  'campaign/onboarding/cancel-launch-request': ['isAuthenticated', 'isAdmin'],
   'campaign/list': ['isAuthenticated', 'isAdmin'],
   'campaign/find-by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
@@ -57,7 +56,7 @@ module.exports.policies = {
   // 'campaign/deadlines/refresh': true, // uncomment to run on local.
   'campaign/deadlines/list': true,
   'campaign/ballotData/races': true,
-  'campaign/l2Data/office': true, // for testing only.
+  // 'campaign/l2Data/office': true, // for testing only.
   'race/*': true,
   'data-processing/*': true,
   'job/*': true,
@@ -65,4 +64,5 @@ module.exports.policies = {
   'voterData/voterFile/geo-location-cron': true,
   'payments/events': true,
   'crm/hubspot-webhook': true,
+  'crm/sync': true,
 };

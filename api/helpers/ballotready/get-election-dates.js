@@ -25,11 +25,6 @@ module.exports = {
   exits: {
     success: {
       description: 'Campaign Found',
-      responseType: 'ok',
-    },
-    badRequest: {
-      description: 'Bad Request',
-      responseType: 'badRequest',
     },
   },
 

@@ -8,10 +8,6 @@ module.exports = {
     success: {
       description: 'ok',
     },
-    badRequest: {
-      description: 'badRequest',
-      responseType: 'badRequest',
-    },
   },
 
   fn: async function (inputs, exits) {
@@ -53,7 +49,7 @@ module.exports = {
       });
     } catch (error) {
       console.log('Error in addElection', error);
-      return exits.badRequest({
+      return exits.success({
         message: 'Error in addElection',
         error: JSON.stringify(error),
       });
