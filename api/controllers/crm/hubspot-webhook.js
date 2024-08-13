@@ -3,7 +3,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'found.',
+      description: 'found',
     },
 
     badRequest: {
