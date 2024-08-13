@@ -27,7 +27,6 @@ module.exports = {
           try {
             await handleUpdateCampaign({
               objectId,
-              subscriptionType,
               propertyName,
               propertyValue,
             });
