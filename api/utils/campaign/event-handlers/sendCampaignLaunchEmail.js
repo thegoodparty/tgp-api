@@ -1,3 +1,5 @@
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+
 async function sendCampaignLaunchEmail(slug) {
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
@@ -10,7 +12,7 @@ async function sendCampaignLaunchEmail(slug) {
     await sails.helpers.mailgun.mailgunTemplateSender(
       user.email,
       'Full Suite of AI Campaign Tools Now Available',
-      'campagin-launch',
+      'campaign-launch', // misspelled in Mailgun as well. Don't fix.
       variables,
     );
   } catch (e) {

@@ -17,7 +17,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
-      console.log('user', user);
       const userName = await sails.helpers.user.name(user);
       if (userName === '') {
         console.log('No user name');
@@ -25,7 +24,6 @@ module.exports = {
       }
 
       const slug = await findSlug(userName);
-      console.log('slug', slug);
       const data = {
         slug,
         currentStep: 'registration',

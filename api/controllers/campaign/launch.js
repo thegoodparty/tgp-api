@@ -3,7 +3,6 @@
 const {
   sendCampaignLaunchEmail,
 } = require('../../utils/campaign/event-handlers/sendCampaignLaunchEmail');
-const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   friendlyName: 'Admin launch Campaign',
