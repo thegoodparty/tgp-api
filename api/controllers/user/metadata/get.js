@@ -17,7 +17,6 @@ module.exports = {
       const user = this.req.user;
       const { metaData } = user;
       const data = metaData ? JSON.parse(metaData) : {};
-      console.log('data', data);
       return exits.success({
         metaData: data,
       });
