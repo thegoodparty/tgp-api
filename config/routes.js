@@ -125,6 +125,7 @@ module.exports.routes = {
   // campaign without onboarding
   'POST   /api/v1/campaign': 'campaign/create',
   'POST   /api/v1/campaign/demo': 'campaign/create-demo-campaign',
+  'DELETE   /api/v1/campaign/demo': 'campaign/delete-demo-campaign',
   'PUT   /api/v1/campaign': 'campaign/update',
   'GET   /api/v1/campaign': 'campaign/get',
   'POST   /api/v1/campaign/launch': 'campaign/launch',
