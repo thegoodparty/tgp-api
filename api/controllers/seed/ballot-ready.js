@@ -1,3 +1,4 @@
+const { truncateZip } = require('../../utils/truncateZip');
 module.exports = {
   inputs: {
     zip: {
@@ -16,13 +17,13 @@ module.exports = {
       query {
         positions(
           location: {
-            zip: "${zip}"
+            zip: "${truncateZip(zip)}"
           }
           filterBy: {
             electionDay: {
-              gt: "2023-10-29" 
-              lt: "2025-01-01" 
-            }            
+              gt: "2023-10-29"
+              lt: "2025-01-01"
+            }
             mtfcc: "G4110"
             level: CITY
           }
@@ -44,7 +45,7 @@ module.exports = {
               paperworkInstructions
               electionFrequencies {
                 frequency
-              }	
+              }
               races {
                 edges {
                   node {
@@ -55,15 +56,15 @@ module.exports = {
                   }
                 }
               }
-              
-              
-      
+
+
+
             }
           }
         }
       }
-      
-      
+
+
       `;
 
       const { positions } = await sails.helpers.graphql.queryHelper(query);
