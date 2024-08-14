@@ -31,7 +31,7 @@ async function findSearchColumn(
   searchString,
   searchString2,
 ) {
-  let foundColumns;
+  let foundColumn;
   //   sails.helpers.log(slug, 'searchColumns', searchColumns);
   //   sails.helpers.log(slug, 'searchString', searchString);
   //   sails.helpers.log(slug, 'searchString2', searchString2);
@@ -73,7 +73,7 @@ async function findSearchColumn(
     }
   }
 
-  sails.helpers.log(slug, 'getSearchColumn foundColumn', foundColumns);
+  sails.helpers.log(slug, 'getSearchColumn foundColumn', foundColumn);
 
   return foundColumn;
 }
