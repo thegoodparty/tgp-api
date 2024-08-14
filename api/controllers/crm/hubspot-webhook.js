@@ -71,10 +71,6 @@ async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
   }
 
   await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
-  await sails.helpers.slack.errorLoggerHelper(
-    'hubspot webhook - updated campaign',
-    { slug: campaign.slug },
-  );
 }
 
 async function getCampaign(objectId) {
