@@ -1,6 +1,7 @@
 // https://developers.civicengine.com/docs/api/graphql
 
 const moment = require('moment');
+const { truncateZip } = require('../../../utils/truncateZip');
 
 const isPOTUSorVPOTUSNode = ({ position }) =>
   position?.level === 'FEDERAL' &&
@@ -51,7 +52,7 @@ module.exports = {
       query {
         races(
           location: {
-            zip: "${zip}"
+            zip: "${truncateZip(zip)}"
           }
           filterBy: {
             electionDay: {
@@ -85,7 +86,7 @@ module.exports = {
                 state
                 timezone
               }
-              position { 
+              position {
                 id
                 appointed
                 hasPrimary

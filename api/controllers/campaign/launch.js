@@ -1,6 +1,8 @@
 // Admin endpoint
 
-const appBase = sails.config.custom.appBase || sails.config.appBase;
+const {
+  sendCampaignLaunchEmail,
+} = require('../../utils/campaign/event-handlers/sendCampaignLaunchEmail');
 
 module.exports = {
   friendlyName: 'Admin launch Campaign',
@@ -57,7 +59,7 @@ module.exports = {
       await sails.helpers.crm.updateCampaign(updated);
       await sails.helpers.fullstory.customAttr(updated.id);
 
-      await sendMail(campaignRecord.slug);
+      await sendCampaignLaunchEmail(campaignRecord.slug);
 
       return exits.success({
         message: 'created',
@@ -73,25 +75,3 @@ module.exports = {
     }
   },
 };
-
-//campagin-launch
-
-async function sendMail(slug) {
-  try {
-    const campaign = await Campaign.findOne({ slug }).populate('user');
-    const { user } = campaign;
-    const name = await sails.helpers.user.name(user);
-    const variables = JSON.stringify({
-      name,
-      link: `${appBase}/dashboard`,
-    });
-    await sails.helpers.mailgun.mailgunTemplateSender(
-      user.email,
-      'Full Suite of AI Campaign Tools Now Available',
-      'campagin-launch',
-      variables,
-    );
-  } catch (e) {
-    console.log(e);
-  }
-}

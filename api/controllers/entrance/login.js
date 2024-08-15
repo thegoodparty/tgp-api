@@ -34,6 +34,11 @@ module.exports = {
       description: 'Login Error',
       responseType: 'badRequest',
     },
+    conflict: {
+      description: 'conflict',
+      responseType: 'conflict',
+      responseCode: 409,
+    },
   },
 
   fn: async function (inputs, exits) {
@@ -44,22 +49,9 @@ module.exports = {
       const user = await User.findOne({ email: lowerCaseEmail });
 
       if (!user) {
-        // register
-        const user = await User.create({
-          email: lowerCaseEmail,
-          password,
-        }).fetch();
-
-        const token = await sails.helpers.jwtSign({
-          id: user.id,
-          email: lowerCaseEmail,
-        });
-        await sails.helpers.crm.updateUser(user);
-
-        return exits.success({
-          user,
-          token,
-          newUser: true,
+        return exits.badRequest({
+          message: `User doesn't exist, try registering first.`,
+          exists: false,
         });
       } else {
         try {
@@ -82,7 +74,7 @@ module.exports = {
             e,
           );
         }
-        return exits.success({ user, token, newUser: false });
+        return exits.success({ user, token });
       }
     } catch (err) {
       await sails.helpers.slack.errorLoggerHelper(

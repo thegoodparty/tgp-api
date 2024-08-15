@@ -30,6 +30,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/fix-campaigns-no-users': 'seed/fix-campaigns-no-users',
   'GET    /api/v1/seed/fix-turnout': 'seed/fix-turnout',
   'GET    /api/v1/seed/tiers': 'seed/tiers',
+  'GET    /api/v1/seed/sync-fullstory': 'seed/sync-fullstory',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'GET    /api/v1/content/blog-articles-titles': 'content/blog-articles-titles',
@@ -48,6 +49,8 @@ module.exports.routes = {
   'PUT   /api/v1/entrance/reset-password': 'entrance/reset-password',
 
   'PUT    /api/v1/user': 'user/update',
+  'PUT    /api/v1/user/meta': 'user/metadata/update',
+  'GET    /api/v1/user/meta': 'user/metadata/get',
   'PUT    /api/v1/user/refresh': 'user/refresh',
   'DELETE    /api/v1/user': 'user/delete',
   // 'POST    /api/v1/user/avatar': 'user/upload-avatar',
@@ -122,6 +125,8 @@ module.exports.routes = {
 
   // campaign without onboarding
   'POST   /api/v1/campaign': 'campaign/create',
+  'POST   /api/v1/campaign/demo': 'campaign/create-demo-campaign',
+  'DELETE   /api/v1/campaign/demo': 'campaign/delete-demo-campaign',
   'PUT   /api/v1/campaign': 'campaign/update',
   'GET   /api/v1/campaign': 'campaign/get',
   'POST   /api/v1/campaign/launch': 'campaign/launch',

@@ -1,3 +1,6 @@
+const {
+  createCandidatePosition,
+} = require('../../../utils/campaign/createCandidatePosition');
 module.exports = {
   inputs: {
     description: {
@@ -48,28 +51,13 @@ module.exports = {
         return exits.forbidden();
       }
 
-      // const existing = await CandidatePosition.findOne({
-      //   topIssue: topIssueId,
-      //   campaign: campaign.id,
-      // });
-      // if (existing) {
-      //   return exits.badRequest({
-      //     message: 'This top issue already exists for this campaign',
-      //   });
-      // }
-
-      const newPosition = await CandidatePosition.create({
+      const newPosition = createCandidatePosition({
+        campaign,
+        positionId,
+        topIssueId,
         description,
-        campaign: campaign.id,
-        position: positionId,
-        topIssue: topIssueId,
         order,
-      }).fetch();
-      // update the many to many relationships
-      await Campaign.addToCollection(campaign.id, 'positions', positionId);
-      await Campaign.addToCollection(campaign.id, 'topIssues', topIssueId);
-
-      await sails.helpers.crm.updateCampaign(campaign);
+      });
 
       return exits.success({
         newPosition,

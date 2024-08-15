@@ -1,4 +1,5 @@
-const slugify = require('slugify');
+const { findSlug } = require('../../utils/campaign/findSlug');
+const { createCrmUser } = require('../../utils/campaign/createCrmUser');
 
 module.exports = {
   inputs: {},
@@ -18,6 +19,7 @@ module.exports = {
       const { user } = this.req;
       const userName = await sails.helpers.user.name(user);
       if (userName === '') {
+        console.log('No user name');
         return exits.badRequest('No user name');
       }
 
@@ -40,8 +42,11 @@ module.exports = {
         data,
         isActive: false,
         user: user.id,
+        details: {
+          zip: user.zip,
+        },
       });
-      await submitCrmForm(user.firstName, user.lastName, user.email);
+      await createCrmUser(user.firstName, user.lastName, user.email);
 
       return exits.success({
         slug,
@@ -52,42 +57,3 @@ module.exports = {
     }
   },
 };
-
-async function findSlug(name) {
-  const slug = slugify(`${name}`, { lower: true });
-  const exists = await Campaign.findOne({ slug });
-  if (!exists) {
-    return slug;
-  }
-  for (let i = 1; i < 100; i++) {
-    let slug = slugify(`${name}${i}`, { lower: true });
-    let exists = await Campaign.findOne({ slug });
-    if (!exists) {
-      return slug;
-    }
-  }
-  return slug; // should not happen
-}
-
-async function submitCrmForm(firstName, lastName, email) {
-  if (!email || !firstName) {
-    // candidate page doesn't require email
-    return;
-  }
-
-  const crmFields = [
-    { name: 'firstName', value: firstName, objectTypeId: '0-1' },
-    { name: 'lastName', value: lastName, objectTypeId: '0-1' },
-    { name: 'email', value: email, objectTypeId: '0-1' },
-  ];
-  const formId = '37d98f01-7062-405f-b0d1-c95179057db1';
-
-  let resolvedSource = 'loginPage';
-
-  await sails.helpers.crm.submitForm(
-    formId,
-    crmFields,
-    resolvedSource,
-    'https://goodparty.org/login',
-  );
-}
