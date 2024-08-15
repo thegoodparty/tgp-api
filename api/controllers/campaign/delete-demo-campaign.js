@@ -20,6 +20,7 @@ module.exports = {
         return exits.badRequest('Not a demo campaign user');
       }
       await User.updateOne({ id: user.id }).set({
+        avatar: '',
         metaData: JSON.stringify({
           ...userMetadata,
           accountType: null,
@@ -40,7 +41,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({ message: 'Error creating campaign.' });
+      return exits.badRequest({ message: 'Error deleteing demo campaign.' });
     }
   },
 };
