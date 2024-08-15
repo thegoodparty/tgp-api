@@ -30,6 +30,7 @@ module.exports.routes = {
   'GET    /api/v1/seed/fix-campaigns-no-users': 'seed/fix-campaigns-no-users',
   'GET    /api/v1/seed/fix-turnout': 'seed/fix-turnout',
   'GET    /api/v1/seed/tiers': 'seed/tiers',
+  'GET    /api/v1/seed/sync-fullstory': 'seed/sync-fullstory',
   'GET    /api/v1/content/content-by-key': 'content/content-by-key',
   'GET    /api/v1/content/update': 'content/update',
   'GET    /api/v1/content/blog-articles-titles': 'content/blog-articles-titles',
