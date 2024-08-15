@@ -36,8 +36,7 @@ module.exports = {
       const slug = `${await findSlug(userName)}-demo`;
 
       const demoCampaign = await Campaign.findOne({
-        slug:
-          demoPersona === 'matthew' ? 'matthew-mcconaughey' : 'taylor-swift',
+        slug: demoPersona,
       })
         .populate('user')
         .populate('pathToVictory');
