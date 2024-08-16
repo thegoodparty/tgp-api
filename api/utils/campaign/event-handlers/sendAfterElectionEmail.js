@@ -7,7 +7,7 @@ const sendAfterElectionEmail = async (campaign) => {
   const { user } = campaign;
   const electionMoment = moment(campaign.details.electionDate);
   const cancellationMoment = electionMoment.clone().add(7, 'days');
-  await sendElectionEventEmail({
+  sendElectionEventEmail({
     campaign,
     subject: `Your Primary Results – What's Next for Your Campaign?`,
     templateName: 'after-election',

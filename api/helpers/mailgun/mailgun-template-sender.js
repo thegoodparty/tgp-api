@@ -51,7 +51,11 @@ module.exports = {
         data.cc = cc;
       }
       await sendEmailWithRetry(data);
-      return exits.success({ message: 'email sent successfully' });
+      const message = `email sent successfully => ${JSON.stringify(
+        data || '{}',
+      )}`;
+      console.log(message);
+      return exits.success({ message });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
         'error sending mail - template',
