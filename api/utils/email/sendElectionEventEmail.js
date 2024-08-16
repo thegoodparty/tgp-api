@@ -1,11 +1,11 @@
-const sendElectionEventEmail = async function ({
+const sendElectionEventEmail = function ({
   campaign,
   subject,
   templateName,
   emailVars,
 }) {
   const { user } = campaign;
-  await sails.helpers.mailgun.mailgunTemplateSender(
+  sails.helpers.mailgun.mailgunTemplateSender(
     user.email,
     subject,
     templateName,

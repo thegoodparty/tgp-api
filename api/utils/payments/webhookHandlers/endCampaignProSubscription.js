@@ -26,6 +26,11 @@ const endCampaignProSubscription = async (event) => {
   if (!user) {
     throw 'No user found with given campaign user id';
   }
+  const metaData = JSON.parse(user.metaData || '{}');
+  if (metaData.isDeleted) {
+    console.log('User is already deleted');
+    return;
+  }
   await cancelCampaignProSubscription(campaign, user);
 };
 

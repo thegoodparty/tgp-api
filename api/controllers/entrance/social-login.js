@@ -21,27 +21,14 @@ module.exports = {
     socialPic: {
       description: 'Avatar Image url',
       type: 'string',
-      required: false,
     },
     socialToken: {
       description: 'Social Token that needs to be verified',
       type: 'string',
-      required: false,
     },
     socialProvider: {
       description: 'Social provider (facebook, google)',
       type: 'string',
-      required: false,
-    },
-    socialId: {
-      type: 'string',
-      required: false,
-      description: 'Social Channel Id',
-    },
-    name: {
-      description: 'User Name',
-      type: 'string',
-      required: true,
     },
   },
 
@@ -58,8 +45,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { email, socialPic, socialToken, socialProvider, socialId, name } =
-        inputs;
+      const { email, socialPic, socialToken, socialProvider } = inputs;
       const lowerCaseEmail = email.toLowerCase();
 
       try {
@@ -77,29 +63,9 @@ module.exports = {
       let user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
         // register
-        user = await User.create({
-          email: lowerCaseEmail,
-          name,
-          socialProvider,
-          avatar: socialPic,
-          isEmailVerified: true,
-          socialId,
-        }).fetch();
-
-        const token = await sails.helpers.jwtSign({
-          id: user.id,
-          email: lowerCaseEmail,
-        });
-        try {
-          await sails.helpers.crm.updateUser(user);
-        } catch (e) {
-          console.log('Error at entrance/social-login', e);
-        }
-
-        return exits.success({
-          user,
-          token,
-          newUser: true,
+        return exits.badRequest({
+          message: `User doesn't exist, try registering first.`,
+          exists: false,
         });
       }
       // login flow

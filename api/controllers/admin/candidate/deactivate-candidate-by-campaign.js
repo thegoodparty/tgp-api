@@ -1,3 +1,7 @@
+const {
+  handleCancelCampaign,
+} = require('../../../utils/campaign/event-handlers/handleCancelCampaign');
+
 module.exports = {
   friendlyName: 'All Candidates',
 
@@ -24,12 +28,14 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { slug } = inputs;
-      const campaign = await Campaign.findOne({ slug });
+      const campaign = await Campaign.findOne({ slug }).populate('user');
       if (!campaign || !campaign.data?.candidateSlug) {
         return exits.badRequest({
           message: 'No campaign',
         });
       }
+
+      await handleCancelCampaign(campaign);
 
       const candidate = await Candidate.findOne({
         slug: campaign.data.candidateSlug,

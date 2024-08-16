@@ -4,7 +4,7 @@ const {
 
 const sendDayAfterPrimaryEmail = async (campaign) => {
   const { user } = campaign;
-  await sendElectionEventEmail({
+  sendElectionEventEmail({
     campaign,
     subject: `Your Primary Results – What's Next for Your Campaign?`,
     templateName: 'day-after-primary',
