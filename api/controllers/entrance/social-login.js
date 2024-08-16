@@ -48,8 +48,6 @@ module.exports = {
       const { email, socialPic, socialToken, socialProvider } = inputs;
       const lowerCaseEmail = email.toLowerCase();
 
-      console.log('here social login', inputs);
-
       try {
         await sails.helpers.verifySocialToken(
           lowerCaseEmail,
