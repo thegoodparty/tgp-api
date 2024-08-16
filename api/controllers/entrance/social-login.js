@@ -21,27 +21,14 @@ module.exports = {
     socialPic: {
       description: 'Avatar Image url',
       type: 'string',
-      required: false,
     },
     socialToken: {
       description: 'Social Token that needs to be verified',
       type: 'string',
-      required: false,
     },
     socialProvider: {
       description: 'Social provider (facebook, google)',
       type: 'string',
-      required: false,
-    },
-    socialId: {
-      type: 'string',
-      required: false,
-      description: 'Social Channel Id',
-    },
-    name: {
-      description: 'User Name',
-      type: 'string',
-      required: true,
     },
   },
 
@@ -58,9 +45,10 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { email, socialPic, socialToken, socialProvider, socialId, name } =
-        inputs;
+      const { email, socialPic, socialToken, socialProvider } = inputs;
       const lowerCaseEmail = email.toLowerCase();
+
+      console.log('here social login', inputs);
 
       try {
         await sails.helpers.verifySocialToken(
