@@ -6,7 +6,7 @@ const {
 const sendProSubscriptionEndingEmail = async function (campaign) {
   const { user } = campaign;
   const todayMoment = moment();
-  await sendElectionEventEmail({
+  sendElectionEventEmail({
     campaign,
     subject: `Your Pro Subscription is Ending Today`,
     templateName: 'end-of-pro-subscription',
