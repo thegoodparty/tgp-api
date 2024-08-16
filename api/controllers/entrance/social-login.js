@@ -77,29 +77,9 @@ module.exports = {
       let user = await User.findOne({ email: lowerCaseEmail });
       if (!user) {
         // register
-        user = await User.create({
-          email: lowerCaseEmail,
-          name,
-          socialProvider,
-          avatar: socialPic,
-          isEmailVerified: true,
-          socialId,
-        }).fetch();
-
-        const token = await sails.helpers.jwtSign({
-          id: user.id,
-          email: lowerCaseEmail,
-        });
-        try {
-          await sails.helpers.crm.updateUser(user);
-        } catch (e) {
-          console.log('Error at entrance/social-login', e);
-        }
-
-        return exits.success({
-          user,
-          token,
-          newUser: true,
+        return exits.badRequest({
+          message: `User doesn't exist, try registering first.`,
+          exists: false,
         });
       }
       // login flow
