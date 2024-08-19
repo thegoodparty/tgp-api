@@ -146,6 +146,10 @@ module.exports = {
         } = pathToVictory.data;
         replaceArr.push(
           {
+            find: 'pathToVictory',
+            replace: JSON.stringify(pathToVictory.data),
+          },
+          {
             find: 'projectedTurnout',
             replace: projectedTurnout,
           },
@@ -223,7 +227,7 @@ module.exports = {
           },
         );
       }
-      if (campaign.campaignPlan) {
+      if (campaign.aiContent) {
         const {
           aboutMe,
           communicationStrategy,
@@ -232,35 +236,35 @@ module.exports = {
           policyPlatform,
           slogan,
           why,
-        } = campaign.campaignPlan;
+        } = campaign.aiContent;
         replaceArr.push(
           {
             find: 'slogan',
-            replace: slogan,
+            replace: slogan?.content,
           },
           {
             find: 'why',
-            replace: why,
+            replace: why?.content,
           },
           {
             find: 'about',
-            replace: aboutMe,
+            replace: aboutMe?.content,
           },
           {
             find: 'myPolicies',
-            replace: policyPlatform,
+            replace: policyPlatform?.content,
           },
           {
             find: 'commStart',
-            replace: communicationStrategy,
+            replace: communicationStrategy?.content,
           },
           {
             find: 'mobilizing',
-            replace: mobilizing,
+            replace: mobilizing?.content,
           },
           {
             find: 'positioning',
-            replace: messageBox,
+            replace: messageBox?.content,
           },
         );
       }

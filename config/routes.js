@@ -138,6 +138,7 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign': 'campaign/admin-delete',
 
   // onboarding AI
+  'GET   /api/v1/campaign/ai/prompt': 'campaign/ai/prompt/get',
   'POST   /api/v1/campaign/ai': 'campaign/ai/create',
   'POST   /api/v1/campaign/ai/rename': 'campaign/ai/rename',
   'DELETE   /api/v1/campaign/ai': 'campaign/ai/delete',

@@ -28,8 +28,7 @@ module.exports.policies = {
   'campaign/find-by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   'topIssues/byLocation/find': ['isAuthenticated'],
-  'ai/test': ['isAuthenticated', 'isAdmin'],
-  'ai/load': ['isAuthenticated', 'isAdmin'],
+  'ai/*': ['isAuthenticated', 'isAdmin'],
   'campaign/election-events': ['isAuthorizedCron'],
   'voterData/locations': ['isAuthenticated'],
 
@@ -65,4 +64,5 @@ module.exports.policies = {
   'payments/events': true,
   'crm/hubspot-webhook': true,
   'crm/sync': true,
+  'campaign/ai/prompt/*': true,
 };
