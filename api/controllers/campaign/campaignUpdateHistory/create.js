@@ -2,7 +2,17 @@ module.exports = {
   inputs: {
     type: {
       type: 'string',
-      isIn: ['doorKnocking', 'calls', 'digital'],
+      isIn: [
+        'doorKnocking',
+        'calls',
+        'digital',
+        'directMail',
+        'digitalAds',
+        'text',
+        'events',
+        'yardSigns',
+      ],
+
       required: true,
     },
     quantity: {
