@@ -65,4 +65,5 @@ module.exports.policies = {
   'payments/events': true,
   'crm/hubspot-webhook': true,
   'crm/sync': true,
+  'campaign/ai/prompt/*': true,
 };
