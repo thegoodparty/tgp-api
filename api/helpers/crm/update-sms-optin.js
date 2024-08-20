@@ -1,11 +1,4 @@
-// https://developers.hubspot.com/docs/api/crm/contacts
-const hubspot = require('@hubspot/api-client');
-const slugify = require('slugify');
-const moment = require('moment');
-
-const hubSpotToken =
-  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
-const appBase = sails.config.custom.appBase || sails.config.appBase;
+const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
 
 module.exports = {
   inputs: {
@@ -25,12 +18,6 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      if (!hubSpotToken) {
-        // for non production env.
-        return exits.success('no api key');
-      }
-      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
       const { hubspotId } = inputs;
       const userObj = {
         properties: {

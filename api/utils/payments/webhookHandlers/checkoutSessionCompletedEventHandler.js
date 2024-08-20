@@ -5,7 +5,9 @@ const {
 const { setUserCampaignIsPro } = require('../../campaign/setUserCampaignIsPro');
 const { sendProConfirmationEmail } = require('../sendProConfirmationEmail');
 const { doVoterDownloadCheck } = require('../../campaign/doVoterDownloadCheck');
-const { appEnvironment, PRODUCTION_ENV } = require('../../appEnvironment');
+const {
+  sendProSignUpSlackMessage,
+} = require('../../campaign/sendProSignUpSlackMessage');
 
 const checkoutSessionCompletedEventHandler = async (event) => {
   const session = event.data.object;
@@ -24,18 +26,15 @@ const checkoutSessionCompletedEventHandler = async (event) => {
     throw 'No user found with given checkout session userId';
   }
   const campaign = await sails.helpers.campaign.byUser(user);
-  const name = `${user.firstName}${user.firstName ? ` ${user.lastName}` : ''}`;
+  if (!campaign) {
+    throw 'No campaign found for user';
+  }
+
   await Promise.allSettled([
     patchUserMetaData(user, { customerId, checkoutSessionId: null }),
     setCampaignSubscriptionId(campaign, subscriptionId),
     setUserCampaignIsPro(campaign),
-    sails.helpers.slack.slackHelper(
-      {
-        title: 'New Pro User!',
-        body: `PRO PLAN SIGN UP:\`${name}\` w/ email ${user.email} and campaign slug \`${campaign.slug}\` has signed up for a pro subscription!`,
-      },
-      appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
-    ),
+    sendProSignUpSlackMessage(user, campaign),
     sendProConfirmationEmail(user, campaign),
     doVoterDownloadCheck(campaign),
   ]);

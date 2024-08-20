@@ -1,6 +1,3 @@
-const request = require('request-promise');
-// https://api.slack.com/apps/A0166K4G4E6/incoming-webhooks?
-
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
@@ -102,14 +99,16 @@ module.exports = {
         message = simpleSlackMessage(message.title, message.body);
       }
 
-      const options = {
-        uri: `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${token}`,
-        method: 'POST',
-        json: true,
-        body: message,
-      };
-
-      await request(options);
+      await fetch(
+        `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${token}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+        },
+      );
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {

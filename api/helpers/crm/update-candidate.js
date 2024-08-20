@@ -1,9 +1,5 @@
-// https://developers.hubspot.com/docs/api/crm/contacts
-const hubspot = require('@hubspot/api-client');
 const slugify = require('slugify');
-
-const hubSpotToken =
-  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
+const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
 
 module.exports = {
   inputs: {
@@ -23,12 +19,6 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      if (!hubSpotToken) {
-        // for non production env.
-        return exits.success('no api key');
-      }
-      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
       const { id } = inputs;
       const candidate = await BallotCandidate.findOne({
         where: { id, p2vData: { '!=': null } },
