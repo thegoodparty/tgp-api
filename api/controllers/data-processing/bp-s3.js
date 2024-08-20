@@ -1,7 +1,11 @@
-const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
+const {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
@@ -9,12 +13,6 @@ const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-
-AWS.config.update({
-  region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
-});
 
 // Define the desired order of columns
 const desiredOrder = [
@@ -32,7 +30,13 @@ const s3Bucket = 'goodparty-ballotpedia';
 
 let csvFilePath = path.join(__dirname, '../../../data/candidates');
 
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+  region: 'us-west-2',
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+});
 
 module.exports = {
   inputs: {
@@ -282,7 +286,8 @@ async function getAllCandidateFiles(bucket, maxKeys) {
       MaxKeys: maxKeys,
     };
 
-    const data = await s3.listObjectsV2(params).promise();
+    const listCommand = new ListObjectsV2Command(params);
+    const data = await s3.send(listCommand);
 
     // Sort the files by LastModified date
     const sortedFiles = data.Contents.sort((a, b) => {
@@ -310,7 +315,8 @@ async function getLatestFiles(bucket, maxKeys) {
       MaxKeys: maxKeys,
     };
 
-    const data = await s3.listObjectsV2(params).promise();
+    const listCommand = new ListObjectsV2Command(params);
+    const data = await s3.send(listCommand);
 
     // Sort the files by LastModified date
     const sortedFiles = data.Contents.sort((a, b) => {
@@ -335,6 +341,12 @@ function findLatestCandidatesFile(files) {
   return null;
 }
 
+const getObjectStream = async (params, file) => {
+  const command = new GetObjectCommand(params);
+  const response = await s3.send(command);
+  return promisify(pipeline)(response.Body, file);
+};
+
 function downloadFile(bucket, key, filePath) {
   const params = {
     Bucket: bucket,
@@ -342,15 +354,9 @@ function downloadFile(bucket, key, filePath) {
   };
 
   const file = fs.createWriteStream(filePath);
-
-  return new Promise((resolve, reject) => {
-    s3.getObject(params)
-      .createReadStream()
-      .on('end', () => resolve())
-      .on('error', (error) => reject(error))
-      .pipe(file);
-  });
+  return getObjectStream(params, file);
 }
+
 async function parseFile(filePath) {
   const rows = [];
   let headers = [];

@@ -1,20 +1,8 @@
-const AWS = require('aws-sdk');
-
 module.exports = async function uploadAvatar(req, res) {
-  const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
-  const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
   const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
   const action = req.param('action');
   const name = req.param('name');
 
-  var s3Bucket = new AWS.S3({
-    accessKeyId: s3Key,
-    secretAccessKey: s3Secret,
-    params: {
-      Bucket: `${assetsBase}/candidate-info`,
-      ACL: 'public-read',
-    },
-  });
   let response = {
     data: {
       code: 220,

@@ -1,5 +1,5 @@
 const { Consumer } = require('sqs-consumer');
-const AWS = require('aws-sdk');
+const { SQSClient } = require('@aws-sdk/client-sqs');
 const https = require('https');
 const moment = require('moment');
 
@@ -13,11 +13,6 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 const handlePathToVictory = require('../../utils/campaign/handlePathToVictory');
 
 let queue;
-AWS.config.update({
-  region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
-});
 
 module.exports = {
   inputs: {},
@@ -36,19 +31,26 @@ module.exports = {
         return exits.success('not ok');
       }
       if (!queue) {
+        const sqs = new SQSClient({
+          region: 'us-west-2',
+          credentials: {
+            accessKeyId,
+            secretAccessKey,
+          },
+          httpHandlerOptions: {
+            agent: new https.Agent({
+              keepAlive: true,
+            }),
+          },
+        });
+
         console.log('no queue instance, creating a new one');
         queue = Consumer.create({
           queueUrl,
           handleMessage: async (message) => {
             await handleMessage(message);
           },
-          sqs: new AWS.SQS({
-            httpOptions: {
-              agent: new https.Agent({
-                keepAlive: true,
-              }),
-            },
-          }),
+          sqs,
         });
         queue.on('error', (err) => {
           (async () => {

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { google } = require('googleapis');
-const AWS = require('aws-sdk');
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
 
@@ -23,14 +23,15 @@ if (
   processColumn = 3;
 }
 
-AWS.config.update({
+const s3 = new S3Client({
   region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
 });
 
 const s3Bucket = 'goodparty-keys';
-const s3 = new AWS.S3();
 
 module.exports = {
   inputs: {},
@@ -139,7 +140,9 @@ async function readJsonFromS3(bucketName, keyName) {
       Bucket: bucketName,
       Key: keyName,
     };
-    const data = await s3.getObject(params).promise();
+
+    const getCommand = new GetObjectCommand(params);
+    const data = await s3.send(getCommand);
     const jsonContent = JSON.parse(data.Body.toString());
     return jsonContent;
   } catch (error) {

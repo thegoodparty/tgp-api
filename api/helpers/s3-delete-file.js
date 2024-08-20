@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+const { S3Client, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 module.exports = {
   friendlyName: 'S3 Delete File',
@@ -24,30 +24,19 @@ module.exports = {
       const assetsBase =
         sails.config.custom.assetsBase || sails.config.assetsBase;
 
-      var s3Bucket = new AWS.S3({
+      var s3Bucket = new S3Client({
         accessKeyId: s3Key,
         secretAccessKey: s3Secret,
-        params: { Bucket: bucketName, ACL: 'public-read' },
       });
-      return new Promise((resolve, reject) => {
-        s3Bucket.deleteObject(
-          {
-            Bucket: assetsBase,
-            Key: path,
-          },
-          function (err, data) {
-            if (!err) {
-              return exits.success();
-            } else {
-              console.log('error deleting to s3', err);
-              return exits.badRequest({
-                message: 'Error deleting to s3',
-              });
-              reject();
-            }
-          },
-        );
-      });
+
+      const deleteObjectParams = {
+        Bucket: bucketName,
+        Key: path,
+      };
+      const command = new DeleteObjectCommand(deleteObjectParams);
+      const response = await s3Bucket.send(command);
+      console.log('Delete successful', response);
+      return exits.success();
     } catch (e) {
       console.log('error deleting to s3', e);
       return exits.badRequest({

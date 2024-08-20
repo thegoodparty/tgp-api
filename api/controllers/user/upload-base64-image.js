@@ -1,8 +1,8 @@
 const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
-const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
 const slugify = require('slugify');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 
 const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
 const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
@@ -79,12 +79,15 @@ async function uploadToS3(localFile, fileName) {
     CacheControl: 'max-age=31536000',
   };
 
-  const s3 = new AWS.S3({
+  const s3 = new S3Client({
+    region: 'us-west-2',
     accessKeyId: s3Key,
     secretAccessKey: s3Secret,
   });
 
-  await s3.putObject(params).promise();
+  const command = new PutObjectCommand(params);
+  const response = await s3.send(command);
+  console.log('response', response);
 
   return `https://${bucketName}/${fileName}`;
 }

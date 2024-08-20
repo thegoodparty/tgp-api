@@ -1,6 +1,10 @@
-const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
+const {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
 
 module.exports = {
   friendlyName: 'S3 Uploader',
@@ -34,29 +38,32 @@ module.exports = {
       console.log('s3BucketName', s3BucketName);
       console.log('prefix', prefix);
 
-      var s3Bucket = new AWS.S3({
-        accessKeyId: s3Key,
-        secretAccessKey: s3Secret,
-        params: { Bucket: s3BucketName, ACL: 'public-read' },
+      const s3Bucket = new S3Client({
+        region: 'us-west-2',
+        credentials: {
+          accessKeyId: s3Key,
+          secretAccessKey: s3Secret,
+        },
       });
-      const response = await s3Bucket
-        .listObjects({
-          Bucket: s3BucketName,
-          Prefix: prefix,
-        })
-        .promise();
-      if (response?.Contents) {
+
+      const listObjectsParams = {
+        Bucket: s3BucketName,
+        Prefix: prefix,
+      };
+      const listCommand = new ListObjectsV2Command(listObjectsParams);
+      const listResponse = await s3Bucket.send(listCommand);
+
+      if (listResponse?.Contents) {
         if (downloadPath) {
-          const files = response.Contents;
+          const files = listResponse.Contents;
           for (const file of files) {
             console.log('getting file', file.Key);
             try {
-              const data = await s3Bucket
-                .getObject({
-                  Bucket: s3BucketName,
-                  Key: file.Key,
-                })
-                .promise();
+              const getCommand = new GetObjectCommand({
+                Bucket: s3BucketName,
+                Key: file.Key,
+              });
+              const data = await s3Bucket.send(getCommand);
               const filePath = path.resolve(downloadPath, file.Key);
               console.log('deleting files', downloadPath);
               // set the mode to overwrite existing files

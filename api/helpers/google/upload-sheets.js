@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 const fs = require('fs');
-const AWS = require('aws-sdk');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
@@ -10,15 +10,15 @@ const accessKeyId =
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 
-AWS.config.update({
-  region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
-});
-
 const s3Bucket = 'goodparty-keys';
 
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+  region: 'us-west-2',
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+});
 
 module.exports = {
   inputs: {
@@ -141,7 +141,8 @@ async function readJsonFromS3(bucketName, keyName) {
       Bucket: bucketName,
       Key: keyName,
     };
-    const data = await s3.getObject(params).promise();
+    const getObjectCommand = new GetObjectCommand(params);
+    const data = await s3.send(getObjectCommand);
     const jsonContent = JSON.parse(data.Body.toString());
     return jsonContent;
   } catch (error) {

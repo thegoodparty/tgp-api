@@ -3,9 +3,9 @@ const removeBackgroundFromImageUrl =
 const removeBgKey = sails.config.custom.removeBgKey || sails.config.removeBgKey;
 const fs = require('fs');
 const path = require('path');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const s3Key = sails.config.custom.s3Key || sails.config.s3Key;
 const s3Secret = sails.config.custom.s3Secret || sails.config.s3Secret;
-const AWS = require('aws-sdk');
 const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
 
 module.exports = {
@@ -83,12 +83,17 @@ async function uploadToS3(localFile, candidateName, uuid) {
     CacheControl: 'max-age=31536000',
   };
 
-  const s3 = new AWS.S3({
-    accessKeyId: s3Key,
-    secretAccessKey: s3Secret,
+  const s3Client = new S3Client({
+    region: 'us-west-2',
+    credentials: {
+      accessKeyId: s3Key,
+      secretAccessKey: s3Secret,
+    },
   });
 
-  await s3.putObject(params).promise();
+  const command = new PutObjectCommand(params);
+  const response = await s3Client.send(command);
+  console.log('response', response);
 
   return `https://${bucketName}/${fileName}`;
 }
