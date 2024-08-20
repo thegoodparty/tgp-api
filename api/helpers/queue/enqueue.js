@@ -43,7 +43,7 @@ module.exports = {
         QueueUrl: queueUrl,
       };
 
-      const command = SendMessageCommand(params);
+      const command = new SendMessageCommand(params);
       const data = await sqs.send(command);
       console.log('Success', data.MessageId);
       return exits.success({ message: 'ok', id: data.MessageId });

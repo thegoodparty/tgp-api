@@ -1,4 +1,3 @@
-const AWS = require('aws-sdk');
 const csvParser = require('csv-parser');
 const slugify = require('slugify');
 const async = require('async');
