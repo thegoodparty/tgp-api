@@ -1,21 +1,21 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 const csv = require('csv-parser');
-const AWS = require('aws-sdk');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 
-AWS.config.update({
-  region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
-});
-
 const s3Bucket = 'ballotready-chunks';
 
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+  region: 'us-west-2',
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+});
 
 let count = 0;
 let files = 3;
@@ -88,9 +88,13 @@ module.exports = {
 async function readAndProcessCSV(s3Key) {
   let rows = [];
   let finished = false;
-  const s3Stream = s3
-    .getObject({ Bucket: s3Bucket, Key: s3Key })
-    .createReadStream();
+
+  const getObjectCommand = new GetObjectCommand({
+    Bucket: s3Bucket,
+    Key: s3Key,
+  });
+  const response = await s3.send(getObjectCommand);
+  const s3Stream = response.Body;
 
   s3Stream
     .pipe(csv())

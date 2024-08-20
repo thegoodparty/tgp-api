@@ -1,5 +1,9 @@
-const AWS = require('aws-sdk');
 const csv = require('csv-parser');
+const {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
 const { pipeline } = require('stream');
 const { promisify } = require('util');
 
@@ -10,14 +14,14 @@ const accessKeyId =
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 
-AWS.config.update({
-  region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
-});
-
 const s3Bucket = 'normalized-voter-files';
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+  region: 'us-west-2',
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+});
 
 module.exports = {
   inputs: {
@@ -85,8 +89,8 @@ async function getAllFiles(bucket, maxKeys) {
       path: 'VM2Uniform/',
     };
 
-    const data = await s3.listObjectsV2(params).promise();
-
+    const listCommand = new ListObjectsV2Command(params);
+    const data = await s3.send(listCommand);
     // Sort the files by LastModified date
     const sortedFiles = data.Contents.sort((a, b) => {
       return new Date(b.LastModified) - new Date(a.LastModified);
@@ -118,9 +122,12 @@ async function processVoterFile(s3Key) {
   const batchSize = 10000;
   let batchPromises = [];
 
-  const s3Stream = s3
-    .getObject({ Bucket: s3Bucket, Key: s3Key })
-    .createReadStream();
+  const getObjectCommand = new GetObjectCommand({
+    Bucket: s3Bucket,
+    Key: s3Key,
+  });
+  const response = await s3.send(getObjectCommand);
+  const s3Stream = response.Body;
 
   const processStream = async (row) => {
     buffer.push(row);

@@ -1,18 +1,21 @@
-const AWS = require('aws-sdk');
+const {
+  LocationClient,
+  SearchPlaceIndexForTextCommand,
+} = require('@aws-sdk/client-location');
+
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 const geohash = require('ngeohash');
 
-// Set the region
-AWS.config.update({
+const location = new LocationClient({
   region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
 });
-
-const location = new AWS.Location();
 
 module.exports = {
   friendlyName: 'Geocode Address',
@@ -43,7 +46,8 @@ module.exports = {
         };
 
         try {
-          const data = await location.searchPlaceIndexForText(params).promise();
+          const searchCommand = new SearchPlaceIndexForTextCommand(params);
+          const data = await location.send(searchCommand);
 
           if (data.Results.length === 0) {
             console.log('no results found for', address);

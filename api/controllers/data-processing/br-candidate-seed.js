@@ -1,22 +1,26 @@
-const AWS = require('aws-sdk');
 const csvParser = require('csv-parser');
 const slugify = require('slugify');
 const async = require('async');
+const {
+  S3Client,
+  ListObjectsV2Command,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
 
 const accessKeyId =
   sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
 const secretAccessKey =
   sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
 
-AWS.config.update({
-  region: 'us-west-2',
-  accessKeyId,
-  secretAccessKey,
-});
-
 const s3Bucket = 'goodparty-ballotready';
 
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+  region: 'us-west-2',
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+});
 
 let maxRows;
 // let maxRows = 25; // good for local dev.
@@ -69,55 +73,54 @@ module.exports = {
 };
 
 async function processCsvFromS3(bucketName, objectKey, processRowCallback) {
-  return new Promise((resolve, reject) => {
-    const params = {
-      Bucket: bucketName,
-      Key: objectKey,
-    };
+  const params = {
+    Bucket: bucketName,
+    Key: objectKey,
+  };
 
-    const s3Stream = s3.getObject(params).createReadStream();
+  const getCommand = new GetObjectCommand(params);
+  const response = await s3.send(getCommand);
+  const s3Stream = response.Body;
 
-    // Create an async queue to process rows one at a time
-    const q = async.queue(async (row, callback) => {
-      try {
-        await processRowCallback(row);
-        if (callback) {
-          return callback();
-        }
-      } catch (err) {
-        if (callback) {
-          return callback(err);
-        }
+  // const s3Stream = s3.getObject(params).createReadStream();
+
+  // Create an async queue to process rows one at a time
+  const q = async.queue(async (row, callback) => {
+    try {
+      await processRowCallback(row);
+      if (callback) {
+        return callback();
       }
-    }, 1); // concurrency set to 1
+    } catch (err) {
+      if (callback) {
+        return callback(err);
+      }
+    }
+  }, 1); // concurrency set to 1
 
-    q.drain(() => {
-      console.log('All rows have been processed.');
-      resolve();
-    });
-
-    q.error((err) => {
-      console.error('Error in processing queue:', err);
-      reject(err);
-    });
-
-    s3Stream
-      .pipe(csvParser())
-      .on('data', (row) => {
-        q.push(row, (err) => {
-          if (err) {
-            console.error('Error processing row:', err);
-          }
-        });
-      })
-      .on('end', () => {
-        console.log('CSV file successfully streamed.');
-      })
-      .on('error', (error) => {
-        console.error('Error while streaming CSV file:', error);
-        reject(error);
-      });
+  q.drain(() => {
+    console.log('All rows have been processed.');
   });
+
+  q.error((err) => {
+    console.error('Error in processing queue:', err);
+  });
+
+  s3Stream
+    .pipe(csvParser())
+    .on('data', (row) => {
+      q.push(row, (err) => {
+        if (err) {
+          console.error('Error processing row:', err);
+        }
+      });
+    })
+    .on('end', () => {
+      console.log('CSV file successfully streamed.');
+    })
+    .on('error', (error) => {
+      console.error('Error while streaming CSV file:', error);
+    });
 }
 
 /*
@@ -269,7 +272,8 @@ async function getLatestFiles(bucket, maxKeys) {
       MaxKeys: maxKeys,
     };
 
-    const data = await s3.listObjectsV2(params).promise();
+    const listCommand = new ListObjectsV2Command(params);
+    const data = await s3.send(listCommand);
 
     // Sort the files by LastModified date
     const sortedFiles = data.Contents.sort((a, b) => {
