@@ -5,7 +5,9 @@
   "description": "a Sails application",
   "keywords": [],
   "dependencies": {
+    "@aws-sdk/client-location": "^3.632.0",
     "@aws-sdk/client-s3": "^3.633.0",
+    "@aws-sdk/client-sqs": "^3.632.0",
     "@contentful/rich-text-plain-text-renderer": "^15.12.1",
     "@google-cloud/recaptcha-enterprise": "^5.6.0",
     "@googlemaps/google-maps-services-js": "^3.3.42",
