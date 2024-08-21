@@ -32,8 +32,11 @@ module.exports = {
       if (userName === '') {
         return exits.badRequest('No user name');
       }
+      let slug = await findSlug(userName);
+      console.log('slug1', slug);
 
-      const slug = `${await findSlug(userName)}-demo`;
+      slug = `${slug}-demo`;
+      console.log('slug2', slug);
 
       const demoCampaign = await Campaign.findOne({
         slug: demoPersona,
@@ -106,7 +109,7 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({ message: 'Error creating campaign.' });
+      return exits.badRequest({ message: 'Error creating campaign.', e });
     }
   },
 };
