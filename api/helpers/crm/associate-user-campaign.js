@@ -1,8 +1,4 @@
-// https://developers.hubspot.com/docs/api/crm/contacts
-const hubspot = require('@hubspot/api-client');
-
-const hubSpotToken =
-  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
+const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
 
 module.exports = {
   inputs: {
@@ -29,18 +25,6 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      if (!hubSpotToken) {
-        // for non production env.
-        return exits.success('no api key');
-      }
-
-      const appBase = sails.config.custom.appBase || sails.config.appBase;
-      if (appBase === 'http://localhost:4000') {
-        return exits.success('crm helpers disabled on localhost');
-      }
-
-      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
       let { user, campaign, remove } = inputs;
       let contactId;
       if (user.metaData) {
@@ -71,10 +55,8 @@ module.exports = {
         );
         return exits.success('not ok');
       }
-      //   console.log('contactId', contactId);
 
       let companyId = campaign.data ? campaign.data.hubspotId : false;
-      //   console.log('companyId', companyId);
       if (!companyId) {
         // this should not happen since its only called by update-campaign.
         await sails.helpers.slack.errorLoggerHelper(

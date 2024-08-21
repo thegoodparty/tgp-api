@@ -69,7 +69,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
   const name = await determineName(campaign.user);
 
   const formatDateForCRM = (date) =>
-    date ? moment(date).startOf('day').valueOf().toString() : undefined;
+    date ? moment.utc(date).startOf('day').valueOf().toString() : undefined;
 
   const electionDateMs = formatDateForCRM(electionDate);
   const primaryElectionDateMs = formatDateForCRM(primaryElectionDate);

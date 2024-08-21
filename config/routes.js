@@ -191,6 +191,7 @@ module.exports.routes = {
   // crm
   'POST   /api/v1/hubspot-webhook': 'crm/hubspot-webhook',
   'GET   /api/v1/crm/sync': 'crm/sync',
+  'GET   /api/v1/crm/companies/:campaignId': 'crm/get-company',
 
   // ballotData
   'GET   /api/v1/ballot-data/races': 'campaign/ballotData/races',
