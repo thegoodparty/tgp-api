@@ -32,11 +32,8 @@ module.exports = {
       if (userName === '') {
         return exits.badRequest('No user name');
       }
-      let slug = await findSlug(userName);
+      const slug = await findSlug(userName, 'demo');
       console.log('slug1', slug);
-
-      slug = `${slug}-demo`;
-      console.log('slug2', slug);
 
       const demoCampaign = await Campaign.findOne({
         slug: demoPersona,
