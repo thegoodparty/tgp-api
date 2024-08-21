@@ -12,6 +12,9 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
+    if (!hubspotClient) {
+      return exits.success('No hubspot client');
+    }
     try {
       let { campaign } = inputs;
       const { data } = campaign;

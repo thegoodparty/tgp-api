@@ -5,11 +5,8 @@ const hubspot = require('@hubspot/api-client');
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
 
-if (!hubSpotToken) {
-  throw new Error('No HubSpot token found in config. ABORTING');
-}
-
-const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
+const hubspotClient =
+  hubSpotToken && new hubspot.Client({ accessToken: hubSpotToken });
 
 module.exports = {
   hubspotClient,

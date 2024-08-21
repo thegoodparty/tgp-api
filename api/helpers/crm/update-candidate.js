@@ -18,6 +18,9 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
+    if (!hubspotClient) {
+      return exits.success('No hubspot client');
+    }
     try {
       const { id } = inputs;
       const candidate = await BallotCandidate.findOne({
