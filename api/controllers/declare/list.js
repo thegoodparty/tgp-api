@@ -1,5 +1,4 @@
 const axios = require('axios');
-// const hubspot = require('@hubspot/api-client');
 
 const hubSpotToken =
   sails.config.custom.hubSpotToken || sails.config.hubSpotToken;

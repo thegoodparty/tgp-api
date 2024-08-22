@@ -1,8 +1,5 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
-const hubspot = require('@hubspot/api-client');
-
-const hubSpotToken =
-  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
+const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
 
 module.exports = {
   inputs: {
@@ -28,22 +25,31 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      if (!hubSpotToken) {
-        // for non production env.
-        return exits.success('no api key');
-      }
-      const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
-
       let { user, loginEvent, updateEvent } = inputs;
       user = await User.findOne({ id: user.id });
       const { id, firstName, lastName, email, phone, uuid, zip } = user;
 
-      const campaigns = await Campaign.find({
+      const campaign = await Campaign.findOne({
         user: id,
       });
-      let campaign = false;
-      if (campaigns && campaigns.length > 0) {
-        campaign = campaigns[0].data;
+
+      const { metaData } = user || {};
+      const { accountType, whyBrowsing, demoPersona } = metaData || {};
+
+      let browsing_intent;
+      switch (whyBrowsing) {
+        case 'considering':
+          browsing_intent = 'considering run';
+          break;
+        case 'learning':
+          browsing_intent = 'learning about gp';
+          break;
+        case 'test':
+          browsing_intent = 'testing tools';
+          break;
+        case 'else':
+          browsing_intent = 'other';
+          break;
       }
 
       const contactObj = {
@@ -53,12 +59,33 @@ module.exports = {
           email,
           phone,
           type: campaign ? 'Campaign' : 'User',
-          lifecyclestage: campaign ? 'customer' : 'opportunity',
           active_candidate: campaign ? 'Yes' : 'No',
           live_candidate: campaign && campaign?.isActive,
           source: 'GoodParty.org Site',
           zip,
           referral_link: `https://goodparty.org/?u=${uuid}`,
+          ...(accountType && campaign?.id
+            ? {
+                signup_role:
+                  accountType === 'browsing' ? accountType : 'running', // Later, once we have campaign staff/volunteer roles, 'helping'
+              }
+            : {}),
+          ...(campaign?.id
+            ? {
+                product_user: 'yes',
+                type: 'Campaign',
+              }
+            : {}),
+          ...(browsing_intent ? { browsing_intent } : {}),
+          ...(demoPersona
+            ? {
+                demo_selection:
+                  demoPersona === 'matthew-mcconaughey' ? 'local' : 'federal',
+              }
+            : {}),
+          lifecyclestage: campaign?.details?.pledged
+            ? 'customer'
+            : 'opportunity',
         },
       };
       if (loginEvent) {
