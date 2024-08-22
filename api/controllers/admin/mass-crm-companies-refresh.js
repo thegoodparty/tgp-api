@@ -1,6 +1,4 @@
-const hubspot = require('@hubspot/api-client');
-const hubSpotToken =
-  sails.config.custom.hubSpotToken || sails.config.hubSpotToken;
+const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
 
 const generateCompanyProperties =
   (fields = []) =>
@@ -50,7 +48,6 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     let companyUpdateObjects = [];
-    console.log(`inputs =>`, inputs);
     try {
       const { fields } = inputs;
       const campaigns = await Campaign.find();
@@ -67,8 +64,6 @@ module.exports = {
         message: 'Error getting users',
       });
     }
-
-    const hubspotClient = new hubspot.Client({ accessToken: hubSpotToken });
 
     let updates;
     try {
