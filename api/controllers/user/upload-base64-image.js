@@ -81,8 +81,10 @@ async function uploadToS3(localFile, fileName) {
 
   const s3 = new S3Client({
     region: 'us-west-2',
-    accessKeyId: s3Key,
-    secretAccessKey: s3Secret,
+    credentials: {
+      accessKeyId: s3Key,
+      secretAccessKey: s3Secret,
+    },
   });
 
   const command = new PutObjectCommand(params);

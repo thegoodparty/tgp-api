@@ -25,8 +25,11 @@ module.exports = {
         sails.config.custom.assetsBase || sails.config.assetsBase;
 
       var s3Bucket = new S3Client({
-        accessKeyId: s3Key,
-        secretAccessKey: s3Secret,
+        region: 'us-west-2',
+        credentials: {
+          accessKeyId: s3Key,
+          secretAccessKey: s3Secret,
+        },
       });
 
       const deleteObjectParams = {
