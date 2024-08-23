@@ -125,14 +125,18 @@ module.exports = {
 
       if (!contactId) {
         try {
-          const contact = await hubspotClient.crm.contacts.basicApi.getById(
-            email,
-            ['id', 'email'],
-            undefined,
-            undefined,
-            undefined,
-            'email',
-          );
+          // TODO: abstract these hubspot calls into a separate util so we're not having to do existential checks everywhere for
+          //  environments that have HubSpot integration disabled.
+          const contact = hubspotClient
+            ? await hubspotClient.crm.contacts.basicApi.getById(
+                email,
+                ['id', 'email'],
+                undefined,
+                undefined,
+                undefined,
+                'email',
+              )
+            : {};
           contactId = contact.id;
           const hubspotId = contactId;
           await updateMeta(user, hubspotId, profile_updated_count);
@@ -147,17 +151,19 @@ module.exports = {
 
       if (contactId) {
         try {
-          await hubspotClient.crm.contacts.basicApi.update(
-            contactId,
-            contactObj,
-          );
+          hubspotClient &&
+            (await hubspotClient.crm.contacts.basicApi.update(
+              contactId,
+              contactObj,
+            ));
         } catch (e) {
           console.log('error updating contact', e);
         }
       } else {
         try {
-          const createContactResponse =
-            await hubspotClient.crm.contacts.basicApi.create(contactObj);
+          const createContactResponse = hubspotClient
+            ? await hubspotClient.crm.contacts.basicApi.create(contactObj)
+            : {};
           // update user record with the id from the crm
           const hubspotId = createContactResponse.id;
           await updateMeta(user, hubspotId, profile_updated_count);
