@@ -30,8 +30,10 @@ module.exports = {
       const { message } = inputs;
       const sqs = new SQSClient({
         region: 'us-west-2',
-        accessKeyId,
-        secretAccessKey,
+        credentials: {
+          accessKeyId,
+          secretAccessKey,
+        },
       });
 
       const uuid = Math.random().toString(36).substring(2, 12);
