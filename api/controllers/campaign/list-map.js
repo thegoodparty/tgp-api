@@ -58,19 +58,24 @@ module.exports = {
 };
 
 async function calculateGeoLocation(campaign) {
-  console.log('calculating');
-  const { lng, lat, geoHash } = await sails.helpers.geocoding.zipToLatLng(
-    campaign.details.zip,
-  );
-  await Campaign.updateOne({ slug: campaign.slug }).set({
-    details: {
-      ...campaign.details,
-      geoLocation: {
-        geoHash,
-        lat,
-        lng,
+  try {
+    console.log('calculating');
+    const { lng, lat, geoHash } = await sails.helpers.geocoding.zipToLatLng(
+      campaign.details?.zip,
+    );
+    await Campaign.updateOne({ slug: campaign.slug }).set({
+      details: {
+        ...campaign.details,
+        geoLocation: {
+          geoHash,
+          lat,
+          lng,
+        },
       },
-    },
-  });
-  return { lng, lat, geoHash };
+    });
+    return { lng, lat, geoHash };
+  } catch (e) {
+    console.log('error at calculateGeoLocation', e);
+    return {};
+  }
 }
