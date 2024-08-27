@@ -15,9 +15,7 @@ module.exports = {
     data: {
       type: 'json',
     },
-    dataCopy: {
-      type: 'json',
-    },
+
     details: {
       type: 'json',
       columnType: 'jsonb',

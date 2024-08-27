@@ -39,8 +39,7 @@ module.exports.policies = {
   'entrance/*': true,
   'content/*': true,
   'newCandidates/find': true,
-  'candidate/find': true,
-  'candidate/list': true,
+  'candidate/*': true,
   'newCandidates/list': true,
   'declare/list': true,
   'seed/*': true,
@@ -66,4 +65,5 @@ module.exports.policies = {
   'crm/hubspot-webhook': true,
   'crm/sync': true,
   'campaign/ai/prompt/*': true,
+  'campaign/list-map': true,
 };

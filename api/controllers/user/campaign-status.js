@@ -28,7 +28,6 @@ module.exports = {
       });
 
       const campaign = await sails.helpers.campaign.byUser(user);
-      console.log('campaign', campaign);
       if (!campaign) {
         // check if the user is a volunteer
         const volunteer = await CampaignVolunteer.findOne({ user: user.id });
