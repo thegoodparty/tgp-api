@@ -47,6 +47,10 @@ module.exports = {
         cleanCampaigns.push(cleanCampaign);
       }
 
+      await sails.helpers.slack.errorLoggerHelper('list map completed', {
+        count: cleanCampaigns.length,
+      });
+
       return exits.success({
         campaigns: cleanCampaigns,
       });
