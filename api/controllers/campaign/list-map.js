@@ -33,9 +33,9 @@ module.exports = {
           state,
           ballotLevel,
           zip,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatar: user.avatar || false,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          avatar: user?.avatar || false,
         };
 
         if (!campaign.details.geoLocation) {
