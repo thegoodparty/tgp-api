@@ -22,7 +22,11 @@ module.exports = {
       }).populate('user');
 
       const cleanCampaigns = [];
-      for (let campaign of campaigns) {
+      for (let i = 0; i < campaigns.length; i++) {
+        const campaign = campaigns[i];
+        if (!campaign.user || !campaign.details?.zip) {
+          continue;
+        }
         let { details, slug, didWin, user } = campaign;
         const { otherOffice, office, state, ballotLevel, zip } = details || {};
         const resolvedOffice = otherOffice || office;
@@ -40,6 +44,9 @@ module.exports = {
 
         if (!campaign.details.geoLocation) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
+          if (!lng) {
+            continue;
+          }
           cleanCampaign.geoLocation = { lng, lat, geoHash };
         } else {
           cleanCampaign.geoLocation = campaign.details.geoLocation;
@@ -83,6 +90,12 @@ async function calculateGeoLocation(campaign) {
     return { lng, lat, geoHash };
   } catch (e) {
     console.log('error at calculateGeoLocation', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error at calculateGeoLocation',
+      {
+        e,
+      },
+    );
     return {};
   }
 }

@@ -51,7 +51,7 @@ module.exports = {
 
       if (data.Results.length === 0) {
         console.log('no results found for', address);
-        resolve();
+        return exits.success({});
       } else {
         const lat = data.Results[0].Place.Geometry.Point[1];
         const lng = data.Results[0].Place.Geometry.Point[0];
@@ -61,6 +61,7 @@ module.exports = {
       }
     } catch (err) {
       console.log('error at zip-to lat lng', err);
+      return exits.success({});
     }
   },
 };
