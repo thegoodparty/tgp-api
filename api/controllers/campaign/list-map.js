@@ -60,6 +60,9 @@ module.exports = {
 async function calculateGeoLocation(campaign) {
   try {
     console.log('calculating');
+    if (!campaign.details?.zip) {
+      return {};
+    }
     const { lng, lat, geoHash } = await sails.helpers.geocoding.zipToLatLng(
       campaign.details?.zip,
     );
