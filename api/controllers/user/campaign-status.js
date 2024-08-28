@@ -3,7 +3,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Campaign Created',
+      description: 'Campaign Created.',
       responseType: 'ok',
     },
     badRequest: {
