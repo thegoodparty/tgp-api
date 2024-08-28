@@ -28,7 +28,8 @@ module.exports = {
           continue;
         }
         let { details, slug, didWin, user } = campaign;
-        const { otherOffice, office, state, ballotLevel, zip } = details || {};
+        const { otherOffice, office, state, ballotLevel, zip, party } =
+          details || {};
         const resolvedOffice = otherOffice || office;
         const cleanCampaign = {
           slug,
@@ -37,6 +38,7 @@ module.exports = {
           state,
           ballotLevel,
           zip,
+          party,
           firstName: user?.firstName,
           lastName: user?.lastName,
           avatar: user?.avatar || false,
