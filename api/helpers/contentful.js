@@ -320,8 +320,6 @@ function mapResponse(items) {
 
   mappedResponse.recentGlossaryItems = getRecentGlossaryItems(mappedResponse);
 
-  mappedResponse.blogSections.sort((a, b) => a.fields.order - b.fields.order);
-
   mappedResponse.articleTags = articleTags;
 
   // need to order the event chronologically and separate the past events.
