@@ -24,7 +24,11 @@ module.exports = {
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (!campaign.user || !campaign.details?.zip) {
+        if (
+          !campaign.user ||
+          !campaign.details?.zip ||
+          campaign.didWin === false
+        ) {
           continue;
         }
         let { details, slug, didWin, user } = campaign;
