@@ -227,6 +227,67 @@ module.exports = {
           },
         );
       }
+
+      if (newPrompt.includes('[[updateHistory]]')) {
+        const updateHistoryObjects = await CampaignUpdateHistory.find({
+          campaign: campaign.id,
+        });
+
+        const twoWeeksAgo = new Date();
+        const thisWeek = new Date();
+        thisWeek.setDate(thisWeek.getDate() - 7);
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+        let updateHistory = {
+          allTime: {
+            total: 0,
+            doorKnocking: 0,
+            digital: 0,
+            calls: 0,
+            yardSigns: 0,
+            events: 0,
+            text: 0,
+            directMail: 0,
+          },
+          thisWeek: {
+            total: 0,
+            doorKnocking: 0,
+            digital: 0,
+            calls: 0,
+            yardSigns: 0,
+            events: 0,
+            text: 0,
+            directMail: 0,
+          },
+          lastWeek: {
+            total: 0,
+            doorKnocking: 0,
+            digital: 0,
+            calls: 0,
+            yardSigns: 0,
+            events: 0,
+            text: 0,
+            directMail: 0,
+          },
+        };
+
+        if (updateHistoryObjects) {
+          for (const update of updateHistoryObjects) {
+            updateHistory.allTime[update.type] += update.quantity;
+            if (update.createdAt > thisWeek) {
+              updateHistory.thisWeek[update.type] += update.quantity;
+            }
+            if (update.createdAt > twoWeeksAgo && update.createdAt < thisWeek) {
+              updateHistory.lastWeek[update.type] += update.quantity;
+            }
+          }
+        }
+        replaceArr.push({
+          find: 'updateHistory',
+          replace: JSON.stringify(updateHistory),
+        });
+      }
+
       if (campaign.aiContent) {
         const {
           aboutMe,

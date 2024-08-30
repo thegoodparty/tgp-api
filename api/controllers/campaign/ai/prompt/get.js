@@ -27,6 +27,7 @@ module.exports = {
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
+
       console.log('campaign', campaign);
       let { content } = await getChatSystemPrompt(campaign);
 
