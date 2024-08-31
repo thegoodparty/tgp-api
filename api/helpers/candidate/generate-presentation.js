@@ -181,7 +181,9 @@ break
   } else {
     about += ` in ${state}`;
   }
-  about += `, making them eligible to receive GoodParty.org's support. ${office} is responsible for ${officeDescription}<br/><br/>`; // eslint-disable-line
+  about += `, making them eligible to receive GoodParty.org's support. ${
+    officeDescription ? `${office} is responsible for ${officeDescription}` : ''
+  }<br/><br/>`; // eslint-disable-line
   if (endorsements && endorsements.length) {
     about += `${lastName} is endorsed by ${endorsements.join(', ')}.<br/><br/>`;
   }
