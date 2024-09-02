@@ -1,3 +1,4 @@
+const hubspot = require('@hubspot/api-client');
 const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
 
 module.exports = {
@@ -77,8 +78,7 @@ module.exports = {
           [
             {
               associationCategory: 'HUBSPOT_DEFINED',
-              associationTypeId:
-                hubspotClient.AssociationTypes.companyToContact,
+              associationTypeId: hubspot.AssociationTypes.companyToContact,
               // AssociationTypes contains the most popular HubSpot defined association types
             },
           ],
@@ -92,7 +92,7 @@ module.exports = {
             {
               associationCategory: 'HUBSPOT_DEFINED',
               associationTypeId:
-                hubspotClient.AssociationTypes.primaryCompanyToContact, //companyToContact
+                hubspot.AssociationTypes.primaryCompanyToContact, //companyToContact
               // AssociationTypes contains the most popular HubSpot defined association types
             },
           ],
