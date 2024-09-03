@@ -16,9 +16,20 @@ module.exports = {
     try {
       const { data } = await Content.findOne({ key: 'articleTags' });
 
-      const tags = Object.values(data)
-        .map((value) => value[0]?.tagName)
-        .sort();
+      const tags = Object.entries(data)
+        .map(([tagSlug, tagPages]) => ({
+          slug: tagSlug,
+          name: tagPages[0]?.tagName,
+        }))
+        .sort((a, b) => {
+          if (a.name < b.name) {
+            return -1;
+          }
+          if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
 
       return exits.success({
         tags,
