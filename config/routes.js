@@ -37,6 +37,7 @@ module.exports.routes = {
   'GET    /api/v1/content/blog-articles-by-section':
     'content/blog-articles-by-section',
   'GET    /api/v1/content/blog-articles-by-tag': 'content/blog-articles-by-tag',
+  'GET    /api/v1/content/article-tags': 'content/article-tags',
 
   'PUT    /api/v1/entrance/login': 'entrance/login',
   'PUT    /api/v1/entrance/social-login': 'entrance/social-login',
