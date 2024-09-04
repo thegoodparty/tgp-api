@@ -1,3 +1,6 @@
+const appBase = sails.config.custom.appBase || sails.config.appBase;
+const isProd = appBase === 'https://goodparty.org';
+
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
@@ -17,7 +20,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const campaigns = await Campaign.find({
-        select: ['slug', 'details', 'didWin'],
+        select: ['slug', 'details', 'data', 'didWin'],
         where: { user: { '!=': null }, isDemo: false, isActive: true },
       }).populate('user');
 
@@ -31,7 +34,7 @@ module.exports = {
         ) {
           continue;
         }
-        let { details, slug, didWin, user } = campaign;
+        let { details, slug, didWin, user, data } = campaign;
         const { otherOffice, office, state, ballotLevel, zip, party } =
           details || {};
         const resolvedOffice = otherOffice || office;
@@ -47,6 +50,12 @@ module.exports = {
           lastName: user?.lastName,
           avatar: user?.avatar || false,
         };
+        // on prod we filter only verified candidates from hubspot.
+        if (isProd) {
+          if (!data?.hubSpotUpdates?.verified_candidates === 'Yes') {
+            continue;
+          }
+        }
 
         if (!campaign.details.geoLocation) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);

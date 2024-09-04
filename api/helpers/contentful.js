@@ -202,10 +202,18 @@ function mapResponse(items) {
         if (!mappedResponse.blogSections) {
           mappedResponse.blogSections = [];
         }
+        let tags = [];
+        if (item.fields?.tags) {
+          for (let tag of item.fields.tags) {
+            tags.push(tag?.fields?.name);
+          }
+        }
+
         mappedResponse.blogSections.push({
           fields: item.fields,
           id: elementId,
           slug: item.fields.slug,
+          tags,
         });
       } else if (
         [
