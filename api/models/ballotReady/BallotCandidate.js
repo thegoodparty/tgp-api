@@ -109,6 +109,10 @@ module.exports = {
     isUnexpired: {
       type: 'boolean',
     },
+    isRemoved: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
 
     brData: {
       type: 'json',

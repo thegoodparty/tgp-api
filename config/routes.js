@@ -86,6 +86,7 @@ module.exports.routes = {
   // (public) candidate
   'GET    /api/v1/candidate': 'candidate/find',
   'GET    /api/v1/candidates': 'candidate/list',
+  'DELETE    /api/v1/candidate': 'candidate/delete', //admin
 
   // campaign
 

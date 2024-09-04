@@ -17,10 +17,6 @@ module.exports.policies = {
    ***************************************************************************/
 
   'admin/*': ['isAuthenticated', 'isAdmin'],
-  'candidate/create': ['isAuthenticated', 'isAdmin'],
-  'candidate/update': ['isAuthenticated', 'isAdmin'],
-  'newCandidates/create': ['isAuthenticated', 'isAdmin'],
-  'newCandidates/delete': ['isAuthenticated', 'isAdmin'],
   'topIssues/*': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-delete': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-update': ['isAuthenticated', 'isAdmin'],
@@ -30,6 +26,7 @@ module.exports.policies = {
   'topIssues/byLocation/find': ['isAuthenticated'],
   'ai/test': ['isAuthenticated', 'isAdmin'],
   'ai/load': ['isAuthenticated', 'isAdmin'],
+  'candidate/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/election-events': ['isAuthorizedCron'],
   'voterData/locations': ['isAuthenticated'],
 
@@ -39,7 +36,8 @@ module.exports.policies = {
   'entrance/*': true,
   'content/*': true,
   'newCandidates/find': true,
-  'candidate/*': true,
+  'candidate/find': true,
+  'candidate/list': true,
   'newCandidates/list': true,
   'declare/list': true,
   'seed/*': true,

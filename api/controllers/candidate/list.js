@@ -39,6 +39,7 @@ module.exports = {
             { raceId: { '!=': '' } },
             { raceId: { '!=': null } },
             { brCandidateId: { '!=': '' } },
+            { isRemoved: false },
           ],
         },
       });
