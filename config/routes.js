@@ -59,6 +59,8 @@ module.exports.routes = {
   'PUT   /api/v1/user/password': 'user/password/update',
   'GET   /api/v1/user/campaign-status': 'user/campaign-status',
   'POST   /api/v1/upload-base64-image': 'user/upload-base64-image',
+  'PUT    /api/v1/user/files/generate-signed-upload-url':
+    'user/files/generate-signed-upload-url',
 
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
   'PUT    /api/v1/admin/candidates/mass-crm-companies-refresh':

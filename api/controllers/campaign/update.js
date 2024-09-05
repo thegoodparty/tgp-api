@@ -25,15 +25,17 @@ module.exports = {
     try {
       const { attr, slug } = inputs;
       const { user } = this.req;
-      if (slug && !user.isAdmin) {
+      const userCampaign = await sails.helpers.campaign.byUser(user);
+
+      // Only allow mismatched slugs for admins
+      if (slug && slug !== userCampaign.slug && !user.isAdmin) {
         return exits.badRequest('Unauthorized');
       }
-      let campaign;
-      if (slug) {
-        campaign = await Campaign.findOne({ slug }).populate('pathToVictory');
-      } else {
-        campaign = await sails.helpers.campaign.byUser(user);
-      }
+
+      let campaign = slug
+        ? await Campaign.findOne({ slug }).populate('pathToVictory')
+        : userCampaign;
+
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
