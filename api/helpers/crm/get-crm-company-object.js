@@ -38,7 +38,13 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
-  const { p2vStatus, p2vCompleteDate, winNumber } = p2v?.data || {};
+  const {
+    p2vStatus,
+    p2vCompleteDate,
+    winNumber,
+    p2vNotNeeded,
+    totalRegisteredVoters,
+  } = p2v?.data || {};
 
   const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
@@ -84,6 +90,13 @@ const getCrmCompanyObject = async (inputs, exits) => {
     ? await sails.helpers.zip.shortToLongState(state)
     : undefined;
 
+  const p2v_status =
+    p2vNotNeeded || !p2vStatus
+      ? 'Locked'
+      : totalRegisteredVoters
+      ? 'Complete'
+      : p2vStatus;
+
   const properties = {
     name,
     candidate_party: party,
@@ -101,7 +114,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     is_active: !!name,
     live_candidate: isActive,
     p2v_complete_date: p2vCompleteDateMs,
-    p2v_status: p2vStatus || 'Locked', // TODO: investigate why this is not accurate
+    p2v_status,
     election_date: electionDateMs,
     primary_date: primaryElectionDateMs,
     doors_knocked: reportedVoterGoals?.doorKnocking || 0,
