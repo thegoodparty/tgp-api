@@ -52,11 +52,11 @@ async function getAssistantCompletion(
       });
       console.log('threadMessages', threadMessages);
       // this might be a message id and not a thread id ?
-      threadId = threadMessages.id;
+      threadId = threadMessages?.id;
       console.log('threadId', threadId);
     }
 
-    if (!threadMessages?.id) {
+    if (!threadId) {
       return completion;
     }
 

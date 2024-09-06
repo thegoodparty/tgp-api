@@ -14,9 +14,7 @@ async function getChatSystemPrompt(campaign) {
       "campaignWebsite": "[[website]]"
     },
     "campaignFocusAreas": {
-      "slogans": [
-        [[slogan]]
-      ]
+      "slogans": "[[slogan]]"
     },
     "personalBackground": {
       "occupation": "[[occupation]]",

@@ -74,7 +74,7 @@ module.exports = {
         // we will retry the message after deleting the last assistant message
         const lastMessage = messages.slice(-1)[0];
         console.log('lastMessage', lastMessage);
-        // todo: get the message id from the last assistant message in the thread for deletion.
+        // get the message id from the last assistant message in the thread for deletion.
         messageId = lastMessage?.id;
         console.log('messageId', messageId);
       }
@@ -106,17 +106,9 @@ module.exports = {
 
         if (aiChat) {
           if (messageId) {
-            // even though we deleted the message from the thread
-            // we also need to remove it from our local copy of the messages
-            // but we also need to remove the user message preceding it.
-            // so we need to delete 2 messages
-            // the one with the messageId and the one before it.
-            for (let i = messages.length - 1; i >= 0; i--) {
-              if (messages[i].id === messageId) {
-                messages.splice(i, 2);
-                break;
-              }
-            }
+            // remove the last two messages
+            messages.splice(-1, 1);
+            messages.splice(-1, 1);
           }
 
           await AIChat.updateOne({ id: aiChat.id }).set({
