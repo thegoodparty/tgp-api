@@ -31,9 +31,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      // TODO: add this back
-      //   const user = this.req.user;
-      const user = await User.findOne({ id: 1 });
+      const user = this.req.user;
 
       let { chatId, regenerate, message } = inputs;
       if (!user) {
