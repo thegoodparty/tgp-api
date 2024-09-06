@@ -58,7 +58,6 @@ module.exports = {
           firstName: user?.firstName,
           lastName: user?.lastName,
           avatar: user?.avatar || false,
-          verified: data?.hubSpotUpdates?.verified_candidates,
         };
 
         if (!campaign.details.geoLocation) {
