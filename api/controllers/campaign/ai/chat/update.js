@@ -6,14 +6,22 @@ const openAiAssistant =
 
 module.exports = {
   inputs: {
+    chatId: {
+      type: 'string',
+      required: true,
+    },
     message: {
       type: 'string',
+    },
+    regenerate: {
+      type: 'boolean',
+      defaultsTo: false,
     },
   },
 
   exits: {
     success: {
-      description: 'Campaign Found',
+      description: 'Chat Found',
       responseType: 'ok',
     },
     badRequest: {
@@ -26,7 +34,7 @@ module.exports = {
     try {
       const user = this.req.user;
 
-      let { message } = inputs;
+      let { chatId, regenerate, message } = inputs;
       if (!user) {
         return exits.badRequest();
       }
@@ -35,16 +43,35 @@ module.exports = {
         return exits.badRequest();
       }
 
-      // Create a new chat
-      let campaign = await sails.helpers.campaign.byUser(user);
+      let aiChat = await AIChat.findOne({ id: chatId, user: user.id });
+      if (!aiChat) {
+        return exits.badRequest();
+      }
+
+      let messages = aiChat?.data?.messages || [];
+      let threadId = aiChat?.thread;
+      let campaign = await Campaign.findOne({ id: aiChat?.campaign });
+
+      console.log('chatId', chatId);
+      console.log('threadId', threadId);
+      console.log('regenerate', regenerate);
+
       const { content } = await getChatSystemPrompt(campaign);
+
+      let messageId;
+      if (regenerate) {
+        message = messages.slice(-2, -1)[0]?.content;
+        const lastMessage = messages.slice(-1)[0];
+        messageId = lastMessage?.id;
+        messages.splice(-1, 1);
+        messages.splice(-1, 1);
+      }
 
       let chatMessage = {
         role: 'user',
         content: message,
       };
 
-      let threadId;
       const completion = await getAssistantCompletion(
         content,
         openAiAssistant,
@@ -65,15 +92,12 @@ module.exports = {
           usage,
         };
 
-        await AIChat.create({
-          assistant: openAiAssistant,
-          thread: completion.threadId,
-          user: user.id,
-          campaign: campaign.id,
+        await AIChat.updateOne({ id: aiChat.id }).set({
           data: {
-            messages: [chatMessage, chatResponse],
+            messages: [...messages, chatMessage, chatResponse],
           },
         });
+
         return exits.success({ message: chatResponse });
       } else {
         return exits.badRequest();

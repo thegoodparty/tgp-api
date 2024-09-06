@@ -65,6 +65,5 @@ module.exports.policies = {
   'crm/hubspot-webhook': true,
   'crm/sync': true,
   'campaign/ai/prompt/*': true,
-  'campaign/ai/chat/*': true,
   'campaign/list-map': true,
 };
