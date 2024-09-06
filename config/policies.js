@@ -29,6 +29,7 @@ module.exports.policies = {
   'candidate/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/election-events': ['isAuthorizedCron'],
   'voterData/locations': ['isAuthenticated'],
+  'crm/refresh-companies': ['isAuthenticated', 'isAdmin'],
 
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
