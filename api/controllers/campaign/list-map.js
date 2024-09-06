@@ -1,5 +1,4 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-const isProd = appBase === 'https://goodparty.org';
 
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
@@ -19,6 +18,10 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const isProd = appBase === 'https://goodparty.org';
+      await sails.helpers.slack.errorLoggerHelper('campaign list map', {
+        isProd,
+      });
       const campaigns = await Campaign.find({
         select: ['slug', 'details', 'data', 'didWin'],
         where: { user: { '!=': null }, isDemo: false, isActive: true },
@@ -35,6 +38,12 @@ module.exports = {
           continue;
         }
         let { details, slug, didWin, user, data } = campaign;
+        // on prod we filter only verified candidates from hubspot.
+        if (isProd) {
+          if (data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
+            continue;
+          }
+        }
         const { otherOffice, office, state, ballotLevel, zip, party } =
           details || {};
         const resolvedOffice = otherOffice || office;
@@ -49,13 +58,8 @@ module.exports = {
           firstName: user?.firstName,
           lastName: user?.lastName,
           avatar: user?.avatar || false,
+          verified: data?.hubSpotUpdates?.verified_candidates,
         };
-        // on prod we filter only verified candidates from hubspot.
-        if (isProd) {
-          if (!data?.hubSpotUpdates?.verified_candidates === 'Yes') {
-            continue;
-          }
-        }
 
         if (!campaign.details.geoLocation) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
@@ -74,6 +78,10 @@ module.exports = {
       });
     } catch (e) {
       console.log('Error in campaign list map', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error in campaign list map',
+        { e },
+      );
       return exits.forbidden();
     }
   },
