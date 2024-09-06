@@ -1,18 +1,7 @@
 async function getChatSystemPrompt(campaign) {
   let date = new Date();
   let today = date.toISOString().split('T')[0];
-  let template = `
-You are an AI assistant designed to support [[name]], an Independent candidate running for [[office]] in [[state]]. 
-Your primary role is to assist the candidate with campaign-related topics, political theory, 
-and strategies that will help them succeed in their election. You must stay within the scope of campaign-related discussions 
-and guide the candidate using the provided context. Below is detailed information about the candidate, their campaign, 
-and the strategies they are employing. Use this data to personalize your responses, ensure relevance to the campaign, 
-and provide valuable insights that align with the candidate's goals.
-
-If the candidate brings up topics that are outside the scope of their campaign or political theory, 
-gently redirect the conversation back to relevant topics. Always maintain a professional, supportive tone.
-
-### Candidate Information and Context:
+  let template = `### Candidate Information and Context:
 {
   "context": {
     "candidateProfile": {
