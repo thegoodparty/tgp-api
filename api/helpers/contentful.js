@@ -112,6 +112,7 @@ function mapResponse(items) {
 
         const article = {
           ...item.fields,
+          updateDate: item.sys.updatedAt,
           id: elementId,
           mainImage: extractMediaFile(item.fields.mainImage),
           readingTime: time,
@@ -143,6 +144,22 @@ function mapResponse(items) {
             smallImage: extractMediaFile(article.banner.fields.smallImage),
           };
         }
+
+        if (article.relatedArticles) {
+          article.relatedArticles = article.relatedArticles.map((related) => {
+            return {
+              ...related.fields,
+              mainImage: extractMediaFile(related.fields.mainImage),
+            };
+          });
+        }
+
+        if (article.references) {
+          article.references = article.references.map((reference) => ({
+            ...reference.fields,
+          }));
+        }
+
         mappedResponse.blogArticles.push(article);
       } else if (itemId === 'glossaryItem') {
         if (!mappedResponse.glossaryItemsByTitle) {
@@ -205,7 +222,11 @@ function mapResponse(items) {
         let tags = [];
         if (item.fields?.tags) {
           for (let tag of item.fields.tags) {
-            tags.push(tag?.fields?.name);
+            const name = tag?.fields?.name;
+            tags.push({
+              name: name,
+              slug: slugify(name, { lower: true }),
+            });
           }
         }
 
@@ -320,6 +341,21 @@ function mapResponse(items) {
           ...(mappedResponse.teamMilestones || []),
           processTeamMilestone(item),
         ];
+      } else if (itemId === 'blogHome') {
+        let tags = [];
+        if (item.fields?.topTags) {
+          for (let tag of item.fields.topTags) {
+            const name = tag?.fields?.name;
+            tags.push({
+              name: name,
+              slug: slugify(name, { lower: true }),
+            });
+          }
+        }
+
+        mappedResponse.blogHome = {
+          tags,
+        };
       }
     } else {
       console.log('unhandled item => ', item);
