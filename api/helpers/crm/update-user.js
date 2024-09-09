@@ -167,10 +167,10 @@ module.exports = {
           await updateMeta(user, hubspotId, profile_updated_count);
         } catch (e) {
           console.log('error creating contact', e);
-          await sails.helpers.slack.errorLoggerHelper(
-            'Error creating hubspot contact',
-            e,
-          );
+          // await sails.helpers.slack.errorLoggerHelper(
+          //   'Error creating hubspot contact',
+          //   e,
+          // );
         }
       }
       return exits.success('ok');
