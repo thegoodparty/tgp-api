@@ -53,20 +53,23 @@ module.exports = {
       delete demoCampaign.id;
       delete demoCampaign.pathToVictory;
 
-      const campaign = await Campaign.create({
-        ...demoCampaign,
-        slug,
-        data: {
-          ...demoCampaign.data,
+      let campaign = await Campaign.findOne({ user: user.id });
+      if (!campaign) {
+        campaign = await Campaign.create({
+          ...demoCampaign,
           slug,
-        },
-        isDemo: true,
-        user: user.id,
-        details: {
-          ...demoCampaign.details,
-          electionDate: dateToISO8601DateString(get8WeeksFutureDate()),
-        },
-      }).fetch();
+          data: {
+            ...demoCampaign.data,
+            slug,
+          },
+          isDemo: true,
+          user: user.id,
+          details: {
+            ...demoCampaign.details,
+            electionDate: dateToISO8601DateString(get8WeeksFutureDate()),
+          },
+        }).fetch();
+      }
 
       const candidatePositions = await CandidatePosition.find({
         campaign: demoCampaignId,
