@@ -346,7 +346,7 @@ module.exports = {
         
       `;
 
-      console.log('new prompt', newPrompt);
+      // console.log('new prompt', newPrompt);
       return exits.success(newPrompt);
     } catch (e) {
       console.log('Error in helpers/ai/promptReplace', e);
