@@ -29,6 +29,8 @@ module.exports.policies = {
   'candidate/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/election-events': ['isAuthorizedCron'],
   'voterData/locations': ['isAuthenticated'],
+  'crm/sync': ['isAuthenticated', 'isAdmin'],
+  'crm/refresh-companies': ['isAuthenticated', 'isAdmin'],
 
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
@@ -61,7 +63,6 @@ module.exports.policies = {
   'voterData/voterFile/geo-location-cron': true,
   'payments/events': true,
   'crm/hubspot-webhook': true,
-  'crm/sync': true,
   'campaign/ai/prompt/*': true,
   'campaign/list-map': true,
 };
