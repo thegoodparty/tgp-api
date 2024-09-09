@@ -174,7 +174,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
   } = p2vResponse;
 
   const candidateSlackMessage = `
-  • Candidate: ${campaign.data?.name} [${campaign?.slug}]
+  • Candidate: ${campaign?.data?.name} [${campaign?.slug}]
   • Office: ${officeName}
   • Election Date: ${electionDate}
   • Election Term: ${electionTerm}
