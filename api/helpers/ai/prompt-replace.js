@@ -274,11 +274,14 @@ module.exports = {
         if (updateHistoryObjects) {
           for (const update of updateHistoryObjects) {
             updateHistory.allTime[update.type] += update.quantity;
+            updateHistory.allTime.total += update.quantity;
             if (update.createdAt > thisWeek) {
               updateHistory.thisWeek[update.type] += update.quantity;
+              updateHistory.thisWeek.total += update.quantity;
             }
             if (update.createdAt > twoWeeksAgo && update.createdAt < thisWeek) {
               updateHistory.lastWeek[update.type] += update.quantity;
+              updateHistory.lastWeek.total += update.quantity;
             }
           }
         }
