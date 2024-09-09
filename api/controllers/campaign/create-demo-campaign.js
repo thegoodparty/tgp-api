@@ -53,7 +53,7 @@ module.exports = {
       delete demoCampaign.id;
       delete demoCampaign.pathToVictory;
 
-      let campaign = await Campaign.findOne({ user: user.id });
+      let campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         campaign = await Campaign.create({
           ...demoCampaign,

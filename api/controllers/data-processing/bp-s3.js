@@ -142,7 +142,7 @@ async function addNewCandidate(row) {
     }
     if (user && user?.id) {
       try {
-        campaign = await Campaign.findOne({ user: user.id });
+        campaign = await sails.helpers.campaign.byUser(user.id);
       } catch (e) {
         console.log('error finding campaign', e);
         await sendSlackNotification(

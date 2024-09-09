@@ -30,7 +30,7 @@ module.exports = {
       };
 
       // see if the user already have campaign
-      const existing = await Campaign.findOne({ user: user.id });
+      const existing = await sails.helpers.campaign.byUser(user.id);
       if (existing) {
         return exits.success({
           slug: existing.slug,

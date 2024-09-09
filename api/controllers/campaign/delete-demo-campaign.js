@@ -28,7 +28,7 @@ module.exports = {
           whyBrowsing: null,
         }),
       });
-      const campaign = await Campaign.findOne({ user: user.id });
+      const campaign = await sails.helpers.campaign.byUser(user.id);
       const { pathToVictory: p2vId } = campaign;
       await PathToVictory.destroyOne({ id: p2vId });
       await CandidatePosition.destroy({

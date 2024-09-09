@@ -21,7 +21,9 @@ module.exports = {
 
       const campaigns = await Campaign.find({
         user: user.id,
-      }).populate('pathToVictory');
+      })
+        .sort([{ updatedAt: 'DESC' }])
+        .populate('pathToVictory');
 
       if (!campaigns) {
         throw new Error('No campaigns found for given user');

@@ -29,9 +29,7 @@ module.exports = {
       user = await User.findOne({ id: user.id });
       const { id, firstName, lastName, email, phone, uuid, zip } = user;
 
-      const campaign = await Campaign.findOne({
-        user: id,
-      });
+      const campaign = await sails.helpers.campaign.byUser(user.id);
 
       const { metaData } = user || {};
       const { accountType, whyBrowsing, demoPersona } = metaData || {};
