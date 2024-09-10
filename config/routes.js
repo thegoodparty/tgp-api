@@ -146,6 +146,8 @@ module.exports.routes = {
   // onboarding AI
   'GET   /api/v1/campaign/ai/prompt': 'campaign/ai/prompt/get',
   'POST   /api/v1/campaign/ai/chat': 'campaign/ai/chat/create',
+  'PUT   /api/v1/campaign/ai/chat': 'campaign/ai/chat/update',
+  'GET   /api/v1/campaign/ai/chat': 'campaign/ai/chat/get',
   'POST   /api/v1/campaign/ai': 'campaign/ai/create',
   'POST   /api/v1/campaign/ai/rename': 'campaign/ai/rename',
   'DELETE   /api/v1/campaign/ai': 'campaign/ai/delete',
