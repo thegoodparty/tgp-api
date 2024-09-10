@@ -6,6 +6,7 @@ module.exports = {
     },
     thread: {
       type: 'string',
+      unique: true,
     },
     user: {
       model: 'user',

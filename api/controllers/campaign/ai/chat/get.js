@@ -1,6 +1,6 @@
 module.exports = {
   inputs: {
-    chatId: {
+    threadId: {
       type: 'string',
       required: true,
     },
@@ -18,10 +18,10 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { chatId } = inputs;
+      const { threadId } = inputs;
 
       const aiChat = await AIChat.findOne({
-        id: chatId,
+        thread: threadId,
         user: this.req.user.id,
       });
 
