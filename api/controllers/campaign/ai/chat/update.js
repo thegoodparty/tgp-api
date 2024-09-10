@@ -6,7 +6,7 @@ const openAiAssistant =
 
 module.exports = {
   inputs: {
-    chatId: {
+    threadId: {
       type: 'string',
       required: true,
     },
@@ -34,25 +34,24 @@ module.exports = {
     try {
       const user = this.req.user;
 
-      let { chatId, regenerate, message } = inputs;
+      let { threadId, regenerate, message } = inputs;
       if (!user) {
         return exits.badRequest();
       }
 
-      if (regenerate && !chatId) {
+      if (regenerate && !threadId) {
         return exits.badRequest();
       }
 
-      let aiChat = await AIChat.findOne({ id: chatId, user: user.id });
+      let aiChat = await AIChat.findOne({ thread: threadId, user: user.id });
       if (!aiChat) {
         return exits.badRequest();
       }
 
       let messages = aiChat?.data?.messages || [];
-      let threadId = aiChat?.thread;
       let campaign = await Campaign.findOne({ id: aiChat?.campaign });
 
-      console.log('chatId', chatId);
+      console.log('chatId', aiChat.id);
       console.log('threadId', threadId);
       console.log('regenerate', regenerate);
 

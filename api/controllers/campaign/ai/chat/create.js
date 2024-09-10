@@ -8,6 +8,7 @@ module.exports = {
   inputs: {
     message: {
       type: 'string',
+      required: true,
     },
   },
 
@@ -27,11 +28,7 @@ module.exports = {
       const user = this.req.user;
 
       let { message } = inputs;
-      if (!user) {
-        return exits.badRequest();
-      }
-
-      if (regenerate && !chatId) {
+      if (!user || !message) {
         return exits.badRequest();
       }
 
@@ -56,7 +53,7 @@ module.exports = {
       console.log('completion', completion);
 
       let chatResponse;
-      if (completion && completion.content) {
+      if (completion && completion?.content) {
         chatResponse = {
           role: 'assistant',
           id: completion.messageId,
@@ -74,7 +71,10 @@ module.exports = {
             messages: [chatMessage, chatResponse],
           },
         });
-        return exits.success({ message: chatResponse });
+        return exits.success({
+          message: chatResponse,
+          threadId: completion.threadId,
+        });
       } else {
         return exits.badRequest();
       }
