@@ -356,6 +356,15 @@ function mapResponse(items) {
         mappedResponse.blogHome = {
           tags,
         };
+      } else if (itemId === 'candidateTestimonial') {
+        if (!mappedResponse.candidateTestimonials) {
+          mappedResponse.candidateTestimonials = [];
+        }
+
+        mappedResponse.candidateTestimonials.push({
+          ...item.fields,
+          image: extractMediaFile(item.fields.image),
+        });
       }
     } else {
       console.log('unhandled item => ', item);
