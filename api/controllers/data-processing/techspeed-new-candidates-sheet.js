@@ -70,8 +70,8 @@ module.exports = {
       const columnNames = rows[1];
       console.log('columnNames', columnNames);
       let processedCount = 0;
-      // for (let i = 2; i < rows.length; i++) {
-      for (let i = 2; i < 5; i++) {
+      for (let i = 2; i < rows.length; i++) {
+        // for (let i = 2; i < 5; i++) {
         const row = rows[i];
         console.log('row', row);
         // start from 2 to skip header
