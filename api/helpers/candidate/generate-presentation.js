@@ -50,9 +50,9 @@ module.exports = {
         brCandidacyData,
         campaign,
         brData,
+        vendorTsData,
       } = candidate;
 
-      // const about = 'whatever'; //TODO: generate AI about here
       let officeDescription;
       let salary;
       let term;
@@ -100,7 +100,31 @@ module.exports = {
         updatedAt: new Date(),
       };
 
-      const { mtfcc, geo_id, urls } = brData;
+      // for candidates who are created via techspeed
+      if (!brData && vendorTsData) {
+        const {
+          website_url,
+          linkedin_url,
+          instagram_handle,
+          twitter_handle,
+          facebook_url,
+          city,
+          state,
+          postal_code,
+        } = vendorTsData;
+        data.socialUrls = [
+          { type: 'website', url: website_url },
+          { type: 'linkedin', url: linkedin_url },
+          { type: 'instagram', url: instagram_handle },
+          { type: 'twitter', url: twitter_handle },
+          { type: 'facebook', url: facebook_url },
+        ];
+        data.city = city;
+        data.state = state;
+        data.zip = postal_code;
+      }
+
+      const { mtfcc, geo_id, urls } = brData || {};
       const geoData = await resolveMtfcc(mtfcc, geo_id);
 
       // todo: switch to the helper? but it may get updated soon

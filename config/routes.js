@@ -244,6 +244,8 @@ module.exports.routes = {
   'GET   /api/v1/bp-s3': 'data-processing/bp-s3',
   'GET   /api/v1/techspeed-enhance-cron':
     'data-processing/techspeed-enhance-cron',
+  'GET   /api/v1/techspeed-new-candidates':
+    'data-processing/techspeed-new-candidates-sheet',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',

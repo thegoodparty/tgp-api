@@ -1,6 +1,9 @@
 /* eslint-disable camelcase */
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { race } = require('async');
 const { google } = require('googleapis');
+const { create } = require('lodash');
+const slugify = require('slugify');
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
 
@@ -12,15 +15,15 @@ const secretAccessKey =
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 // the process column changes based on the app base. prod - last column, qa - second last column, dev - third last column
-let processColumn = 1;
+let processColumn = 2;
 if (appBase === 'https://qa.goodparty.org') {
-  processColumn = 2;
+  processColumn = 3;
 }
 if (
   appBase === 'https://dev.goodparty.org' ||
   appBase === 'http://localhost:4000'
 ) {
-  processColumn = 3;
+  processColumn = 4;
 }
 
 const s3 = new S3Client({
@@ -59,37 +62,37 @@ module.exports = {
       // Read rows from the sheet
       const readResponse = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: 'Enhanced BallotReady Candidates',
+        range: 'TechSpeed Candidates',
       });
 
       const rows = readResponse.data.values;
 
       const columnNames = rows[1];
+      console.log('columnNames', columnNames);
       let processedCount = 0;
-      for (let i = 2; i < rows.length; i++) {
-        // for (let i = 2; i < 5; i++) {
+      // for (let i = 2; i < rows.length; i++) {
+      for (let i = 2; i < 5; i++) {
         const row = rows[i];
+        console.log('row', row);
         // start from 2 to skip header
         console.log('processing row : ', i);
         const processedRow = await processRow(row, columnNames);
         console.log('processedRow : ', processedRow);
-        const isUpdated = await saveVendorCandidate(processedRow);
-
-        console.log('isUpdated : ', isUpdated, i);
-
-        if (isUpdated) {
-          console.log('updated1');
-          rows[i][row.length - processColumn] = 'processed';
-          console.log('updated2');
-          processedCount++;
-          console.log('processed');
+        isExisting = await findExistingCandidate(processedRow);
+        if (isExisting) {
+          console.log('isExisting');
+          await updateExistingCandidate(processedRow, isExisting);
+        } else {
+          await createCandidate(processedRow);
         }
+        rows[i][row.length - processColumn] = 'processed';
+        processedCount++;
       }
       console.log('writing to sheet');
       // write back to google sheets
       await sheets.spreadsheets.values.update({
         spreadsheetId,
-        range: 'Enhanced BallotReady Candidates',
+        range: 'TechSpeed Candidates',
         valueInputOption: 'RAW',
         requestBody: {
           values: rows,
@@ -110,6 +113,7 @@ module.exports = {
         'Error enhancing candidates',
         e,
       );
+      console.log('error enhancing candidates : ', e);
       return exits.badRequest({
         message: 'unknown error',
         e,
@@ -181,7 +185,7 @@ async function processRow(candidate, columnNames) {
     }
     const parsedCandidate = {};
 
-    for (let i = 0; i < columnNames.length - 3; i++) {
+    for (let i = 0; i < columnNames.length; i++) {
       parsedCandidate[columnNames[i]] = candidate[i];
     }
 
@@ -197,24 +201,29 @@ async function processRow(candidate, columnNames) {
   }
 }
 
-async function saveVendorCandidate(row) {
+async function findExistingCandidate(row) {
   try {
     const { parsedCandidate } = row;
-    const { ballotready_candidate_id, phone_clean, email } = parsedCandidate;
-    if (!ballotready_candidate_id) {
-      console.log('missing required fields');
-      return;
-    }
-    const updated = await BallotCandidate.updateOne({
-      brCandidateId: ballotready_candidate_id,
-    }).set({
-      vendorTsPhone: phone_clean || '',
-      vendorTsEmail: email || '',
-      vendorTsData: parsedCandidate,
+    const { first_name, last_name, office_name, email } = parsedCandidate;
+    const slug = slugify(`${first_name}-${last_name}-${office_name}`, {
+      lower: true,
     });
-    return !!updated;
+    const existing = await BallotCandidate.findOne({ slug });
+    if (existing) {
+      console.log('existing candidate found');
+      return existing;
+    }
+
+    const existingEmail = await BallotCandidate.findOne({ email });
+    if (existingEmail) {
+      console.log('existing email found');
+      return existingEmail;
+    }
+
+    return null;
   } catch (e) {
-    console.log('error saving vendor candidate : ', e);
+    console.log('error finding candidate : ', e);
+    return null;
   }
 }
 
@@ -224,4 +233,76 @@ async function streamToString(readableStream) {
     chunks.push(chunk);
   }
   return Buffer.concat(chunks).toString('utf-8');
+}
+
+async function createCandidate(row) {
+  try {
+    const { parsedCandidate } = row;
+    const {
+      first_name,
+      last_name,
+      office_name,
+      email,
+      party,
+      phone,
+      state,
+      city,
+      postal_code,
+      ballotready_race_id,
+      office_level,
+      election_result,
+      general_election_date,
+      candidate_id_tier,
+      is_primary,
+      office_normalized,
+    } = parsedCandidate;
+
+    const slug = slugify(`${first_name}-${last_name}-${office_name}`, {
+      lower: true,
+    });
+
+    const candidate = await BallotCandidate.create({
+      slug,
+      firstName: first_name,
+      lastName: last_name,
+      email,
+      phone,
+      state,
+      party,
+      city,
+      electionDay: general_election_date,
+      raceId: ballotready_race_id,
+      postalCode: postal_code,
+      positionName: office_name,
+      level: office_level,
+      electionResult: election_result,
+      isPrimary: is_primary === 'TRUE',
+      normalizedPositionName: office_normalized,
+      tier: candidate_id_tier,
+      vendorTsData: parsedCandidate,
+    });
+
+    let ballotRace = await BallotRace.findOne({
+      ballotId: ballotready_race_id,
+    });
+    if (ballotRace) {
+      await BallotCandidate.addToCollection(
+        candidate.id,
+        'races',
+        ballotRace.id,
+      );
+    }
+  } catch (e) {
+    console.log('error creating candidate : ', e);
+  }
+}
+
+async function updateExistingCandidate(row, existingCandidate) {
+  try {
+    await BallotCandidate.updateOne({ id: existingCandidate.id }).set({
+      vendorTsData: row.parsedCandidate,
+    });
+  } catch (e) {
+    console.log('error updating existing candidate : ', e);
+  }
 }
