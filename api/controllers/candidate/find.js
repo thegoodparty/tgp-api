@@ -39,14 +39,15 @@ module.exports = {
             { party: { '!=': 'Republican' } },
             { party: { '!=': 'Democratic' } },
             { party: { '!=': 'Democratic-Farmer-Labor' } },
-            { positionId: { '!=': '' } },
-            { positionId: { '!=': null } },
+            // { positionId: { '!=': '' } },
+            // { positionId: { '!=': null } },
             { raceId: { '!=': '' } },
             { raceId: { '!=': null } },
             { isRemoved: false },
           ],
         },
       });
+      console.log('candidate', candidate);
       if (!candidate) {
         return exits.notFound();
       }
