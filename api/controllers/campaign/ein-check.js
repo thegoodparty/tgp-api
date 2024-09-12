@@ -36,7 +36,7 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    const campaign = await sails.helpers.campaign.byUser(this.req.user);
+    const campaign = await sails.helpers.campaign.byUser(this.req.user?.id);
     const { name, ein } = inputs;
 
     if (!campaign) {
