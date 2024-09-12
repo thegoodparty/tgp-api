@@ -353,8 +353,19 @@ function mapResponse(items) {
           }
         }
 
+        let faqs = [];
+        if (item.fields?.articleFaqs) {
+          for (let faq of item.fields?.articleFaqs) {
+            faqs.push({
+              title: faq?.fields?.title,
+              id: elementId,
+            });
+          }
+        }
+
         mappedResponse.blogHome = {
           tags,
+          faqs,
         };
       } else if (itemId === 'candidateTestimonial') {
         if (!mappedResponse.candidateTestimonials) {
