@@ -27,7 +27,7 @@ module.exports = {
         metaData: JSON.stringify(updatedMeta),
       });
 
-      const campaign = await sails.helpers.campaign.byUser(user);
+      const campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         // check if the user is a volunteer
         const volunteer = await CampaignVolunteer.findOne({ user: user.id });

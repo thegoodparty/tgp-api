@@ -35,7 +35,7 @@ module.exports = {
       if (user.isAdmin && slug) {
         campaign = await Campaign.findOne({ slug });
       } else {
-        campaign = await sails.helpers.campaign.byUser(user);
+        campaign = await sails.helpers.campaign.byUser(user.id);
       }
 
       let p2v = await PathToVictory.findOne({ campaign: campaign.id });

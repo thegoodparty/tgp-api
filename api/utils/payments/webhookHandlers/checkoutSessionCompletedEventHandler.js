@@ -25,7 +25,7 @@ const checkoutSessionCompletedEventHandler = async (event) => {
   if (!user) {
     throw 'No user found with given checkout session userId';
   }
-  const campaign = await sails.helpers.campaign.byUser(user);
+  const campaign = await sails.helpers.campaign.byUser(user.id);
   if (!campaign) {
     throw 'No campaign found for user';
   }

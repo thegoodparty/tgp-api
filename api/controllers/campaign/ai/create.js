@@ -41,7 +41,7 @@ module.exports = {
 
       await sails.helpers.queue.consumer();
 
-      const campaignObj = await sails.helpers.campaign.byUser(user);
+      const campaignObj = await sails.helpers.campaign.byUser(user.id);
       if (!campaignObj) {
         return exits.badRequest('No campaign');
       }

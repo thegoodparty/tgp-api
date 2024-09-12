@@ -4,8 +4,8 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
-    user: {
-      type: 'json',
+    userId: {
+      type: 'number',
     },
   },
 
@@ -17,21 +17,26 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { user } = inputs;
+      const { userId } = inputs;
+      let campaign;
+      try {
+        campaign = await Campaign.findOne({ user: userId }).populate(
+          'pathToVictory',
+        );
+        return exits.success(campaign);
+      } catch (e) {
+        const campaigns = await Campaign.find({
+          user: userId,
+        }).populate('pathToVictory');
 
-      const campaigns = await Campaign.find({
-        user: user.id,
-      })
-        .sort([{ updatedAt: 'DESC' }])
-        .populate('pathToVictory');
+        if (!campaigns) {
+          throw new Error('No campaigns found for given user');
+        }
 
-      if (!campaigns) {
-        throw new Error('No campaigns found for given user');
+        campaign = campaigns && campaigns.length > 0 ? campaigns[0] : false;
+
+        return exits.success(campaign);
       }
-
-      const campaign = campaigns && campaigns.length > 0 ? campaigns[0] : false;
-
-      return exits.success(campaign);
     } catch (e) {
       console.log('error getting campaign', e);
       return exits.success(false);

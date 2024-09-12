@@ -57,7 +57,7 @@ module.exports = {
         customFilters = JSON.parse(inputs.customFilters);
       }
       const { user } = this.req;
-      const campaign = await sails.helpers.campaign.byUser(user);
+      const campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
