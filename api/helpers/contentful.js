@@ -358,7 +358,7 @@ function mapResponse(items) {
           for (let faq of item.fields?.articleFaqs) {
             faqs.push({
               title: faq?.fields?.title,
-              id: elementId.toLowerCase(),
+              id: faq?.sys?.id.toLowerCase(),
             });
           }
         }
