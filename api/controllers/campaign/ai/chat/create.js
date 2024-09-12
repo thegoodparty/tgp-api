@@ -33,7 +33,7 @@ module.exports = {
       }
 
       // Create a new chat
-      let campaign = await sails.helpers.campaign.byUser(user);
+      let campaign = await sails.helpers.campaign.byUser(user.id);
       const { content } = await getChatSystemPrompt(campaign);
 
       let chatMessage = {

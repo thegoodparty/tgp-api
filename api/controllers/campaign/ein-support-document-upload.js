@@ -56,7 +56,7 @@ module.exports = {
       ? await Campaign.findOne({
           id: campaignId,
         })
-      : await sails.helpers.campaign.byUser(user);
+      : await sails.helpers.campaign.byUser(user.id);
 
     if (!campaignRecord) {
       return exits.forbidden();

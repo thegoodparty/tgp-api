@@ -29,7 +29,7 @@ module.exports = {
       const user = this.req.user;
       const { key, name } = inputs;
 
-      const campaign = await sails.helpers.campaign.byUser(user);
+      const campaign = await sails.helpers.campaign.byUser(user.id);
 
       const { aiContent } = campaign;
 
