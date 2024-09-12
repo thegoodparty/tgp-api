@@ -27,7 +27,7 @@ module.exports = {
 
       return exits.success(user);
     } catch (e) {
-      console.log('error getting user', e);
+      console.error('error getting user', e);
       return exits.success(false);
     }
   },

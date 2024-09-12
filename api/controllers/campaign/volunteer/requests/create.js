@@ -4,7 +4,7 @@ module.exports = {
   description: 'Create request to join a campaign team',
 
   inputs: {
-    email: {
+    candidateEmail: {
       type: 'string',
       required: true,
       isEmail: true,
@@ -20,7 +20,6 @@ module.exports = {
   exits: {
     success: {
       description: 'Campaign Request was created.',
-      responseType: 'ok',
     },
     error: {
       description: 'badRequest',
@@ -34,18 +33,31 @@ module.exports = {
 
     const candidateUser = await sails.helpers.user.byEmail(candidateEmail);
     const campaign = candidateUser
-      ? await sails.helpers.campaign.byUser(candidateUser)
+      ? await sails.helpers.campaign.byUser(candidateUser?.id)
       : null;
-    await Requests.create({
-      user,
-      email: candidateEmail,
-      role,
-      ...(campaign ? { campaign: campaign.id } : {}),
-    }).fetch();
+    try {
+      const existingRequest = await Requests.findOne({
+        user: user.id,
+        candidateEmail,
+        role,
+      });
 
-    // All done.
-    return exits.success({
-      message: 'Campaign Request was created.',
-    });
+      if (existingRequest) {
+        throw new Error('Request to join campaign already exists');
+      }
+
+      const campaignRequest = await Requests.create({
+        user: user.id,
+        candidateEmail,
+        role,
+        campaign: campaign?.id || null,
+      }).fetch();
+
+      // All done.
+      return exits.success(campaignRequest);
+    } catch (e) {
+      console.error('error creating campaign request', e);
+      return exits.error(e);
+    }
   },
 };
