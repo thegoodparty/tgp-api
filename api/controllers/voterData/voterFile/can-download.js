@@ -15,7 +15,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
-      const campaign = await sails.helpers.campaign.byUser(user);
+      const campaign = await sails.helpers.campaign.byUser(user.id);
       const canDownload = await sails.helpers.campaign.canDownloadVoterFile(
         campaign.id,
       );

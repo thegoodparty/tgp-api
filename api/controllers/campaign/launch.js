@@ -24,7 +24,7 @@ module.exports = {
     try {
       const { user } = this.req;
 
-      let campaignRecord = await sails.helpers.campaign.byUser(user);
+      let campaignRecord = await sails.helpers.campaign.byUser(user.id);
 
       if (!campaignRecord) {
         return exits.forbidden();

@@ -28,7 +28,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const user = this.req.user;
-      let campaign = await sails.helpers.campaign.byUser(user);
+      let campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         return exits.notFound();
       }
