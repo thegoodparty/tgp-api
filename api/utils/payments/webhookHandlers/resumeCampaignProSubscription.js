@@ -18,7 +18,7 @@ const resumeCampaignProSubscription = async (event) => {
   if (!user) {
     throw 'No user found with given subscription customerId';
   }
-  const campaign = await sails.helpers.campaign.byUser(user);
+  const campaign = await sails.helpers.campaign.byUser(user.id);
   if (!campaign) {
     throw 'No campaign found with given subscriptionId';
   }

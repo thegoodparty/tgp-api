@@ -25,7 +25,7 @@ module.exports = {
     try {
       const { attr, slug } = inputs;
       const { user } = this.req;
-      const userCampaign = await sails.helpers.campaign.byUser(user);
+      const userCampaign = await sails.helpers.campaign.byUser(user.id);
 
       // Only allow mismatched slugs for admins
       if (slug && slug !== userCampaign.slug && !user.isAdmin) {

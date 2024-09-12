@@ -25,7 +25,7 @@ module.exports = {
     try {
       const user = this.req.user;
       const { slug, id } = inputs;
-      const campaign = await sails.helpers.campaign.byUser(user);
+      const campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
