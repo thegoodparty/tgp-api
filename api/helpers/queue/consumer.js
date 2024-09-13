@@ -153,7 +153,7 @@ async function handlePathToVictoryMessage(message) {
       'error in consumer/handlePathToVictorMessagey',
       e,
     );
-    throw new Error('error in consumer/handlePathToVictoryMessage');
+    // throw new Error('error in consumer/handlePathToVictoryMessage');
   }
 }
 
@@ -276,7 +276,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     );
 
     // throw an error to requeue the SQS Task.
-    throw new Error('No Path To Victory Found');
+    // throw new Error('No Path To Victory Found');
   }
 }
 
@@ -371,11 +371,13 @@ async function handleGenerateAiContent(message) {
     await sails.helpers.slack.slackHelper(
       {
         title: 'Error generating ai content',
-        body: `Error generating ai content. slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}. message: ${message}`,
+        body: `Error generating ai content. slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${
+          campaign?.id
+        }. message: ${JSON.stringify(message)}`,
       },
       'dev',
     );
-    throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+    // throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
   }
 
   let chat = existingChat || [];
@@ -560,7 +562,7 @@ async function handleGenerateAiContent(message) {
       console.log('error at consumer', e);
     }
     // throw an Error so that the message goes back to the queue or the DLQ.
-    throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+    // throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
   }
 }
 
