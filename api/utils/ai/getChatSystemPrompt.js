@@ -104,7 +104,7 @@ async function getChatSystemPrompt(campaign) {
     await sails.helpers.slack.slackHelper(
       {
         title: 'Error in System prompt',
-        message: `Error in getChatSystemPrompt. Error: ${error}`,
+        body: `Error in getChatSystemPrompt. Error: ${error}`,
       },
       'dev',
     );

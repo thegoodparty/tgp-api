@@ -365,7 +365,7 @@ async function handleGenerateAiContent(message) {
   await sails.helpers.slack.slackHelper(
     {
       title: 'Debugging ai generation',
-      message: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
+      body: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
     },
     'dev',
   );
@@ -379,7 +379,7 @@ async function handleGenerateAiContent(message) {
     await sails.helpers.slack.slackHelper(
       {
         title: 'Error generating ai content',
-        message: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
+        body: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
       },
       'dev',
     );

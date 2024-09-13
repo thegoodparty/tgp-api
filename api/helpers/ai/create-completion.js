@@ -73,7 +73,7 @@ module.exports = {
         await sails.helpers.slack.slackHelper(
           {
             title: 'Error in AI',
-            message: `Error in AI completion. Error: ${errorString}`,
+            body: `Error in AI completion. Error: ${errorString}`,
           },
           'dev',
         );
@@ -103,7 +103,7 @@ module.exports = {
       await sails.helpers.slack.slackHelper(
         {
           title: 'Error in AI',
-          message: 'Error in AI completion. No message content.',
+          body: 'Error in AI completion. No message content.',
         },
         'dev',
       );
