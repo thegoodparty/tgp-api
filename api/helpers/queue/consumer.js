@@ -155,6 +155,29 @@ async function handlePathToVictoryMessage(message) {
     );
     throw new Error('error in consumer/handlePathToVictoryMessage');
   }
+
+  // For now we are calculating the viability score after a valid path to victory response.
+  let viability;
+  try {
+    viability = await sails.helpers.campaign.viabilityScore(message.campaignId);
+  } catch (e) {
+    console.log('error in getting viability score', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error calculating viability score',
+      e,
+    );
+  }
+  console.log('viability', viability);
+  if (viability) {
+    const pathToVictory = await PathToVictory.findOne({
+      campaign: message.campaignId,
+    });
+    const data = pathToVictory.data || {};
+    data.viability = viability;
+    await PathToVictory.updateOne({ campaign: message.campaignId }).set({
+      data,
+    });
+  }
 }
 
 async function analyzePathToVictoryResponse(p2vResponse) {
