@@ -362,14 +362,6 @@ async function handleGenerateAiContent(message) {
   const { slug, key, regenerate } = message;
 
   let campaign = await Campaign.findOne({ slug });
-  await sails.helpers.slack.slackHelper(
-    {
-      title: 'Debugging ai generation',
-      body: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
-    },
-    'dev',
-  );
-
   let aiContent = campaign?.aiContent;
   let prompt = aiContent.generationStatus[key]?.prompt;
   let existingChat = aiContent.generationStatus[key]?.existingChat;
@@ -379,7 +371,7 @@ async function handleGenerateAiContent(message) {
     await sails.helpers.slack.slackHelper(
       {
         title: 'Error generating ai content',
-        body: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
+        body: `Error generating ai content. slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}. message: ${message}`,
       },
       'dev',
     );
