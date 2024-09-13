@@ -363,9 +363,16 @@ async function handleGenerateAiContent(message) {
 
   let campaign = await Campaign.findOne({ slug });
   let aiContent = campaign.aiContent;
-  let prompt = aiContent.generationStatus[key].prompt;
-  let existingChat = aiContent.generationStatus[key].existingChat;
-  let inputValues = aiContent.generationStatus[key].inputValues;
+  let prompt = aiContent.generationStatus[key]?.prompt;
+  let existingChat = aiContent.generationStatus[key]?.existingChat;
+  let inputValues = aiContent.generationStatus[key]?.inputValues;
+
+  // todo: if !prompt throw an error.
+
+  await sails.helpers.slack.aiLoggerHelper(
+    'debugging ai generation',
+    `message: ${message}, slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign.id}. aiContent: ${aiContent.generationStatus[key]}`,
+  );
 
   let chat = existingChat || [];
   let messages = [{ role: 'user', content: prompt }, ...chat];
