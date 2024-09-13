@@ -362,14 +362,12 @@ async function handleGenerateAiContent(message) {
   const { slug, key, regenerate } = message;
 
   let campaign = await Campaign.findOne({ slug });
-  await sails.helpers.slack.aiLoggerHelper(
-    'debugging ai generation',
-    JSON.parse({
-      slug: slug,
-      key: key,
-      regenerate: regenerate,
-      campaignId: campaign?.id,
-    }),
+  await sails.helpers.slack.slackHelper(
+    {
+      title: 'Debugging ai generation',
+      message: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
+    },
+    'dev',
   );
 
   let aiContent = campaign?.aiContent;
@@ -378,14 +376,12 @@ async function handleGenerateAiContent(message) {
   let inputValues = aiContent.generationStatus[key]?.inputValues;
 
   if (!aiContent || !prompt || !inputValues) {
-    await sails.helpers.slack.aiLoggerHelper(
-      'error at AI queue consumer. Missing data',
-      JSON.parse({
-        slug: slug,
-        key: key,
-        regenerate: regenerate,
-        campaignId: campaign?.id,
-      }),
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Error generating ai content',
+        message: `slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${campaign?.id}.`,
+      },
+      'dev',
     );
     throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
   }
