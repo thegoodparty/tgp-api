@@ -468,12 +468,11 @@ async function handleGenerateAiContent(message) {
 
         aiContent.generationStatus[key].status = 'completed';
 
-        await sails.helpers.campaign.patch(
-          campaign.id,
-          'aiContent',
-          'generationStatus',
-          aiContent.generationStatus,
-        );
+        await Campaign.updateOne({
+          slug,
+        }).set({
+          aiContent,
+        });
 
         await sails.helpers.slack.aiLoggerHelper(
           `updated campaign with ai. chatResponse: key: ${key}`,
@@ -545,13 +544,11 @@ async function handleGenerateAiContent(message) {
             delete aiContent.generationStatus[key];
           }
         }
-
-        await sails.helpers.campaign.patch(
-          campaign.id,
-          'aiContent',
-          'generationStatus',
-          aiContent.generationStatus,
-        );
+        await Campaign.updateOne({
+          slug,
+        }).set({
+          aiContent,
+        });
       } catch (e) {
         await sails.helpers.slack.aiLoggerHelper(
           'Error at consumer updating campaign with ai.',
