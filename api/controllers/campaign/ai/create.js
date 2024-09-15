@@ -108,12 +108,33 @@ module.exports = {
       aiContent.generationStatus[key].inputValues = inputValues;
       aiContent.generationStatus[key].createdAt = new Date().valueOf();
 
-      await sails.helpers.campaign.patch(
+      await sails.helpers.slack.slackHelper(
+        {
+          title: 'Debugging generationStatus',
+          body: JSON.stringify(aiContent.generationStatus),
+        },
+        'dev',
+      );
+
+      const success = await sails.helpers.campaign.patch(
         id,
         'aiContent',
         'generationStatus',
         aiContent.generationStatus,
       );
+
+      if (!success) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Error updating generationStatus',
+          {
+            aiContent,
+            key,
+            id,
+            success,
+          },
+        );
+        return exits.badRequest('Error updating generationStatus');
+      }
 
       const queueMessage = {
         type: 'generateAiContent',
@@ -130,6 +151,7 @@ module.exports = {
         queueMessage,
       );
 
+      // why do we call the consumer twice ?
       await sails.helpers.queue.consumer();
 
       return exits.success({

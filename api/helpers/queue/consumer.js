@@ -370,8 +370,8 @@ async function handleGenerateAiContent(message) {
   if (!aiContent || !prompt) {
     await sails.helpers.slack.slackHelper(
       {
-        title: 'Error generating ai content',
-        body: `Error generating ai content. slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${
+        title: 'Missing prompt',
+        body: `Missing prompt for ai content generation. slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${
           campaign?.id
         }. message: ${JSON.stringify(message)}`,
       },
