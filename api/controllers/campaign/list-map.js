@@ -24,7 +24,11 @@ module.exports = {
       });
       const campaigns = await Campaign.find({
         select: ['slug', 'details', 'data', 'didWin'],
-        where: { user: { '!=': null }, isDemo: false, isActive: true },
+        where: {
+          user: { '!=': null },
+          isDemo: false,
+          isActive: true,
+        },
       }).populate('user');
 
       const cleanCampaigns = [];
