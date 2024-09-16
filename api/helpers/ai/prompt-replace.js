@@ -242,7 +242,7 @@ module.exports = {
           allTime: {
             total: 0,
             doorKnocking: 0,
-            digital: 0,
+            digitalAds: 0,
             calls: 0,
             yardSigns: 0,
             events: 0,
@@ -252,7 +252,7 @@ module.exports = {
           thisWeek: {
             total: 0,
             doorKnocking: 0,
-            digital: 0,
+            digitalAds: 0,
             calls: 0,
             yardSigns: 0,
             events: 0,
@@ -262,7 +262,7 @@ module.exports = {
           lastWeek: {
             total: 0,
             doorKnocking: 0,
-            digital: 0,
+            digitalAds: 0,
             calls: 0,
             yardSigns: 0,
             events: 0,
