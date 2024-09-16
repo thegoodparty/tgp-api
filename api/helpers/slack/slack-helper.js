@@ -98,17 +98,18 @@ module.exports = {
       if (addMarkdown) {
         message = simpleSlackMessage(message.title, message.body);
       }
-
-      await fetch(
-        `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${token}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(message),
+      const slackUrl = `https://hooks.slack.com/services/${slackAppId}/${slackChannelId}/${token}`;
+      const response = await fetch(slackUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify(message),
+      });
+
+      if (!response.ok) {
+        console.log('error at slack-helper', response);
+      }
 
       return exits.success({ message: 'slack message sent successfully' });
     } catch (e) {
@@ -121,6 +122,8 @@ module.exports = {
 };
 
 function simpleSlackMessage(text, body) {
+  console.log('text', text);
+  console.log('body', body);
   return {
     text,
     blocks: [

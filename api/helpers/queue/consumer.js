@@ -153,7 +153,7 @@ async function handlePathToVictoryMessage(message) {
       'error in consumer/handlePathToVictorMessagey',
       e,
     );
-    throw new Error('error in consumer/handlePathToVictoryMessage');
+    // throw new Error('error in consumer/handlePathToVictoryMessage');
   }
 
   // For now we are calculating the viability score after a valid path to victory response.
@@ -299,7 +299,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     );
 
     // throw an error to requeue the SQS Task.
-    throw new Error('No Path To Victory Found');
+    // throw new Error('No Path To Victory Found');
   }
 }
 
@@ -385,194 +385,209 @@ async function handleGenerateAiContent(message) {
   const { slug, key, regenerate } = message;
 
   let campaign = await Campaign.findOne({ slug });
-  let aiContent = campaign.aiContent;
-  let prompt = aiContent.generationStatus[key].prompt;
-  let existingChat = aiContent.generationStatus[key].existingChat;
-  let inputValues = aiContent.generationStatus[key].inputValues;
+  let aiContent = campaign?.aiContent;
+  let prompt = aiContent.generationStatus[key]?.prompt;
+  let existingChat = aiContent.generationStatus[key]?.existingChat;
+  let inputValues = aiContent.generationStatus[key]?.inputValues;
 
-  let chat = existingChat || [];
-  let messages = [{ role: 'user', content: prompt }, ...chat];
-  let chatResponse;
-
-  let generateError = false;
-
-  try {
-    await sails.helpers.slack.aiLoggerHelper(
-      'handling campaign from queue',
-      message,
+  if (!aiContent || !prompt) {
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Missing prompt',
+        body: `Missing prompt for ai content generation. slug: ${slug}, key: ${key}, regenerate: ${regenerate}. campaignId: ${
+          campaign?.id
+        }. message: ${JSON.stringify(message)}`,
+      },
+      'dev',
     );
+    // throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+  } else {
+    let chat = existingChat || [];
+    let messages = [{ role: 'user', content: prompt }, ...chat];
+    let chatResponse;
 
-    let maxTokens = 2000;
-    if (existingChat && existingChat.length > 0) {
-      maxTokens = 2500;
-    }
+    let generateError = false;
 
-    let completion = await sails.helpers.ai.createCompletion(
-      messages,
-      maxTokens,
-      0.7,
-      0.9,
-    );
-    // console.log('completion', completion);
-    chatResponse = completion.content;
-    const totalTokens = completion.tokens;
-
-    // const prompt = messages.map((message) => message.content).join('\n');
-    // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
-    // chatResponse = chatResponse.replace('/n', '<br/><br/>');
-
-    // TODO: investigate if there is a way to get token usage with langchain.
-    // const totalTokens = 0;
-
-    await sails.helpers.slack.aiLoggerHelper(
-      `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
-      totalTokens,
-    );
-
-    campaign = await Campaign.findOne({ slug });
-    aiContent = campaign.aiContent;
-    let oldVersion;
-    if (chatResponse && chatResponse !== '') {
-      try {
-        let oldVersionData = aiContent[key];
-        oldVersion = {
-          // todo: try to convert oldVersionData.updatedAt to a date object.
-          date: new Date().toString(),
-          text: oldVersionData.content,
-        };
-      } catch (e) {
-        // dont warn because this is expected to fail sometimes.
-        // console.log('error getting old version', e);
-      }
-      aiContent[key] = {
-        name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
-        updatedAt: new Date().valueOf(),
-        inputValues,
-        content: chatResponse,
-      };
-
-      console.log('saving campaign version', key);
-      console.log('inputValues', inputValues);
-      console.log('oldVersion', oldVersion);
-
-      await sails.helpers.ai.saveCampaignVersion(
-        aiContent,
-        key,
-        campaign.id,
-        inputValues,
-        oldVersion,
-        regenerate ? regenerate : false,
-      );
-
-      if (
-        !aiContent?.generationStatus ||
-        typeof aiContent.generationStatus !== 'object'
-      ) {
-        aiContent.generationStatus = {};
-      }
-      if (
-        !aiContent?.generationStatus[key] ||
-        typeof aiContent.generationStatus[key] !== 'object'
-      ) {
-        aiContent.generationStatus[key] = {};
-      }
-
-      aiContent.generationStatus[key].status = 'completed';
-
-      await Campaign.updateOne({
-        slug,
-      }).set({
-        aiContent,
-      });
-
+    try {
       await sails.helpers.slack.aiLoggerHelper(
-        `updated campaign with ai. chatResponse: key: ${key}`,
-        chatResponse,
-      );
-    }
-  } catch (e) {
-    console.log('error at consumer', e);
-    console.log('messages', messages);
-    generateError = true;
-
-    if (e.data) {
-      await sails.helpers.slack.errorLoggerHelper(
-        'error at AI queue consumer (with msg): ',
-        e.data.error,
-      );
-      await sails.helpers.slack.aiLoggerHelper(
-        'error at AI queue consumer (with msg): ',
-        e.data.error,
-      );
-      console.log('error', e.data.error);
-    } else {
-      await sails.helpers.slack.errorLoggerHelper(
-        'error at AI queue consumer. Queue Message: ',
+        'handling campaign from queue',
         message,
       );
-      await sails.helpers.slack.errorLoggerHelper(
-        'error at AI queue consumer debug: ',
-        e,
-      );
-      await sails.helpers.slack.aiLoggerHelper(
-        'error at AI queue consumer debug: ',
-        e,
-      );
-    }
-  }
 
-  // Failed to generate content.
-  if (!chatResponse || chatResponse === '' || generateError) {
-    try {
-      // if data does not have key campaignPlanAttempts
-      if (!aiContent?.campaignPlanAttempts) {
-        aiContent.campaignPlanAttempts = {};
+      let maxTokens = 2000;
+      if (existingChat && existingChat.length > 0) {
+        maxTokens = 2500;
       }
-      if (!aiContent?.campaignPlanAttempts[key]) {
-        aiContent.campaignPlanAttempts[key] = 1;
-      }
-      aiContent.campaignPlanAttempts[key] = aiContent?.campaignPlanAttempts[key]
-        ? aiContent.campaignPlanAttempts[key] + 1
-        : 1;
+
+      let completion = await sails.helpers.ai.createCompletion(
+        messages,
+        maxTokens,
+        0.7,
+        0.9,
+      );
+      // console.log('completion', completion);
+      chatResponse = completion.content;
+      const totalTokens = completion.tokens;
+
+      // const prompt = messages.map((message) => message.content).join('\n');
+      // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
+      // chatResponse = chatResponse.replace('/n', '<br/><br/>');
+
+      // TODO: investigate if there is a way to get token usage with langchain.
+      // const totalTokens = 0;
 
       await sails.helpers.slack.aiLoggerHelper(
-        'Current Attempts:',
-        aiContent.campaignPlanAttempts[key],
+        `[ ${slug} - ${key} ] Generation Complete. Tokens Used:`,
+        totalTokens,
       );
 
-      // After 3 attempts, we give up.
-      if (
-        aiContent?.generationStatus[key]?.status &&
-        aiContent.generationStatus[key].status !== 'completed'
-      ) {
-        if (aiContent.campaignPlanAttempts[key] >= 3) {
-          await sails.helpers.slack.aiLoggerHelper(
-            'Deleting generationStatus for key',
-            key,
-          );
-          delete aiContent.generationStatus[key];
+      campaign = await Campaign.findOne({ slug });
+      aiContent = campaign.aiContent;
+      let oldVersion;
+      if (chatResponse && chatResponse !== '') {
+        try {
+          let oldVersionData = aiContent[key];
+          oldVersion = {
+            // todo: try to convert oldVersionData.updatedAt to a date object.
+            date: new Date().toString(),
+            text: oldVersionData.content,
+          };
+        } catch (e) {
+          // dont warn because this is expected to fail sometimes.
+          // console.log('error getting old version', e);
         }
+        aiContent[key] = {
+          name: camelToSentence(key), // todo: check if this overwrites a name they've chosen.
+          updatedAt: new Date().valueOf(),
+          inputValues,
+          content: chatResponse,
+        };
+
+        console.log('saving campaign version', key);
+        console.log('inputValues', inputValues);
+        console.log('oldVersion', oldVersion);
+
+        await sails.helpers.ai.saveCampaignVersion(
+          aiContent,
+          key,
+          campaign.id,
+          inputValues,
+          oldVersion,
+          regenerate ? regenerate : false,
+        );
+
+        if (
+          !aiContent?.generationStatus ||
+          typeof aiContent.generationStatus !== 'object'
+        ) {
+          aiContent.generationStatus = {};
+        }
+        if (
+          !aiContent?.generationStatus[key] ||
+          typeof aiContent.generationStatus[key] !== 'object'
+        ) {
+          aiContent.generationStatus[key] = {};
+        }
+
+        aiContent.generationStatus[key].status = 'completed';
+
+        await Campaign.updateOne({
+          slug,
+        }).set({
+          aiContent,
+        });
+
+        await sails.helpers.slack.aiLoggerHelper(
+          `updated campaign with ai. chatResponse: key: ${key}`,
+          chatResponse,
+        );
       }
-      await Campaign.updateOne({
-        slug,
-      }).set({
-        aiContent,
-      });
     } catch (e) {
-      await sails.helpers.slack.aiLoggerHelper(
-        'Error at consumer updating campaign with ai.',
-        key,
-        e,
-      );
-      await sails.helpers.slack.errorLoggerHelper(
-        'Error at consumer updating campaign with ai.',
-        key,
-        e,
-      );
       console.log('error at consumer', e);
+      console.log('messages', messages);
+      generateError = true;
+
+      if (e.data) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'error at AI queue consumer (with msg): ',
+          e.data.error,
+        );
+        await sails.helpers.slack.aiLoggerHelper(
+          'error at AI queue consumer (with msg): ',
+          e.data.error,
+        );
+        console.log('error', e.data.error);
+      } else {
+        await sails.helpers.slack.errorLoggerHelper(
+          'error at AI queue consumer. Queue Message: ',
+          message,
+        );
+        await sails.helpers.slack.errorLoggerHelper(
+          'error at AI queue consumer debug: ',
+          e,
+        );
+        await sails.helpers.slack.aiLoggerHelper(
+          'error at AI queue consumer debug: ',
+          e,
+        );
+      }
     }
-    // throw an Error so that the message goes back to the queue or the DLQ.
-    throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+
+    // Failed to generate content.
+    if (!chatResponse || chatResponse === '' || generateError) {
+      try {
+        // if data does not have key campaignPlanAttempts
+        if (!aiContent?.campaignPlanAttempts) {
+          aiContent.campaignPlanAttempts = {};
+        }
+        if (!aiContent?.campaignPlanAttempts[key]) {
+          aiContent.campaignPlanAttempts[key] = 1;
+        }
+        aiContent.campaignPlanAttempts[key] = aiContent?.campaignPlanAttempts[
+          key
+        ]
+          ? aiContent.campaignPlanAttempts[key] + 1
+          : 1;
+
+        await sails.helpers.slack.aiLoggerHelper(
+          'Current Attempts:',
+          aiContent.campaignPlanAttempts[key],
+        );
+
+        // After 3 attempts, we give up.
+        if (
+          aiContent?.generationStatus[key]?.status &&
+          aiContent.generationStatus[key].status !== 'completed'
+        ) {
+          if (aiContent.campaignPlanAttempts[key] >= 3) {
+            await sails.helpers.slack.aiLoggerHelper(
+              'Deleting generationStatus for key',
+              key,
+            );
+            delete aiContent.generationStatus[key];
+          }
+        }
+        await Campaign.updateOne({
+          slug,
+        }).set({
+          aiContent,
+        });
+      } catch (e) {
+        await sails.helpers.slack.aiLoggerHelper(
+          'Error at consumer updating campaign with ai.',
+          key,
+          e,
+        );
+        await sails.helpers.slack.errorLoggerHelper(
+          'Error at consumer updating campaign with ai.',
+          key,
+          e,
+        );
+        console.log('error at consumer', e);
+      }
+      // throw an Error so that the message goes back to the queue or the DLQ.
+      // throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+    }
   }
 }
 
