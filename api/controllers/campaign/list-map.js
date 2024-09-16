@@ -44,8 +44,15 @@ module.exports = {
             continue;
           }
         }
-        const { otherOffice, office, state, ballotLevel, zip, party } =
-          details || {};
+        const {
+          otherOffice,
+          office,
+          state,
+          ballotLevel,
+          zip,
+          party,
+          electionDate,
+        } = details || {};
         const resolvedOffice = otherOffice || office;
         const cleanCampaign = {
           slug,
@@ -58,6 +65,7 @@ module.exports = {
           firstName: user?.firstName,
           lastName: user?.lastName,
           avatar: user?.avatar || false,
+          electionDate,
         };
 
         if (!campaign.details.geoLocation) {
