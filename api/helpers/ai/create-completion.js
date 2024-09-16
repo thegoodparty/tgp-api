@@ -57,6 +57,12 @@ module.exports = {
     } catch (error) {
       console.log('Error in helpers/ai/create-compilation', error);
       console.log('error response', error?.response);
+
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error in AI completion (raw)',
+        error,
+      );
+
       if (
         error.response &&
         error.response.data &&
@@ -100,10 +106,14 @@ module.exports = {
       });
     } else {
       console.log('completion failure');
+      let message = 'Error in AI completion. No message content.';
+      if (completion) {
+        message += JSON.stringify(completion);
+      }
       await sails.helpers.slack.slackHelper(
         {
           title: 'Error in AI',
-          body: 'Error in AI completion. No message content.',
+          body: message,
         },
         'dev',
       );
