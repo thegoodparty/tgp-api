@@ -24,11 +24,5 @@ module.exports = {
     campaign: {
       model: 'campaign',
     },
-
-    granted: {
-      description:
-        'Whether the request has been granted or not, or not acted on yet',
-      type: 'boolean',
-    },
   },
 };

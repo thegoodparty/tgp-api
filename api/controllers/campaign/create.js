@@ -1,6 +1,22 @@
 const { findSlug } = require('../../utils/campaign/findSlug');
 const { createCrmUser } = require('../../utils/campaign/createCrmUser');
 
+const claimExistingCampaignRequests = async (user, campaign) => {
+  const campaignRequests = await Requests.find({
+    candidateEmail: user.email,
+  });
+
+  if (campaignRequests?.length) {
+    for (const campaignRequest of campaignRequests) {
+      await Requests.updateOne({
+        id: campaignRequest.id,
+      }).set({
+        campaign: campaign.id,
+      });
+    }
+  }
+};
+
 module.exports = {
   inputs: {},
 
@@ -37,7 +53,7 @@ module.exports = {
         });
       }
 
-      await Campaign.create({
+      const newCampaign = await Campaign.create({
         slug,
         data,
         isActive: false,
@@ -45,7 +61,9 @@ module.exports = {
         details: {
           zip: user.zip,
         },
-      });
+      }).fetch();
+
+      await claimExistingCampaignRequests(user, newCampaign);
       await createCrmUser(user.firstName, user.lastName, user.email);
 
       return exits.success({

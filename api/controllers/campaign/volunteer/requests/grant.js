@@ -25,16 +25,24 @@ module.exports = {
     }
 
     try {
-      const updated = await Requests.updateOne({
+      const { user, role } = await Requests.findOne({
         id: requestId,
-      }).set({
-        granted: true,
         campaign: campaign.id,
+      }).populate('user');
+
+      await CampaignVolunteer.create({
+        user: user.id,
+        campaign: campaign.id,
+        role,
       });
 
-      console.log(`updated =>`, updated);
+      await Requests.destroy({
+        id: requestId,
+      });
 
-      return exits.success(updated);
+      return exits.success({
+        message: 'Campaign Request granted successfully',
+      });
     } catch (e) {
       console.error('error updating campaign request', e);
       return exits.error(e);

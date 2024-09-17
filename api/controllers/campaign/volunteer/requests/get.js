@@ -35,10 +35,10 @@ module.exports = {
         ? await Requests.findOne({
             id: requestId,
             campaign: campaign.id,
-          })
+          }).populate('user')
         : await Requests.find({
             campaign: campaign.id,
-          });
+          }).populate('user');
 
       return exits.success(campaignRequests);
     } catch (e) {
