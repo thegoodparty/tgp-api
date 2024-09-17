@@ -65,4 +65,5 @@ module.exports.policies = {
   'crm/hubspot-webhook': true,
   'campaign/ai/prompt/*': true,
   'campaign/list-map': true,
+  'campaign/list-map-count': true,
 };

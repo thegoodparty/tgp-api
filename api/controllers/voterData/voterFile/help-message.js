@@ -33,6 +33,7 @@ module.exports = {
 
       await sails.helpers.slack.slackHelper(
         {
+          title: 'Voter File Help Request',
           body: `${firstName} ${lastName} (${email}) needs assistance with ${type} voter file.
 ￮ Type: ${type}
 ￮ Message: ${message}

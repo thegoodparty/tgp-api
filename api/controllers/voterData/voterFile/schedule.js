@@ -48,6 +48,7 @@ module.exports = {
 
       await sails.helpers.slack.slackHelper(
         {
+          title: 'Voter File Schedule Request',
           body: `${firstName} ${lastName} (${email}) is requesting to schedule a campaign.
 ￮ Budget: $${budget}
 ￮ Date: ${date}

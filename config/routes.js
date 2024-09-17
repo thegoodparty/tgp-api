@@ -146,6 +146,7 @@ module.exports.routes = {
   'POST   /api/v1/campaign/launch': 'campaign/launch',
   'GET   /api/v1/campaigns': 'campaign/list',
   'GET   /api/v1/campaigns/map': 'campaign/list-map',
+  'GET   /api/v1/campaigns/map-count': 'campaign/list-map-count',
   'GET   /api/v1/campaign/by-slug': 'campaign/find-by-slug', //admin
   'PUT   /api/v1/campaign-admin': 'campaign/admin-update', // admin
 

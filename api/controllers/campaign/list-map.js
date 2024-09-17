@@ -24,7 +24,11 @@ module.exports = {
       });
       const campaigns = await Campaign.find({
         select: ['slug', 'details', 'data', 'didWin'],
-        where: { user: { '!=': null }, isDemo: false, isActive: true },
+        where: {
+          user: { '!=': null },
+          isDemo: false,
+          isActive: true,
+        },
       }).populate('user');
 
       const cleanCampaigns = [];
@@ -44,8 +48,15 @@ module.exports = {
             continue;
           }
         }
-        const { otherOffice, office, state, ballotLevel, zip, party } =
-          details || {};
+        const {
+          otherOffice,
+          office,
+          state,
+          ballotLevel,
+          zip,
+          party,
+          electionDate,
+        } = details || {};
         const resolvedOffice = otherOffice || office;
         const cleanCampaign = {
           slug,
@@ -58,6 +69,7 @@ module.exports = {
           firstName: user?.firstName,
           lastName: user?.lastName,
           avatar: user?.avatar || false,
+          electionDate,
         };
 
         if (!campaign.details.geoLocation) {

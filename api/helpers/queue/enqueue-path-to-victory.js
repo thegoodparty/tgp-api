@@ -42,9 +42,8 @@ module.exports = {
         const data = await getRaceDetails(raceId, slug, details.zip);
         if (!data) {
           await sails.helpers.slack.slackHelper(
-            `Failed to get race data for ${slug}`,
+            { title: 'Error', body: `Failed to get race data for ${slug}` },
             'victory-issues',
-            true,
           );
           return exits.success({ message: 'not ok' });
         }
