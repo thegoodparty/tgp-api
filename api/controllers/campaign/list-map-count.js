@@ -1,3 +1,4 @@
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
@@ -16,16 +17,26 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const isProd = appBase === 'https://goodparty.org';
       const campaigns = await Campaign.find({
-        select: ['details', 'didWin'],
+        select: ['details', 'didWin', 'data', 'user'],
         where: { user: { '!=': null }, isDemo: false, isActive: true },
       });
 
       let count = 0;
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (!campaign.details?.zip || campaign.didWin === false) {
+        if (
+          !campaign.user ||
+          !campaign.details?.zip ||
+          campaign.didWin === false
+        ) {
           continue;
+        }
+        if (isProd) {
+          if (campaign.data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
+            continue;
+          }
         }
 
         count++;
