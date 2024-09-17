@@ -29,7 +29,7 @@ module.exports = {
       : { user: user.id };
 
     try {
-      await Requests.destroy({
+      await CampaignRequests.destroy({
         id: requestId,
         ...whereParams,
       });

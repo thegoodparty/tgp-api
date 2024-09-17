@@ -2,13 +2,13 @@ const { findSlug } = require('../../utils/campaign/findSlug');
 const { createCrmUser } = require('../../utils/campaign/createCrmUser');
 
 const claimExistingCampaignRequests = async (user, campaign) => {
-  const campaignRequests = await Requests.find({
+  const campaignRequests = await CampaignRequests.find({
     candidateEmail: user.email,
   });
 
   if (campaignRequests?.length) {
     for (const campaignRequest of campaignRequests) {
-      await Requests.updateOne({
+      await CampaignRequests.updateOne({
         id: campaignRequest.id,
       }).set({
         campaign: campaign.id,

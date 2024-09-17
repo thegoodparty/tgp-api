@@ -25,7 +25,7 @@ module.exports = {
     }
 
     try {
-      const { user, role } = await Requests.findOne({
+      const { user, role } = await CampaignRequests.findOne({
         id: requestId,
         campaign: campaign.id,
       }).populate('user');
@@ -36,7 +36,7 @@ module.exports = {
         role,
       });
 
-      await Requests.destroy({
+      await CampaignRequests.destroy({
         id: requestId,
       });
 
