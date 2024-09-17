@@ -19,9 +19,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const isProd = appBase === 'https://goodparty.org';
-      await sails.helpers.slack.errorLoggerHelper('campaign list map', {
-        isProd,
-      });
       const campaigns = await Campaign.find({
         select: ['slug', 'details', 'data', 'didWin'],
         where: {
