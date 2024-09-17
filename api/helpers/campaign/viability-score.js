@@ -154,6 +154,10 @@ module.exports = {
       return exits.success(viability);
     } catch (e) {
       console.log('error at viability-score', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Error at viability-score',
+        e,
+      );
       return exits.badRequest('error');
     }
   },
