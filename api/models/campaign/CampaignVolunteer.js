@@ -6,7 +6,7 @@ module.exports = {
 
     role: {
       type: 'string',
-      isIn: ['volunteer', 'staff', 'candidate'],
+      isIn: ['volunteer', 'staff', 'candidate', 'manager'],
     },
 
     campaign: {
