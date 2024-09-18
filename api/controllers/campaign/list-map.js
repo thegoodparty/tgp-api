@@ -59,32 +59,55 @@ module.exports = {
       } = inputs;
 
       const isProd = appBase === 'https://goodparty.org';
-      const campaigns = await Campaign.find({
-        select: ['slug', 'details', 'data', 'didWin'],
-        where: {
-          user: { '!=': null },
-          isDemo: false,
-          isActive: true,
-        },
-      }).populate('user');
+
+      let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false AND c."isActive" = true`;
+
+      if (partyFilter) {
+        whereClauses += ` AND c.details->>'party' = '${partyFilter}'`;
+      }
+
+      if (levelFilter) {
+        whereClauses += ` AND c.details->>'ballotLevel' = '${levelFilter}'`;
+      }
+
+      if (resultsFilter) {
+        whereClauses += ` AND c."didWin" = true`; // "didWin" is properly quoted
+      }
+
+      if (officeFilter) {
+        whereClauses += ` AND (c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
+      }
+
+      if (isProd) {
+        whereClauses += ` AND c.data->'hubSpotUpdates'->>'verified_candidates' = 'Yes'`;
+      }
+
+      // Native SQL query with proper column quoting and JOIN
+      const rawQuery = `
+        SELECT 
+          c."slug", 
+          c."details", 
+          c."didWin", 
+          u."firstName", 
+          u."lastName", 
+          u."avatar"
+        FROM "campaign" c
+        JOIN "user" u ON c."user" = u.id
+        ${whereClauses};
+      `;
+
+      const result = await sails.sendNativeQuery(rawQuery);
+
+      const campaigns = result.rows;
 
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (
-          !campaign.user ||
-          !campaign.details?.zip ||
-          campaign.didWin === false
-        ) {
+        if (!campaign.details?.zip || campaign.didWin === false) {
           continue;
         }
-        let { details, slug, didWin, user, data } = campaign;
-        // on prod we filter only verified candidates from hubspot.
-        if (isProd) {
-          if (data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
-            continue;
-          }
-        }
+
+        let { details, slug, didWin, firstName, lastName, avatar } = campaign;
         const {
           otherOffice,
           office,
@@ -94,26 +117,15 @@ module.exports = {
           party,
           electionDate,
         } = details || {};
-
-        if (partyFilter && partyFilter !== party) {
-          continue;
-        }
-        if (levelFilter && levelFilter !== ballotLevel) {
-          continue;
-        }
-        if (resultsFilter && didWin !== true) {
-          continue;
-        }
         const resolvedOffice = otherOffice || office;
-        if (officeFilter && officeFilter !== resolvedOffice) {
-          continue;
-        }
+
         if (nameFilter) {
-          const name = `${user.firstName} ${user.lastName}`.toLowerCase();
-          if (!name.includes(nameFilter.toLowerCase())) {
+          const fullName = `${firstName} ${lastName}`.toLowerCase();
+          if (!fullName.includes(nameFilter.toLowerCase())) {
             continue;
           }
         }
+
         const cleanCampaign = {
           slug,
           id: slug,
@@ -123,9 +135,9 @@ module.exports = {
           ballotLevel,
           zip,
           party,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-          avatar: user?.avatar || false,
+          firstName,
+          lastName,
+          avatar: avatar || false,
           electionDate,
         };
 
@@ -141,6 +153,8 @@ module.exports = {
             lat: campaign.details.geoLocation.lat,
           };
         }
+
+        // Geolocation filtering
         if (
           neLat &&
           neLng &&
@@ -158,6 +172,7 @@ module.exports = {
             continue;
           }
         }
+
         cleanCampaigns.push(cleanCampaign);
       }
 
@@ -199,9 +214,7 @@ async function calculateGeoLocation(campaign) {
     console.log('error at calculateGeoLocation', e);
     await sails.helpers.slack.errorLoggerHelper(
       'error at calculateGeoLocation',
-      {
-        e,
-      },
+      { e },
     );
     return {};
   }
