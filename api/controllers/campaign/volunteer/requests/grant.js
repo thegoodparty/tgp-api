@@ -1,3 +1,6 @@
+const {
+  sendCampaignRequestEmail,
+} = require('../../../../utils/campaign/sendCampaignRequestEmail');
 module.exports = {
   friendlyName: 'UpdateCampaignTeamRequest',
 
@@ -16,8 +19,8 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { params, user } = this.req;
-    const campaign = await sails.helpers.campaign.byUser(user.id);
+    const { params, user: candidateUser } = this.req;
+    const campaign = await sails.helpers.campaign.byUser(candidateUser.id);
     const { requestId } = params || {};
 
     if (!campaign) {
@@ -25,19 +28,33 @@ module.exports = {
     }
 
     try {
-      const { user, role } = await CampaignRequests.findOne({
+      const { user: requestorUser, role } = await CampaignRequests.findOne({
         id: requestId,
         campaign: campaign.id,
       }).populate('user');
 
       await CampaignVolunteer.create({
-        user: user.id,
+        user: requestorUser.id,
         campaign: campaign.id,
         role,
       });
 
       await CampaignRequests.destroy({
         id: requestId,
+      });
+
+      const candidateName = await sails.helpers.user.name(candidateUser);
+      const requestorName = await sails.helpers.user.name(requestorUser);
+      const emailTemplateData = JSON.stringify({
+        candidateName,
+        requestorName,
+      });
+
+      await sendCampaignRequestEmail({
+        toEmail: candidateUser.email,
+        templateName: 'campaign-manager-approved',
+        subject: `Your Request to Manage ${candidateName}’s Campaign Has Been Approved!`,
+        emailTemplateData,
       });
 
       return exits.success({
