@@ -7,8 +7,8 @@ const sendCampaignRequestEmail = async ({
   try {
     await sails.helpers.mailgun.mailgunTemplateSender(
       toEmail,
-      templateName,
       subject,
+      templateName,
       emailTemplateData,
       '',
       'GoodParty.org <politics@goodparty.org>',

@@ -126,6 +126,8 @@ module.exports.routes = {
   'GET   /api/v1/campaign/volunteers': 'campaign/volunteer/list',
   'GET   /api/v1/campaign/volunteer-by-user': 'campaign/volunteer/list-by-user',
   'POST   /api/v1/campaign/volunteer': 'campaign/volunteer/create',
+  'DELETE   /api/v1/campaign/volunteer/:id': 'campaign/volunteer/delete',
+  'PATCH   /api/v1/campaign/volunteer/:id': 'campaign/volunteer/update',
 
   // campaignUpdateHistory
 

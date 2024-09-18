@@ -23,22 +23,15 @@ module.exports = {
         campaign: campaign.id,
       }).populate('user');
 
-      const users = [];
-      volunteers.forEach((volunteer) => {
-        if (volunteer.user) {
-          users.push({
-            email: volunteer.user.email,
-            phone: volunteer.user.phone,
-            firstName: volunteer.user.firstName,
-            lastName: volunteer.user.lastName,
-            id: volunteer.user.id,
-            role: volunteer.role,
-          });
-        }
-      });
-
       return exits.success({
-        volunteers: users,
+        volunteers: volunteers.map((volunteer) => {
+          const { user } = volunteer;
+          const { email, phone, firstName, lastName, id } = user;
+          return {
+            ...volunteer,
+            user: { email, phone, firstName, lastName, id },
+          };
+        }),
       });
     } catch (e) {
       console.log('Error listing volunteers', e);

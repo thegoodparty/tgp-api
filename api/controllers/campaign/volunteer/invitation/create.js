@@ -10,7 +10,7 @@ module.exports = {
     },
     role: {
       type: 'string',
-      isIn: ['volunteer', 'staff'],
+      isIn: ['volunteer', 'staff', 'manager'],
     },
   },
 

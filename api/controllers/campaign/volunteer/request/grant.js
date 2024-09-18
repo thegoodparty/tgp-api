@@ -28,12 +28,24 @@ module.exports = {
     }
 
     try {
-      const { user: requestorUser, role } = await CampaignRequests.findOne({
+      const { user: requestorUser, role } = await CampaignRequest.findOne({
         id: requestId,
         campaign: campaign.id,
       }).populate('user');
 
-      // TODO: reject request if CampaignVulunteer already exists w/ user.id
+      const existingVolunteer = await CampaignVolunteer.findOne({
+        user: requestorUser.id,
+        campaign: campaign.id,
+      });
+
+      if (existingVolunteer) {
+        throw new Error(
+          `Team member for given campaign already exists: ${JSON.stringify(
+            existingVolunteer,
+          )}`,
+        );
+      }
+
       await CampaignVolunteer.create({
         user: requestorUser.id,
         campaign: campaign.id,

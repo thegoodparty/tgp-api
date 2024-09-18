@@ -71,9 +71,8 @@ module.exports = {
         subject: `Your Request to Manage ${candidateName}'s Campaign`,
         emailTemplateData,
       });
-      // TODO: send invite email if campaign is demo as well
-      // TODO: tokenize links for association
-      if (campaign) {
+
+      if (campaign || campaign.isDemo) {
         await sendCampaignRequestEmail({
           toEmail: candidateUser.email,
           templateName: 'candidate-campaign-manager-request',
