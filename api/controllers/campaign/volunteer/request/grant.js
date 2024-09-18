@@ -33,13 +33,14 @@ module.exports = {
         campaign: campaign.id,
       }).populate('user');
 
+      // TODO: reject request if CampaignVulunteer already exists w/ user.id
       await CampaignVolunteer.create({
         user: requestorUser.id,
         campaign: campaign.id,
         role,
       });
 
-      await CampaignRequests.destroy({
+      await CampaignRequest.destroy({
         id: requestId,
       });
 

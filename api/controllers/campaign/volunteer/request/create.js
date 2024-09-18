@@ -40,7 +40,7 @@ module.exports = {
       ? await sails.helpers.campaign.byUser(candidateUser?.id)
       : null;
     try {
-      const existingRequest = await CampaignRequests.findOne({
+      const existingRequest = await CampaignRequest.findOne({
         user: user.id,
         candidateEmail,
         role,
@@ -50,7 +50,7 @@ module.exports = {
         throw new Error('Request to join campaign already exists');
       }
 
-      const campaignRequest = await CampaignRequests.create({
+      const campaignRequest = await CampaignRequest.create({
         user: user.id,
         candidateEmail,
         role,

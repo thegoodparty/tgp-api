@@ -32,11 +32,11 @@ module.exports = {
       }
 
       const campaignRequests = requestId
-        ? await CampaignRequests.findOne({
+        ? await CampaignRequest.findOne({
             id: requestId,
             campaign: campaign.id,
           }).populate('user')
-        : await CampaignRequests.find({
+        : await CampaignRequest.find({
             campaign: campaign.id,
           }).populate('user');
 

@@ -3,7 +3,35 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
-  inputs: {},
+  inputs: {
+    party: {
+      type: 'string',
+    },
+    level: {
+      type: 'string',
+    },
+    results: {
+      type: 'boolean',
+    },
+    office: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    neLat: {
+      type: 'number',
+    },
+    neLng: {
+      type: 'number',
+    },
+    swLat: {
+      type: 'number',
+    },
+    swLng: {
+      type: 'number',
+    },
+  },
 
   exits: {
     success: {
@@ -18,33 +46,68 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const {
+        party: partyFilter,
+        level: levelFilter,
+        results: resultsFilter,
+        office: officeFilter,
+        name: nameFilter,
+        neLat,
+        neLng,
+        swLat,
+        swLng,
+      } = inputs;
+
       const isProd = appBase === 'https://goodparty.org';
-      const campaigns = await Campaign.find({
-        select: ['slug', 'details', 'data', 'didWin'],
-        where: {
-          user: { '!=': null },
-          isDemo: false,
-          isActive: true,
-        },
-      }).populate('user');
+
+      let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false AND c."isActive" = true`;
+
+      if (partyFilter) {
+        whereClauses += ` AND c.details->>'party' = '${partyFilter}'`;
+      }
+
+      if (levelFilter) {
+        whereClauses += ` AND c.details->>'ballotLevel' = '${levelFilter}'`;
+      }
+
+      if (resultsFilter) {
+        whereClauses += ` AND c."didWin" = true`; // "didWin" is properly quoted
+      }
+
+      if (officeFilter) {
+        whereClauses += ` AND (c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
+      }
+
+      if (isProd) {
+        whereClauses += ` AND c.data->'hubSpotUpdates'->>'verified_candidates' = 'Yes'`;
+      }
+
+      // Native SQL query with proper column quoting and JOIN
+      const rawQuery = `
+        SELECT 
+          c."slug", 
+          c."details", 
+          c."didWin", 
+          u."firstName", 
+          u."lastName", 
+          u."avatar"
+        FROM "campaign" c
+        JOIN "user" u ON c."user" = u.id
+        ${whereClauses};
+      `;
+
+      const result = await sails.sendNativeQuery(rawQuery);
+
+      const campaigns = result.rows;
 
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-        if (
-          !campaign.user ||
-          !campaign.details?.zip ||
-          campaign.didWin === false
-        ) {
+        if (!campaign.details?.zip || campaign.didWin === false) {
           continue;
         }
-        let { details, slug, didWin, user, data } = campaign;
-        // on prod we filter only verified candidates from hubspot.
-        if (isProd) {
-          if (data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
-            continue;
-          }
-        }
+
+        let { details, slug, didWin, firstName, lastName, avatar } = campaign;
         const {
           otherOffice,
           office,
@@ -55,17 +118,26 @@ module.exports = {
           electionDate,
         } = details || {};
         const resolvedOffice = otherOffice || office;
+
+        if (nameFilter) {
+          const fullName = `${firstName} ${lastName}`.toLowerCase();
+          if (!fullName.includes(nameFilter.toLowerCase())) {
+            continue;
+          }
+        }
+
         const cleanCampaign = {
           slug,
+          id: slug,
           didWin,
           office: resolvedOffice,
           state,
           ballotLevel,
           zip,
           party,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-          avatar: user?.avatar || false,
+          firstName,
+          lastName,
+          avatar: avatar || false,
           electionDate,
         };
 
@@ -74,10 +146,33 @@ module.exports = {
           if (!lng) {
             continue;
           }
-          cleanCampaign.geoLocation = { lng, lat, geoHash };
+          cleanCampaign.position = { lng, lat };
         } else {
-          cleanCampaign.geoLocation = campaign.details.geoLocation;
+          cleanCampaign.position = {
+            lng: campaign.details.geoLocation.lng,
+            lat: campaign.details.geoLocation.lat,
+          };
         }
+
+        // Geolocation filtering
+        if (
+          neLat &&
+          neLng &&
+          swLat &&
+          swLng &&
+          cleanCampaign.position.lat &&
+          cleanCampaign.position.lng
+        ) {
+          if (
+            cleanCampaign.position.lat < swLat ||
+            cleanCampaign.position.lat > neLat ||
+            cleanCampaign.position.lng < swLng ||
+            cleanCampaign.position.lng > neLng
+          ) {
+            continue;
+          }
+        }
+
         cleanCampaigns.push(cleanCampaign);
       }
 
@@ -119,9 +214,7 @@ async function calculateGeoLocation(campaign) {
     console.log('error at calculateGeoLocation', e);
     await sails.helpers.slack.errorLoggerHelper(
       'error at calculateGeoLocation',
-      {
-        e,
-      },
+      { e },
     );
     return {};
   }
