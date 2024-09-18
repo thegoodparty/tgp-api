@@ -9,7 +9,6 @@ module.exports = {
     },
     campaign: {
       model: 'campaign',
-      unique: true,
     },
   },
 };
