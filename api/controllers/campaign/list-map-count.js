@@ -29,7 +29,8 @@ module.exports = {
         if (
           !campaign.user ||
           !campaign.details?.zip ||
-          campaign.didWin === false
+          campaign.didWin === false ||
+          !campaign.details?.geoLocation?.lng
         ) {
           continue;
         }
