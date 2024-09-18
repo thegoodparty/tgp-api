@@ -472,7 +472,11 @@ function compareBlogSections(a, b) {
 
 function extractMediaFile(img) {
   if (img && img.fields && img.fields.file) {
-    return { url: img.fields.file.url, alt: img.fields.title || '' };
+    return {
+      url: img.fields.file.url,
+      alt: img.fields.title || '',
+      size: img.fields.file.details?.image,
+    };
   }
   return null;
 }
