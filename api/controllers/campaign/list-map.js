@@ -3,7 +3,35 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
-  inputs: {},
+  inputs: {
+    party: {
+      type: 'string',
+    },
+    level: {
+      type: 'string',
+    },
+    results: {
+      type: 'boolean',
+    },
+    office: {
+      type: 'string',
+    },
+    name: {
+      type: 'string',
+    },
+    neLat: {
+      type: 'number',
+    },
+    neLng: {
+      type: 'number',
+    },
+    swLat: {
+      type: 'number',
+    },
+    swLng: {
+      type: 'number',
+    },
+  },
 
   exits: {
     success: {
@@ -18,6 +46,18 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const {
+        party: partyFilter,
+        level: levelFilter,
+        results: resultsFilter,
+        office: officeFilter,
+        name: nameFilter,
+        neLat,
+        neLng,
+        swLat,
+        swLng,
+      } = inputs;
+
       const isProd = appBase === 'https://goodparty.org';
       const campaigns = await Campaign.find({
         select: ['slug', 'details', 'data', 'didWin'],
@@ -54,9 +94,29 @@ module.exports = {
           party,
           electionDate,
         } = details || {};
+
+        if (partyFilter && partyFilter !== party) {
+          continue;
+        }
+        if (levelFilter && levelFilter !== ballotLevel) {
+          continue;
+        }
+        if (resultsFilter && didWin !== true) {
+          continue;
+        }
         const resolvedOffice = otherOffice || office;
+        if (officeFilter && officeFilter !== resolvedOffice) {
+          continue;
+        }
+        if (nameFilter) {
+          const name = `${user.firstName} ${user.lastName}`.toLowerCase();
+          if (!name.includes(nameFilter.toLowerCase())) {
+            continue;
+          }
+        }
         const cleanCampaign = {
           slug,
+          id: slug,
           didWin,
           office: resolvedOffice,
           state,
@@ -74,9 +134,29 @@ module.exports = {
           if (!lng) {
             continue;
           }
-          cleanCampaign.geoLocation = { lng, lat, geoHash };
+          cleanCampaign.position = { lng, lat };
         } else {
-          cleanCampaign.geoLocation = campaign.details.geoLocation;
+          cleanCampaign.position = {
+            lng: campaign.details.geoLocation.lng,
+            lat: campaign.details.geoLocation.lat,
+          };
+        }
+        if (
+          neLat &&
+          neLng &&
+          swLat &&
+          swLng &&
+          cleanCampaign.position.lat &&
+          cleanCampaign.position.lng
+        ) {
+          if (
+            cleanCampaign.position.lat < swLat ||
+            cleanCampaign.position.lat > neLat ||
+            cleanCampaign.position.lng < swLng ||
+            cleanCampaign.position.lng > neLng
+          ) {
+            continue;
+          }
         }
         cleanCampaigns.push(cleanCampaign);
       }
