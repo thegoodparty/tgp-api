@@ -42,7 +42,8 @@ module.exports = {
       IndexName: 'gp-api-location', // Specify your geocoding index name
       Text: zip,
       MaxResults: 1, // Limit to 1 result
-      // Additional parameters as needed
+      BiasPosition: [-98.35, 39.5], // Central point in the USA (Longitude, Latitude)
+      FilterBBox: [-125.0, 24.396308, -66.93457, 49.384358], // Bounding box for the USA
     };
 
     try {
