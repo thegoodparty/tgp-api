@@ -25,18 +25,19 @@ module.exports = {
     }
 
     try {
-      const { user, role } = await CampaignRequests.findOne({
+      const { user, role } = await CampaignRequest.findOne({
         id: requestId,
         campaign: campaign.id,
       }).populate('user');
 
+      // TODO: reject request if CampaignVulunteer already exists w/ user.id
       await CampaignVolunteer.create({
         user: user.id,
         campaign: campaign.id,
         role,
       });
 
-      await CampaignRequests.destroy({
+      await CampaignRequest.destroy({
         id: requestId,
       });
 

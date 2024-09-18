@@ -113,15 +113,14 @@ module.exports.routes = {
   'DELETE   /api/v1/campaign/volunteer/invitation':
     'campaign/volunteer/invitation/delete',
   'POST   /api/v1/campaign/volunteer/requests':
-    'campaign/volunteer/requests/create',
-  'GET   /api/v1/campaign/volunteer/requests':
-    'campaign/volunteer/requests/get',
+    'campaign/volunteer/request/create',
+  'GET   /api/v1/campaign/volunteer/requests': 'campaign/volunteer/request/get',
   'GET   /api/v1/campaign/volunteer/requests/:requestId':
-    'campaign/volunteer/requests/get',
+    'campaign/volunteer/request/get',
   'GET   /api/v1/campaign/volunteer/requests/:requestId/grant':
-    'campaign/volunteer/requests/grant',
+    'campaign/volunteer/request/grant',
   'DELETE   /api/v1/campaign/volunteer/requests/:requestId':
-    'campaign/volunteer/requests/delete',
+    'campaign/volunteer/request/delete',
 
   // campaignVolunteer
   'GET   /api/v1/campaign/volunteers': 'campaign/volunteer/list',
