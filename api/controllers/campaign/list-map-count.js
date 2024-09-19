@@ -39,6 +39,14 @@ module.exports = {
             continue;
           }
         }
+        if (
+          cleanCampaign.position.lng < -125 ||
+          cleanCampaign.position.lng > -66 ||
+          cleanCampaign.position.lat < 24 ||
+          cleanCampaign.position.lat > 49
+        ) {
+          continue;
+        }
 
         count++;
       }
