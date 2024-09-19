@@ -79,6 +79,10 @@ module.exports = {
           if (pro_candidate === 'Yes' && !campaign.isPro) {
             updatedCampaign.isPro = true;
           }
+          if (election_results === 'Won General' && !campaign.didWin) {
+            updatedCampaign.didWin = true;
+          }
+
           await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
           updated++;
         } catch (e) {

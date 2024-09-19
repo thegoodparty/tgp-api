@@ -103,6 +103,20 @@ module.exports = {
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
+        // temp - fix hubspot election results
+        if (
+          isProd &&
+          campaign?.data?.hubSpotUpdates?.election_results === 'Won General' &&
+          campaign.didWin !== true
+        ) {
+          await Campaign.updateOne({ slug: campaign.slug }).set({
+            didWin: true,
+          });
+          campaign.didWin = true;
+        }
+
+        // temp fix done.
+
         if (!campaign.details?.zip || campaign.didWin === false) {
           continue;
         }
