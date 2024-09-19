@@ -176,6 +176,17 @@ module.exports = {
           cleanCampaign.position = position;
         }
 
+        let isInBound = filterPosition(
+          cleanCampaign,
+          neLat,
+          neLng,
+          swLat,
+          swLng,
+        );
+        if (!isInBound) {
+          continue;
+        }
+
         cleanCampaigns.push(cleanCampaign);
       }
 
@@ -220,6 +231,30 @@ async function handleGeoLocation(campaign) {
       lng: campaign.details.geoLocation.lng,
       lat: campaign.details.geoLocation.lat,
     };
+  }
+}
+
+function filterPosition(campaign, neLat, neLng, swLat, swLng) {
+  // Geolocation filtering
+  if (
+    neLat &&
+    neLng &&
+    swLat &&
+    swLng &&
+    campaign.position.lat &&
+    campaign.position.lng
+  ) {
+    if (
+      campaign.position.lat < swLat ||
+      campaign.position.lat > neLat ||
+      campaign.position.lng < swLng ||
+      campaign.position.lng > neLng
+    ) {
+      return false;
+    }
+    return true;
+  } else {
+    return true;
   }
 }
 
