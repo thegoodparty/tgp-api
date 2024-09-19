@@ -109,7 +109,7 @@ module.exports = {
           campaign?.data?.hubSpotUpdates?.election_results === 'Won General' &&
           campaign.didWin !== true
         ) {
-          await Campaign.updateOne({ slug: campaign.slug }).set({
+          await Campaign.updateOne({ id: campaign.id }).set({
             didWin: true,
           });
           campaign.didWin = true;
