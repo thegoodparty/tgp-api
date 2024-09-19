@@ -75,7 +75,7 @@ module.exports = {
       }
 
       if (officeFilter) {
-        whereClauses += ` AND (c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
+        whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
       }
 
       if (isProd) {
@@ -117,6 +117,7 @@ module.exports = {
           zip,
           party,
           electionDate,
+          raceId,
         } = details || {};
         const resolvedOffice = otherOffice || office;
 
@@ -125,6 +126,16 @@ module.exports = {
           if (!fullName.includes(nameFilter.toLowerCase())) {
             continue;
           }
+        }
+        let normalizedOffice = details?.normalizedOffice;
+
+        if (!normalizedOffice && raceId) {
+          const race = await BallotRace.findOne({ ballotHashId: raceId });
+          normalizedOffice = race?.data?.normalized_position_name;
+
+          await Campaign.updateOne({ slug }).set({
+            details: { ...details, normalizedOffice },
+          });
         }
 
         const cleanCampaign = {
@@ -140,6 +151,7 @@ module.exports = {
           lastName,
           avatar: avatar || false,
           electionDate,
+          normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
         if (!campaign.details?.geoLocation?.lng) {
