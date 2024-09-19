@@ -7,6 +7,7 @@ module.exports = {
   inputs: {
     id: {
       type: 'number',
+      required: true,
     },
   },
   exits: {
@@ -22,8 +23,8 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { params, user: authenticatedUser } = this.req;
-      const { id: campaignVolunteerId } = params;
+      const { id: campaignVolunteerId } = inputs;
+      const { user: authenticatedUser } = this.req;
 
       if (!campaignVolunteerId) {
         return exits.badRequest({

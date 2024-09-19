@@ -34,12 +34,12 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const {
+        id: campaignVolunteerId,
         role: newRole,
         campaign: newCampaignId,
         user: newUserId,
       } = inputs;
-      const { params, user: authenticatedUser } = this.req;
-      const { id: campaignVolunteerId } = params;
+      const { user: authenticatedUser } = this.req;
       if (!campaignVolunteerId) {
         return exits.badRequest({
           message: 'Campaign volunteer id is required',
