@@ -29,7 +29,8 @@ module.exports = {
         if (
           !campaign.user ||
           !campaign.details?.zip ||
-          campaign.didWin === false
+          campaign.didWin === false ||
+          !campaign.details?.geoLocation?.lng
         ) {
           continue;
         }
@@ -37,6 +38,14 @@ module.exports = {
           if (campaign.data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
             continue;
           }
+        }
+        if (
+          cleanCampaign.position.lng < -125 ||
+          cleanCampaign.position.lng > -66 ||
+          cleanCampaign.position.lat < 24 ||
+          cleanCampaign.position.lat > 49
+        ) {
+          continue;
         }
 
         count++;
