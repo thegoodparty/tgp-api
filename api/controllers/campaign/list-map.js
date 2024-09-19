@@ -118,6 +118,7 @@ module.exports = {
           party,
           electionDate,
           raceId,
+          noNormalizedOffice,
         } = details || {};
         const resolvedOffice = otherOffice || office;
 
@@ -129,12 +130,16 @@ module.exports = {
         }
         let normalizedOffice = details?.normalizedOffice;
 
-        if (!normalizedOffice && raceId) {
+        if (!normalizedOffice && raceId && !noNormalizedOffice) {
           const race = await BallotRace.findOne({ ballotHashId: raceId });
           normalizedOffice = race?.data?.normalized_position_name;
           if (normalizedOffice) {
             await Campaign.updateOne({ slug }).set({
               details: { ...details, normalizedOffice },
+            });
+          } else {
+            await Campaign.updateOne({ slug }).set({
+              details: { ...details, noNormalizedOffice: true },
             });
           }
         }
