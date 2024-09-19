@@ -132,10 +132,11 @@ module.exports = {
         if (!normalizedOffice && raceId) {
           const race = await BallotRace.findOne({ ballotHashId: raceId });
           normalizedOffice = race?.data?.normalized_position_name;
-
-          await Campaign.updateOne({ slug }).set({
-            details: { ...details, normalizedOffice },
-          });
+          if (normalizedOffice) {
+            await Campaign.updateOne({ slug }).set({
+              details: { ...details, normalizedOffice },
+            });
+          }
         }
 
         const cleanCampaign = {
@@ -154,9 +155,20 @@ module.exports = {
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
-        if (!campaign.details?.geoLocation?.lng) {
+        if (
+          !campaign.details?.geoLocation?.lng &&
+          campaign.details?.geoLocationFailed !== true
+        ) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
           if (!lng) {
+            await Campaign.updateOne({
+              slug: campaign.slug,
+            }).set({
+              details: {
+                ...campaign.details,
+                geoLocationFailed: true,
+              },
+            });
             continue;
           }
           cleanCampaign.position = { lng, lat };
