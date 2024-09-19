@@ -119,7 +119,12 @@ module.exports = {
           electionDate,
           raceId,
           noNormalizedOffice,
+          geoLocationFailed,
         } = details || {};
+
+        if (geoLocationFailed) {
+          continue;
+        }
         const resolvedOffice = otherOffice || office;
 
         if (nameFilter) {
@@ -160,10 +165,7 @@ module.exports = {
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
-        if (
-          !campaign.details?.geoLocation?.lng &&
-          campaign.details?.geoLocationFailed !== true
-        ) {
+        if (!campaign.details?.geoLocation?.lng) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
           if (!lng) {
             await Campaign.updateOne({
@@ -182,25 +184,6 @@ module.exports = {
             lng: campaign.details.geoLocation.lng,
             lat: campaign.details.geoLocation.lat,
           };
-        }
-
-        // Geolocation filtering
-        if (
-          neLat &&
-          neLng &&
-          swLat &&
-          swLng &&
-          cleanCampaign.position.lat &&
-          cleanCampaign.position.lng
-        ) {
-          if (
-            cleanCampaign.position.lat < swLat ||
-            cleanCampaign.position.lat > neLat ||
-            cleanCampaign.position.lng < swLng ||
-            cleanCampaign.position.lng > neLng
-          ) {
-            continue;
-          }
         }
 
         cleanCampaigns.push(cleanCampaign);
