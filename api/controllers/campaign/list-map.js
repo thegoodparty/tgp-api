@@ -7,6 +7,9 @@ module.exports = {
     party: {
       type: 'string',
     },
+    state: {
+      type: 'string',
+    },
     level: {
       type: 'string',
     },
@@ -48,6 +51,7 @@ module.exports = {
     try {
       const {
         party: partyFilter,
+        state: stateFilter,
         level: levelFilter,
         results: resultsFilter,
         office: officeFilter,
@@ -66,6 +70,10 @@ module.exports = {
         whereClauses += ` AND c.details->>'party' = '${partyFilter}'`;
       }
 
+      if (stateFilter) {
+        whereClauses += ` AND c.details->>'state' = '${stateFilter}'`;
+      }
+
       if (levelFilter) {
         whereClauses += ` AND c.details->>'ballotLevel' = '${levelFilter}'`;
       }
@@ -75,7 +83,7 @@ module.exports = {
       }
 
       if (officeFilter) {
-        whereClauses += ` AND (c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
+        whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
       }
 
       if (isProd) {
@@ -103,6 +111,7 @@ module.exports = {
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
+
         if (!campaign.details?.zip || campaign.didWin === false) {
           continue;
         }
@@ -116,13 +125,31 @@ module.exports = {
           zip,
           party,
           electionDate,
+          raceId,
+          noNormalizedOffice,
         } = details || {};
+
         const resolvedOffice = otherOffice || office;
 
         if (nameFilter) {
           const fullName = `${firstName} ${lastName}`.toLowerCase();
           if (!fullName.includes(nameFilter.toLowerCase())) {
             continue;
+          }
+        }
+        let normalizedOffice = details?.normalizedOffice;
+
+        if (!normalizedOffice && raceId && !noNormalizedOffice) {
+          const race = await BallotRace.findOne({ ballotHashId: raceId });
+          normalizedOffice = race?.data?.normalized_position_name;
+          if (normalizedOffice) {
+            await Campaign.updateOne({ slug }).set({
+              details: { ...details, normalizedOffice },
+            });
+          } else {
+            await Campaign.updateOne({ slug }).set({
+              details: { ...details, noNormalizedOffice: true },
+            });
           }
         }
 
@@ -139,38 +166,25 @@ module.exports = {
           lastName,
           avatar: avatar || false,
           electionDate,
+          normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
-        if (!campaign.details.geoLocation) {
-          const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
-          if (!lng) {
-            continue;
-          }
-          cleanCampaign.position = { lng, lat };
+        const position = await handleGeoLocation(campaign);
+        if (!position) {
+          continue;
         } else {
-          cleanCampaign.position = {
-            lng: campaign.details.geoLocation.lng,
-            lat: campaign.details.geoLocation.lat,
-          };
+          cleanCampaign.position = position;
         }
 
-        // Geolocation filtering
-        if (
-          neLat &&
-          neLng &&
-          swLat &&
-          swLng &&
-          cleanCampaign.position.lat &&
-          cleanCampaign.position.lng
-        ) {
-          if (
-            cleanCampaign.position.lat < swLat ||
-            cleanCampaign.position.lat > neLat ||
-            cleanCampaign.position.lng < swLng ||
-            cleanCampaign.position.lng > neLng
-          ) {
-            continue;
-          }
+        let isInBound = filterPosition(
+          cleanCampaign,
+          neLat,
+          neLng,
+          swLat,
+          swLng,
+        );
+        if (!isInBound) {
+          continue;
         }
 
         cleanCampaigns.push(cleanCampaign);
@@ -189,6 +203,60 @@ module.exports = {
     }
   },
 };
+
+async function handleGeoLocation(campaign) {
+  let { details } = campaign;
+  const { geoLocationFailed, geoLocation } = details || {};
+
+  if (geoLocationFailed) {
+    return false;
+  }
+
+  if (!geoLocation?.lng) {
+    const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
+    if (!lng) {
+      await Campaign.updateOne({
+        slug: campaign.slug,
+      }).set({
+        details: {
+          ...campaign.details,
+          geoLocationFailed: true,
+        },
+      });
+      return false;
+    }
+    return { lng, lat };
+  } else {
+    return {
+      lng: campaign.details.geoLocation.lng,
+      lat: campaign.details.geoLocation.lat,
+    };
+  }
+}
+
+function filterPosition(campaign, neLat, neLng, swLat, swLng) {
+  // Geolocation filtering
+  if (
+    neLat &&
+    neLng &&
+    swLat &&
+    swLng &&
+    campaign.position.lat &&
+    campaign.position.lng
+  ) {
+    if (
+      campaign.position.lat < swLat ||
+      campaign.position.lat > neLat ||
+      campaign.position.lng < swLng ||
+      campaign.position.lng > neLng
+    ) {
+      return false;
+    }
+    return true;
+  } else {
+    return true;
+  }
+}
 
 async function calculateGeoLocation(campaign) {
   try {

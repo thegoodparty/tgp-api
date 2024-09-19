@@ -42,7 +42,8 @@ module.exports = {
       IndexName: 'gp-api-location', // Specify your geocoding index name
       Text: zip,
       MaxResults: 1, // Limit to 1 result
-      // Additional parameters as needed
+      FilterBBox: [-125.0, 24.396308, -66.93457, 49.384358], // Bounding box for the USA
+      FilterCountries: ['USA'], // Limit to the USA
     };
 
     try {
@@ -50,7 +51,7 @@ module.exports = {
       const data = await location.send(searchCommand);
 
       if (data.Results.length === 0) {
-        console.log('no results found for', address);
+        console.log('no results found for', zip);
         return exits.success({});
       } else {
         const lat = data.Results[0].Place.Geometry.Point[1];
