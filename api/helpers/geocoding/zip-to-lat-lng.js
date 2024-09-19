@@ -51,7 +51,7 @@ module.exports = {
       const data = await location.send(searchCommand);
 
       if (data.Results.length === 0) {
-        console.log('no results found for', address);
+        console.log('no results found for', zip);
         return exits.success({});
       } else {
         const lat = data.Results[0].Place.Geometry.Point[1];
