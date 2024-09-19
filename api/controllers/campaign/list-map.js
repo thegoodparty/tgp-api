@@ -119,12 +119,8 @@ module.exports = {
           electionDate,
           raceId,
           noNormalizedOffice,
-          geoLocationFailed,
         } = details || {};
 
-        if (geoLocationFailed) {
-          continue;
-        }
         const resolvedOffice = otherOffice || office;
 
         if (nameFilter) {
@@ -165,25 +161,11 @@ module.exports = {
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
-        if (!campaign.details?.geoLocation?.lng) {
-          const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
-          if (!lng) {
-            await Campaign.updateOne({
-              slug: campaign.slug,
-            }).set({
-              details: {
-                ...campaign.details,
-                geoLocationFailed: true,
-              },
-            });
-            continue;
-          }
-          cleanCampaign.position = { lng, lat };
+        const position = await handleGeoLocation(campaign);
+        if (!position) {
+          continue;
         } else {
-          cleanCampaign.position = {
-            lng: campaign.details.geoLocation.lng,
-            lat: campaign.details.geoLocation.lat,
-          };
+          cleanCampaign.position = position;
         }
 
         cleanCampaigns.push(cleanCampaign);
@@ -202,6 +184,36 @@ module.exports = {
     }
   },
 };
+
+async function handleGeoLocation(campaign) {
+  let { details } = campaign;
+  const { geoLocationFailed, geoLocation } = details || {};
+
+  if (geoLocationFailed) {
+    return false;
+  }
+
+  if (!geoLocation?.lng) {
+    const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
+    if (!lng) {
+      await Campaign.updateOne({
+        slug: campaign.slug,
+      }).set({
+        details: {
+          ...campaign.details,
+          geoLocationFailed: true,
+        },
+      });
+      return false;
+    }
+    return { lng, lat };
+  } else {
+    return {
+      lng: campaign.details.geoLocation.lng,
+      lat: campaign.details.geoLocation.lat,
+    };
+  }
+}
 
 async function calculateGeoLocation(campaign) {
   try {
