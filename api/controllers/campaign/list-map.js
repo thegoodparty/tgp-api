@@ -88,6 +88,7 @@ module.exports = {
           c."slug", 
           c."details", 
           c."didWin", 
+          c.data, 
           u."firstName", 
           u."lastName", 
           u."avatar"
