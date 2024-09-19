@@ -153,29 +153,6 @@ module.exports = {
             lng: campaign.details.geoLocation.lng,
             lat: campaign.details.geoLocation.lat,
           };
-
-          // temp - recalulate geolocation for campaigns who are not in the usa
-          /*
-const params = {
-  IndexName: 'gp-api-location', // Specify your geocoding index name
-  Text: zip,
-  MaxResults: 1, // Limit to 1 result
-  BiasPosition: [-98.35, 39.50], // Central point in the USA (Longitude, Latitude)
-  FilterBBox: [-125.0, 24.396308, -66.93457, 49.384358], // Bounding box for the USA
-};
-          */
-          if (
-            cleanCampaign.position.lng < -125 ||
-            cleanCampaign.position.lng > -66 ||
-            cleanCampaign.position.lat < 24 ||
-            cleanCampaign.position.lat > 49
-          ) {
-            const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
-            if (!lng) {
-              continue;
-            }
-            cleanCampaign.position = { lng, lat };
-          }
         }
 
         // Geolocation filtering
