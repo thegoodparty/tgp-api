@@ -40,10 +40,10 @@ module.exports = {
           }
         }
         if (
-          cleanCampaign.details?.geoLocation?.lng < -125 ||
-          cleanCampaign.details?.geoLocation?.lng > -66 ||
-          cleanCampaign.details?.geoLocation?.lat < 24 ||
-          cleanCampaign.details?.geoLocation?.lat > 49
+          campaign.details?.geoLocation?.lng < -125 ||
+          campaign.details?.geoLocation?.lng > -66 ||
+          campaign.details?.geoLocation?.lat < 24 ||
+          campaign.details?.geoLocation?.lat > 49
         ) {
           continue;
         }
