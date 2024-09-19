@@ -155,9 +155,20 @@ module.exports = {
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
-        if (!campaign.details?.geoLocation?.lng) {
+        if (
+          !campaign.details?.geoLocation?.lng &&
+          campaign.details?.geoLocationFailed !== true
+        ) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
           if (!lng) {
+            await Campaign.updateOne({
+              slug: campaign.slug,
+            }).set({
+              details: {
+                ...campaign.details,
+                geoLocationFailed: true,
+              },
+            });
             continue;
           }
           cleanCampaign.position = { lng, lat };
