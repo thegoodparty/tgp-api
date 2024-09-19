@@ -142,6 +142,9 @@ module.exports = {
           electionDate,
         };
 
+        // temp -recalculate geolocation
+        await calculateGeoLocation(campaign);
+
         if (!campaign.details?.geoLocation?.lng) {
           const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
           if (!lng) {

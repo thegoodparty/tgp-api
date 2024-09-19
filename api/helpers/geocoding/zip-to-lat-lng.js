@@ -43,6 +43,7 @@ module.exports = {
       Text: zip,
       MaxResults: 1, // Limit to 1 result
       FilterBBox: [-125.0, 24.396308, -66.93457, 49.384358], // Bounding box for the USA
+      FilterCountries: ['USA'], // Limit to the USA
     };
 
     try {
