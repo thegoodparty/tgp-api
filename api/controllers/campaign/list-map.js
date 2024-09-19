@@ -132,10 +132,11 @@ module.exports = {
         if (!normalizedOffice && raceId) {
           const race = await BallotRace.findOne({ ballotHashId: raceId });
           normalizedOffice = race?.data?.normalized_position_name;
-
-          await Campaign.updateOne({ slug }).set({
-            details: { ...details, normalizedOffice },
-          });
+          if (normalizedOffice) {
+            await Campaign.updateOne({ slug }).set({
+              details: { ...details, normalizedOffice },
+            });
+          }
         }
 
         const cleanCampaign = {
