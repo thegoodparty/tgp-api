@@ -7,6 +7,9 @@ module.exports = {
     party: {
       type: 'string',
     },
+    state: {
+      type: 'string',
+    },
     level: {
       type: 'string',
     },
@@ -48,6 +51,7 @@ module.exports = {
     try {
       const {
         party: partyFilter,
+        state: stateFilter,
         level: levelFilter,
         results: resultsFilter,
         office: officeFilter,
@@ -64,6 +68,10 @@ module.exports = {
 
       if (partyFilter) {
         whereClauses += ` AND c.details->>'party' = '${partyFilter}'`;
+      }
+
+      if (stateFilter) {
+        whereClauses += ` AND c.details->>'state' = '${stateFilter}'`;
       }
 
       if (levelFilter) {
