@@ -1,3 +1,4 @@
+const { userIsCampaignManager } = require('./userIsCampaignManager');
 const userCanMutateCampaignVolunteer = async (userId, campaignVolunteerId) => {
   const campaignVolunteer = await CampaignVolunteer.findOne({
     id: campaignVolunteerId,
@@ -10,12 +11,9 @@ const userCanMutateCampaignVolunteer = async (userId, campaignVolunteerId) => {
 
   const { campaign } = campaignVolunteer;
 
-  const authenticatedUserIsCampaignManager = Boolean(
-    await CampaignVolunteer.findOne({
-      campaign: campaign.id,
-      role: 'manager',
-      user: userId,
-    }),
+  const authenticatedUserIsCampaignManager = await userIsCampaignManager(
+    userId,
+    campaign.id,
   );
   const authenticatedUserIsCampaignCandidate = userId === campaign.user;
 

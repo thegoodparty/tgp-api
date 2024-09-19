@@ -6,6 +6,7 @@ module.exports = {
   inputs: {
     id: {
       type: 'number',
+      required: true,
     },
   },
 
@@ -19,10 +20,10 @@ module.exports = {
     },
   },
 
-  fn: async function (_, exits) {
-    const { user, params } = this.req;
+  fn: async function (inputs, exits) {
+    const { id: requestId } = inputs;
+    const { user } = this.req;
     const campaign = await sails.helpers.campaign.byUser(user.id);
-    const { requestId } = params || {};
 
     const whereParams = campaign
       ? { campaign: campaign.id }

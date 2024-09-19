@@ -6,7 +6,12 @@ module.exports = {
 
   description: 'Update a request to join a campaign team',
 
-  inputs: {},
+  inputs: {
+    id: {
+      type: 'number',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -19,9 +24,9 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { params, user: candidateUser } = this.req;
+    const { id: requestId } = inputs;
+    const { user: candidateUser } = this.req;
     const campaign = await sails.helpers.campaign.byUser(candidateUser.id);
-    const { requestId } = params || {};
 
     if (!campaign) {
       throw new Error('No campaign found for authenticated user');
