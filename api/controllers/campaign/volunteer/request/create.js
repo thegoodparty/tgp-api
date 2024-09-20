@@ -29,6 +29,11 @@ module.exports = {
       description: 'badRequest',
       responseType: 'badRequest',
     },
+    conflict: {
+      description: 'conflict',
+      responseType: 'conflict',
+      responseCode: 409,
+    },
   },
 
   fn: async function (inputs, exits) {
@@ -47,7 +52,10 @@ module.exports = {
       });
 
       if (existingRequest) {
-        throw new Error('Request to join campaign already exists');
+        return exits.conflict({
+          message: `An request to join candidateEmail already exists`,
+          exists: true,
+        });
       }
 
       const campaignRequest = await CampaignRequest.create({
@@ -57,7 +65,8 @@ module.exports = {
         campaign: campaign?.id || null,
       }).fetch();
 
-      const candidateName = await sails.helpers.user.name(candidateUser);
+      const candidateName =
+        (await sails.helpers.user.name(candidateUser)) || candidateEmail;
       const requestorName = await sails.helpers.user.name(user);
 
       const emailTemplateData = JSON.stringify({
@@ -66,13 +75,13 @@ module.exports = {
       });
 
       await sendCampaignRequestEmail({
-        toEmail: candidateUser.email,
+        toEmail: user.email,
         templateName: 'campaign-manager-request',
         subject: `Your Request to Manage ${candidateName}'s Campaign`,
         emailTemplateData,
       });
 
-      if (campaign || campaign.isDemo) {
+      if (campaign && !campaign?.isDemo) {
         await sendCampaignRequestEmail({
           toEmail: candidateUser.email,
           templateName: 'candidate-campaign-manager-request',
@@ -81,7 +90,7 @@ module.exports = {
         });
       } else {
         await sendCampaignRequestEmail({
-          toEmail: candidateUser.email,
+          toEmail: candidateEmail,
           templateName: 'candidate-join-invite',
           subject: `${requestorName} Has Invited You to Join GoodParty.org!`,
           emailTemplateData,
