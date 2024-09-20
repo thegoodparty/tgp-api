@@ -39,6 +39,12 @@ module.exports = {
         return exits.success(campaignRequests || []);
       }
 
+      const campaign = await sails.helpers.campaign.byUser(user.id);
+      const userIsCampaignCandidate = Boolean(campaign?.user === user.id);
+      const userHasCampaignManagerRole = Boolean(
+        campaign && (await userIsCampaignManager(user.id, campaign.id)),
+      );
+      // TODO: Figure out how to lower the cyclomatic complexity of this below 😬
       if (requestId) {
         const campaignRequest = await CampaignRequest.findOne({
           id: requestId,
@@ -52,21 +58,22 @@ module.exports = {
           return exits.success(campaignRequest);
         }
 
-        const campaign = await sails.helpers.campaign.byUser(user.id);
-
         if (!campaign) {
           throw new Error('User not authorized');
         }
 
-        const userIsCampaignCandidate = Boolean(campaign?.user === user.id);
-
-        if (
-          userIsCampaignCandidate ||
-          (await userIsCampaignManager(user.id, campaign.id))
-        ) {
+        if (userIsCampaignCandidate || userHasCampaignManagerRole) {
           return exits.success(campaignRequest);
         }
       }
+      if (campaign && (userIsCampaignCandidate || userHasCampaignManagerRole)) {
+        const campaignRequests = await CampaignRequest.find({
+          campaign: campaign.id,
+        }).populate('user');
+
+        return exits.success(campaignRequests || []);
+      }
+
       throw new Error('User not authorized');
     } catch (e) {
       if (e === 'notFound') {
