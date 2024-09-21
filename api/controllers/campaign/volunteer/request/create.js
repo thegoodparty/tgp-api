@@ -1,3 +1,7 @@
+const {
+  sendCampaignRequestEmail,
+} = require('../../../../utils/campaign/sendCampaignRequestEmail');
+
 module.exports = {
   friendlyName: 'CreateCampaignTeamRequest',
 
@@ -53,7 +57,37 @@ module.exports = {
         campaign: campaign?.id || null,
       }).fetch();
 
-      // All done.
+      const candidateName = await sails.helpers.user.name(candidateUser);
+      const requestorName = await sails.helpers.user.name(user);
+
+      const emailTemplateData = JSON.stringify({
+        candidateName,
+        requestorName,
+      });
+
+      await sendCampaignRequestEmail({
+        toEmail: candidateUser.email,
+        templateName: 'campaign-manager-request',
+        subject: `Your Request to Manage ${candidateName}'s Campaign`,
+        emailTemplateData,
+      });
+
+      if (campaign || campaign.isDemo) {
+        await sendCampaignRequestEmail({
+          toEmail: candidateUser.email,
+          templateName: 'candidate-campaign-manager-request',
+          subject: `Confirm ${requestorName} as Your Campaign Manager on GoodParty.org`,
+          emailTemplateData,
+        });
+      } else {
+        await sendCampaignRequestEmail({
+          toEmail: candidateUser.email,
+          templateName: 'candidate-join-invite',
+          subject: `${requestorName} Has Invited You to Join GoodParty.org!`,
+          emailTemplateData,
+        });
+      }
+
       return exits.success(campaignRequest);
     } catch (e) {
       console.error('error creating campaign request', e);
