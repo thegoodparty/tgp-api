@@ -2,7 +2,11 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
-  inputs: {},
+  inputs: {
+    state: {
+      type: 'string',
+    },
+  },
 
   exits: {
     success: {
@@ -18,6 +22,9 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const isProd = appBase === 'https://goodparty.org';
+
+      const { state } = inputs;
+
       const campaigns = await Campaign.find({
         select: ['details', 'didWin', 'data', 'user'],
         where: { user: { '!=': null }, isDemo: false, isActive: true },
@@ -32,6 +39,9 @@ module.exports = {
           campaign.didWin === false ||
           !campaign.details?.geoLocation?.lng
         ) {
+          continue;
+        }
+        if (state && campaign.details?.state !== state) {
           continue;
         }
         if (isProd) {
