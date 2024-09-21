@@ -7,14 +7,17 @@ module.exports = {
     role: {
       type: 'string',
       isIn: ['volunteer', 'staff', 'candidate', 'manager'],
+      required: true,
     },
 
     campaign: {
       model: 'campaign',
+      required: true,
     },
 
     user: {
       model: 'user',
+      required: true,
     },
 
     // has many
