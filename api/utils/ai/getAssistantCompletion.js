@@ -19,11 +19,15 @@ async function getAssistantCompletion(
   const openai = new OpenAI({ apiKey: openAiKey });
   try {
     if (!assistantId || !systemPrompt) {
+      console.log('missing assistantId or systemPrompt');
+      console.log('assistantId', assistantId);
+      console.log('systemPrompt', systemPrompt);
       return completion;
     }
 
     const myAssistant = await openai.beta.assistants.retrieve(assistantId);
     if (!myAssistant) {
+      console.log('assistant not found');
       return completion;
     }
 
@@ -57,6 +61,7 @@ async function getAssistantCompletion(
     }
 
     if (!threadId) {
+      console.log('missing threadId');
       return completion;
     }
 

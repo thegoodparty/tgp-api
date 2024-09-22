@@ -43,6 +43,7 @@ module.exports = {
 
       let threadId;
       let messageId;
+
       const completion = await getAssistantCompletion(
         content,
         openAiAssistant,

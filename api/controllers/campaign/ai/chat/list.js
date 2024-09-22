@@ -1,10 +1,5 @@
 module.exports = {
-  inputs: {
-    threadId: {
-      type: 'string',
-      required: true,
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -15,29 +10,24 @@ module.exports = {
       description: 'badRequest',
       responseType: 'badRequest',
     },
-    notFound: {
-      description: 'notFound',
-      responseType: 'notFound',
-    },
   },
   fn: async function (inputs, exits) {
     try {
-      const { threadId } = inputs;
-
-      const aiChat = await AIChat.findOne({
-        thread: threadId,
+      // get a list of chats.
+      const aiChats = await AIChat.find({
         user: this.req.user.id,
-      });
+      }).sort([{ updatedAt: 'DESC' }]);
 
-      if (!aiChat) {
-        return exits.badFound();
+      let chats = [];
+      for (const chat of aiChats) {
+        chats.push({
+          thread: chat.thread,
+          updatedAt: chat.updatedAt,
+        });
       }
 
-      let chat = [];
-      chat = aiChat.data.messages || [];
-
       return exits.success({
-        chat,
+        chats,
       });
     } catch (e) {
       console.log('Error at ai/chat/get', e);
