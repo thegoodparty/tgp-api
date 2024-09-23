@@ -86,22 +86,30 @@ module.exports = {
             );
             viability.candidates = candidates;
           }
-          if (ballotCandidate?.vendorTsData?.is_incumbent !== '') {
+          if (
+            ballotCandidate?.vendorTsData?.is_incumbent &&
+            ballotCandidate?.vendorTsData?.is_incumbent !== ''
+          ) {
             isIncumbent = ballotCandidate.vendorTsData.is_incumbent === 'TRUE';
           }
-          if (ballotCandidate?.vendorTsData?.is_uncontested !== '') {
+          if (
+            ballotCandidate?.vendorTsData?.is_uncontested &&
+            ballotCandidate?.vendorTsData?.is_uncontested !== ''
+          ) {
             isUncontested =
               ballotCandidate.vendorTsData.is_uncontested === 'TRUE';
           }
           // Check against Ballotpedia.
           if (
             isIncumbent === undefined &&
+            ballotCandidate?.bpData?.is_incumbent &&
             ballotCandidate?.bpData?.is_incumbent !== ''
           ) {
             isIncumbent = ballotCandidate?.bpData?.is_incumbent === 'TRUE';
           }
           if (
             isUncontested === undefined &&
+            ballotCandidate?.bpData?.is_uncontested &&
             ballotCandidate?.bpData?.is_uncontested !== ''
           ) {
             isUncontested = ballotCandidate?.bpData?.is_uncontested === 'TRUE';
