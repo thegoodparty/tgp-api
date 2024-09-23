@@ -256,6 +256,7 @@ module.exports.routes = {
     'data-processing/techspeed-enhance-cron',
   'GET   /api/v1/techspeed-new-candidates':
     'data-processing/techspeed-new-candidates-sheet',
+  'GET   /api/v1/nebraska': 'data-processing/nebraska',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
