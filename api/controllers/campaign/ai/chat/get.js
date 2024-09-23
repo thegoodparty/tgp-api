@@ -30,7 +30,7 @@ module.exports = {
       });
 
       if (!aiChat) {
-        return exits.badFound();
+        return exits.notFound();
       }
 
       let chat = [];

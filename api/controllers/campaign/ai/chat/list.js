@@ -21,7 +21,7 @@ module.exports = {
       let chats = [];
       for (const chat of aiChats) {
         chats.push({
-          thread: chat.thread,
+          threadId: chat.thread,
           updatedAt: chat.updatedAt,
         });
       }
