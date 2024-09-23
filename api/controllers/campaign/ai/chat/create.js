@@ -43,6 +43,7 @@ module.exports = {
 
       let threadId;
       let messageId;
+
       const completion = await getAssistantCompletion(
         content,
         openAiAssistant,
@@ -73,7 +74,7 @@ module.exports = {
           },
         });
         return exits.success({
-          message: chatResponse,
+          chat: chatResponse,
           threadId: completion.threadId,
         });
       } else {

@@ -35,9 +35,6 @@ module.exports = {
       const user = this.req.user;
 
       let { threadId, regenerate, message } = inputs;
-      if (!user) {
-        return exits.badRequest();
-      }
 
       if (regenerate && !threadId) {
         return exits.badRequest();
@@ -50,10 +47,6 @@ module.exports = {
 
       let messages = aiChat?.data?.messages || [];
       let campaign = await Campaign.findOne({ id: aiChat?.campaign });
-
-      console.log('chatId', aiChat.id);
-      console.log('threadId', threadId);
-      console.log('regenerate', regenerate);
 
       const { content } = await getChatSystemPrompt(campaign);
 
