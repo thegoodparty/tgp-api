@@ -74,7 +74,7 @@ module.exports = {
           },
         });
         return exits.success({
-          message: chatResponse,
+          chat: chatResponse,
           threadId: completion.threadId,
         });
       } else {
