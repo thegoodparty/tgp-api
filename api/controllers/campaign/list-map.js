@@ -208,9 +208,10 @@ async function handleGeoLocation(campaign) {
   let { details } = campaign;
   const { geoLocationFailed, geoLocation } = details || {};
 
-  if (geoLocationFailed) {
-    return false;
-  }
+  // TEMPORARY DISABLE
+  // if (geoLocationFailed) {
+  //   return false;
+  // }
 
   if (!geoLocation?.lng) {
     const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
