@@ -27,6 +27,18 @@ module.exports = {
         metaData: JSON.stringify(updatedMeta),
       });
 
+      const campaignRequests = await CampaignRequest.find({
+        user: user.id,
+      });
+
+      if (campaignRequests?.length) {
+        return exits.success({
+          status: false,
+          step: '',
+          campaignRequestPending: true,
+        });
+      }
+
       const campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         // check if the user is a volunteer
