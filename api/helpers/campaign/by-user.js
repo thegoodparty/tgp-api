@@ -45,7 +45,7 @@ module.exports = {
 
       return exits.success(campaigns[0]);
     } catch (e) {
-      console.log('error gett ing campaign', e);
+      console.log('error getting campaign', e);
       return exits.success(false);
     }
   },

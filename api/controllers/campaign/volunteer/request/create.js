@@ -53,7 +53,7 @@ module.exports = {
 
       if (existingRequest) {
         return exits.conflict({
-          message: `An request to join candidateEmail already exists`,
+          message: `An request to join campaign already exists`,
           exists: true,
         });
       }

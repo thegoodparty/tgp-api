@@ -47,8 +47,6 @@ module.exports = {
         });
       }
 
-      console.log(`campaign =>`, campaign);
-
       const { data, details, slug } = campaign;
 
       await Campaign.updateOne({ slug }).set({
@@ -58,7 +56,6 @@ module.exports = {
         return exits.success({
           status: 'candidate',
           profile: slug,
-          // pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
         });
       }
       let step = 1;
