@@ -27,6 +27,18 @@ module.exports = {
         metaData: JSON.stringify(updatedMeta),
       });
 
+      const campaignRequests = await CampaignRequest.find({
+        user: user.id,
+      });
+
+      if (campaignRequests?.length) {
+        return exits.success({
+          status: false,
+          step: '',
+          campaignRequestPending: true,
+        });
+      }
+
       const campaign = await sails.helpers.campaign.byUser(user.id);
       if (!campaign) {
         // check if the user is a volunteer
@@ -47,16 +59,15 @@ module.exports = {
         });
       }
 
-      const { data, details } = campaign;
+      const { data, details, slug } = campaign;
 
-      await Campaign.updateOne({ slug: campaign.slug }).set({
+      await Campaign.updateOne({ slug }).set({
         data: { ...data, lastVisited: timestamp },
       });
       if (campaign.isActive) {
         return exits.success({
           status: 'candidate',
-          profile: campaign.slug,
-          // pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
+          profile: slug,
         });
       }
       let step = 1;
