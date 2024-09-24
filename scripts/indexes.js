@@ -147,6 +147,17 @@ module.exports = {
       console.log('censusentityindex already exists');
     }
 
+    // campaign.PathToVictory sparse index
+
+    try {
+      // sparse index
+      await sails.getDatastore().sendNativeQuery(`
+              CREATE UNIQUE INDEX campaignIndex ON public.pathToVictory (campaign) WHERE campaign IS NOT NULL
+            `);
+    } catch (error) {
+      console.log('campaignIndex already exists');
+    }
+
     // Report back to Sails that the migration was successful
     return exits.success();
   },
