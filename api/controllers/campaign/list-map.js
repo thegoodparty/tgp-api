@@ -96,6 +96,7 @@ module.exports = {
           c."slug", 
           c."details", 
           c."didWin", 
+          c."data", 
           u."firstName", 
           u."lastName", 
           u."avatar"
@@ -116,7 +117,8 @@ module.exports = {
           continue;
         }
 
-        let { details, slug, didWin, firstName, lastName, avatar } = campaign;
+        let { details, slug, didWin, firstName, lastName, avatar, data } =
+          campaign;
         const {
           otherOffice,
           office,
@@ -137,7 +139,8 @@ module.exports = {
             continue;
           }
         }
-        let normalizedOffice = details?.normalizedOffice;
+        const hubSpotOffice = data?.hubSpotUpdates?.office_type;
+        let normalizedOffice = hubSpotOffice || details?.normalizedOffice;
 
         if (!normalizedOffice && raceId && !noNormalizedOffice) {
           const race = await BallotRace.findOne({ ballotHashId: raceId });
