@@ -18,27 +18,34 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { userId } = inputs;
-      let campaign;
-      try {
-        campaign = await Campaign.findOne({ user: userId }).populate(
-          'pathToVictory',
-        );
-        return exits.success(campaign);
-      } catch (e) {
-        const campaigns = await Campaign.find({
+      let campaigns = await Campaign.find({ user: userId })
+        .populate('pathToVictory')
+        .limit(1);
+
+      if (!campaigns || campaigns.length === 0) {
+        const campaignVolunteer = await CampaignVolunteer.find({
           user: userId,
-        }).populate('pathToVictory');
-
-        if (!campaigns) {
-          throw new Error('No campaigns found for given user');
+        }).limit(1);
+        if (
+          campaignVolunteer &&
+          campaignVolunteer.length > 0 &&
+          campaignVolunteer[0]?.role === 'manager'
+        ) {
+          return exits.success(
+            await Campaign.findOne({
+              id: campaignVolunteer[0]?.campaign,
+            }).populate('pathToVictory'),
+          );
         }
-
-        campaign = campaigns && campaigns.length > 0 ? campaigns[0] : false;
-
-        return exits.success(campaign);
       }
+
+      if (!campaigns || campaigns.length === 0) {
+        throw new Error('No campaigns found for given user');
+      }
+
+      return exits.success(campaigns[0]);
     } catch (e) {
-      console.log('error getting campaign', e);
+      console.log('error gett ing campaign', e);
       return exits.success(false);
     }
   },

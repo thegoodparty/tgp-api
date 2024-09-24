@@ -47,15 +47,17 @@ module.exports = {
         });
       }
 
-      const { data, details } = campaign;
+      console.log(`campaign =>`, campaign);
 
-      await Campaign.updateOne({ slug: campaign.slug }).set({
+      const { data, details, slug } = campaign;
+
+      await Campaign.updateOne({ slug }).set({
         data: { ...data, lastVisited: timestamp },
       });
       if (campaign.isActive) {
         return exits.success({
           status: 'candidate',
-          profile: campaign.slug,
+          profile: slug,
           // pathToVictory: campaign.pathToVictory ? 'Complete' : 'Waiting',
         });
       }
