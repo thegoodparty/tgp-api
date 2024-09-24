@@ -208,9 +208,10 @@ async function handleGeoLocation(campaign) {
   let { details } = campaign;
   const { geoLocationFailed, geoLocation } = details || {};
 
-  if (geoLocationFailed) {
-    return false;
-  }
+  // TODO: remove! TEMPORARY DISABLE WEB-2949
+  // if (geoLocationFailed) {
+  //   return false;
+  // }
 
   if (!geoLocation?.lng) {
     const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
