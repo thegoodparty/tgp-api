@@ -50,6 +50,7 @@ module.exports = {
             pro_candidate,
             filing_deadline,
             opponents,
+            office_type,
           } = properties || {};
 
           campaign.data.hubSpotUpdates = {
@@ -68,6 +69,7 @@ module.exports = {
             pro_candidate,
             filing_deadline,
             opponents,
+            office_type,
           };
           const updatedCampaign = {
             data: campaign.data,
