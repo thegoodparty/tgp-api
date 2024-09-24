@@ -208,7 +208,7 @@ async function handleGeoLocation(campaign) {
   let { details } = campaign;
   const { geoLocationFailed, geoLocation } = details || {};
 
-  // TEMPORARY DISABLE
+  // TODO: remove! TEMPORARY DISABLE WEB-2949
   // if (geoLocationFailed) {
   //   return false;
   // }
