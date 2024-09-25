@@ -1,5 +1,8 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 const moment = require('moment');
+const {
+  sendCampaignRequestEmail,
+} = require('../../../../utils/campaign/sendCampaignRequestEmail');
 
 module.exports = {
   inputs: {
@@ -38,6 +41,7 @@ module.exports = {
       const existing = await VolunteerInvitation.findOne({
         email: lowerCaseEmail,
         campaign: campaign.id,
+        role,
       });
       if (existing) {
         return exits.badRequest('invitation already exist for this user');
@@ -74,9 +78,22 @@ module.exports = {
           ? campaign.details.otherOffice
           : campaign.details?.office;
 
-      const variables = {
-        base: appBase,
-        content: `
+      if (role === 'manager') {
+        // TODO: Figure out why the hell this ain't workin'...
+        const candidateName = await sails.helpers.user.name(user);
+        await sendCampaignRequestEmail({
+          toEmail: lowerCaseEmail,
+          templateName: 'invite-to-campaign-manager',
+          subject: `${candidateName} Has Invited You to Manage Their Campaign on GoodParty.org!`,
+          emailTemplateData: JSON.stringify({
+            campaignManagerName: lowerCaseEmail,
+            candidateName,
+          }),
+        });
+      } else {
+        const variables = {
+          base: appBase,
+          content: `
         I hope this message finds you well. My name is ${name}, and I am reaching out to you today with a heartfelt request for your support in an endeavor that I believe is crucial for our community.
         <br/><br/>
         As you may know, I am running for ${office} in our upcoming elections. This campaign is more than just a political pursuit; it's a commitment to bring positive change and address the issues that matter most to our community members like you.
@@ -87,14 +104,15 @@ module.exports = {
         <br/><br/>
         ${name}
         `,
-      };
+        };
 
-      await sails.helpers.mailgun.mailgunTemplateSender(
-        lowerCaseEmail,
-        `Join Me in Making a Difference: Volunteer for Our Campaign!`,
-        'volunteer-invitation',
-        JSON.stringify(variables),
-      );
+        await sails.helpers.mailgun.mailgunTemplateSender(
+          lowerCaseEmail,
+          `Join Me in Making a Difference: Volunteer for Our Campaign!`,
+          'volunteer-invitation',
+          JSON.stringify(variables),
+        );
+      }
 
       const invitations = await VolunteerInvitation.find({
         campaign: campaign.id,
