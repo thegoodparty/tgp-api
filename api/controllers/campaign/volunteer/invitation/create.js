@@ -79,7 +79,6 @@ module.exports = {
           : campaign.details?.office;
 
       if (role === 'manager') {
-        // TODO: Figure out why the hell this ain't workin'...
         const candidateName = await sails.helpers.user.name(user);
         await sendCampaignRequestEmail({
           toEmail: lowerCaseEmail,
