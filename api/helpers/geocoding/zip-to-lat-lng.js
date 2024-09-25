@@ -42,7 +42,7 @@ module.exports = {
       IndexName: 'gp-api-location', // Specify your geocoding index name
       Text: zip,
       MaxResults: 1, // Limit to 1 result
-      FilterBBox: [-179.148909, 17.0, -65.0, 71.5388], // Bounding box for the USA
+      // FilterBBox: [-179.148909, 17.0, -65.0, 71.5388], // Bounding box for the USA
       FilterCountries: ['USA'], // Limit to the USA
     };
 
