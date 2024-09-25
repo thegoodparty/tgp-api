@@ -1,7 +1,3 @@
-const {
-  userIsCampaignManager,
-} = require('../../../../utils/campaign/userIsCampaignManager');
-
 module.exports = {
   friendlyName: 'GetCampaignTeamRequests',
 
@@ -24,6 +20,14 @@ module.exports = {
       description: 'badRequest',
       responseType: 'badRequest',
     },
+    notFound: {
+      description: 'notFound',
+      responseType: 'notFound',
+    },
+    forbidden: {
+      description: 'User not authorized',
+      responseType: 'forbidden',
+    },
   },
 
   fn: async function (inputs, exits) {
@@ -31,7 +35,7 @@ module.exports = {
     const { user } = this.req;
 
     try {
-      if (userId) {
+      if (user.id === userId) {
         const campaignRequests = await CampaignRequest.find({
           user: userId,
         }).populate('user');
@@ -40,45 +44,38 @@ module.exports = {
       }
 
       const campaign = await sails.helpers.campaign.byUser(user.id);
-      const userIsCampaignCandidate = Boolean(campaign?.user === user.id);
-      const userHasCampaignManagerRole = Boolean(
-        campaign && (await userIsCampaignManager(user.id, campaign.id)),
-      );
-      // TODO: Figure out how to lower the cyclomatic complexity of this below 😬
+      if (!campaign) {
+        return exits.forbidden();
+      }
+
+      if (!requestId && !userId) {
+        const campaignRequests = await CampaignRequest.find({
+          campaign: campaign.id,
+        }).populate('user');
+        return exits.success(campaignRequests || []);
+      }
+
       if (requestId) {
         const campaignRequest = await CampaignRequest.findOne({
           id: requestId,
         }).populate('user');
 
         if (!campaignRequest) {
-          throw 'notFound';
+          return exits.notFound();
         }
 
-        if (campaignRequest.user.id === user.id) {
+        if (
+          campaignRequest.user.id === user.id ||
+          campaignRequest.campaign === campaign.id
+        ) {
           return exits.success(campaignRequest);
         }
 
-        if (!campaign) {
-          throw new Error('User not authorized');
-        }
-
-        if (userIsCampaignCandidate || userHasCampaignManagerRole) {
-          return exits.success(campaignRequest);
-        }
-      }
-      if (campaign && (userIsCampaignCandidate || userHasCampaignManagerRole)) {
-        const campaignRequests = await CampaignRequest.find({
-          campaign: campaign.id,
-        }).populate('user');
-
-        return exits.success(campaignRequests || []);
+        return exits.forbidden();
       }
 
-      throw new Error('User not authorized');
+      return exit.badRequest('Invalid request');
     } catch (e) {
-      if (e === 'notFound') {
-        throw e;
-      }
       console.error('error getting campaign requests', e);
       return exits.error(e);
     }

@@ -1,10 +1,3 @@
-const { update } = require('lodash');
-
-const camelToSentence = (text) => {
-  const result = text.replace(/([A-Z])/g, ' $1');
-  return result.charAt(0).toUpperCase() + result.slice(1);
-};
-
 module.exports = {
   friendlyName: 'Find Campaign associated with user',
 

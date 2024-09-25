@@ -65,13 +65,25 @@ module.exports = {
         searchJson.filters[electionType] = electionLocation;
       }
 
-      let counts = await getPartisanCounts(electionState, searchJson);
+      let partisanCounts = await getPartisanCounts(electionState, searchJson);
       // console.log('counts', counts);
 
-      if (counts.total === 0) {
+      if (partisanCounts.total === 0) {
         // don't get electionHistory if we don't have a match.
-        exits.success(counts);
+        exits.success(partisanCounts);
       }
+
+      let genderCounts = await getGenderCounts(electionState, searchJson);
+      console.log('genderCounts', genderCounts);
+
+      let ethnicityCounts = await getEthnicityCounts(electionState, searchJson);
+      console.log('ethnicityCounts', ethnicityCounts);
+
+      let counts = {
+        ...partisanCounts,
+        ...genderCounts,
+        ...ethnicityCounts,
+      };
 
       // Now we try to determine the turnout for the last 3 elections.
       // with the goal to determine averageTurnout and projectedTurnout
@@ -298,6 +310,82 @@ async function getPartisanCounts(electionState, searchJson) {
       counts.republican += item.__COUNT;
     } else {
       counts.independent += item.__COUNT;
+    }
+  }
+  return counts;
+}
+
+async function getGenderCounts(electionState, searchJson) {
+  let counts = {
+    women: 0,
+    men: 0,
+  };
+
+  let countsJson = lodash.cloneDeep(searchJson);
+  countsJson.format = 'counts';
+  countsJson.columns = ['Voters_Gender'];
+
+  const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+  let response;
+  try {
+    response = await axios.post(searchUrl, countsJson);
+  } catch (e) {
+    console.log('error getting counts', e);
+    return counts;
+  }
+  if (!response?.data || !response?.data?.length) {
+    return counts;
+  }
+
+  for (const item of response.data) {
+    if (!item?.Voters_Gender) {
+      continue;
+    }
+    if (item.Voters_Gender === 'M') {
+      counts.men += item.__COUNT;
+    } else if (item.Voters_Gender === 'F') {
+      counts.women += item.__COUNT;
+    }
+  }
+  return counts;
+}
+
+async function getEthnicityCounts(electionState, searchJson) {
+  let counts = {
+    white: 0,
+    asian: 0,
+    hispanic: 0,
+    africanAmerican: 0,
+  };
+
+  let countsJson = lodash.cloneDeep(searchJson);
+  countsJson.format = 'counts';
+  countsJson.columns = ['EthnicGroups_EthnicGroup1Desc'];
+
+  const searchUrl = `https://api.l2datamapping.com/api/v2/records/search/1OSR/VM_${electionState}?id=1OSR&apikey=${l2ApiKey}`;
+  let response;
+  try {
+    response = await axios.post(searchUrl, countsJson);
+  } catch (e) {
+    console.log('error getting counts', e);
+    return counts;
+  }
+  if (!response?.data || !response?.data?.length) {
+    return counts;
+  }
+
+  for (const item of response.data) {
+    if (!item?.EthnicGroups_EthnicGroup1Desc) {
+      continue;
+    }
+    if (item.EthnicGroups_EthnicGroup1Desc === 'European') {
+      counts.white += item.__COUNT;
+    } else if (item.EthnicGroups_EthnicGroup1Desc.includes('Asian')) {
+      counts.asian += item.__COUNT;
+    } else if (item.EthnicGroups_EthnicGroup1Desc.includes('Hispanic')) {
+      counts.hispanic += item.__COUNT;
+    } else if (item.EthnicGroups_EthnicGroup1Desc.includes('African')) {
+      counts.africanAmerican += item.__COUNT;
     }
   }
   return counts;
