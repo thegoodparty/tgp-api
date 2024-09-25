@@ -56,16 +56,17 @@ module.exports = {
             details: {
               ...details.details,
               officeTermLength:
-                data?.termLength ?? details.details.officeTermLength,
+                data?.electionTerm ?? details.details.officeTermLength,
               electionDate: data?.electionDate ?? details.details.electionDate,
               level: data?.electionLevel ?? details.details.level,
               state: data?.electionState ?? details.details.state,
-              county: data?.county ?? details.details.county,
-              city: data?.city ?? details.details.city,
+              county: data?.electionCounty ?? details.details.county,
+              city: data?.electionMunicipality ?? details.details.city,
               district: data?.subAreaValue ?? details.details.district,
               partisanType: data?.partisanType ?? details.details.partisanType,
               priorElectionDates:
                 data?.priorElectionDates ?? details.details.priorElectionDates,
+              positionId: data?.positionId ?? details.details.positionId,
               tier: data?.tier ?? details.details.tier,
             },
           });
