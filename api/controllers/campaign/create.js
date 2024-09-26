@@ -25,7 +25,6 @@ const claimExistingCampaignRequests = async (user, campaign) => {
           )} has requested to manage your campaign`,
           subTitle: 'You have a request!',
           link: '/dashboard/team',
-          // dueDate: nextMonth,
         },
         user: user.id,
       });

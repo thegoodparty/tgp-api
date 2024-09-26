@@ -97,7 +97,6 @@ module.exports = {
               title: `${requestorName} has requested to manage your campaign`,
               subTitle: 'You have a request!',
               link: '/dashboard/team',
-              // dueDate: nextMonth,
             },
             user: candidateUser.id,
           }));
