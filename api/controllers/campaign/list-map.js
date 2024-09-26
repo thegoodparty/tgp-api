@@ -83,7 +83,7 @@ module.exports = {
       }
 
       if (officeFilter) {
-        whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.data->'hubSpotUpdates'->>'office_type' = '${officeFilter}')`;
+        whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
       }
 
       if (isProd) {
@@ -169,7 +169,7 @@ module.exports = {
           lastName,
           avatar: avatar || false,
           electionDate,
-          normalizedOffice: normalizedOffice || '',
+          normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
         const position = await handleGeoLocation(campaign);
