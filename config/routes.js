@@ -261,6 +261,7 @@ module.exports.routes = {
   'GET   /api/v1/techspeed-new-candidates':
     'data-processing/techspeed-new-candidates-sheet',
   'GET   /api/v1/nebraska': 'data-processing/nebraska',
+  'GET   /api/v1/race-details': 'data-processing/fix-race-details',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
