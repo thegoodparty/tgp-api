@@ -151,7 +151,7 @@ function buildQueryWhereClause({
   generalElectionDateEnd,
 }) {
   return `
-  ${slug ? ` AND c.slug = '${slug}'` : ''}
+  ${slug ? ` AND c.slug  ILIKE '%${slug}%'` : ''}
   ${email ? ` AND u.email ILIKE '%${email}%'` : ''}
   ${state ? ` AND c.details->>'state' = '${state}'` : ''}
   ${level ? ` AND c.details->>'ballotLevel' = '${level.toUpperCase()}'` : ''}
