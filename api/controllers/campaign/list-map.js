@@ -1,5 +1,4 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-const moment = require('moment');
 
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
@@ -80,7 +79,7 @@ module.exports = {
       }
 
       if (resultsFilter) {
-        whereClauses += ` AND c."didWin" = true`;
+        whereClauses += ` AND c."didWin" = true`; // "didWin" is properly quoted
       }
 
       if (officeFilter) {
@@ -110,8 +109,6 @@ module.exports = {
 
       const campaigns = result.rows;
 
-      const nextWeek = moment().add(7, 'days');
-
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
@@ -132,14 +129,9 @@ module.exports = {
           electionDate,
           raceId,
           noNormalizedOffice,
+          county,
+          city,
         } = details || {};
-
-        if (campaign.didWin === null) {
-          const date = moment(electionDate);
-          if (date.isAfter(nextWeek)) {
-            continue;
-          }
-        }
 
         const resolvedOffice = otherOffice || office;
 
@@ -179,6 +171,8 @@ module.exports = {
           lastName,
           avatar: avatar || false,
           electionDate,
+          county,
+          city,
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
