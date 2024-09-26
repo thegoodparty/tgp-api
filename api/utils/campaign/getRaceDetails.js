@@ -147,6 +147,11 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
       (electionLevel === 'city' && !city) ||
       (electionLevel === 'county' && !county)
     ) {
+      sails.helpers.log(
+        slug,
+        'could not find location from mtfcc. getting location from AI',
+      );
+
       // If we couldn't get city/county with mtfcc/geo then use the AI.
       locationResp = await sails.helpers.ballotready.extractLocationAi(
         officeName + ' - ' + electionState,
