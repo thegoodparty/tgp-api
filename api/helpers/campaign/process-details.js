@@ -64,25 +64,44 @@ module.exports = {
           }
           sails.helpers.log(slug, 'race data', data);
 
+          if (!details?.officeTermLength && data?.electionTerm) {
+            details.officeTermLength = data?.electionTerm;
+          }
+          if (!details?.electionDate && data?.electionDate) {
+            details.electionDate = data?.electionDate;
+          }
+          if (!details?.level && data?.electionLevel) {
+            details.level = data?.electionLevel;
+          }
+          if (!details?.state && data?.electionState) {
+            details.state = data?.electionState;
+          }
+          if (!details?.county && data?.electionCounty) {
+            details.county = data?.electionCounty;
+          }
+          if (!details?.city && data?.electionMunicipality) {
+            details.city = data?.electionMunicipality;
+          }
+          if (!details?.district && data?.subAreaValue) {
+            details.district = data?.subAreaValue;
+          }
+          if (!details?.partisanType && data?.partisanType) {
+            details.partisanType = data?.partisanType;
+          }
+          if (!details?.priorElectionDates && data?.priorElectionDates) {
+            details.priorElectionDates = data?.priorElectionDates;
+          }
+          if (!details?.positionId && data?.positionId) {
+            details.positionId = data?.positionId;
+          }
+          if (!details?.tier && data?.tier) {
+            details.tier = data?.tier;
+          }
+
           // update the Campaign details
           if (details) {
             await Campaign.updateOne({ id: campaign.id }).set({
-              details: {
-                ...details,
-                officeTermLength:
-                  data?.electionTerm ?? details.officeTermLength,
-                electionDate: data?.electionDate ?? details.electionDate,
-                level: data?.electionLevel ?? details.level,
-                state: data?.electionState ?? details.state,
-                county: data?.electionCounty ?? details.county,
-                city: data?.electionMunicipality ?? details.city,
-                district: data?.subAreaValue ?? details.district,
-                partisanType: data?.partisanType ?? details.partisanType,
-                priorElectionDates:
-                  data?.priorElectionDates ?? details.priorElectionDates,
-                positionId: data?.positionId ?? details.positionId,
-                tier: data?.tier ?? details.tier,
-              },
+              details,
             });
           }
         }
