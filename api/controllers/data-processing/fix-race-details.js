@@ -31,11 +31,12 @@ module.exports = {
       and (details->>'runForOffice'='yes' or details->>'knowRun'='true')
       and details->>'electionDate' is not null
       and details->>'raceId' is not null
-      order by id desc;
-      `;
+      order by id desc`;
       if (limit > 0) {
-        query += ` limit ${limit}`;
+        query += ` limit ${limit};`;
       }
+
+      console.log('query', query);
 
       const campaigns = await sails.sendNativeQuery(query);
       const rows = campaigns?.rows;
