@@ -38,6 +38,9 @@ module.exports = {
           level = 'city';
         } else if (office.includes('County') || office.includes('Parish')) {
           level = 'county';
+        } else {
+          // default to city if we can't determine the local level
+          level = 'city';
         }
       }
 

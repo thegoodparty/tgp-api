@@ -51,22 +51,22 @@ module.exports = {
         queueMessage.data = { campaignId, ...data };
 
         // update the Campaign details
-        if (details.details) {
+        if (details) {
           await Campaign.updateOne({ id: campaign.id }).set({
             details: {
-              ...details.details,
-              officeTermLength:
-                data?.termLength ?? details.details.officeTermLength,
-              electionDate: data?.electionDate ?? details.details.electionDate,
-              level: data?.electionLevel ?? details.details.level,
-              state: data?.electionState ?? details.details.state,
-              county: data?.county ?? details.details.county,
-              city: data?.city ?? details.details.city,
-              district: data?.subAreaValue ?? details.details.district,
-              partisanType: data?.partisanType ?? details.details.partisanType,
+              ...details,
+              officeTermLength: data?.electionTerm ?? details.officeTermLength,
+              electionDate: data?.electionDate ?? details.electionDate,
+              level: data?.electionLevel ?? details.level,
+              state: data?.electionState ?? details.state,
+              county: data?.electionCounty ?? details.county,
+              city: data?.electionMunicipality ?? details.city,
+              district: data?.subAreaValue ?? details.district,
+              partisanType: data?.partisanType ?? details.partisanType,
               priorElectionDates:
-                data?.priorElectionDates ?? details.details.priorElectionDates,
-              tier: data?.tier ?? details.details.tier,
+                data?.priorElectionDates ?? details.priorElectionDates,
+              positionId: data?.positionId ?? details.positionId,
+              tier: data?.tier ?? details.tier,
             },
           });
         }

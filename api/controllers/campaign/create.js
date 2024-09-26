@@ -4,14 +4,29 @@ const { createCrmUser } = require('../../utils/campaign/createCrmUser');
 const claimExistingCampaignRequests = async (user, campaign) => {
   const campaignRequests = await CampaignRequest.find({
     candidateEmail: user.email,
-  });
+  }).populate('user');
 
   if (campaignRequests?.length) {
     for (const campaignRequest of campaignRequests) {
+      const { user } = campaignRequest;
+
       await CampaignRequest.updateOne({
         id: campaignRequest.id,
       }).set({
         campaign: campaign.id,
+      });
+
+      await Notification.create({
+        isRead: false,
+        data: {
+          type: 'campaignRequest',
+          title: `${await sails.helpers.user.name(
+            user,
+          )} has requested to manage your campaign`,
+          subTitle: 'You have a request!',
+          link: '/dashboard/team',
+        },
+        user: user.id,
       });
     }
   }
