@@ -88,6 +88,19 @@ module.exports = {
           subject: `Confirm ${requestorName} as Your Campaign Manager on GoodParty.org`,
           emailTemplateData,
         });
+
+        candidateUser &&
+          (await Notification.create({
+            isRead: false,
+            data: {
+              type: 'campaignRequest',
+              title: `${requestorName} has requested to manage your campaign`,
+              subTitle: 'You have a request!',
+              link: '/dashboard/team',
+              // dueDate: nextMonth,
+            },
+            user: candidateUser.id,
+          }));
       } else {
         await sendCampaignRequestEmail({
           toEmail: candidateEmail,
