@@ -1,4 +1,5 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const moment = require('moment');
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
@@ -30,32 +31,36 @@ module.exports = {
         where: { user: { '!=': null }, isDemo: false, isActive: true },
       });
 
+      const nextWeek = moment().add(7, 'days');
+
       let count = 0;
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
+
+        const { details, didWin, data, user } = campaign;
+
         if (
-          !campaign.user ||
-          !campaign.details?.zip ||
-          campaign.didWin === false ||
-          !campaign.details?.geoLocation?.lng
+          !user ||
+          !details?.zip ||
+          didWin === false ||
+          !details?.geoLocation?.lng
         ) {
           continue;
         }
-        if (state && campaign.details?.state !== state) {
+        if (state && details?.state !== state) {
           continue;
         }
         if (isProd) {
-          if (campaign.data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
+          if (data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
             continue;
           }
         }
-        if (
-          campaign.details?.geoLocation?.lng < -125 ||
-          campaign.details?.geoLocation?.lng > -66 ||
-          campaign.details?.geoLocation?.lat < 24 ||
-          campaign.details?.geoLocation?.lat > 49
-        ) {
-          continue;
+
+        if (didWin === null) {
+          const date = moment(details.electionDate);
+          if (date.isAfter(nextWeek)) {
+            continue;
+          }
         }
 
         count++;
@@ -74,35 +79,3 @@ module.exports = {
     }
   },
 };
-
-async function calculateGeoLocation(campaign) {
-  try {
-    console.log('calculating');
-    if (!campaign.details?.zip) {
-      return {};
-    }
-    const { lng, lat, geoHash } = await sails.helpers.geocoding.zipToLatLng(
-      campaign.details?.zip,
-    );
-    await Campaign.updateOne({ slug: campaign.slug }).set({
-      details: {
-        ...campaign.details,
-        geoLocation: {
-          geoHash,
-          lat,
-          lng,
-        },
-      },
-    });
-    return { lng, lat, geoHash };
-  } catch (e) {
-    console.log('error at calculateGeoLocation', e);
-    await sails.helpers.slack.errorLoggerHelper(
-      'error at calculateGeoLocation',
-      {
-        e,
-      },
-    );
-    return {};
-  }
-}
