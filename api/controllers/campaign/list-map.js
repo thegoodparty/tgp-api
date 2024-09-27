@@ -83,7 +83,7 @@ module.exports = {
       }
 
       if (officeFilter) {
-        whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.data->'hubSpotUpdates'->>'office_type' = '${officeFilter}')`;
+        whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
       }
 
       if (isProd) {
@@ -129,6 +129,8 @@ module.exports = {
           electionDate,
           raceId,
           noNormalizedOffice,
+          county,
+          city,
         } = details || {};
 
         const resolvedOffice = otherOffice || office;
@@ -169,7 +171,9 @@ module.exports = {
           lastName,
           avatar: avatar || false,
           electionDate,
-          normalizedOffice: normalizedOffice || '',
+          county,
+          city,
+          normalizedOffice: normalizedOffice || resolvedOffice,
         };
 
         const position = await handleGeoLocation(campaign);

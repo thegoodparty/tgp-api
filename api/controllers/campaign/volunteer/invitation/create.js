@@ -58,17 +58,15 @@ module.exports = {
       const existingUser = await User.findOne({ email: lowerCaseEmail });
       const nextMonth = moment().add(1, 'month').format('YYYY-MM-DD');
       if (existingUser) {
-        const notification = {
-          type: 'invitation',
-          title: `The campaign for ${name} invited you to volunteer`,
-          subTitle: 'Make a difference!',
-          link: '/invitations',
-          dueDate: nextMonth,
-        };
-
         await Notification.create({
           isRead: false,
-          data: notification,
+          data: {
+            type: 'invitation',
+            title: `The campaign for ${name} invited you to volunteer`,
+            subTitle: 'Make a difference!',
+            link: '/invitations',
+            dueDate: nextMonth,
+          },
           user: existingUser.id,
         });
       }
