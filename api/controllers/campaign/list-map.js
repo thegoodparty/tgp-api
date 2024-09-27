@@ -110,6 +110,11 @@ module.exports = {
 
       const campaigns = result.rows;
 
+      await sails.helpers.slack.errorLoggerHelper('map campaigns1', {
+        length: campaigns.length,
+        inputs,
+      });
+
       const nextWeek = moment().add(7, 'days');
 
       const cleanCampaigns = [];
@@ -117,6 +122,10 @@ module.exports = {
         const campaign = campaigns[i];
 
         if (!campaign.details?.zip || campaign.didWin === false) {
+          await sails.helpers.slack.errorLoggerHelper('continue1', {
+            zip: campaign.details?.zip,
+            didWin: campaign.didWin,
+          });
           continue;
         }
 
@@ -141,6 +150,7 @@ module.exports = {
         if (nameFilter) {
           const fullName = `${firstName} ${lastName}`.toLowerCase();
           if (!fullName.includes(nameFilter.toLowerCase())) {
+            await sails.helpers.slack.errorLoggerHelper('continue', {});
             continue;
           }
         }
@@ -148,6 +158,11 @@ module.exports = {
         let normalizedOffice = hubSpotOffice || details?.normalizedOffice;
 
         if (!normalizedOffice && raceId && !noNormalizedOffice) {
+          await sails.helpers.slack.errorLoggerHelper('calc office', {
+            normalizedOffice,
+            raceId,
+            noNormalizedOffice,
+          });
           const race = await BallotRace.findOne({ ballotHashId: raceId });
           normalizedOffice = race?.data?.normalized_position_name;
           if (normalizedOffice) {
@@ -182,12 +197,16 @@ module.exports = {
         if (didWin === null) {
           const date = moment(electionDate);
           if (date.isBefore(nextWeek)) {
+            await sails.helpers.slack.errorLoggerHelper('continue date', {
+              electionDate,
+            });
             continue;
           }
         }
 
         const position = await handleGeoLocation(campaign);
         if (!position) {
+          await sails.helpers.slack.errorLoggerHelper('continue position', {});
           continue;
         } else {
           cleanCampaign.position = position;
@@ -201,6 +220,13 @@ module.exports = {
           swLng,
         );
         if (!isInBound) {
+          await sails.helpers.slack.errorLoggerHelper('continue isIn bound', {
+            neLat,
+            neLng,
+            swLat,
+            swLng,
+            position: cleanCampaign.position,
+          });
           continue;
         }
 
