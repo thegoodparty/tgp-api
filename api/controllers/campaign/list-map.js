@@ -204,7 +204,7 @@ module.exports = {
           }
         }
 
-        const position = await handleGeoLocation(campaign);
+        const position = await handleGeoLocation(campaign, stateFilter);
         if (!position) {
           await sails.helpers.slack.errorLoggerHelper('continue position', {});
           continue;
@@ -247,7 +247,7 @@ module.exports = {
   },
 };
 
-async function handleGeoLocation(campaign) {
+async function handleGeoLocation(campaign, stateFilter) {
   let { details } = campaign;
   const { geoLocationFailed, geoLocation } = details || {};
 
