@@ -181,7 +181,7 @@ module.exports = {
 
         if (didWin === null) {
           const date = moment(electionDate);
-          if (date.isAfter(nextWeek)) {
+          if (date.isBefore(nextWeek)) {
             continue;
           }
         }
