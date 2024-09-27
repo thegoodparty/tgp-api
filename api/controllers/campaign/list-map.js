@@ -1,4 +1,5 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const moment = require('moment');
 
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
@@ -109,6 +110,8 @@ module.exports = {
 
       const campaigns = result.rows;
 
+      const nextWeek = moment().add(7, 'days');
+
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
@@ -175,6 +178,13 @@ module.exports = {
           city,
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
+
+        if (didWin === null) {
+          const date = moment(electionDate);
+          if (date.isAfter(nextWeek)) {
+            continue;
+          }
+        }
 
         const position = await handleGeoLocation(campaign);
         if (!position) {
