@@ -255,8 +255,16 @@ async function handleGeoLocation(campaign) {
     return false;
   }
 
-  if (!geoLocation?.lng) {
+  if (!geoLocation?.lng || stateFilter === 'AK') {
+    await sails.helpers.slack.errorLoggerHelper(
+      'reaclculate geolocation before',
+      { geoLocation },
+    );
     const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
+    await sails.helpers.slack.errorLoggerHelper(
+      'reaclculate geolocation after',
+      { geoLocation: { lng, lat, geoHash } },
+    );
     if (!lng) {
       await Campaign.updateOne({
         slug: campaign.slug,
