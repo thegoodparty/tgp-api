@@ -39,6 +39,7 @@ module.exports = {
         id: row.id,
       });
       const { slug, details, data } = campaign;
+      console.log(`processing ${slug}`);
 
       const user = await User.findOne({ id: campaign.user });
       const firstName = user?.firstName || '';
@@ -70,25 +71,59 @@ module.exports = {
       }
 
       const electionDate = details?.electionDate || '';
-      const incumbent = data?.hubSpotUpdates?.incumbent || '';
-      const opponents = data?.hubSpotUpdates?.opponents || '';
 
-      csvData.push({
-        slug,
-        firstName,
-        lastName,
-        office,
-        level,
-        city,
-        county,
-        party,
-        state,
-        phone,
-        website,
-        electionDate,
-        incumbent,
-        opponents,
-      });
+      // Get data from hubspot
+      let incumbent = data?.hubSpotUpdates?.incumbent || '';
+      let opponents = data?.hubSpotUpdates?.opponents || '';
+
+      // Get data from pathtovictory.viability
+      const pathToVictoryId = campaign?.pathToVictory;
+      if (pathToVictoryId) {
+        const pathToVictory = await PathToVictory.findOne({
+          id: pathToVictoryId,
+        });
+        if (pathToVictory) {
+          const viability = pathToVictory?.data?.viability || {};
+          if (viability) {
+            let { isIncumbent, candidates } = viability;
+            if (
+              (!incumbent || incumbent === '') &&
+              isIncumbent &&
+              isIncumbent === true
+            ) {
+              incumbent = 'Yes';
+            }
+            if (
+              (!opponents || opponents === '') &&
+              candidates &&
+              candidates > 0
+            ) {
+              opponents = candidates - 1;
+            }
+          }
+        }
+      }
+
+      if (!incumbent || incumbent === '' || !opponents || opponents === '') {
+        csvData.push({
+          slug,
+          firstName,
+          lastName,
+          office,
+          level,
+          city,
+          county,
+          party,
+          state,
+          phone,
+          website,
+          electionDate,
+          incumbent,
+          opponents,
+        });
+      } else {
+        console.log(`skipping ${slug}`);
+      }
     }
 
     const csvPath = path.join(__dirname, 'GP-Candidates.csv');
