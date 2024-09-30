@@ -291,6 +291,7 @@ async function calculateGeoLocation(campaign) {
     await Campaign.updateOne({ slug: campaign.slug }).set({
       details: {
         ...campaign.details,
+        geoLocationFailed: false,
         geoLocation: {
           geoHash,
           lat,
