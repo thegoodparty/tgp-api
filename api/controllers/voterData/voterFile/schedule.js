@@ -35,6 +35,9 @@ module.exports = {
     },
     voterFileUrl: {
       type:'string',
+    },
+    typeText: {
+      type:'string',
     }
   },
 
@@ -50,26 +53,28 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { budget, audience, script, date, message, voicemail, voterFileUrl } = inputs;
+      const { budget, audience, script, date, message, voicemail, voterFileUrl, typeText } = inputs;
       const { user } = this.req;
       const { firstName, lastName, email, phone } = user;
       const campaign = await sails.helpers.campaign.byUser(user.id);
       const crmCompany = await sails.helpers.crm.getCompany(campaign);
+      const aiGeneratedScript = campaign.aiContent[script].content;
       // if (voterFileUrl && !isUrl(voterFileUrl)) { // This WILL filter out localhost URLs, comment out if localhost testing
       //   console.log('Not a valid url:', voterFileUrl)
       //   throw new Error('Invalid voterFileUrl')
       // }
-
+      console.log('This is the typeText: ', typeText);
       await sails.helpers.slack.slackHelper(
         {
           title: '🚨Campaign Schedule Request🚨',
-          body: `🚨Campaign Schedule Request🚨
-Candidate/User:
+          body: `🚨*Campaign Schedule Request*🚨
+
+*Candidate/User:*
 ￮ Name: ${firstName} ${lastName} 
 ￮ Email: ${email}
 ￮ Phone: ${phone}
 
-Assigned Political Advisor(PA):
+*Assigned Political Advisor (PA):*
 ￮ Assigned PA:  ${
         (await getCrmCompanyOwnerName(crmCompany)) || 'None assigned'
       }
@@ -79,24 +84,29 @@ Assigned Political Advisor(PA):
           : 'No CRM company found'
       }
 
-Voter File Download Link:
+*Voter File Download Link:*
 ${voterFileUrl ? `🔒 <${voterFileUrl}|Voter File Download>` : 'Not provided'}
 
-Campaign Details:
-￮ Campaign Type: SMS Campaign
+*Campaign Details:*
+￮ Campaign Type: ${typeText}
 ￮ Budget: $${budget}
 ￮ Scheduled Date: ${date}
 ￮ Script Key: ${script}
 
-AI-Generated SMS Script:
+*AI-Generated Script:*
+\`\`\`
+${aiGeneratedScript}
+\`\`\`
+
+*Message From User:*
 ￮ Message: ${message}
 
-Audience Selection:
+*Audience Selection:*
 ${Object.entries(audience)
   .map(([key, value]) => `￮ ${key}: ${value ? '✅ Yes' : '❌ No'}`)
   .join('\n')}
 
-${voicemail ? '￮ Voicemail: Yes' : ''}
+${voicemail !== undefined ? `￮ Voicemail: ${voicemail? 'Yes' : 'No'}` : ''}
 `,
         },
         appEnvironment === PRODUCTION_ENV ? 'politics' : 'dev',
