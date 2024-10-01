@@ -5,12 +5,7 @@ const openAiAssistant =
   sails.config.custom.openAiAssistant || sails.config.openAiAssistant;
 
 module.exports = {
-  inputs: {
-    message: {
-      type: 'string',
-      required: true,
-    },
-  },
+  inputs: {},
 
   exits: {
     success: {
@@ -27,8 +22,7 @@ module.exports = {
     try {
       const user = this.req.user;
 
-      let { message } = inputs;
-      if (!user || !message) {
+      if (!user) {
         return exits.badRequest();
       }
 
@@ -38,7 +32,7 @@ module.exports = {
 
       let chatMessage = {
         role: 'user',
-        content: message,
+        content: 'Hi, I need help with my campaign.',
       };
 
       let threadId;
