@@ -78,7 +78,7 @@ module.exports = {
         const channel = customFilters.channel;
         if (channel === 'Door Knocking') {
           resolvedType = 'doorKnocking';
-        } else if (channel === 'SMS Texting') {
+        } else if (channel === 'SMS Texting' || channel === 'Texting') {
           resolvedType = 'sms';
         } else if (channel === 'Direct Mail') {
           resolvedType = 'directMail';
