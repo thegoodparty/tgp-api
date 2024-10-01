@@ -37,7 +37,7 @@ module.exports = {
     voterFileUrl: {
       type:'string',
     },
-    typeText: {
+    type: {
       type:'string',
     }
   },
@@ -65,10 +65,13 @@ module.exports = {
         allowedAttributes: {},
       });
 
-      // if (voterFileUrl && !isUrl(voterFileUrl)) { // This WILL filter out localhost URLs, comment out if localhost testing
-      //   console.log('Not a valid url:', voterFileUrl)
-      //   throw new Error('Invalid voterFileUrl')
-      // }
+      if (VoterFileUrl && !isUrl(VoterFileUrl)) { // This WILL filter out localhost URLs, comment out if localhost testing
+        return exits.badRequest({ error: 'Invalid voterFileUrl'});
+      }
+
+      const formattedAudience = Object.entries(audience)
+        .map(([key, value]) => `￮ ${key}: ${value ? '✅ Yes' : '❌ No'}`)
+        .join('\n');
 
       await sails.helpers.slack.slackHelper(
         {
@@ -108,9 +111,7 @@ ${aiGeneratedScript}
 ￮ Message: ${message}
 
 *Audience Selection:*
-${Object.entries(audience)
-  .map(([key, value]) => `￮ ${key}: ${value ? '✅ Yes' : '❌ No'}`)
-  .join('\n')}
+${formattedAudience}
 
 ${voicemail !== undefined ? `￮ Voicemail: ${voicemail? 'Yes' : 'No'}` : ''}
 `,
