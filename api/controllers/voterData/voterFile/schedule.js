@@ -1,3 +1,4 @@
+const sanitizeHtml = require('sanitize-html');
 const {
   appEnvironment,
   PRODUCTION_ENV,
@@ -53,17 +54,22 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { budget, audience, script, date, message, voicemail, voterFileUrl, typeText } = inputs;
+      const { budget, audience, script, date, message, voicemail, voterFileUrl, type } = inputs;
       const { user } = this.req;
       const { firstName, lastName, email, phone } = user;
       const campaign = await sails.helpers.campaign.byUser(user.id);
       const crmCompany = await sails.helpers.crm.getCompany(campaign);
-      const aiGeneratedScript = campaign.aiContent[script].content;
+      const assignedPa = await getCrmCompanyOwnerName(crmCompany);
+      const aiGeneratedScript = sanitizeHtml(campaign.aiContent[script].content, {
+        allowedTags: [],
+        allowedAttributes: {},
+      });
+
       // if (voterFileUrl && !isUrl(voterFileUrl)) { // This WILL filter out localhost URLs, comment out if localhost testing
       //   console.log('Not a valid url:', voterFileUrl)
       //   throw new Error('Invalid voterFileUrl')
       // }
-      console.log('This is the typeText: ', typeText);
+
       await sails.helpers.slack.slackHelper(
         {
           title: '🚨Campaign Schedule Request🚨',
@@ -75,9 +81,9 @@ module.exports = {
 ￮ Phone: ${phone}
 
 *Assigned Political Advisor (PA):*
-￮ Assigned PA:  ${
-        (await getCrmCompanyOwnerName(crmCompany)) || 'None assigned'
-      }
+￮ Assigned PA:  
+  ${assignedPa || 'None Assigned'}
+      
       ${
         crmCompany?.id
           ? `https://app.hubspot.com/contacts/21589597/record/0-2/${crmCompany.id}`
@@ -88,7 +94,7 @@ module.exports = {
 ${voterFileUrl ? `🔒 <${voterFileUrl}|Voter File Download>` : 'Not provided'}
 
 *Campaign Details:*
-￮ Campaign Type: ${typeText}
+￮ Campaign Type: ${type}
 ￮ Budget: $${budget}
 ￮ Scheduled Date: ${date}
 ￮ Script Key: ${script}
