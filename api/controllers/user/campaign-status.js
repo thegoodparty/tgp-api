@@ -67,7 +67,7 @@ module.exports = {
         return exits.success({
           status: 'manager',
           profile: slug,
-          user: await User.findOne({ id: user.id }),
+          user,
         });
       }
 

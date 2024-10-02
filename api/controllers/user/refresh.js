@@ -22,10 +22,9 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = this.req;
-      const freshUser = await User.findOne({ id: user.id });
 
       return exits.success({
-        user: freshUser,
+        user,
       });
     } catch (e) {
       console.log('error at user/refresh');
