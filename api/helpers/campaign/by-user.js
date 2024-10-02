@@ -31,11 +31,14 @@ module.exports = {
           campaignVolunteer.length > 0 &&
           campaignVolunteer[0]?.role === 'manager'
         ) {
-          return exits.success(
-            await Campaign.findOne({
-              id: campaignVolunteer[0]?.campaign,
-            }).populate('pathToVictory'),
-          );
+          const campaign = await Campaign.findOne({
+            id: campaignVolunteer[0]?.campaign,
+          }).populate('pathToVictory');
+
+          return exits.success({
+            ...campaign,
+            role: 'manager',
+          });
         }
       }
 

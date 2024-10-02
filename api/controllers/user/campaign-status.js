@@ -40,13 +40,11 @@ module.exports = {
       }
 
       const campaign = await sails.helpers.campaign.byUser(user.id);
+      const volunteer = await CampaignVolunteer.findOne({ user: user.id });
       if (!campaign) {
-        // check if the user is a volunteer
-        const volunteer = await CampaignVolunteer.findOne({ user: user.id });
         if (volunteer) {
           return exits.success({
             status: 'volunteer',
-            // profile: volunteer.campaign,
           });
         }
         let step = 'account-type';
@@ -59,11 +57,20 @@ module.exports = {
         });
       }
 
-      const { data, details, slug } = campaign;
+      const { data, details, slug, role } = campaign;
 
       await Campaign.updateOne({ slug }).set({
         data: { ...data, lastVisited: timestamp },
       });
+
+      if (role === 'manager') {
+        return exits.success({
+          status: 'manager',
+          profile: slug,
+          user: await User.findOne({ id: user.id }),
+        });
+      }
+
       if (campaign.isActive) {
         return exits.success({
           status: 'candidate',
