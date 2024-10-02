@@ -47,8 +47,9 @@ module.exports = {
 
       let messages = aiChat?.data?.messages || [];
       let campaign = await Campaign.findOne({ id: aiChat?.campaign });
-
-      const { content } = await getChatSystemPrompt(campaign);
+      const { candidateContext, systemPrompt } = await getChatSystemPrompt(
+        campaign,
+      );
 
       let messageId;
       if (regenerate) {
@@ -65,7 +66,8 @@ module.exports = {
       };
 
       const completion = await getAssistantCompletion(
-        content,
+        systemPrompt,
+        candidateContext,
         openAiAssistant,
         threadId,
         chatMessage,

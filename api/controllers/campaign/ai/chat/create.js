@@ -34,7 +34,9 @@ module.exports = {
 
       // Create a new chat
       let campaign = await sails.helpers.campaign.byUser(user.id);
-      const { content } = await getChatSystemPrompt(campaign);
+      const { candidateContext, systemPrompt } = await getChatSystemPrompt(
+        campaign,
+      );
 
       let chatMessage = {
         role: 'user',
@@ -44,8 +46,12 @@ module.exports = {
       let threadId;
       let messageId;
 
+      console.log('candidateContext', candidateContext);
+      console.log('systemPrompt', systemPrompt);
+
       const completion = await getAssistantCompletion(
-        content,
+        systemPrompt,
+        candidateContext,
         openAiAssistant,
         threadId,
         chatMessage,
