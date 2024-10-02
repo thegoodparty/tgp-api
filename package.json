@@ -17,7 +17,6 @@
     "@mapbox/mapbox-sdk": "^0.15.5",
     "@pinecone-database/pinecone": "^1.1.2",
     "@sailshq/lodash": "^3.10.3",
-    "@slack/web-api": "^7.5.0",
     "@tyriar/binary-heap": "^1.0.5",
     "async": "^3.2.5",
     "axios": ">=1.7.4",

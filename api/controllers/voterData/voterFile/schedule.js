@@ -57,17 +57,27 @@ module.exports = {
       const { budget, audience, script, date, message, voicemail, voterFileUrl, type } = inputs;
       const { user } = this.req;
       const { firstName, lastName, email, phone } = user;
+
       const campaign = await sails.helpers.campaign.byUser(user.id);
+      if (!campaign) {
+        throw new Error(`Campaign not found for user ID: ${user.id}`);
+      }
+      
       const crmCompany = await sails.helpers.crm.getCompany(campaign);
+      if (!crmCompany) {
+        throw new Error(`crmCompany not found for ${campaign}`);
+      }
+
       const assignedPa = await getCrmCompanyOwnerName(crmCompany);
-      const aiGeneratedScript = sanitizeHtml(campaign.aiContent[script].content, {
+      const aiGeneratedScript = sanitizeHtml(campaign.aiContent[script]?.content, {
         allowedTags: [],
         allowedAttributes: {},
       });
 
-      if (VoterFileUrl && !isUrl(VoterFileUrl)) { // This WILL filter out localhost URLs, comment out if localhost testing
-        return exits.badRequest({ error: 'Invalid voterFileUrl'});
-      }
+      if (voterFileUrl && !isUrl(voterFileUrl) && !voterFileUrl.startsWith('http://localhost')) {
+        console.error('voterFileUrl is invalid');
+        voterFileUrl = null;
+      };
 
       const formattedAudience = Object.entries(audience)
         .map(([key, value]) => `￮ ${key}: ${value ? '✅ Yes' : '❌ No'}`)
@@ -94,7 +104,7 @@ module.exports = {
       }
 
 *Voter File Download Link:*
-${voterFileUrl ? `🔒 <${voterFileUrl}|Voter File Download>` : 'Not provided'}
+${voterFileUrl ? `🔒 <${voterFileUrl}|Voter File Download>` : 'Error: Not provided or invalid'}
 
 *Campaign Details:*
 ￮ Campaign Type: ${type}
