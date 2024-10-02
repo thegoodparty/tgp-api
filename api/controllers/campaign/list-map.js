@@ -35,6 +35,9 @@ module.exports = {
     swLng: {
       type: 'number',
     },
+    forceReCalc: {
+      type: 'boolean',
+    },
   },
 
   exits: {
@@ -61,6 +64,7 @@ module.exports = {
         neLng,
         swLat,
         swLng,
+        forceReCalc,
       } = inputs;
 
       const isProd = appBase === 'https://goodparty.org';
@@ -186,7 +190,7 @@ module.exports = {
           }
         }
 
-        const position = await handleGeoLocation(campaign);
+        const position = await handleGeoLocation(campaign, forceReCalc);
         if (!position) {
           continue;
         } else {
@@ -221,15 +225,15 @@ module.exports = {
   },
 };
 
-async function handleGeoLocation(campaign) {
+async function handleGeoLocation(campaign, forceReCalc) {
   let { details } = campaign;
   const { geoLocationFailed, geoLocation } = details || {};
 
-  if (geoLocationFailed) {
+  if (!forceReCalc && geoLocationFailed) {
     return false;
   }
 
-  if (!geoLocation?.lng) {
+  if (forceReCalc || !geoLocation?.lng) {
     const { lng, lat, geoHash } = await calculateGeoLocation(campaign);
     if (!lng) {
       await Campaign.updateOne({
@@ -277,16 +281,17 @@ function filterPosition(campaign, neLat, neLng, swLat, swLng) {
 
 async function calculateGeoLocation(campaign) {
   try {
-    console.log('calculating');
-    if (!campaign.details?.zip) {
+    if (!campaign.details?.zip || !campaign.details?.state) {
       return {};
     }
     const { lng, lat, geoHash } = await sails.helpers.geocoding.zipToLatLng(
       campaign.details?.zip,
+      campaign.details?.state,
     );
     await Campaign.updateOne({ slug: campaign.slug }).set({
       details: {
         ...campaign.details,
+        geoLocationFailed: false,
         geoLocation: {
           geoHash,
           lat,

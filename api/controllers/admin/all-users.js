@@ -38,14 +38,38 @@ module.exports = {
           date = moment().subtract(7, 'days');
         }
         const stringDate = date.format('M D, YYYY');
-        console.log('stringDate', stringDate);
 
         users = await User.find({
           createdAt: { '>': new Date(stringDate) },
         });
       }
+
+      const campaignVolunteersMapping = await CampaignVolunteer.find({
+        user: users.map((user) => user.id),
+      }).populate('campaign');
+
+      const campaignsMap = campaignVolunteersMapping.reduce(
+        (campaigns, { user: userId, campaign, role }) => {
+          const relatedCampaign = {
+            ...campaign,
+            role,
+          };
+
+          return {
+            ...campaigns,
+            [userId]: campaigns[campaign]
+              ? [...campaigns[campaign], relatedCampaign]
+              : [relatedCampaign],
+          };
+        },
+        {},
+      );
+
       return exits.success({
-        users,
+        users: users.map((user) => ({
+          ...user,
+          campaigns: campaignsMap[user.id] || [],
+        })),
       });
     } catch (e) {
       console.log(e);
