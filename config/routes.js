@@ -62,6 +62,7 @@ module.exports.routes = {
   'PUT    /api/v1/user/files/generate-signed-upload-url':
     'user/files/generate-signed-upload-url',
 
+  'GET    /api/v1/admin/is-admin': 'admin/candidate/is-admin',
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
   'PUT    /api/v1/admin/candidates/mass-crm-companies-refresh':
     'admin/mass-crm-companies-refresh',
