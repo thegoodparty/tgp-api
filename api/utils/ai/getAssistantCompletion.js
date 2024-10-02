@@ -4,6 +4,7 @@ const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 
 async function getAssistantCompletion(
   systemPrompt,
+  candidateContext,
   assistantId,
   threadId,
   message,
@@ -71,7 +72,8 @@ async function getAssistantCompletion(
       // body
       {
         assistant_id: assistantId,
-        additional_instructions: systemPrompt,
+        instructions: systemPrompt,
+        additional_instructions: candidateContext,
         model: model,
         temperature: temperature,
         top_p: topP,
