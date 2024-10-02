@@ -48,6 +48,26 @@ module.exports = {
       });
       await PathToVictory.destroyOne({ id: campaign.pathToVictory });
       await Campaign.destroyOne({ id: campaign.id });
+      await CampaignVolunteer.destroy({
+        or: [
+          {
+            user: user.id,
+          },
+          {
+            campaign: campaign.id,
+          },
+        ],
+      });
+      await CampaignRequest.destroy({
+        or: [
+          {
+            user: user.id,
+          },
+          {
+            campaign: campaign.id,
+          },
+        ],
+      });
       await User.destroyOne({ id: user.id });
       return exits.success({
         message: 'deleted successfully',
