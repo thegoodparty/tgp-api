@@ -62,6 +62,7 @@ module.exports.routes = {
   'PUT    /api/v1/user/files/generate-signed-upload-url':
     'user/files/generate-signed-upload-url',
 
+  'GET    /api/v1/admin/is-admin': 'admin/candidate/is-admin',
   'GET    /api/v1/admin/candidates': 'admin/candidate/list',
   'PUT    /api/v1/admin/candidates/mass-crm-companies-refresh':
     'admin/mass-crm-companies-refresh',
@@ -139,6 +140,7 @@ module.exports.routes = {
 
   // campaign without onboarding
   'POST   /api/v1/campaign': 'campaign/create',
+  'POST   /api/v1/admin-campaign': 'campaign/admin-create',
   'POST   /api/v1/campaign/demo': 'campaign/create-demo-campaign',
   'DELETE   /api/v1/campaign/demo': 'campaign/delete-demo-campaign',
   'PUT   /api/v1/campaign': 'campaign/update',

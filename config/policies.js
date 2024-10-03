@@ -31,6 +31,7 @@ module.exports.policies = {
   'voterData/locations': ['isAuthenticated'],
   'crm/sync': ['isAuthenticated', 'isAdmin'],
   'crm/refresh-companies': ['isAuthenticated', 'isAdmin'],
+  'campaign/admin-create': ['isAuthenticated', 'isAdmin'],
 
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
