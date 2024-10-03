@@ -1,7 +1,115 @@
+const attachTeamMembers = (campaigns, campaignVolunteersMapping) => {
+  const teamMembersMap = campaignVolunteersMapping.reduce(
+    (members, { user, campaign, role }) => {
+      const teamMember = {
+        ...user,
+        role,
+      };
+
+      return {
+        ...members,
+        [campaign]: members[campaign]
+          ? [...members[campaign], teamMember]
+          : [teamMember],
+      };
+    },
+    {},
+  );
+
+  return campaigns.map((campaign) => ({
+    ...campaign,
+    teamMembers: teamMembersMap[campaign.id] || [],
+  }));
+};
+
+const buildQueryWhereClause = ({
+  id,
+  state,
+  slug,
+  email,
+  level,
+  primaryElectionDateStart,
+  primaryElectionDateEnd,
+  campaignStatus,
+  generalElectionDateStart,
+  generalElectionDateEnd,
+}) => `
+  ${id ? ` AND c.id = ${id}` : ''}
+  ${slug ? ` AND c.slug ILIKE '%${slug}%'` : ''}
+  ${email ? ` AND u.email ILIKE '%${email}%'` : ''}
+  ${state ? ` AND c.details->>'state' = '${state}'` : ''}
+  ${level ? ` AND c.details->>'ballotLevel' = '${level.toUpperCase()}'` : ''}
+  ${
+    campaignStatus
+      ? ` AND c."isActive" = ${campaignStatus === 'active' ? 'true' : 'false'}`
+      : ''
+  }
+  ${
+    primaryElectionDateStart
+      ? ` AND c.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'`
+      : ''
+  }
+  ${
+    primaryElectionDateEnd
+      ? ` AND c.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'`
+      : ''
+  }
+  ${
+    generalElectionDateStart
+      ? ` AND c.details->>'electionDate' >= '${generalElectionDateStart}'`
+      : ''
+  }
+  ${
+    generalElectionDateEnd
+      ? ` AND c.details->>'electionDate' <= '${generalElectionDateEnd}'`
+      : ''
+  }
+`;
+
+const buildCustomCampaignListQuery = ({
+  id,
+  state,
+  slug,
+  email,
+  level,
+  primaryElectionDateStart,
+  primaryElectionDateEnd,
+  campaignStatus,
+  generalElectionDateStart,
+  generalElectionDateEnd,
+}) => `
+  SELECT
+    c.*,
+    u."firstName" as "firstName",
+    u."lastName" as "lastName",
+    u.phone as "phone",
+    u.email as "email",
+    u."metaData",
+    p.data as "pathToVictory"
+  FROM public.campaign AS c
+  JOIN public."user" AS u ON u.id = c.user
+  LEFT JOIN public."pathtovictory" as p ON p.id = c."pathToVictory"
+  WHERE c.user IS NOT NULL
+  ${buildQueryWhereClause({
+    id,
+    state,
+    slug,
+    email,
+    level,
+    primaryElectionDateStart,
+    primaryElectionDateEnd,
+    campaignStatus,
+    generalElectionDateStart,
+    generalElectionDateEnd,
+  })}
+  ORDER BY c.id DESC;
+`;
+
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
 
   inputs: {
+    id: { type: 'number' },
     state: {
       type: 'string',
     },
@@ -45,6 +153,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     const {
+      id,
       state,
       slug,
       email,
@@ -55,8 +164,11 @@ module.exports = {
       generalElectionDateStart,
       generalElectionDateEnd,
     } = inputs;
+
     try {
+      let campaigns = [];
       if (
+        !id &&
         !state &&
         !slug &&
         !email &&
@@ -67,42 +179,15 @@ module.exports = {
         !generalElectionDateStart &&
         !generalElectionDateEnd
       ) {
-        const campaigns = await Campaign.find({
+        campaigns = await Campaign.find({
           where: { user: { '!=': null } },
         })
           .populate('user')
           .populate('pathToVictory');
-
-        return exits.success({
-          campaigns,
-        });
       } else {
-        const query = `
-        SELECT
-          c.*,
-          u."firstName" as "firstName",
-          u."lastName" as "lastName",
-          u.phone as "phone",
-          u.email as "email",
-          u."metaData",
-          p.data as "pathToVictory"
-        FROM public.campaign AS c
-        JOIN public."user" AS u ON u.id = c.user
-        LEFT JOIN public."pathtovictory" as p ON p.id = c."pathToVictory"
-        WHERE c.user IS NOT NULL
-        ${buildQueryWhereClause({
-          state,
-          slug,
-          email,
-          level,
-          primaryElectionDateStart,
-          primaryElectionDateEnd,
-          campaignStatus,
-          generalElectionDateStart,
-          generalElectionDateEnd,
-        })}
-        ORDER BY c.id DESC;`;
-        const campaigns = await sails.sendNativeQuery(query);
+        campaigns = await sails.sendNativeQuery(
+          buildCustomCampaignListQuery(inputs),
+        );
         // we need to match the format of the response from the ORM
         let cleanCampaigns = [];
         if (campaigns.rows) {
@@ -128,57 +213,19 @@ module.exports = {
           });
         }
 
-        return exits.success({
-          campaigns: cleanCampaigns,
-        });
+        campaigns = cleanCampaigns;
       }
+
+      const campaignVolunteersMapping = await CampaignVolunteer.find({
+        campaign: campaigns.map((campaign) => campaign.id),
+      }).populate('user');
+
+      return exits.success({
+        campaigns: attachTeamMembers(campaigns, campaignVolunteersMapping),
+      });
     } catch (e) {
       console.log('Error in onboarding list', e);
       return exits.forbidden();
     }
   },
 };
-
-function buildQueryWhereClause({
-  state,
-  slug,
-  email,
-  level,
-  primaryElectionDateStart,
-  primaryElectionDateEnd,
-  campaignStatus,
-  generalElectionDateStart,
-  generalElectionDateEnd,
-}) {
-  return `
-  ${slug ? ` AND c.slug ILIKE '%${slug}%'` : ''}
-  ${email ? ` AND u.email ILIKE '%${email}%'` : ''}
-  ${state ? ` AND c.details->>'state' = '${state}'` : ''}
-  ${level ? ` AND c.details->>'ballotLevel' = '${level.toUpperCase()}'` : ''}
-  ${
-    campaignStatus
-      ? ` AND c."isActive" = ${campaignStatus === 'active' ? 'true' : 'false'}`
-      : ''
-  }
-  ${
-    primaryElectionDateStart
-      ? ` AND c.details->>'primaryElectionDate' >= '${primaryElectionDateStart}'`
-      : ''
-  }
-  ${
-    primaryElectionDateEnd
-      ? ` AND c.details->>'primaryElectionDate' <= '${primaryElectionDateEnd}'`
-      : ''
-  }
-  ${
-    generalElectionDateStart
-      ? ` AND c.details->>'electionDate' >= '${generalElectionDateStart}'`
-      : ''
-  }
-  ${
-    generalElectionDateEnd
-      ? ` AND c.details->>'electionDate' <= '${generalElectionDateEnd}'`
-      : ''
-  }
-`;
-}
