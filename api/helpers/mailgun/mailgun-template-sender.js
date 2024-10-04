@@ -20,7 +20,7 @@ module.exports = {
       required: true,
     },
     variables: {
-      type: 'string',
+      type: 'json',
     },
     cc: {
       type: 'string',
@@ -41,13 +41,13 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      const { from, to, subject, template, variables, cc } = inputs;
+      const { from, to, subject, template, variables = {}, cc } = inputs;
       const data = {
         from: from || 'GoodParty.org <noreply@goodparty.org>',
         to,
         subject,
         template,
-        'h:X-Mailgun-Variables': { appBase, ...variables },
+        'h:X-Mailgun-Variables': JSON.stringify({ appBase, ...variables }),
       };
       if (cc) {
         data.cc = cc;

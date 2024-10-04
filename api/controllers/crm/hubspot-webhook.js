@@ -71,7 +71,7 @@ async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
   }
 
   await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
-  await sails.helpers.fullstory.customAttr(campaign.id);
+  await sails.helpers.fullstory.customAttr(campaign.user);
 }
 
 async function getCampaign(objectId) {

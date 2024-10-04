@@ -22,10 +22,11 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    try {
-      const { id: campaignVolunteerId } = inputs;
-      const { user: authenticatedUser } = this.req;
+    const { id: campaignVolunteerId } = inputs;
+    const { user: authenticatedUser } = this.req;
+    let volunteerUserId = null;
 
+    try {
       if (!campaignVolunteerId) {
         return exits.badRequest({
           message: 'Campaign volunteer id is required',
@@ -44,11 +45,15 @@ module.exports = {
         });
       }
 
-      await CampaignVolunteer.destroy({ id: campaignVolunteerId });
+      volunteerUserId = await CampaignVolunteer.destroyOne({
+        id: campaignVolunteerId,
+      });
       return exits.success({ message: 'Campaign volunteer deleted' });
     } catch (e) {
       console.error('error deleting campaign volunteer', e);
       return exits.badRequest({ message: 'Error deleting campaign volunteer' });
+    } finally {
+      await sails.helpers.fullstory.customAttr(volunteerUserId);
     }
   },
 };

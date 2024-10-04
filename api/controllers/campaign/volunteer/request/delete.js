@@ -29,11 +29,14 @@ module.exports = {
       ? { campaign: campaign.id }
       : { user: user.id };
 
+    let requestorUserId = null;
     try {
-      await CampaignRequest.destroy({
+      const deletedRequest = await CampaignRequest.destroyOne({
         id: requestId,
         ...whereParams,
       });
+
+      requestorUserId = deletedRequest?.user;
 
       return exits.success({
         message: 'Campaign Request deleted successfully',
@@ -41,6 +44,8 @@ module.exports = {
     } catch (e) {
       console.error('error deleting campaign request', e);
       return exits.error(e);
+    } finally {
+      await sails.helpers.fullstory.customAttr(requestorUserId);
     }
   },
 };

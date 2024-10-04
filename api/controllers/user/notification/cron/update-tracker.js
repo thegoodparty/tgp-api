@@ -87,9 +87,9 @@ module.exports = {
               const name = await sails.helpers.user.name(campaign.user);
               await sails.helpers.sms.sendSms(
                 campaign.user.phone,
-                `Hey ${name}, 
-                
-This is Jared from Good Party, checking in to update your Campaign Tracker, Doors Knocked - https://goodparty.org/dashboard 
+                `Hey ${name},
+
+This is Jared from Good Party, checking in to update your Campaign Tracker, Doors Knocked - https://goodparty.org/dashboard
 
 How many Doors did you knock this week?
 
@@ -138,6 +138,6 @@ async function sendEmail(user) {
     user.email,
     'Wrapping Up Your Week - Time to Update Your Campaign Tracker',
     'update-tracker',
-    JSON.stringify(variables),
+    variables,
   );
 }

@@ -32,14 +32,16 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
+    const {
+      id: campaignVolunteerId,
+      role: newRole,
+      campaign: newCampaignId,
+      user: newUserId,
+    } = inputs;
+    let volutneerUserId = null;
+
+    const { user: authenticatedUser } = this.req;
     try {
-      const {
-        id: campaignVolunteerId,
-        role: newRole,
-        campaign: newCampaignId,
-        user: newUserId,
-      } = inputs;
-      const { user: authenticatedUser } = this.req;
       if (!campaignVolunteerId) {
         return exits.badRequest({
           message: 'Campaign volunteer id is required',
@@ -76,9 +78,12 @@ module.exports = {
         ...(newCampaignId ? { campaign: newCampaignId } : {}),
         ...(newUserId ? { user: newUserId } : {}),
       });
+      volutneerUserId = newUserId || campaignVolunteer.user;
       return exits.success({ message: 'Campaign volunteer updated' });
     } catch (e) {
       return exits.badRequest({ message: 'Error updating campaign volunteer' });
+    } finally {
+      await sails.helpers.fullstory.customAttr(volutneerUserId);
     }
   },
 };

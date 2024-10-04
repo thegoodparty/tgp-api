@@ -172,7 +172,7 @@ async function sendEmail(weeks, user) {
       subject: 'Social Media Blitz Begins!',
       focus: 'Social Media Posts',
       content: `
-We're 12 weeks away from the big day. Let's kickstart your campaign with powerful social media posts. Engage your audience, share your message, and build anticipation. 
+We're 12 weeks away from the big day. Let's kickstart your campaign with powerful social media posts. Engage your audience, share your message, and build anticipation.
 <br/><br/>
 Use our "My Content" tool to:
 <br/><br/>
@@ -188,11 +188,11 @@ Use our "My Content" tool to:
       subject: "Let's Knock Some Doors!",
       focus: 'Door-Knocking Scripts',
       content: `
-There's nothing like a personal connection to earn a vote. Craft your door-knocking scripts to inspire every constituent you meet. 
+There's nothing like a personal connection to earn a vote. Craft your door-knocking scripts to inspire every constituent you meet.
 <br/>
 <br/>
   Use our "My Content" tool to:
-  <ul> 
+  <ul>
     <li>Develop engaging introductions</li>
     <li>Explain your platform in a relatable manner</li>
     <li>Handle common objections and questions</li>
@@ -203,7 +203,7 @@ There's nothing like a personal connection to earn a vote. Craft your door-knock
       subject: 'Time to Make Headlines!',
       focus: 'Press Releases',
       content: `
-      It's time to make some noise in the media. Write press releases that grab attention and showcase your campaign's momentum. 
+      It's time to make some noise in the media. Write press releases that grab attention and showcase your campaign's momentum.
       <br/>
       <br/>
       Use our "My Content" tool to:
@@ -372,6 +372,6 @@ There's nothing like a personal connection to earn a vote. Craft your door-knock
     user.email,
     byWeek[`week${weeks}`].subject,
     'weekly-content',
-    JSON.stringify(variables),
+    variables,
   );
 }
