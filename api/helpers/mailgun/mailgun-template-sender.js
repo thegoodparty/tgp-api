@@ -42,7 +42,6 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { from, to, subject, template, variables = {}, cc } = inputs;
-      console.log(`variables =>`, variables);
       const data = {
         from: from || 'GoodParty.org <noreply@goodparty.org>',
         to,
