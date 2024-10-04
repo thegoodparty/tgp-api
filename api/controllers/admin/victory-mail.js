@@ -31,10 +31,10 @@ module.exports = {
       }
       const { user } = campaign;
       const name = await sails.helpers.user.name(user);
-      const variables = JSON.stringify({
+      const variables = {
         name,
         link: `${appBase}/dashboard`,
-      });
+      };
 
       await PathToVictory.updateOne({ id: campaign.pathToVictory.id }).set({
         data: {

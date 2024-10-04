@@ -69,10 +69,10 @@ module.exports = {
         (await sails.helpers.user.name(candidateUser)) || candidateEmail;
       const requestorName = await sails.helpers.user.name(user);
 
-      const emailTemplateData = JSON.stringify({
+      const emailTemplateData = {
         candidateName,
         requestorName,
-      });
+      };
 
       await sendCampaignRequestEmail({
         toEmail: user.email,

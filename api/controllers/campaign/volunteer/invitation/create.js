@@ -82,10 +82,10 @@ module.exports = {
           toEmail: lowerCaseEmail,
           templateName: 'invite-to-campaign-manager',
           subject: `${candidateName} Has Invited You to Manage Their Campaign on GoodParty.org!`,
-          emailTemplateData: JSON.stringify({
+          emailTemplateData: {
             campaignManagerName: lowerCaseEmail,
             candidateName,
-          }),
+          },
         });
       } else {
         const variables = {
@@ -107,7 +107,7 @@ module.exports = {
           lowerCaseEmail,
           `Join Me in Making a Difference: Volunteer for Our Campaign!`,
           'volunteer-invitation',
-          JSON.stringify(variables),
+          variables,
         );
       }
 

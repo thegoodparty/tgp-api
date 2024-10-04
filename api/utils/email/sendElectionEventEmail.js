@@ -9,7 +9,7 @@ const sendElectionEventEmail = function ({
     user.email,
     subject,
     templateName,
-    JSON.stringify(emailVars),
+    emailVars,
     '',
     'GoodParty.org <politics@goodparty.org>',
   );
