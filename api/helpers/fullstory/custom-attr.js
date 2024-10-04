@@ -59,11 +59,13 @@ module.exports = {
 
       const {
         id: campaignId,
+        slug,
         data,
         details,
         isVerified,
         isPro,
         aiContent,
+        isActive,
       } = campaign || {};
 
       const campaignManagementRequests =
@@ -135,6 +137,8 @@ module.exports = {
       if (fsUserId) {
         // Update the user with custom properties
         const properties = {
+          slug,
+          isActive,
           electionDate, // Date as a string
           primaryElectionDate,
           level: ballotLevel ? ballotLevel.toLowerCase() : undefined,
