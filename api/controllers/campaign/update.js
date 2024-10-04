@@ -69,7 +69,7 @@ module.exports = {
         sails.helpers.log(campaign.slug, 'error updating crm', e);
       }
       try {
-        await sails.helpers.fullstory.customAttr(updated.id);
+        await sails.helpers.fullstory.customAttr(user.id);
       } catch (e) {
         sails.helpers.log(campaign.slug, 'error updating fullstory', e);
       }

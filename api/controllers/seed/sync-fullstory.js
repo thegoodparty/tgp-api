@@ -27,7 +27,7 @@ module.exports = {
           if (campaign.data?.hubSpotUpdates) {
             continue;
           }
-          await sails.helpers.fullstory.customAttr(campaign.id);
+          await sails.helpers.fullstory.customAttr(campaign.user);
           await sleep(100);
           updated++;
         } catch (e) {

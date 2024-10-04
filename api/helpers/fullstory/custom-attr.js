@@ -1,5 +1,11 @@
 const axios = require('axios');
 const moment = require('moment');
+const { patchUserMetaData } = require('../../utils/user/patchUserMetaData');
+const { fetchFsUserId } = require('../../utils/tracking/fetchFsUserId');
+const { reconcileFsUserId } = require('../../utils/tracking/reconcileFsUserId');
+const {
+  mapCampaignManagementRequests,
+} = require('../../utils/tracking/mapCampaignManagementRequests');
 
 const fullStoryKey =
   sails.config.custom.fullStoryKey || sails.config.fullStoryKey;
@@ -8,7 +14,7 @@ const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
-    campaignId: {
+    userId: {
       type: 'number',
       required: true,
     },
@@ -30,18 +36,19 @@ module.exports = {
         return exits.success('fullstory helpers disabled on localhost');
       }
 
-      const { campaignId } = inputs;
-      const campaign = await Campaign.findOne({ id: campaignId })
-        .populate('user')
-        .populate('pathToVictory');
-      const { user } = campaign;
+      const { userId } = inputs;
+      const user = await User.findOne({ id: userId });
+
       if (!user) {
         return exits.success('no user found');
       }
+
+      const campaign = await sails.helpers.campaign.byUser(userId);
+
       const { firstName, lastName } = user;
-      const { email, id } = user;
-      const domain = email.split('@')[1];
-      if (domain === 'goodparty.org') {
+      const { email } = user;
+      const emailDomain = email.split('@')[1];
+      if (emailDomain === 'goodparty.org') {
         return exits.success('Skipping fullstory for goodparty.org users');
       }
 
@@ -49,9 +56,38 @@ module.exports = {
         Authorization: `Basic ${fullStoryKey}`,
         'Content-Type': 'application/json',
       };
-      let fsUserId;
 
-      const { data, details, isVerified, isPro, aiContent } = campaign || {};
+      const {
+        id: campaignId,
+        data,
+        details,
+        isVerified,
+        isPro,
+        aiContent,
+      } = campaign || {};
+
+      const campaignManagementRequests =
+        !campaign &&
+        mapCampaignManagementRequests(
+          (await CampaignManagementRequest.find({
+            user: userId,
+            role: 'manager',
+          })) || [],
+        );
+
+      const campaignVolunteer =
+        campaign &&
+        (await CampaignVolunteer.findOne({
+          campaign: campaignId,
+          user: userId,
+          role: 'manager',
+        }));
+      // TODO: This will break once a user is managing multiple campaigns.
+      //  Make it work for that edge case when it comes up.
+      const managingCampaign = campaignVolunteer ? campaignId : false;
+
+      let fsUserId = await reconcileFsUserId(campaign, user);
+
       let aiContentKeys = [];
       if (aiContent) {
         aiContentKeys = Object.keys(aiContent);
@@ -86,45 +122,13 @@ module.exports = {
         : '';
 
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
-      if (data.fsUserId) {
-        fsUserId = data.fsUserId;
-      } else {
-        // First, check if the user exists in FullStory
-        try {
-          const response = await axios.get(
-            `https://api.fullstory.com/v2/users?uid=${id}`,
-            {
-              headers,
-            },
-          );
-          if (response?.data?.results?.length === 1) {
-            fsUserId = response.data.results[0].id;
-          } else {
-            return exits.success('no user found');
-          }
-        } catch (error) {
-          if (error.response && error.response.status === 404) {
-            // User does not exist, create them
-            const createResponse = await axios.post(
-              'https://api.fullstory.com/v2/users',
-              {
-                uid: id,
-                displayName: `${firstName} ${lastName}`, // Customize this as needed
-              },
-              {
-                headers,
-              },
-            );
-            fsUserId = createResponse.data.id;
-          } else {
-            throw error;
-          }
-        }
 
-        await Campaign.updateOne({ id: campaignId }).set({
-          data: { ...data, fsUserId },
-        });
+      if (!fsUserId) {
+        // First, check if the user exists in FullStory
+        fsUserId = await fetchFsUserId(headers, user);
+        await patchUserMetaData(user, { fsUserId });
       }
+
       console.log('fsUserId', fsUserId);
       if (fsUserId) {
         // Update the user with custom properties
@@ -148,6 +152,8 @@ module.exports = {
           callsMade: calls || 0,
           onlineImpressions: digital || 0,
           ...(hubSpotUpdates || {}),
+          managingCampaign,
+          ...(campaignManagementRequests || {}),
         };
         for (let i = 0; i < aiContentKeys.length; i++) {
           properties[`ai-content-${aiContentKeys[i]}`] = true;
@@ -164,7 +170,7 @@ module.exports = {
 
         return exits.success('updated user');
       } else {
-        console.log('no fsUserId');
+        console.error('no fsUserId');
         await sails.helpers.slack.errorLoggerHelper(
           'FullStory error - no FS user ID found or created',
           {

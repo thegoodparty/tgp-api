@@ -18,10 +18,10 @@ module.exports = {
     },
   },
   fn: async function (inputs, exits) {
-    try {
-      const { id } = inputs;
+    const { id } = inputs;
+    const user = this.req.user;
 
-      const user = this.req.user;
+    try {
       const invitation = await VolunteerInvitation.findOne({
         email: user.email,
         id,
@@ -44,6 +44,8 @@ module.exports = {
     } catch (e) {
       console.log('Error accepting invitation', e);
       return exits.badRequest({ message: 'Error accepting invitation.' });
+    } finally {
+      await sails.helpers.fullstory.customAttr(requestorUserId);
     }
   },
 };

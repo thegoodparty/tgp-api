@@ -113,6 +113,8 @@ module.exports = {
     } catch (e) {
       console.error('error creating campaign request', e);
       return exits.error(e);
+    } finally {
+      await sails.helpers.fullstory.customAttr(user.id);
     }
   },
 };
