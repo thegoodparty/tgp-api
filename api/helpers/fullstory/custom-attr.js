@@ -68,6 +68,15 @@ module.exports = {
         isActive,
       } = campaign || {};
 
+      const company = await sails.helpers.crm.getCompany(campaign);
+
+      const { properties } = company;
+
+      const { 
+        primary_election_result: primaryElectionResult, 
+        election_results: electionResults 
+      } = properties || {}
+
       const campaignManagementRequests =
         !campaign &&
         // We have to do this because Full Story doesn't support arrays as
@@ -109,7 +118,18 @@ module.exports = {
         filingPeriodsEnd,
       } = details || {};
 
-      const { doorKnocking, calls, digital } = reportedVoterGoals || {};
+      const { doorKnocking, calls, digital, directMail, digitalAds, text, events } = reportedVoterGoals || {};
+      // Yard signs will need to be added once that's supported
+
+      let reportedVoterGoalsTotalCount = 0;
+      
+      Object.values(reportedVoterGoals).forEach((count) => {
+        if (Number.isInteger(count)) {
+          reportedVoterGoalsTotalCount += count;
+        } else {
+          console.error('reportedVoterGoal value not an integer:', count);
+        }
+      })
 
       const electionDateMonth = electionDate
         ? moment(electionDate).format('MMMYY')
@@ -127,6 +147,8 @@ module.exports = {
 
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
 
+      const voterContactGoal = campaign?.pathToVictory?.data?.voterContactGoal || 'n/a';
+
       if (!fsUserId) {
         // First, check if the user exists in FullStory
         fsUserId = await fetchFsUserId(headers, user);
@@ -141,6 +163,8 @@ module.exports = {
           isActive,
           electionDate, // Date as a string
           primaryElectionDate,
+          primaryElectionResult,
+          electionResults,
           level: ballotLevel ? ballotLevel.toLowerCase() : undefined,
           state,
           pledged,
@@ -157,6 +181,12 @@ module.exports = {
           doorKnocked: doorKnocking || 0,
           callsMade: calls || 0,
           onlineImpressions: digital || 0,
+          directMail: directMail || 0,
+          digitalAds: digitalAds || 0,
+          smsSent: text || 0,
+          events: events || 0,
+          reportedVoterGoalsTotalCount,
+          voterContactGoal,
           ...(hubSpotUpdates || {}),
           managingCampaign,
           ...(campaignManagementRequests || {}),
