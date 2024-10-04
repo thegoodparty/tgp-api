@@ -36,6 +36,7 @@ module.exports = {
       and pathtovictory.data->>'total' is not null
       and pathtovictory.data->>'total' > 0
       and pathtovictory.data->>'electionType' is not null
+      and pathtovictory.data->>'men' is null
       order by c.id desc`;
       if (limit > 0) {
         query += ` limit ${limit};`;
@@ -51,7 +52,26 @@ module.exports = {
           id: row.id,
         });
         const campaignId = campaign.id;
-        // do countHelper things.
+
+        const genderCounts = await getGenderCounts(campaignId);
+        const ethnicityCounts = await getEthnicityCounts(campaignId);
+
+        console.log('data', data);
+
+        const pathToVictory = await PathToVictory.findOne({
+          campaign: campaignId,
+        });
+        const pathToVictoryData = pathToVictory.data;
+
+        await Pathtovictory.updateOne({
+          campaign: campaignId,
+        }).set({
+          data: {
+            ...pathToVictoryData,
+            ...genderCounts,
+            ...ethnicityCounts,
+          },
+        });
       }
 
       return exits.success('ok');
