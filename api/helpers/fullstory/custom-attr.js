@@ -68,6 +68,8 @@ module.exports = {
 
       const campaignManagementRequests =
         !campaign &&
+        // We have to do this because Full Story doesn't support arrays as
+        //  property values 🤦‍♂️
         mapCampaignManagementRequests(
           (await CampaignManagementRequest.find({
             user: userId,
