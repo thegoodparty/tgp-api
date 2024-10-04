@@ -25,7 +25,7 @@ const sendProConfirmationEmail = async (user, campaign) => {
       user.email,
       `Welcome to Pro! Let's Empower Your Campaign Together`,
       'pro-confirmation',
-      JSON.stringify(emailVars),
+      emailVars,
     );
   } catch (e) {
     await sails.helpers.slack.errorLoggerHelper(

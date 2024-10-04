@@ -32,8 +32,6 @@ module.exports = {
       if (userName === '') {
         return exits.badRequest('No user name');
       }
-      const slug = await findSlug(userName, 'demo');
-      console.log('slug1', slug);
 
       const demoCampaign = await Campaign.findOne({
         slug: demoPersona,
@@ -54,7 +52,9 @@ module.exports = {
       delete demoCampaign.pathToVictory;
 
       let campaign = await sails.helpers.campaign.byUser(user.id);
+
       if (!campaign) {
+        const slug = await findSlug(userName, 'demo');
         campaign = await Campaign.create({
           ...demoCampaign,
           slug,
@@ -70,6 +70,7 @@ module.exports = {
           },
         }).fetch();
       }
+      const { slug } = campaign;
 
       const candidatePositions = await CandidatePosition.find({
         campaign: demoCampaignId,
@@ -100,7 +101,7 @@ module.exports = {
 
       await sails.helpers.campaign.linkCandidateCampaign(campaign.id);
       await sails.helpers.crm.updateCampaign(campaign);
-      await sails.helpers.fullstory.customAttr(campaign.id);
+      await sails.helpers.fullstory.customAttr(user.id);
 
       await sendCampaignLaunchEmail(slug);
 

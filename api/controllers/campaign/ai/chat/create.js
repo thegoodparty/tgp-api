@@ -5,7 +5,12 @@ const openAiAssistant =
   sails.config.custom.openAiAssistant || sails.config.openAiAssistant;
 
 module.exports = {
-  inputs: {},
+  inputs: {
+    message: {
+      type: 'string',
+      required: true,
+    },
+  },
 
   exits: {
     success: {
@@ -26,15 +31,17 @@ module.exports = {
         return exits.badRequest();
       }
 
+      const { message } = inputs;
+
       // Create a new chat
       let campaign = await sails.helpers.campaign.byUser(user.id);
       const { candidateContext, systemPrompt } = await getChatSystemPrompt(
         campaign,
       );
 
-      let chatMessage = {
+      const chatMessage = {
         role: 'user',
-        content: 'Hi, I need help with my campaign.',
+        content: message,
       };
 
       let threadId;
@@ -74,7 +81,7 @@ module.exports = {
           },
         });
         return exits.success({
-          chat: chatResponse,
+          chat: [chatMessage, chatResponse],
           threadId: completion.threadId,
         });
       } else {

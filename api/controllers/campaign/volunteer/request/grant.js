@@ -32,11 +32,14 @@ module.exports = {
       throw new Error('No campaign found for authenticated user');
     }
 
+    let requestorUser = null;
+
     try {
-      const { user: requestorUser, role } = await CampaignRequest.findOne({
+      const { user: rUser, role } = await CampaignRequest.findOne({
         id: requestId,
         campaign: campaign.id,
       }).populate('user');
+      requestorUser = rUser;
 
       const existingVolunteer = await CampaignVolunteer.findOne({
         user: requestorUser.id,
@@ -63,10 +66,10 @@ module.exports = {
 
       const candidateName = await sails.helpers.user.name(candidateUser);
       const requestorName = await sails.helpers.user.name(requestorUser);
-      const emailTemplateData = JSON.stringify({
+      const emailTemplateData = {
         candidateName,
         requestorName,
-      });
+      };
 
       await sendCampaignRequestEmail({
         toEmail: candidateUser.email,
@@ -81,6 +84,9 @@ module.exports = {
     } catch (e) {
       console.error('error updating campaign request', e);
       return exits.error(e);
+    } finally {
+      requestorUser &&
+        (await sails.helpers.fullstory.customAttr(requestorUser.id));
     }
   },
 };

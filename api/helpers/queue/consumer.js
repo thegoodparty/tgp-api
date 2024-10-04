@@ -366,10 +366,10 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       } else {
         console.log('no user found for campaign', slug);
       }
-      const variables = JSON.stringify({
+      const variables = {
         name: name ? name : 'Friend',
         link: `${appBase}/dashboard`,
-      });
+      };
 
       if (appBase === 'https://goodparty.org') {
         console.log('sending email to user', user.email);

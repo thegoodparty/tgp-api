@@ -69,10 +69,10 @@ module.exports = {
         (await sails.helpers.user.name(candidateUser)) || candidateEmail;
       const requestorName = await sails.helpers.user.name(user);
 
-      const emailTemplateData = JSON.stringify({
+      const emailTemplateData = {
         candidateName,
         requestorName,
-      });
+      };
 
       await sendCampaignRequestEmail({
         toEmail: user.email,
@@ -113,6 +113,8 @@ module.exports = {
     } catch (e) {
       console.error('error creating campaign request', e);
       return exits.error(e);
+    } finally {
+      await sails.helpers.fullstory.customAttr(user.id);
     }
   },
 };
