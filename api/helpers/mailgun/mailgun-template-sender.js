@@ -1,6 +1,5 @@
 const { sendEmailWithRetry } = require('../../utils/email/sendEmailWithRetry');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-console.log(`appBase =>`, appBase);
 
 module.exports = {
   friendlyName: 'Send emails using mailgun helper',
