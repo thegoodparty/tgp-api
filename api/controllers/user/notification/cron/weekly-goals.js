@@ -285,6 +285,6 @@ async function sendEmail(goals, user) {
     user.email,
     'Your Campaign Goals for the Week',
     'weekly-goals',
-    JSON.stringify(variables),
+    variables,
   );
 }

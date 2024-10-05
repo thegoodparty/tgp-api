@@ -376,6 +376,15 @@ function mapResponse(items) {
           ...item.fields,
           image: extractMediaFile(item.fields.image),
         });
+      } else if (itemId === 'aiChatPrompt') {
+        if (!mappedResponse.aiChatPrompts) {
+          mappedResponse.aiChatPrompts = {};
+        }
+        const { name } = item.fields;
+        mappedResponse.aiChatPrompts[name] = {
+          ...item.fields,
+          id: elementId,
+        };
       }
     } else {
       console.log('unhandled item => ', item);
