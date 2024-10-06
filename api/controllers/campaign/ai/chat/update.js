@@ -92,7 +92,7 @@ module.exports = {
           },
         });
 
-        return exits.success({ message: chatResponse });
+        return exits.success({ chat: [chatResponse] });
       } else {
         return exits.badRequest();
       }
