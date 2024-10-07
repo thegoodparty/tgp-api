@@ -28,9 +28,8 @@ module.exports = {
       const { user } = this.req;
       await ShareCandidate.destroy({ user: user.id });
       await Application.destroy({ user: user.id });
-      const campaign = await Campaign.findOne({ user: user.id }).populate(
-        'user',
-      );
+      const campaign = await sails.helpers.campaign.byUser(user.id);
+      campaign.user = await User.findOne({ id: user.id });
       const { details } = campaign || {};
       const { subscriptionId } = details || {};
       await patchUserMetaData(user, { isDeleted: true });
@@ -43,17 +42,20 @@ module.exports = {
           return e;
         }
       }
+      // TODO: this needs to support a CM deleting their own account,
+      //  and should NOT delete things on the associated campaign.
       await CandidatePosition.destroy({
-        campaign: campaign.id,
+        campaign: campaign?.id,
       });
-      await PathToVictory.destroyOne({ id: campaign.pathToVictory });
+      // TODO: Same here.
+      await PathToVictory.destroyOne({ id: campaign.pathToVictory?.id });
       await CampaignVolunteer.destroy({
         or: [
           {
             user: user.id,
           },
           {
-            campaign: campaign.id,
+            campaign: campaign?.id,
           },
         ],
       });
@@ -63,11 +65,11 @@ module.exports = {
             user: user.id,
           },
           {
-            campaign: campaign.id,
+            campaign: campaign?.id,
           },
         ],
       });
-      await Campaign.destroyOne({ id: campaign.id });
+      await Campaign.destroyOne({ id: campaign?.id });
       await User.destroyOne({ id: user.id });
       return exits.success({
         message: 'deleted successfully',
