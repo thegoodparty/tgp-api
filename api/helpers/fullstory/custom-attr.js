@@ -67,10 +67,16 @@ module.exports = {
         aiContent,
         isActive,
       } = campaign || {};
-
-      const company = await sails.helpers.crm.getCompany(campaign);
-
-      const { properties } = company;
+      
+      let company;
+      try {
+        company = await sails.helpers.crm.getCompany(campaign);
+      } catch (err) {
+        console.error('Error fetching company from CRM:', err);
+        company = null;
+      }
+      
+      const { properties } = company || {};
 
       const { 
         primary_election_result: primaryElectionResult, 
@@ -193,12 +199,6 @@ module.exports = {
           managingCampaign,
           ...(campaignManagementRequests || {}),
         };
-
-        console.log('reportedVoterGoalsTotalCount:',reportedVoterGoalsTotalCount);
-        console.log('voterContactGoal:', voterContactGoal);
-        console.log('primaryElectionResult:', primaryElectionResult);
-        console.log('electionResults:', electionResults);
-        console.log('isActive:', isActive);
 
         for (let i = 0; i < aiContentKeys.length; i++) {
           properties[`ai-content-${aiContentKeys[i]}`] = true;
