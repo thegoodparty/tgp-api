@@ -34,29 +34,25 @@ module.exports = {
       if (slug) {
         campaign = await Campaign.findOne({ slug });
       } else {
-        const campaigns = await Campaign.find({
-          user: user.id,
-        });
+        campaign = await sails.helpers.campaign.byUser(user.id);
+      }
 
-        if (campaigns && campaigns.length > 0) {
-          campaign = campaigns[0];
-        }
+      if (!campaign) {
+        return exits.badRequest({ message: 'No campaign found' });
       }
 
       const updateHistory = await CampaignUpdateHistory.find({
         campaign: campaign.id,
       }).populate('user');
 
-      updateHistory.forEach(async (update) => {
-        const name = await sails.helpers.user.name(user);
-        update.user = {
-          name,
-          avatar: update.user.avatar,
-        };
-      });
-
       return exits.success({
-        updateHistory,
+        updateHistory: updateHistory.map(async (update) => ({
+          ...update,
+          user: {
+            name: await sails.helpers.user.name(user),
+            avatar: update?.user?.avatar,
+          },
+        })),
       });
     } catch (e) {
       console.log('error at campaign/campaignUpdateHistory/list', e);
