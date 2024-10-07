@@ -123,13 +123,15 @@ module.exports = {
 
       let reportedVoterGoalsTotalCount = 0;
       
-      Object.values(reportedVoterGoals).forEach((count) => {
-        if (Number.isInteger(count)) {
-          reportedVoterGoalsTotalCount += count;
-        } else {
-          console.error('reportedVoterGoal value not an integer:', count);
-        }
-      })
+      if (reportedVoterGoals) {
+        Object.values(reportedVoterGoals).forEach((count) => {
+          if (Number.isInteger(count)) {
+            reportedVoterGoalsTotalCount += count;
+          } else {
+            console.error('reportedVoterGoal value not an integer:', count);
+          }
+        })
+      }
 
       const electionDateMonth = electionDate
         ? moment(electionDate).format('MMMYY')
@@ -185,12 +187,19 @@ module.exports = {
           digitalAds: digitalAds || 0,
           smsSent: text || 0,
           events: events || 0,
-          reportedVoterGoalsTotalCount,
+          reportedVoterGoalsTotalCount: reportedVoterGoalsTotalCount || 0,
           voterContactGoal,
           ...(hubSpotUpdates || {}),
           managingCampaign,
           ...(campaignManagementRequests || {}),
         };
+
+        console.log('reportedVoterGoalsTotalCount:',reportedVoterGoalsTotalCount);
+        console.log('voterContactGoal:', voterContactGoal);
+        console.log('primaryElectionResult:', primaryElectionResult);
+        console.log('electionResults:', electionResults);
+        console.log('isActive:', isActive);
+
         for (let i = 0; i < aiContentKeys.length; i++) {
           properties[`ai-content-${aiContentKeys[i]}`] = true;
         }
