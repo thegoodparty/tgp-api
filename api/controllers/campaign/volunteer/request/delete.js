@@ -1,3 +1,6 @@
+const {
+  updateCrmUserByUserId,
+} = require('../../../../utils/crm/updateCrmUserByUserId');
 module.exports = {
   friendlyName: 'DeleteCampaignTeamRequest',
 
@@ -46,6 +49,7 @@ module.exports = {
       return exits.error(e);
     } finally {
       await sails.helpers.fullstory.customAttr(requestorUserId);
+      await updateCrmUserByUserId(requestorUserId);
     }
   },
 };

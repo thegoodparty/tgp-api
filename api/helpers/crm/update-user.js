@@ -1,5 +1,6 @@
 // https://developers.hubspot.com/docs/api/crm/contacts
 const { hubspotClient } = require('../../utils/crm/crmClientSingleton');
+const { getUserCRMType } = require('../../utils/crm/getUserCRMType');
 
 module.exports = {
   inputs: {
@@ -27,7 +28,7 @@ module.exports = {
     try {
       let { user, loginEvent, updateEvent } = inputs;
       user = await User.findOne({ id: user.id });
-      const { id, firstName, lastName, email, phone, uuid, zip } = user;
+      const { firstName, lastName, email, phone, uuid, zip } = user;
 
       const campaign = await sails.helpers.campaign.byUser(user.id);
 
@@ -56,7 +57,7 @@ module.exports = {
           lastname: lastName,
           email,
           phone,
-          type: campaign ? 'Campaign' : 'User',
+          type: await getUserCRMType(user, campaign),
           active_candidate: campaign ? 'Yes' : 'No',
           live_candidate: campaign && campaign?.isActive,
           source: 'GoodParty.org Site',
@@ -71,7 +72,6 @@ module.exports = {
           ...(campaign?.id
             ? {
                 product_user: 'yes',
-                type: 'Campaign',
               }
             : {}),
           ...(browsing_intent ? { browsing_intent } : {}),
@@ -86,6 +86,7 @@ module.exports = {
             : 'opportunity',
         },
       };
+
       if (loginEvent) {
         const now = new Date();
         // this is undocumented, but they want the date in UTC at midnight.

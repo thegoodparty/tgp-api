@@ -65,6 +65,8 @@ module.exports = {
         campaign: campaign?.id || null,
       }).fetch();
 
+      await sails.helpers.crm.updateUser(user);
+
       const candidateName =
         (await sails.helpers.user.name(candidateUser)) || candidateEmail;
       const requestorName = await sails.helpers.user.name(user);
