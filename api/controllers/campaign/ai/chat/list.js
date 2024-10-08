@@ -20,7 +20,6 @@ module.exports = {
 
       let chats = [];
       for (const chat of aiChats) {
-        console.log('chat', chat.data.messages);
         chats.push({
           threadId: chat.thread,
           updatedAt: chat.updatedAt,

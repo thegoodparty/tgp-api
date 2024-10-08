@@ -160,6 +160,7 @@ module.exports.routes = {
   'POST   /api/v1/campaign/ai/chat': 'campaign/ai/chat/create',
   'PUT   /api/v1/campaign/ai/chat': 'campaign/ai/chat/update',
   'GET   /api/v1/campaign/ai/chat': 'campaign/ai/chat/get',
+  'DELETE   /api/v1/campaign/ai/chat': 'campaign/ai/chat/delete',
   'GET   /api/v1/campaign/ai/chats': 'campaign/ai/chat/list',
 
   // onboarding AI
