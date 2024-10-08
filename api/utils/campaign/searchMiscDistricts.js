@@ -71,26 +71,34 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
     slug,
     `Doing AI search for ${searchString} against ${searchColumns.length} columns`,
   );
-  const functionDefinition = {
-    type: 'function',
-    function: {
-      name: 'matchColumns',
-      description: 'Determine the columns that best match the office name.',
-      parameters: {
-        type: 'object',
-        properties: {
-          columns: {
-            type: 'array',
-            items: {
-              type: 'string',
+  const functionDefinition = [
+    {
+      type: 'function',
+      function: {
+        name: 'matchColumns',
+        description: 'Determine the columns that best match the office name.',
+        parameters: {
+          type: 'object',
+          properties: {
+            columns: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+              description:
+                'The list of columns that best match the office name.',
+              maxItems: 5,
             },
-            description: 'The list of columns that best match the office name.',
-            maxItems: 5,
           },
+          required: ['columns'],
         },
-        required: ['columns'],
       },
     },
+  ];
+
+  let toolChoice = {
+    type: 'function',
+    function: { name: 'matchColumns' },
   };
 
   const completion = await getChatCompletion(
@@ -105,10 +113,10 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
         content: `Find the top 5 columns that matches the following office: "${searchString}.\n\nColumns: ${searchColumns}"`,
       },
     ],
-    'gpt-4o',
     0.1,
     0.1,
-    [functionDefinition],
+    functionDefinition,
+    toolChoice,
   );
 
   return completion;

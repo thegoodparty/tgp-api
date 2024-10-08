@@ -145,6 +145,8 @@ module.exports = {
           console.log('seeding category', category);
           for (const district of miscellaneousDistricts[category]) {
             try {
+              // sleep for 5 seconds
+              await new Promise((resolve) => setTimeout(resolve, 5000));
               //   if (columns.length > 0) {
               console.log('checking district', district);
               let columnValues = await querySearchColumn(district, state);
@@ -193,6 +195,18 @@ async function querySearchColumn(searchColumn, electionState) {
     const response = await axios.get(searchUrl);
     if (response?.data?.values && response.data.values.length > 0) {
       searchValues = response.data.values;
+    } else if (
+      response?.data?.message &&
+      response.data.message.includes('API threshold reached')
+    ) {
+      console.log('L2-Data API threshold reached');
+      await sails.helpers.slack.slackHelper(
+        {
+          title: 'L2-Data API threshold reached',
+          body: `Error! L2-Data API threshold reached for ${searchColumn} in ${electionState}.`,
+        },
+        'dev',
+      );
     }
   } catch (e) {
     console.log('error at querySearchColumn', e);
