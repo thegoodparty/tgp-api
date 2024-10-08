@@ -17,7 +17,18 @@ module.exports = {
       const { metaData } = user;
       const now = new Date();
       const timestamp = now.getTime();
-      let updatedMeta = metaData ? JSON.parse(metaData) : {};
+
+      let updatedMeta = {};
+
+      try {
+        updatedMeta = metaData ? JSON.parse(metaData) : {};
+      } catch (e) {
+        await sails.helpers.slack.errorLoggerHelper(
+          'Error getting campaign status - user metadata bad',
+          e,
+        );
+      }
+
       updatedMeta = {
         ...updatedMeta,
         lastVisited: timestamp,
