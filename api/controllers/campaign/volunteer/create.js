@@ -1,4 +1,7 @@
 // create campaignVolunteer via accepting VolunteerInvitation
+const {
+  updateCrmUserByUserId,
+} = require('../../../utils/crm/updateCrmUserByUserId');
 module.exports = {
   inputs: {
     id: {
@@ -46,6 +49,7 @@ module.exports = {
       return exits.badRequest({ message: 'Error accepting invitation.' });
     } finally {
       await sails.helpers.fullstory.customAttr(requestorUserId);
+      await updateCrmUserByUserId(requestorUserId);
     }
   },
 };

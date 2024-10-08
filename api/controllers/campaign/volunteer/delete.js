@@ -1,6 +1,9 @@
 const {
   userCanMutateCampaignVolunteer,
 } = require('../../../utils/campaign/userCanMutateCampaignVolunteer');
+const {
+  updateCrmUserByUserId,
+} = require('../../../utils/crm/updateCrmUserByUserId');
 module.exports = {
   friendlyName: 'Delete campaign volunteer',
   description: 'Delete a campaign volunteer',
@@ -54,6 +57,7 @@ module.exports = {
       return exits.badRequest({ message: 'Error deleting campaign volunteer' });
     } finally {
       await sails.helpers.fullstory.customAttr(volunteerUserId);
+      await updateCrmUserByUserId(volunteerUserId);
     }
   },
 };

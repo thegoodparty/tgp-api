@@ -1,6 +1,9 @@
 const {
   sendCampaignRequestEmail,
 } = require('../../../../utils/campaign/sendCampaignRequestEmail');
+const {
+  updateCrmUserByUserId,
+} = require('../../../../utils/crm/updateCrmUserByUserId');
 module.exports = {
   friendlyName: 'UpdateCampaignTeamRequest',
 
@@ -87,6 +90,7 @@ module.exports = {
     } finally {
       requestorUser &&
         (await sails.helpers.fullstory.customAttr(requestorUser.id));
+      await updateCrmUserByUserId(requestorUser.id);
     }
   },
 };
