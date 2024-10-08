@@ -44,6 +44,4 @@ async function getEthnicityCounts(electionState, searchJson) {
   return counts;
 }
 
-module.exports = {
-  getEthnicityCounts,
-};
+module.exports = getEthnicityCounts;
