@@ -26,7 +26,7 @@ module.exports = {
       and (c.details->>'runForOffice'='yes' or c.details->>'knowRun'='true')
       and c.details->>'electionDate' is not null
       and c.details->>'raceId' is not null
-      and (pathtovictory.data->>'p2vStatus'='Waiting' OR pathtovictory.data->>'p2vStatus' is null)
+      and pathtovictory.data->>'totalRegisteredVoters' is null
       and pathtovictory.data->>'p2vNotNeeded' is null
       order by c.id desc;
       `);
@@ -36,10 +36,8 @@ module.exports = {
       const rows = campaigns?.rows;
       console.log('rows', rows.length);
       for (const row of rows) {
-        let campaign = await Campaign.findOne({
-          id: row.id,
-        });
-        await sails.helpers.queue.enqueuePathToVictory(campaign.id);
+        console.log('campaign', row.campaign);
+        await sails.helpers.queue.enqueuePathToVictory(row.campaign);
       }
 
       return exits.success('ok');
