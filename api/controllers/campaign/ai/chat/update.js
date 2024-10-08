@@ -53,8 +53,15 @@ module.exports = {
 
       let messageId;
       if (regenerate) {
-        message = messages.slice(-2, -1)[0]?.content;
-        const lastMessage = messages.slice(-1)[0];
+        let lastMessage;
+        if (messages.length === 1) {
+          message = messages[0]?.content;
+          lastMessage = messages[0];
+        } else {
+          message = messages.slice(-2, -1)[0]?.content;
+
+          lastMessage = messages.slice(-1)[0];
+        }
         messageId = lastMessage?.id;
         messages.splice(-1, 1);
         messages.splice(-1, 1);
@@ -92,7 +99,7 @@ module.exports = {
           },
         });
 
-        return exits.success({ chat: [chatResponse] });
+        return exits.success({ message: chatResponse });
       } else {
         return exits.badRequest();
       }
