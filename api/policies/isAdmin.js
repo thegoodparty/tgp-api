@@ -21,13 +21,22 @@ module.exports = async function (req, res, next) {
         token = credentials;
         try {
           const decoded = await sails.helpers.jwtVerify(token);
+          const reqEmail = decoded?.data?.email;
+          //check if the email host is @goodparty.org if so, check the user.isAdmin flag
+          if (reqEmail && reqEmail.includes('@goodparty.org')) {
+            const user = await User.findOne({ email: reqEmail });
+            if (user && user.isAdmin) {
+              return next();
+            }
+          }
+
           const adminEmails =
             sails.config.custom.adminEmails || sails.config.adminEmails;
           if (
             decoded &&
             decoded.data &&
             adminEmails &&
-            adminEmails.includes(decoded.data.email)
+            adminEmails.includes(reqEmail)
           ) {
             return next();
           } else {

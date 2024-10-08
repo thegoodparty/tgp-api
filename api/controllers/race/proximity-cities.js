@@ -1,3 +1,5 @@
+const llmChatCompletion = require('../../utils/ai/llmChatCompletion');
+
 module.exports = {
   inputs: {
     state: {
@@ -47,7 +49,8 @@ module.exports = {
         },
       ];
 
-      const completion = await sails.helpers.ai.createCompletion(messages);
+      // const completion = await sails.helpers.ai.createCompletion(messages);
+      const completion = await llmChatCompletion(messages);
 
       const cities = completion.content;
       const parsed = JSON.parse(cities);

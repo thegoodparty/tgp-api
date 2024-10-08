@@ -84,10 +84,11 @@ const handlePathToVictory = async ({
       searchColumns = [''];
     }
 
-    let attempts = 0;
+    let attempts = 1;
     for (const searchColumn of searchColumns) {
       let columnResponse;
-
+      console.log('searchColumn', searchColumn);
+      console.log('attempt', attempts);
       if (
         electionLevel === 'federal' &&
         (officeName.includes('President of the United States') ||
@@ -107,9 +108,12 @@ const handlePathToVictory = async ({
           electionState,
           searchString,
         );
+        console.log('columnResponse', columnResponse);
+
         if (!columnResponse) {
           continue;
         }
+        console.log('columnResponse', columnResponse);
         electionType = columnResponse.column;
         electionLocation = columnResponse.value;
       }
@@ -137,7 +141,7 @@ const handlePathToVictory = async ({
         partisanType,
         priorElectionDates,
       );
-      // sails.helpers.log(slug, 'counts', counts);
+      sails.helpers.log(slug, 'counts', counts);
 
       if (counts && counts?.total && counts.total > 0) {
         pathToVictoryResponse.electionType = electionType;
@@ -145,6 +149,9 @@ const handlePathToVictory = async ({
         pathToVictoryResponse.counts = counts;
         await saveL2Counts(counts, electionType, electionLocation);
         break;
+      } else {
+        electionType = undefined;
+        electionLocation = undefined;
       }
       attempts++;
       if (attempts > 10) {

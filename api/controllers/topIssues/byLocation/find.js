@@ -1,3 +1,5 @@
+const llmChatCompletion = require('../../../utils/ai/llmChatCompletion');
+
 /* eslint-disable object-shorthand */
 module.exports = {
   friendlyName: 'Find top issues by location for candidate onboarding',
@@ -37,12 +39,14 @@ module.exports = {
         },
       ];
 
-      const completion = await sails.helpers.ai.createCompletion(
-        messages,
-        3000,
-        0.5,
-        0.1,
-      );
+      // const completion = await sails.helpers.ai.createCompletion(
+      //   messages,
+      //   3000,
+      //   0.5,
+      //   0.1,
+      // );
+
+      const completion = await llmChatCompletion(messages, 3000, 0.5, 0.1);
 
       const chatResponse = completion.content;
       const issues = chatResponse.split(',');
