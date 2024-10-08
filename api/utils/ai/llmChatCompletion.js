@@ -68,9 +68,15 @@ async function llmChatCompletion(
     );
   }
 
-  if (completion && completion.content) {
+  if (completion && completion?.content) {
+    let content = completion.content;
+    if (content.includes('```html')) {
+      content = content.match(/```html([\s\S]*?)```/)[1];
+    }
+    content = content.replace('/n', '<br/><br/>');
+
     return {
-      content: completion?.content || '',
+      content,
       tokens: completion?.response_metadata?.tokenUsage?.totalTokens || 0,
     };
   } else {
