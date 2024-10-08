@@ -67,7 +67,7 @@ module.exports = {
         aiContent,
         isActive,
       } = campaign || {};
-      
+
       let company;
       try {
         company = await sails.helpers.crm.getCompany(campaign);
@@ -75,20 +75,20 @@ module.exports = {
         console.error('Error fetching company from CRM:', err);
         company = null;
       }
-      
+
       const { properties } = company || {};
 
-      const { 
-        primary_election_result: primaryElectionResult, 
-        election_results: electionResults 
-      } = properties || {}
+      const {
+        primary_election_result: primaryElectionResult,
+        election_results: electionResults,
+      } = properties || {};
 
       const campaignManagementRequests =
         !campaign &&
         // We have to do this because Full Story doesn't support arrays as
         //  property values 🤦‍♂️
         mapCampaignManagementRequests(
-          (await CampaignManagementRequest.find({
+          (await CampaignRequest.find({
             user: userId,
             role: 'manager',
           })) || [],
@@ -124,11 +124,19 @@ module.exports = {
         filingPeriodsEnd,
       } = details || {};
 
-      const { doorKnocking, calls, digital, directMail, digitalAds, text, events } = reportedVoterGoals || {};
+      const {
+        doorKnocking,
+        calls,
+        digital,
+        directMail,
+        digitalAds,
+        text,
+        events,
+      } = reportedVoterGoals || {};
       // Yard signs will need to be added once that's supported
 
       let reportedVoterGoalsTotalCount = 0;
-      
+
       if (reportedVoterGoals) {
         Object.values(reportedVoterGoals).forEach((count) => {
           if (Number.isInteger(count)) {
@@ -136,7 +144,7 @@ module.exports = {
           } else {
             console.error('reportedVoterGoal value not an integer:', count);
           }
-        })
+        });
       }
 
       const electionDateMonth = electionDate
@@ -155,7 +163,8 @@ module.exports = {
 
       const p2vStatus = campaign?.pathToVictory?.data?.p2vStatus || 'n/a';
 
-      const voterContactGoal = campaign?.pathToVictory?.data?.voterContactGoal || 'n/a';
+      const voterContactGoal =
+        campaign?.pathToVictory?.data?.voterContactGoal || 'n/a';
 
       if (!fsUserId) {
         // First, check if the user exists in FullStory
