@@ -24,7 +24,7 @@ module.exports.policies = {
   'campaign/find-by-slug': ['isAuthenticated', 'isAdmin'],
   'topIssues/candidatePosition/*': ['isAuthenticated'],
   'topIssues/byLocation/find': ['isAuthenticated'],
-  'ai/test': ['isAuthenticated', 'isAdmin'],
+  'ai/test/*': ['isAuthenticated', 'isAdmin'],
   'ai/load': ['isAuthenticated', 'isAdmin'],
   'candidate/delete': ['isAuthenticated', 'isAdmin'],
   'campaign/election-events': ['isAuthorizedCron'],

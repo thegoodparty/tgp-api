@@ -68,11 +68,12 @@ module.exports = {
       }
 
       let partisanCounts = await getPartisanCounts(electionState, searchJson);
-      // console.log('counts', counts);
+      console.log('partisanCounts', partisanCounts);
 
       if (partisanCounts.total === 0) {
         // don't get electionHistory if we don't have a match.
-        exits.success(partisanCounts);
+        console.log('no partisanCounts found');
+        return exits.success(partisanCounts);
       }
 
       let genderCounts = await getGenderCounts(electionState, searchJson);

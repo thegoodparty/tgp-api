@@ -1,6 +1,8 @@
 const axios = require('axios');
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 
+const llmChatCompletion = require('../ai/llmChatCompletion');
+
 async function getSearchColumn(
   slug,
   searchColumn,
@@ -92,12 +94,17 @@ async function matchSearchValues(slug, searchValues, searchString) {
     },
   ];
 
-  const completion = await sails.helpers.ai.createCompletion(
-    messages,
-    100,
-    0.1,
-    0.1,
-  );
+  // const completion = await sails.helpers.ai.createCompletion(
+  //   messages,
+  //   100,
+  //   0.1,
+  //   0.1,
+  // );
+
+  // todo: update this to use function calling and use getChatCompletion
+  // so that it works better with llama3.1
+  // also add some few shot examples including non-matching examples.
+  const completion = await llmChatCompletion(messages, 100, 0.1, 0.1);
 
   const content = completion?.content;
   const tokens = completion?.tokens;
@@ -129,6 +136,18 @@ async function querySearchColumn(slug, searchColumn, electionState) {
     const response = await axios.get(searchUrl);
     if (response?.data?.values && response.data.values.length > 0) {
       searchValues = response.data.values;
+    } else if (
+      response?.data?.message &&
+      response.data.message.includes('API threshold reached')
+    ) {
+      console.log('L2-Data API threshold reached');
+      await sails.helpers.slack.slackHelper(
+        {
+          title: 'L2-Data API threshold reached',
+          body: `Error! L2-Data API threshold reached for ${searchColumn} in ${electionState}.`,
+        },
+        'dev',
+      );
     }
   } catch (e) {
     sails.helpers.log(slug, 'error at querySearchColumn', e);

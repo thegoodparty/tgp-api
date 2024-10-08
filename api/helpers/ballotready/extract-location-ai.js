@@ -1,5 +1,6 @@
 /* eslint-disable object-shorthand */
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const getChatCompletion = require('../../utils/ai/getChatCompletion');
 
 module.exports = {
   inputs: {
@@ -152,20 +153,56 @@ module.exports = {
       }
       `;
 
+      let tools = [
+        {
+          type: 'function',
+          function: {
+            name: 'extractLocation',
+            description: 'Extract the location from the office name.',
+            parameters: {
+              type: 'object',
+              properties: {},
+            },
+          },
+        },
+      ];
+
       let systemPrompt;
       if (level === 'county') {
         systemPrompt = countyPrompt;
       } else if (level === 'city') {
         systemPrompt = cityPrompt;
+        tools[0].function.parameters.properties.city = {
+          type: 'string',
+          description: 'The city name.',
+        };
       } else if (level === 'town') {
         systemPrompt = townPrompt;
+        tools[0].function.parameters.properties.town = {
+          type: 'string',
+          description: 'The town name.',
+        };
       } else if (level === 'township') {
         systemPrompt = townshipPrompt;
+        tools[0].function.parameters.properties.township = {
+          type: 'string',
+          description: 'The township name.',
+        };
       } else if (level === 'village') {
         systemPrompt = villagePrompt;
+        tools[0].function.parameters.properties.village = {
+          type: 'string',
+          description: 'The village name.',
+        };
       } else {
         return exits.success(false);
       }
+
+      // we always try to get the county name
+      tools[0].function.parameters.properties.county = {
+        type: 'string',
+        description: 'The county name.',
+      };
 
       let messages = [
         {
@@ -179,13 +216,20 @@ module.exports = {
         },
       ];
 
-      const completion = await sails.helpers.ai.createCompletion(
+      let toolChoice = {
+        type: 'function',
+        function: { name: 'extractLocation' },
+      };
+
+      const completion = await getChatCompletion(
         messages,
-        100,
         0.1,
         0.1,
+        tools,
+        toolChoice,
       );
 
+      // console.log('completion', completion);
       const content = completion.content;
       let decodedContent = {};
       try {

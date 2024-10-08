@@ -11,6 +11,7 @@ const queueUrl = sails.config.custom.queueUrl || sails.config.queueUrl;
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 const handlePathToVictory = require('../../utils/campaign/handlePathToVictory');
+const llmChatCompletion = require('../../utils/ai/llmChatCompletion');
 
 let queue;
 
@@ -425,18 +426,21 @@ async function handleGenerateAiContent(message) {
         maxTokens = 2500;
       }
 
-      let completion = await sails.helpers.ai.createCompletion(
-        messages,
-        maxTokens,
-        0.7,
-        0.9,
-      );
+      // let completion = await sails.helpers.ai.createCompletion(
+      //   messages,
+      //   maxTokens,
+      //   0.7,
+      //   0.9,
+      // );
+
+      let completion = await llmChatCompletion(messages, maxTokens, 0.7, 0.9);
+
       // console.log('completion', completion);
       chatResponse = completion.content;
       const totalTokens = completion.tokens;
 
       // const prompt = messages.map((message) => message.content).join('\n');
-      // chatResponse = await sails.helpers.ai.langchainCompletion(prompt);
+      // chatResponse = await sails.helpers.ai.llmChatCompletion(prompt);
       // chatResponse = chatResponse.replace('/n', '<br/><br/>');
 
       // TODO: investigate if there is a way to get token usage with langchain.
