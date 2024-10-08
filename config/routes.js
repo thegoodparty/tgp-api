@@ -238,7 +238,9 @@ module.exports.routes = {
   'GET  /api/v1/voter-data/locations': 'voterData/locations',
 
   // test ai
-  'GET   /api/v1/ai/test': 'ai/test',
+  'GET   /api/v1/ai/test/match-columns': 'ai/test/match-columns',
+  'GET   /api/v1/ai/test/extract-location': 'ai/test/extract-location',
+  'GET   /api/v1/ai/test/path-to-victory': 'ai/test/path-to-victory',
   'GET   /api/v1/ai/load': 'ai/load',
 
   // races

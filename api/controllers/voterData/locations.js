@@ -43,6 +43,18 @@ async function querySearchColumn(searchColumn, electionState) {
     const response = await axios.get(searchUrl);
     if (response?.data?.values && response.data.values.length > 0) {
       searchValues = response.data.values;
+    } else if (
+      response?.data?.message &&
+      response.data.message.includes('API threshold reached')
+    ) {
+      console.log('L2-Data API threshold reached');
+      await sails.helpers.slack.slackHelper(
+        {
+          title: 'L2-Data API threshold reached',
+          body: `Error! L2-Data API threshold reached for ${searchColumn} in ${electionState}.`,
+        },
+        'dev',
+      );
     }
   } catch (e) {
     sails.helpers.log(slug, 'error at querySearchColumn', e);

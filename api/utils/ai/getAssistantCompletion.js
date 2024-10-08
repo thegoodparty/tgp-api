@@ -112,7 +112,7 @@ async function getAssistantCompletion(
     await sails.helpers.slack.slackHelper(
       {
         title: 'Error in AI',
-        body: `Error in getChatCompletion. Error: ${error}`,
+        body: `Error in getAssistantCompletion. Error: ${error}`,
       },
       'dev',
     );
