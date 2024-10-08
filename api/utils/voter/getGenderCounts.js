@@ -38,6 +38,4 @@ async function getGenderCounts(electionState, searchJson) {
   return counts;
 }
 
-module.exports = {
-  getGenderCounts,
-};
+module.exports = getGenderCounts;
