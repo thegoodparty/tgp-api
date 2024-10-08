@@ -1,5 +1,5 @@
 /**
- * isAdmin.js
+ * isAdmin.js.
  *
  * @description :: policy that ensures that the user email is in the ENV variable ADMIN_EMAILS array.
  * locally we use /config/local file to store this array. On production we need to set the ENV variables.
