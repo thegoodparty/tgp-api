@@ -52,6 +52,12 @@ async function getChatCompletion(
           content = completion.choices[0].message?.content?.trim() || '';
         }
       }
+
+      if (content.includes('```html')) {
+        content = content.match(/```html([\s\S]*?)```/)[1];
+      }
+      content = content.replace('/n', '<br/><br/>');
+      console.log('completion success', content);
       return {
         content: content,
         tokens: completion?.usage?.total_tokens || 0,
