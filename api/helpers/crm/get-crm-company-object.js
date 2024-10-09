@@ -104,7 +104,6 @@ const getCrmCompanyObject = async (inputs, exits) => {
     state: longState,
     candidate_state: longState,
     candidate_district: district,
-    lifecyclestage: 'customer',
     city,
     type: 'CAMPAIGN',
     last_step: isActive ? 'onboarding-complete' : currentStep,

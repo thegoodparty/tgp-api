@@ -81,9 +81,6 @@ module.exports = {
                   demoPersona === 'matthew-mcconaughey' ? 'local' : 'federal',
               }
             : {}),
-          lifecyclestage: campaign?.details?.pledged
-            ? 'customer'
-            : 'opportunity',
         },
       };
 
@@ -161,7 +158,13 @@ module.exports = {
       } else {
         try {
           const createContactResponse = hubspotClient
-            ? await hubspotClient.crm.contacts.basicApi.create(contactObj)
+            ? await hubspotClient.crm.contacts.basicApi.create({
+                ...contactObj,
+                properties: {
+                  ...contactObj.properties,
+                  lifecyclestage: 'opportunity',
+                },
+              })
             : {};
           // update user record with the id from the crm
           const hubspotId = createContactResponse.id;
