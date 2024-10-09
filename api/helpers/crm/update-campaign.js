@@ -55,7 +55,13 @@ module.exports = {
         let createCompanyResponse;
         try {
           createCompanyResponse =
-            await hubspotClient.crm.companies.basicApi.create(companyObj);
+            await hubspotClient.crm.companies.basicApi.create({
+              ...companyObj,
+              properties: {
+                ...companyObj.properties,
+                lifecyclestage: 'opportunity',
+              },
+            });
         } catch (e) {
           console.log('error creating company', e);
           await sails.helpers.slack.errorLoggerHelper(
