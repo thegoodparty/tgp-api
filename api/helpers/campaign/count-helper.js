@@ -67,6 +67,8 @@ module.exports = {
         searchJson.filters[electionType] = electionLocation;
       }
 
+      // sleep for 5 seconds to avoid rate limiting.
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       let partisanCounts = await getPartisanCounts(electionState, searchJson);
       console.log('partisanCounts', partisanCounts);
 
@@ -76,9 +78,13 @@ module.exports = {
         return exits.success(partisanCounts);
       }
 
+      // sleep for 5 seconds to avoid rate limiting.
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       let genderCounts = await getGenderCounts(electionState, searchJson);
       console.log('genderCounts', genderCounts);
 
+      // sleep for 5 seconds to avoid rate limiting.
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       let ethnicityCounts = await getEthnicityCounts(electionState, searchJson);
       console.log('ethnicityCounts', ethnicityCounts);
 
@@ -90,6 +96,9 @@ module.exports = {
 
       // Now we try to determine the turnout for the last 3 elections.
       // with the goal to determine averageTurnout and projectedTurnout
+
+      // sleep for 5 seconds to avoid rate limiting.
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       let columns = await getColumns(electionState);
 
       let numberOfElections = 3;
@@ -163,6 +172,8 @@ module.exports = {
         let historyJson = lodash.cloneDeep(searchJson);
         historyJson.filters[column.column] = 1;
         console.log('historyJson', historyJson);
+        // sleep for 5 seconds to avoid rate limiting.
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         let estimatedCount = await getEstimatedCounts(
           electionState,
           historyJson,
