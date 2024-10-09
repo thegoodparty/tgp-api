@@ -162,6 +162,7 @@ module.exports.routes = {
   'GET   /api/v1/campaign/ai/chat': 'campaign/ai/chat/get',
   'DELETE   /api/v1/campaign/ai/chat': 'campaign/ai/chat/delete',
   'GET   /api/v1/campaign/ai/chats': 'campaign/ai/chat/list',
+  'POST   /api/v1/campaign/ai/chat/feedback': 'campaign/ai/chat/feedback',
 
   // onboarding AI
   'GET   /api/v1/campaign/ai/prompt': 'campaign/ai/prompt/get',

@@ -38,6 +38,7 @@ module.exports = {
 
       return exits.success({
         chat,
+        feedback: aiChat.data.feedback,
       });
     } catch (e) {
       console.log('Error at ai/chat/get', e);

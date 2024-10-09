@@ -95,6 +95,7 @@ module.exports = {
 
         await AIChat.updateOne({ id: aiChat.id }).set({
           data: {
+            ...aiChat.data,
             messages: [...messages, chatMessage, chatResponse],
           },
         });
