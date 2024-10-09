@@ -102,6 +102,8 @@ const handlePathToVictory = async ({
       } else if (electionType && electionLocation) {
         // if already specified, skip the search.
       } else {
+        // sleep for 5 seconds to avoid rate limiting.
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         columnResponse = await getSearchColumn(
           slug,
           searchColumn,
