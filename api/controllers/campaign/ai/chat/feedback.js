@@ -53,6 +53,20 @@ module.exports = {
         },
       });
 
+      await sails.helpers.slack.slackHelper(
+        {
+          title: `${type} feedback on AI Chat thread`,
+          body: `${type} feedback on AI Chat thread
+User: ${user.email}
+${message ? `Message: ${message}` : ''}
+Thread ID: ${threadId}
+Last Message on thread: ${
+            aiChat?.data?.messages[aiChat?.data?.messages.length - 1]?.content
+          }`,
+        },
+        'user-feedback',
+      );
+
       return exits.success({ message: 'ok' });
     } catch (e) {
       console.log('Error giving AI chat feedback', e);
