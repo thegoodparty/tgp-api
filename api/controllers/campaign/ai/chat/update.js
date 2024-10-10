@@ -56,7 +56,7 @@ module.exports = {
         let aiMessage = messages[messages.length - 1];
         messageId = aiMessage.id;
         messages.pop();
-        message = messages[messages.length - 1];
+        message = messages[messages.length - 1]?.content;
         messages.pop();
       }
 
