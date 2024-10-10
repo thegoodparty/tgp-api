@@ -80,7 +80,13 @@ module.exports = {
       };
 
       const formattedAudience = Object.entries(audience)
-        .map(([key, value]) => `￮ ${key}: ${value ? '✅ Yes' : '❌ No'}`)
+        .map(([key, value]) => {
+          if (typeof value === 'boolean') {
+            return `￮ ${key}: ${value ? '✅ Yes' : '❌ No'}`;
+          } else {
+            return `￮ ${key}: ${value}`;
+          }
+        })
         .join('\n');
 
       await sails.helpers.slack.slackHelper(
