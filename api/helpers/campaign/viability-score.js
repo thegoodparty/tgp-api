@@ -14,6 +14,10 @@ module.exports = {
       description: 'Success',
       responseType: 'ok',
     },
+    badRequest: {
+      description: 'Bad Request',
+      responseType: 'badRequest',
+    },
   },
 
   fn: async function (inputs, exits) {
@@ -35,7 +39,7 @@ module.exports = {
       });
 
       if (!campaign) {
-        return exits.success(undefined);
+        return exits.badRequest('Campaign not found');
       }
 
       if (campaign?.details?.ballotLevel) {
@@ -50,12 +54,12 @@ module.exports = {
         console.log('raceId', raceId);
         console.log('positionId', positionId);
       } else {
-        return exits.success(undefined);
+        return exits.badRequest('RaceId not found');
       }
 
       let race = await sails.helpers.ballotready.getRaceData(raceId);
       if (!race) {
-        return exits.success(undefined);
+        return exits.badRequest('Invalid race');
       }
       console.log('positionId on race', race.position.id);
       if (race) {
@@ -138,15 +142,7 @@ module.exports = {
       }
 
       if (candidates === 0) {
-        try {
-          candidates = getBallotReadyCandidates(race, campaign);
-        } catch (e) {
-          console.log('error at getBallotReadyCandidates', e);
-          await sails.helpers.slack.errorLoggerHelper(
-            'Error at getBallotReadyCandidates',
-            e,
-          );
-        }
+        candidates = getBallotReadyCandidates(race, campaign);
       }
       console.log('candidates', candidates);
       if (candidates === 1) {
@@ -170,7 +166,7 @@ module.exports = {
         'Error at viability-score',
         e,
       );
-      return exits.success(viability);
+      return exits.badRequest('error');
     }
   },
 };
@@ -245,8 +241,7 @@ function getBallotReadyCandidates(race, campaign) {
     for (const candidacy of candidacies) {
       let candidacyName = candidacy?.candidate?.fullName || '';
       candidacyName = candidacyName.toLowerCase();
-      let candidateName = campaign?.data?.name || '';
-      candidateName = candidateName.toLowerCase();
+      const candidateName = campaign.data.name.toLowerCase();
       const candidacyElectionDay = candidacy?.election?.electionDay;
       console.log('candidacyElectionDay', candidacyElectionDay);
       const candidacyDate = new Date(candidacyElectionDay);
