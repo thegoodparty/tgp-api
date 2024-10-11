@@ -44,15 +44,20 @@ module.exports = {
       for (let i = 0; i < attr.length; i++) {
         const { key, value } = attr[i];
         const keyArray = key.split('.');
-        if (keyArray.length <= 1 || keyArray.length > 2) {
+        if (keyArray.length <= 1 || keyArray.length > 3) {
           return exits.badRequest('key must be in the format of section.key');
         }
 
         const column = keyArray[0];
         const columnKey = keyArray[1];
+        const columnKey2 = keyArray[2];
 
         if (column === 'pathToVictory') {
-          await handlePathToVictory(campaign, columnKey, value);
+          if (columnKey === 'viability') {
+            await updateViability(campaign, columnKey2, value);
+          } else {
+            await updatePathToVictory(campaign, columnKey, value);
+          }
         } else {
           updated = await sails.helpers.campaign.patch(
             campaign.id,
@@ -68,6 +73,7 @@ module.exports = {
       } catch (e) {
         sails.helpers.log(campaign.slug, 'error updating crm', e);
       }
+
       try {
         await sails.helpers.fullstory.customAttr(user.id);
       } catch (e) {
@@ -85,7 +91,7 @@ module.exports = {
   },
 };
 
-async function handlePathToVictory(campaign, columnKey, value) {
+async function updatePathToVictory(campaign, columnKey, value) {
   try {
     const p2v = await PathToVictory.findOrCreate(
       {
@@ -112,10 +118,46 @@ async function handlePathToVictory(campaign, columnKey, value) {
       });
     }
   } catch (e) {
-    console.log('Error at handlePathToVictory', e);
+    console.log('Error at updatePathToVictory', e);
     await sails.helpers.slack.errorLoggerHelper(
-      'Error at handlePathToVictory',
+      'Error at updatePathToVictory',
       e,
     );
+  }
+}
+
+async function updateViability(campaign, columnKey, value) {
+  try {
+    const p2v = await PathToVictory.findOrCreate(
+      {
+        campaign: campaign.id,
+      },
+      {
+        campaign: campaign.id,
+      },
+    );
+
+    const data = p2v.data || {};
+    const viability = data.viability || {};
+    const updatedData = {
+      ...data,
+      viability: {
+        ...viability,
+        [columnKey]: value,
+      },
+    };
+
+    await PathToVictory.updateOne({ id: p2v.id }).set({
+      data: updatedData,
+    });
+
+    if (!campaign.pathToVictory) {
+      await Campaign.updateOne({ id: campaign.id }).set({
+        pathToVictory: p2v.id,
+      });
+    }
+  } catch (e) {
+    console.log('Error at updateViability', e);
+    await sails.helpers.slack.errorLoggerHelper('Error at updateViability', e);
   }
 }
