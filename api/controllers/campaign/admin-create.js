@@ -59,6 +59,9 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    otherParty: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -73,7 +76,8 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { firstName, lastName, email, zip, phone, party } = inputs;
+      const { firstName, lastName, email, zip, phone, party, otherParty } =
+        inputs;
       const userName = `${firstName} ${lastName}`;
       const user = await User.create({
         firstName,
@@ -82,7 +86,6 @@ module.exports = {
         email,
         zip,
         phone,
-        party,
         role: 'campaign',
       }).fetch();
 
@@ -94,6 +97,8 @@ module.exports = {
       const data = {
         slug,
         currentStep: 'onboarding-complete',
+        party,
+        otherParty,
       };
 
       const newCampaign = await Campaign.create({
