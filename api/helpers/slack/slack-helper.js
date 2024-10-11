@@ -1,4 +1,4 @@
-// https://api.slack.com/apps/A0166K4G4E6
+// https://api.slack.com/apps/A0166K4G4E6/incoming-webhooks?
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
