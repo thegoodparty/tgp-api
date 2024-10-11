@@ -1,3 +1,5 @@
+// https://api.slack.com/apps/A0166K4G4E6/incoming-webhooks?
+
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
@@ -56,6 +58,14 @@ module.exports = {
         slackChannelId =
           sails.config.custom.slackVictoryChannelId ||
           sails.config.slackVictoryChannelId;
+      } else if (channel === 'user-feedback') {
+        token =
+          sails.config.custom.slackUserFeedbackChannelToken ||
+          sails.config.slackUserFeedbackChannelToken;
+
+        slackChannelId =
+          sails.config.custom.slackUserFeedbackChannelId ||
+          sails.config.slackUserFeedbackChannelId;
       } else if (channel === 'victory-issues') {
         token =
           sails.config.custom.slackVictoryIssuesChannelToken ||

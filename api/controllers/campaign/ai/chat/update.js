@@ -53,18 +53,11 @@ module.exports = {
 
       let messageId;
       if (regenerate) {
-        let lastMessage;
-        if (messages.length === 1) {
-          message = messages[0]?.content;
-          lastMessage = messages[0];
-        } else {
-          message = messages.slice(-2, -1)[0]?.content;
-
-          lastMessage = messages.slice(-1)[0];
-        }
-        messageId = lastMessage?.id;
-        messages.splice(-1, 1);
-        messages.splice(-1, 1);
+        let aiMessage = messages[messages.length - 1];
+        messageId = aiMessage.id;
+        messages.pop();
+        message = messages[messages.length - 1]?.content;
+        messages.pop();
       }
 
       let chatMessage = {
@@ -95,6 +88,7 @@ module.exports = {
 
         await AIChat.updateOne({ id: aiChat.id }).set({
           data: {
+            ...aiChat.data,
             messages: [...messages, chatMessage, chatResponse],
           },
         });
