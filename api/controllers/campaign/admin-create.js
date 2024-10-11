@@ -99,6 +99,7 @@ module.exports = {
         currentStep: 'onboarding-complete',
         party,
         otherParty,
+        createBy: 'admin',
       };
 
       const newCampaign = await Campaign.create({
