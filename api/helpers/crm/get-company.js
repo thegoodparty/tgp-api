@@ -23,12 +23,7 @@ module.exports = {
       }
 
       const hubspotId = data.hubspotId;
-      await sails.helpers.slack.errorLoggerHelper(
-        ' crm/sync get company with',
-        {
-          hubspotId,
-        },
-      );
+
       const properties = [
         'past_candidate',
         'incumbent',
