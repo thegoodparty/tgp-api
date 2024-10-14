@@ -374,13 +374,15 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
 
       if (appBase === 'https://goodparty.org') {
         console.log('sending email to user', user.email);
-        await sails.helpers.mailgun.mailgunTemplateSender(
-          user.email,
-          'Exciting News: Your Customized Campaign Plan is Updated!',
-          'candidate-victory-ready',
-          variables,
-          'jared@goodparty.org',
-        );
+        if (campaign?.data?.createdBy !== 'admin') {
+          await sails.helpers.mailgun.mailgunTemplateSender(
+            user.email,
+            'Exciting News: Your Customized Campaign Plan is Updated!',
+            'candidate-victory-ready',
+            variables,
+            'jared@goodparty.org',
+          );
+        }
       }
     }
   } catch (e) {
