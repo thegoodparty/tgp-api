@@ -3,9 +3,9 @@ const path = require('path');
 const { parse } = require('json2csv');
 
 module.exports = {
-  friendlyName: 'campaign to csv',
+  friendlyName: 'goodparty candidates - 1campaign-to-csv',
 
-  description: 'Export campaigns to CSV',
+  description: 'Export goodparty campaigns to CSV',
 
   inputs: {},
 
@@ -31,15 +31,21 @@ module.exports = {
       and (details->>'electionDate')::date > '2024-09-27';`;
     console.log('query', query);
 
+    // const slugs = [...]
+
     const campaigns = await sails.sendNativeQuery(query);
     const rows = campaigns?.rows;
     console.log('rows', rows.length);
     for (const row of rows) {
-      let campaign = await Campaign.findOne({
-        id: row.id,
-      });
-      const { slug, details, data } = campaign;
+      const slug = row.slug;
+      // if (slugs.includes(slug)) {
+      //   continue;
+      // }
+
+      let campaign = row;
+      const { details, data } = campaign;
       console.log(`processing ${slug}`);
+      let campaignId = campaign.id;
 
       const user = await User.findOne({ id: campaign.user });
       const firstName = user?.firstName || '';
@@ -51,6 +57,10 @@ module.exports = {
       }
       if (details?.otherOffice && details.otherOffice !== '') {
         office = details?.otherOffice || '';
+      }
+      let raceId = '';
+      if (details?.raceId && details.raceId !== '') {
+        raceId = details.raceId;
       }
       const city = details?.city || '';
       const county = details?.county || '';
@@ -104,29 +114,32 @@ module.exports = {
         }
       }
 
-      if (!incumbent || incumbent === '' || !opponents || opponents === '') {
-        csvData.push({
-          slug,
-          firstName,
-          lastName,
-          office,
-          level,
-          city,
-          county,
-          party,
-          state,
-          phone,
-          website,
-          electionDate,
-          incumbent,
-          opponents,
-        });
-      } else {
-        console.log(`skipping ${slug}`);
-      }
+      // if (!incumbent || incumbent === '' || !opponents || opponents === '') {
+      // if (incumbent && incumbent !== '' && opponents && opponents !== '') {
+      csvData.push({
+        campaignId,
+        raceId,
+        slug,
+        firstName,
+        lastName,
+        office,
+        level,
+        city,
+        county,
+        party,
+        state,
+        phone,
+        website,
+        electionDate,
+        incumbent,
+        opponents,
+      });
+      // } else {
+      //   console.log(`skipping ${slug}`);
+      // }
     }
 
-    const csvPath = path.join(__dirname, 'GP-Candidates.csv');
+    const csvPath = path.join(__dirname, 'GP-Candidates2.csv');
     console.log(`Generating CSV at ${csvPath}`);
     const csv = parse(csvData);
     fs.writeFileSync(csvPath, csv);
