@@ -101,7 +101,7 @@ module.exports = {
         currentStep: 'onboarding-complete',
         party,
         otherParty,
-        createBy: 'admin',
+        createdBy: 'admin',
       };
 
       const newCampaign = await Campaign.create({
@@ -133,7 +133,10 @@ module.exports = {
 
 async function sendEmail(firstName, lastName, email) {
   const token = await createToken(email);
-  const link = `${appBase}/set-password?email=${email}&token=${token}`;
+  const encodedEmail = email.replace('+', '%2b');
+  const link = encodeURI(
+    `${appBase}/set-password?email=${encodedEmail}&token=${token}`,
+  );
   const variables = {
     content: `<div style="color:#000000">
   Hi ${firstName} ${lastName},
