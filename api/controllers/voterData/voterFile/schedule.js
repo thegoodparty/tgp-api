@@ -4,9 +4,11 @@ const {
   PRODUCTION_ENV,
 } = require('../../../utils/appEnvironment');
 
-const { getCrmCompanyOwnerName } = require('../../../utils/crm/getCrmCompanyOwnerName.js');
+const {
+  getCrmCompanyOwnerName,
+} = require('../../../utils/crm/getCrmCompanyOwnerName.js');
 
-const isUrl = require('validator/lib/isURL')
+const isUrl = require('validator/lib/isURL');
 
 const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
 
@@ -65,10 +67,10 @@ module.exports = {
         date,
         message,
         voicemail,
-        voterFileUrl,
         image,
         type,
       } = inputs;
+      let voterFileUrl = inputs.voterFileUrl;
       const { user } = this.req;
       const { firstName, lastName, email, phone } = user;
       const audience =
@@ -87,12 +89,18 @@ module.exports = {
       }
 
       const assignedPa = await getCrmCompanyOwnerName(crmCompany);
-      const aiGeneratedScript = sanitizeHtml(campaign.aiContent[script]?.content, {
-        allowedTags: [],
-        allowedAttributes: {},
-      });
+      const messagingScript = campaign.aiContent[script]?.content
+        ? sanitizeHtml(campaign.aiContent[script]?.content, {
+            allowedTags: [],
+            allowedAttributes: {},
+          })
+        : script;
 
-      if (voterFileUrl && !isUrl(voterFileUrl) && !voterFileUrl.startsWith('http://localhost')) {
+      if (
+        voterFileUrl &&
+        !isUrl(voterFileUrl) &&
+        !voterFileUrl.startsWith('http://localhost')
+      ) {
         console.error('voterFileUrl is invalid');
         voterFileUrl = null;
       }
@@ -120,12 +128,12 @@ module.exports = {
           body: `🚨*Campaign Schedule Request*🚨
 
 *Candidate/User:*
-￮ Name: ${firstName} ${lastName} 
+￮ Name: ${firstName} ${lastName}
 ￮ Email: ${email}
 ￮ Phone: ${phone}
 
 *Assigned Political Advisor (PA):*
-￮ Assigned PA:  
+￮ Assigned PA:
   ${assignedPa || 'None Assigned'}
 
   ${
@@ -135,7 +143,11 @@ module.exports = {
   }
 
 *Voter File Download Link:*
-${voterFileUrl ? `🔒 <${voterFileUrl}|Voter File Download>` : 'Error: Not provided or invalid'}
+${
+  voterFileUrl
+    ? `🔒 <${voterFileUrl}|Voter File Download>`
+    : 'Error: Not provided or invalid'
+}
 
 *Campaign Details:*
 ￮ Campaign Type: ${type}
@@ -143,9 +155,9 @@ ${voterFileUrl ? `🔒 <${voterFileUrl}|Voter File Download>` : 'Error: Not prov
 ￮ Scheduled Date: ${date}
 ￮ Script Key: ${script}
 
-*AI-Generated Script:*
+*Messaging Script:*
 \`\`\`
-${aiGeneratedScript}
+${messagingScript}
 \`\`\`
 
 ${uploadedImage ? `*Image File:*\n${imageUrl}\n` : ''}
