@@ -1,4 +1,4 @@
-async function getChatSystemPrompt(campaign) {
+async function getChatSystemPrompt(campaign, initial = false) {
   let date = new Date();
   let today = date.toISOString().split('T')[0];
 
@@ -6,8 +6,7 @@ async function getChatSystemPrompt(campaign) {
     key: 'aiChatPrompts',
   });
 
-  // todo: for now there is only the General prompt
-  // but we will expand for other prompts.
+  const initialPrompt = aiChatPrompts.data.General.initialPrompt;
   const systemPrompt = aiChatPrompts.data.General.systemPrompt;
   let candidateJsonObject = aiChatPrompts.data.General.candidateJson;
   let candidateJson = JSON.stringify(candidateJsonObject);
@@ -19,7 +18,7 @@ async function getChatSystemPrompt(campaign) {
 
   try {
     return {
-      systemPrompt,
+      systemPrompt: initial ? initialPrompt : systemPrompt,
       candidateContext,
     };
   } catch (error) {
