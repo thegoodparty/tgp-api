@@ -179,6 +179,17 @@ async function handlePathToVictoryMessage(message) {
       data,
     });
   }
+
+  // Send the candidate to google sheets for techspeed
+  try {
+    await sails.helpers.campaign.techspeedAppendSheets(message.campaignId);
+  } catch (e) {
+    console.log('error in techspeedAppendSheets', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error in techspeedAppendSheets',
+      e,
+    );
+  }
 }
 
 async function analyzePathToVictoryResponse(p2vResponse) {
