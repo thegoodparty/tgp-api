@@ -1,3 +1,4 @@
+const { initial } = require('lodash');
 const getAssistantCompletion = require('../../../../utils/ai/getAssistantCompletion');
 const getChatSystemPrompt = require('../../../../utils/ai/getChatSystemPrompt');
 
@@ -9,6 +10,10 @@ module.exports = {
     message: {
       type: 'string',
       required: true,
+    },
+    initial: {
+      type: 'boolean',
+      defaultsTo: false,
     },
   },
 
@@ -37,6 +42,7 @@ module.exports = {
       let campaign = await sails.helpers.campaign.byUser(user.id);
       const { candidateContext, systemPrompt } = await getChatSystemPrompt(
         campaign,
+        initial,
       );
 
       const chatMessage = {
