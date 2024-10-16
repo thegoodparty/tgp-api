@@ -144,7 +144,7 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
 
   if (l2ColumnName && l2ColumnValue) {
     // value is like "IN##CLARK##CLARK CNTY COMM DIST 1" we need just CLARK CNTY COMM DIST 1
-    let cleanValue = extractLocation(l2ColumnValue);
+    let cleanValue = extractLocation(l2ColumnValue, fixColumns);
     if (fixColumns) {
       console.log('before fix columns:', l2ColumnName);
       l2ColumnName = fixCityCountyColumns(l2ColumnName);
@@ -302,13 +302,21 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
   }`;
 }
 
-function extractLocation(input) {
-  console.log('Extracting location from:', input);
+function extractLocation(input, fixColumns) {
+  console.log(
+    `Extracting location from: ${input} ${
+      fixColumns ? '- with fixColumns' : ''
+    }`,
+  );
   // Remove any trailing '##' from the input string
   let extracted = input.replace(/##$/, '');
 
   // Split the string by '##', take the last element, and remove ' (EST.)' if present
-  const res = extracted.split('##').pop().replace(' (EST.)', '');
+  // if fixColumns is true, we want to use the second element
+  const res = extracted
+    .split('##')
+    .at(fixColumns ? 1 : -1)
+    .replace(' (EST.)', '');
   console.log('Extracted:', res);
   return res;
 }
