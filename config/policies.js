@@ -32,6 +32,7 @@ module.exports.policies = {
   'crm/sync': ['isAuthenticated', 'isAdmin'],
   'crm/refresh-companies': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-create': ['isAuthenticated', 'isAdmin'],
+  'campaign/admin-create-email': ['isAuthenticated', 'isAdmin'],
 
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access

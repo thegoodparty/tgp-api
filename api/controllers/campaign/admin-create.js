@@ -1,5 +1,6 @@
 const { findSlug } = require('../../utils/campaign/findSlug');
 const { createCrmUser } = require('../../utils/campaign/createCrmUser');
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 const claimExistingCampaignRequests = async (user, campaign) => {
   const campaignRequests = await CampaignRequest.find({
@@ -76,8 +77,9 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { firstName, lastName, email, zip, phone, party, otherParty } =
+      let { firstName, lastName, email, zip, phone, party, otherParty } =
         inputs;
+      email = email.toLowerCase();
       const userName = `${firstName} ${lastName}`;
       const user = await User.create({
         firstName,
@@ -99,7 +101,7 @@ module.exports = {
         currentStep: 'onboarding-complete',
         party,
         otherParty,
-        createBy: 'admin',
+        createdBy: 'admin',
       };
 
       const newCampaign = await Campaign.create({
@@ -115,7 +117,7 @@ module.exports = {
       }).fetch();
 
       await claimExistingCampaignRequests(user, newCampaign);
-      await createCrmUser(user.firstName, user.lastName, user.email);
+      await createCrmUser(firstName, lastName, email);
 
       return exits.success({
         campaign: newCampaign,

@@ -44,14 +44,15 @@ module.exports = {
           completedBy: req.user.id,
         },
       });
-
-      await sails.helpers.mailgun.mailgunTemplateSender(
-        user.email,
-        'Exciting News: Your Customized Campaign Plan is Updated!',
-        'candidate-victory-ready',
-        variables,
-        'jared@goodparty.org',
-      );
+      if (campaign?.data?.createdBy !== 'admin') {
+        await sails.helpers.mailgun.mailgunTemplateSender(
+          user.email,
+          'Exciting News: Your Customized Campaign Plan is Updated!',
+          'candidate-victory-ready',
+          variables,
+          'jared@goodparty.org',
+        );
+      }
 
       return exits.success({
         message: 'sent',

@@ -5,6 +5,10 @@ module.exports = {
       type: 'string',
       required: true,
     },
+    initial: {
+      type: 'boolean',
+      defaultsTo: false,
+    },
   },
 
   exits: {
@@ -29,7 +33,7 @@ module.exports = {
       }
 
       console.log('campaign', campaign);
-      let { content } = await getChatSystemPrompt(campaign);
+      let { content } = await getChatSystemPrompt(campaign, initial);
 
       if (!content) {
         return exits.badRequest('No system prompt');
