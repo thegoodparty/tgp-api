@@ -59,6 +59,11 @@ module.exports = {
 };
 
 async function handleUpdateViability(objectId, propertyName, propertyValue) {
+  const campaign = await getCampaign(objectId);
+  if (!campaign) {
+    return;
+  }
+  const campaignId = campaign.id;
   await sails.sendNativeQuery(`
       UPDATE public.pathtovictory AS p
         SET data = jsonb_set(
@@ -66,7 +71,7 @@ async function handleUpdateViability(objectId, propertyName, propertyValue) {
             '{${propertyName}}',
             to_jsonb('${propertyValue}'::numeric)
         )
-      WHERE p.campaign = '${objectId}';
+      WHERE p.campaign = '${campaignId}';
 `);
 }
 
