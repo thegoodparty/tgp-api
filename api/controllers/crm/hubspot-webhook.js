@@ -25,11 +25,19 @@ module.exports = {
         for (let i = 0; i < payload.length; i++) {
           const { objectId, propertyName, propertyValue } = payload[i];
           try {
-            await handleUpdateCampaign({
-              objectId,
-              propertyName,
-              propertyValue,
-            });
+            if (propertyName === 'incumbent' || propertyName === 'opponents') {
+              await handleUpdateViability(
+                objectId,
+                propertyName,
+                propertyValue,
+              );
+            } else {
+              await handleUpdateCampaign({
+                objectId,
+                propertyName,
+                propertyValue,
+              });
+            }
           } catch (error) {
             console.log('error at crm/hubspot-webhook', error);
             await sails.helpers.slack.errorLoggerHelper(
@@ -50,6 +58,18 @@ module.exports = {
   },
 };
 
+async function handleUpdateViability(objectId, propertyName, propertyValue) {
+  await sails.sendNativeQuery(`
+      UPDATE public.pathtovictory AS p
+        SET data = jsonb_set(
+            p.data::jsonb,
+            '{${propertyName}}',
+            to_jsonb('${propertyValue}'::numeric)
+        )
+      WHERE p.campaign = '${objectId}';
+`);
+}
+
 async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
   const campaign = await getCampaign(objectId);
   if (!campaign) {
@@ -62,6 +82,7 @@ async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
   const updatedCampaign = {
     data: campaign.data,
   };
+
   if (propertyName === 'verified_candidates' && !campaign.isVerified) {
     updatedCampaign.isVerified = propertyValue === 'Yes';
   }
