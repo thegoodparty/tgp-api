@@ -72,7 +72,7 @@ module.exports = {
       let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false AND c."isActive" = true`;
 
       if (partyFilter) {
-        whereClauses += ` AND c.details->>'party' = '${partyFilter}'`;
+        whereClauses += ` AND LOWER(c.details->>'party') LIKE '${partyFilter}%'`;
       }
 
       if (stateFilter) {
@@ -84,7 +84,7 @@ module.exports = {
       }
 
       if (resultsFilter) {
-        whereClauses += ` AND c."didWin" = true`; // "didWin" is properly quoted
+        whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General')`; // "didWin" is properly quoted
       }
 
       if (officeFilter) {

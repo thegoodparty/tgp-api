@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
-const { race } = require('async');
 const { google } = require('googleapis');
-const { create } = require('lodash');
 const slugify = require('slugify');
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
@@ -36,6 +34,8 @@ const s3 = new S3Client({
 
 const s3Bucket = 'goodparty-keys';
 
+const BATCH_SIZE = 1000;
+
 module.exports = {
   inputs: {},
 
@@ -59,55 +59,76 @@ module.exports = {
 
       const spreadsheetId = '15xJzodkSvYWNTvdfqwjNJeE7H3VF0kVZiwwfgrD6q2Y';
 
-      // Read rows from the sheet
-      const readResponse = await sheets.spreadsheets.values.get({
-        spreadsheetId,
-        range: 'TechSpeed Candidates',
-      });
-
-      const rows = readResponse.data.values;
-
-      const columnNames = rows[1];
-      console.log('columnNames', columnNames);
+      let startRow = 2; // Start processing after the header
       let processedCount = 0;
-      for (let i = 2; i < rows.length; i++) {
-        // for (let i = 2; i < 5; i++) {
-        const row = rows[i];
-        console.log('row', row);
-        // start from 2 to skip header
-        console.log('processing row : ', i);
-        const processedRow = await processRow(row, columnNames);
-        console.log('processedRow : ', processedRow);
-        isExisting = await findExistingCandidate(processedRow);
-        if (isExisting) {
-          console.log('isExisting');
-          await updateExistingCandidate(processedRow, isExisting);
-        } else {
-          await createCandidate(processedRow);
-        }
-        rows[i][row.length - processColumn] = 'processed';
-        processedCount++;
-      }
-      console.log('writing to sheet');
-      // write back to google sheets
-      await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range: 'TechSpeed Candidates',
-        valueInputOption: 'RAW',
-        requestBody: {
-          values: rows,
-        },
-      });
-      console.log('done writing to sheet');
+      let rowsToProcess = true;
 
+      while (rowsToProcess) {
+        // Read 1000 rows at a time
+        const readResponse = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: `TechSpeed Candidates!A${startRow}:Z${
+            startRow + BATCH_SIZE - 1
+          }`,
+        });
+
+        const rows = readResponse.data.values;
+
+        if (!rows || rows.length === 0) {
+          rowsToProcess = false; // No more rows to process
+          break;
+        }
+
+        const columnNames = rows[0]; // Assuming first row has column names
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          const processedStatus = row[row.length - processColumn];
+
+          // Skip rows that are already marked as "processed"
+          if (processedStatus === 'processed') {
+            continue;
+          }
+
+          console.log('processing row : ', i + startRow);
+          const processedRow = await processRow(row, columnNames);
+          console.log('processedRow : ', processedRow);
+
+          const isExisting = await findExistingCandidate(processedRow);
+          if (isExisting) {
+            console.log('isExisting');
+            await updateExistingCandidate(processedRow, isExisting);
+          } else {
+            await createCandidate(processedRow);
+          }
+
+          // Mark the row as processed
+          rows[i][row.length - processColumn] = 'processed';
+          processedCount++;
+        }
+
+        // Write back processed rows to Google Sheets
+        await sheets.spreadsheets.values.update({
+          spreadsheetId,
+          range: `TechSpeed Candidates!A${startRow}:Z${
+            startRow + BATCH_SIZE - 1
+          }`,
+          valueInputOption: 'RAW',
+          requestBody: {
+            values: rows,
+          },
+        });
+
+        // Move to the next batch of rows
+        startRow += BATCH_SIZE;
+      }
+
+      console.log('done writing to sheet');
       await sails.helpers.slack.errorLoggerHelper(
         'Successfully enhanced candidates',
         {},
       );
 
-      return exits.success({
-        processedCount,
-      });
+      return exits.success({ processedCount });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
         'Error enhancing candidates',
