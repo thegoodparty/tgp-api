@@ -32,15 +32,19 @@ module.exports = {
         return exits.badRequest('No campaign');
       }
 
-      console.log('campaign', campaign);
-      let { content } = await getChatSystemPrompt(campaign, initial);
+      // console.log('campaign', campaign);
+      const { candidateContext, systemPrompt } = await getChatSystemPrompt(
+        campaign,
+        initial,
+      );
 
-      if (!content) {
+      if (!candidateContext || !systemPrompt) {
         return exits.badRequest('No system prompt');
       }
 
       return exits.success({
-        content,
+        candidateContext,
+        systemPrompt,
       });
     } catch (e) {
       console.log('Error at ai/prompt/get', e);
