@@ -34,7 +34,7 @@ const s3 = new S3Client({
 
 const s3Bucket = 'goodparty-keys';
 
-const BATCH_SIZE = 1000;
+const MAX_ROWS_TO_PROCESS = 1000; // Maximum number of rows to process
 
 module.exports = {
   inputs: {},
@@ -63,8 +63,8 @@ module.exports = {
       let processedCount = 0;
       let rowsToProcess = true;
 
-      while (rowsToProcess) {
-        // Read 1000 rows at a time
+      while (rowsToProcess && processedCount < MAX_ROWS_TO_PROCESS) {
+        // Read a batch of 1000 rows
         const readResponse = await sheets.spreadsheets.values.get({
           spreadsheetId,
           range: `TechSpeed Candidates!A${startRow}:Z${
@@ -104,6 +104,12 @@ module.exports = {
           // Mark the row as processed
           rows[i][row.length - processColumn] = 'processed';
           processedCount++;
+
+          // Stop if we've processed the maximum number of rows
+          if (processedCount >= MAX_ROWS_TO_PROCESS) {
+            rowsToProcess = false;
+            break;
+          }
         }
 
         // Write back processed rows to Google Sheets
