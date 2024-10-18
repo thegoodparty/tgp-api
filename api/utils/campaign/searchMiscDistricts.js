@@ -1,4 +1,4 @@
-const getChatCompletion = require('../ai/getChatCompletion');
+const getChatToolCompletion = require('../ai/getChatToolCompletion');
 
 async function searchMiscDistricts(
   slug,
@@ -101,7 +101,7 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
     function: { name: 'matchColumns' },
   };
 
-  const completion = await getChatCompletion(
+  const completion = await getChatToolCompletion(
     [
       {
         role: 'system',

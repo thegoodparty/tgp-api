@@ -23,7 +23,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      const { slug } = inputs;
+      const { slug, initial } = inputs;
       console.log('slug', slug);
       const campaign = await Campaign.findOne({ slug });
       // .populate('pathToVictory')
