@@ -35,6 +35,7 @@ const s3 = new S3Client({
 const s3Bucket = 'goodparty-keys';
 
 const MAX_ROWS_TO_PROCESS = 1000; // Maximum number of rows to process
+const BATCH_SIZE = 1000;
 
 module.exports = {
   inputs: {},
