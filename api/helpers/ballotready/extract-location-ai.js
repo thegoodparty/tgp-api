@@ -1,6 +1,6 @@
 /* eslint-disable object-shorthand */
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-const getChatCompletion = require('../../utils/ai/getChatCompletion');
+const getChatToolCompletion = require('../../utils/ai/getChatToolCompletion');
 
 module.exports = {
   inputs: {
@@ -221,7 +221,7 @@ module.exports = {
         function: { name: 'extractLocation' },
       };
 
-      const completion = await getChatCompletion(
+      const completion = await getChatToolCompletion(
         messages,
         0.1,
         0.1,

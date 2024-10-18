@@ -10,6 +10,7 @@ async function getChatSystemPrompt(campaign, initial = false) {
   const systemPrompt = aiChatPrompts.data.General.systemPrompt;
   let candidateJsonObject = aiChatPrompts.data.General.candidateJson;
   let candidateJson = JSON.stringify(candidateJsonObject);
+  candidateJson = candidateJson.replace('${today}', today);
 
   let candidateContext = await sails.helpers.ai.promptReplace(
     candidateJson,

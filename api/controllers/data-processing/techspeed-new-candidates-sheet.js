@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
-const { race } = require('async');
 const { google } = require('googleapis');
-const { create } = require('lodash');
 const slugify = require('slugify');
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
@@ -37,7 +35,20 @@ const s3 = new S3Client({
 const s3Bucket = 'goodparty-keys';
 
 module.exports = {
-  inputs: {},
+  inputs: {
+    startRow: {
+      type: 'number',
+      required: false,
+      description: 'Optional row number to start reading and writing from.',
+      defaultsTo: 2, // Default to 2 to skip header
+    },
+    limit: {
+      type: 'number',
+      required: false,
+      description: 'Maximum number of unprocessed rows to process.',
+      defaultsTo: 100, // Set a default limit of 100 rows
+    },
+  },
 
   exits: {
     success: {
@@ -51,6 +62,9 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
+    const { startRow, limit } = inputs; // Extract the startRow and limit inputs
+    let processedCount = 0;
+
     try {
       console.log('starting techspeed-enhance');
       const jwtClient = await authenticateGoogleServiceAccount();
@@ -66,28 +80,44 @@ module.exports = {
       });
 
       const rows = readResponse.data.values;
-
       const columnNames = rows[1];
       console.log('columnNames', columnNames);
-      let processedCount = 0;
-      for (let i = 2; i < rows.length; i++) {
-        // for (let i = 2; i < 5; i++) {
+
+      let processedUnprocessedCount = 0;
+
+      // Loop through rows starting at startRow
+      for (let i = startRow; i < rows.length; i++) {
+        if (processedUnprocessedCount >= limit) {
+          console.log('Reached the processing limit:', limit);
+          break;
+        }
+
         const row = rows[i];
-        console.log('row', row);
-        // start from 2 to skip header
+        const gpProcessed = row[row.length - processColumn]; // Check the processed status
+
+        if (gpProcessed === 'processed') {
+          console.log('Row already processed, skipping:', i);
+          continue; // Skip already processed rows
+        }
+
         console.log('processing row : ', i);
         const processedRow = await processRow(row, columnNames);
         console.log('processedRow : ', processedRow);
-        isExisting = await findExistingCandidate(processedRow);
+
+        const isExisting = await findExistingCandidate(processedRow);
         if (isExisting) {
           console.log('isExisting');
           await updateExistingCandidate(processedRow, isExisting);
         } else {
           await createCandidate(processedRow);
         }
+
+        // Mark the row as processed
         rows[i][row.length - processColumn] = 'processed';
-        processedCount++;
+        processedUnprocessedCount++; // Increment the count of unprocessed rows that were processed
+        processedCount++; // Count the total processed
       }
+
       console.log('writing to sheet');
       // write back to google sheets
       await sheets.spreadsheets.values.update({
@@ -107,6 +137,7 @@ module.exports = {
 
       return exits.success({
         processedCount,
+        processedUnprocessedCount,
       });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
@@ -124,27 +155,22 @@ module.exports = {
 
 async function authenticateGoogleServiceAccount() {
   try {
-    // Fetch the service account JSON from S3
     const googleServiceJSON = await readJsonFromS3(
       s3Bucket,
       'google-service-key.json',
     );
-
-    // Log the keys to check if 'private_key' exists
     const parsed = JSON.parse(googleServiceJSON);
-
-    // Extract the private key from the service account JSON
     const googleServiceKey = parsed.private_key;
+
     if (!googleServiceKey) {
       throw new Error('No private key found in the service account JSON.');
     }
 
-    // Configure a JWT client with the service account credentials
     const jwtClient = new google.auth.JWT(
-      googleServiceEmail, // Client email from the JSON
-      null, // No keyFile, as we are providing the key directly
-      googleServiceKey, // The private key from the JSON
-      ['https://www.googleapis.com/auth/spreadsheets'], // Scopes
+      googleServiceEmail,
+      null,
+      googleServiceKey,
+      ['https://www.googleapis.com/auth/spreadsheets'],
     );
 
     return jwtClient;
@@ -177,9 +203,7 @@ async function processRow(candidate, columnNames) {
       return [];
     }
     const gpProcessed = candidate[candidate.length - processColumn];
-    // console.log('processing row : ', candidate);
     if (gpProcessed === 'processed') {
-      // already processed
       console.log('already processed', gpProcessed, processColumn);
       return candidate;
     }
@@ -188,8 +212,6 @@ async function processRow(candidate, columnNames) {
     for (let i = 0; i < columnNames.length; i++) {
       parsedCandidate[columnNames[i]] = candidate[i];
     }
-
-    console.log('parsedCandidate : ', parsedCandidate);
 
     return {
       parsedCandidate,
@@ -210,13 +232,11 @@ async function findExistingCandidate(row) {
     });
     const existing = await BallotCandidate.findOne({ slug });
     if (existing) {
-      console.log('existing candidate found');
       return existing;
     }
 
     const existingEmail = await BallotCandidate.findOne({ email });
     if (existingEmail) {
-      console.log('existing email found');
       return existingEmail;
     }
 
@@ -238,52 +258,36 @@ async function streamToString(readableStream) {
 async function createCandidate(row) {
   try {
     const { parsedCandidate } = row;
-    const {
-      first_name,
-      last_name,
-      office_name,
-      email,
-      party,
-      phone,
-      state,
-      city,
-      postal_code,
-      ballotready_race_id,
-      office_level,
-      election_result,
-      general_election_date,
-      candidate_id_tier,
-      is_primary,
-      office_normalized,
-    } = parsedCandidate;
-
-    const slug = slugify(`${first_name}-${last_name}-${office_name}`, {
-      lower: true,
-    });
+    const slug = slugify(
+      `${parsedCandidate.first_name}-${parsedCandidate.last_name}-${parsedCandidate.office_name}`,
+      {
+        lower: true,
+      },
+    );
 
     const candidate = await BallotCandidate.create({
       slug,
-      firstName: first_name,
-      lastName: last_name,
-      email,
-      phone,
-      state,
-      party,
-      city,
-      electionDay: general_election_date,
-      raceId: ballotready_race_id,
-      postalCode: postal_code,
-      positionName: office_name,
-      level: office_level,
-      electionResult: election_result,
-      isPrimary: is_primary === 'TRUE',
-      normalizedPositionName: office_normalized,
-      tier: candidate_id_tier,
+      firstName: parsedCandidate.first_name,
+      lastName: parsedCandidate.last_name,
+      email: parsedCandidate.email,
+      phone: parsedCandidate.phone,
+      state: parsedCandidate.state,
+      party: parsedCandidate.party,
+      city: parsedCandidate.city,
+      electionDay: parsedCandidate.general_election_date,
+      raceId: parsedCandidate.ballotready_race_id,
+      postalCode: parsedCandidate.postal_code,
+      positionName: parsedCandidate.office_name,
+      level: parsedCandidate.office_level,
+      electionResult: parsedCandidate.election_result,
+      isPrimary: parsedCandidate.is_primary === 'TRUE',
+      normalizedPositionName: parsedCandidate.office_normalized,
+      tier: parsedCandidate.candidate_id_tier,
       vendorTsData: parsedCandidate,
     });
 
-    let ballotRace = await BallotRace.findOne({
-      ballotId: ballotready_race_id,
+    const ballotRace = await BallotRace.findOne({
+      ballotId: parsedCandidate.ballotready_race_id,
     });
     if (ballotRace) {
       await BallotCandidate.addToCollection(

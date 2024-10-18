@@ -5,32 +5,68 @@ const {
 // const { ChatAnthropic } = require('@langchain/anthropic');
 const togetherAiKey = sails.config.custom.togetherAi || sails.config.togetherAi;
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
+const aiModels = sails.config.custom.aiModels || sails.config.aiModels || '';
 
 // This implementation does not support function calling.
-// For that you must use the getChatCompletion function
+// For that you must use the getChatToolCompletion function
 async function llmChatCompletion(
   messages,
   maxTokens = 500,
   temperature = 1.0,
   topP = 0.1,
 ) {
-  const OpenAIModel = new ChatOpenAI({
-    apiKey: openAiKey,
-    model: 'gpt-4o',
-    maxTokens,
-    temperature,
-    topP,
-    maxRetries: 0,
-  });
+  const models = aiModels.split(',');
+  if (models.length === 0) {
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Error',
+        body: `AI Models are not configured. Please specify AI models.`,
+      },
+      'dev',
+    );
+  }
 
-  const togetherAiModel = new ChatTogetherAI({
-    apiKey: togetherAiKey,
-    model: 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo',
+  let aiOptions = {
     maxTokens,
     temperature,
     topP,
     maxRetries: 0,
-  });
+  };
+
+  let firstModel;
+  let fallbackModel;
+
+  for (const model of models) {
+    if (model.includes('gpt')) {
+      if (!firstModel) {
+        firstModel = new ChatOpenAI({
+          apiKey: openAiKey,
+          model,
+          ...aiOptions,
+        });
+      } else {
+        fallbackModel = new ChatOpenAI({
+          apiKey: openAiKey,
+          model,
+          ...aiOptions,
+        });
+      }
+    } else {
+      if (!firstModel) {
+        firstModel = new ChatTogetherAI({
+          apiKey: togetherAiKey,
+          model,
+          ...aiOptions,
+        });
+      } else {
+        fallbackModel = new ChatTogetherAI({
+          apiKey: togetherAiKey,
+          model,
+          ...aiOptions,
+        });
+      }
+    }
+  }
 
   // note: anthropic does not support function calling.
   // see: https://docs.together.ai/docs/function-calling
@@ -44,7 +80,7 @@ async function llmChatCompletion(
   //     maxRetries: 0,
   //   });
 
-  const modelWithFallback = OpenAIModel.withFallbacks([togetherAiModel]);
+  const modelWithFallback = firstModel.withFallbacks([fallbackModel]);
   // const modelWithFallback = togetherAiModel.withFallbacks([OpenAIModel]);
 
   for (let i = 0; i < messages.length; i++) {

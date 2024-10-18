@@ -1,4 +1,4 @@
-const getChatCompletion = require('../../../utils/ai/getChatCompletion');
+const getChatToolCompletion = require('../../../utils/ai/getChatToolCompletion');
 
 module.exports = {
   friendlyName: 'Test ai',
@@ -113,7 +113,7 @@ async function matchSearchColumns(searchColumns, searchString) {
     function: { name: 'matchColumns' },
   };
 
-  const completion = await getChatCompletion(
+  const completion = await getChatToolCompletion(
     [
       {
         role: 'system',

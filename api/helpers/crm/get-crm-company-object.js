@@ -44,7 +44,10 @@ const getCrmCompanyObject = async (inputs, exits) => {
     winNumber,
     p2vNotNeeded,
     totalRegisteredVoters,
+    viability,
   } = p2v?.data || {};
+
+  const { candidates, isIncumbent, seats, score, isPartisan } = viability || {};
 
   const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
@@ -117,10 +120,12 @@ const getCrmCompanyObject = async (inputs, exits) => {
     election_date: electionDateMs,
     primary_date: primaryElectionDateMs,
     doors_knocked: reportedVoterGoals?.doorKnocking || 0,
-    calls_made: Number.isInteger(reportedVoterGoals?.calls)
-      ? reportedVoterGoals?.calls
-      : 0,
-    online_impressions: reportedVoterGoals?.digital || 0,
+    direct_mail_sent: reportedVoterGoals?.directMail || 0,
+    calls_made: reportedVoterGoals?.calls || 0,
+    online_impressions: reportedVoterGoals?.digitalAds || 0,
+    p2p_sent: reportedVoterGoals?.text || 0,
+    event_impressions: reportedVoterGoals?.events || 0,
+    yard_signs_impressions: reportedVoterGoals?.yardSigns || 0,
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',
@@ -135,6 +140,31 @@ const getCrmCompanyObject = async (inputs, exits) => {
     win_number: winNumber,
     voter_data_adoption: canDownloadVoterFile ? 'Unlocked' : 'Locked',
   };
+
+  if (candidates && typeof candidates === 'number' && candidates > 0) {
+    const opponents = candidates - 1;
+    properties.opponents = opponents.toString();
+  }
+  if (isIncumbent !== undefined && typeof isIncumbent === 'boolean') {
+    if (isIncumbent) {
+      properties.incumbent = 'Yes';
+    } else {
+      properties.incumbent = 'No';
+    }
+  }
+  if (seats && typeof seats === 'number' && seats > 0) {
+    properties.seats_available = seats;
+  }
+  if (score && typeof score === 'number' && score > 0) {
+    properties.candidate_priority = Math.floor(score);
+  }
+  if (isPartisan !== undefined && typeof isPartisan === 'boolean') {
+    if (isPartisan) {
+      properties.partisan_np = 'Partisan';
+    } else {
+      properties.partisan_np = 'Nonpartisan';
+    }
+  }
 
   delete properties.winnumber;
   delete properties.p2vStatus;
