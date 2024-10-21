@@ -101,7 +101,7 @@ async function matchSearchValues(slug, searchValues, searchString) {
   //   0.1,
   // );
 
-  // todo: update this to use function calling and use getChatCompletion
+  // todo: update this to use function calling and use getChatToolCompletion
   // so that it works better with llama3.1
   // also add some few shot examples including non-matching examples.
   const completion = await llmChatCompletion(messages, 100, 0.1, 0.1);

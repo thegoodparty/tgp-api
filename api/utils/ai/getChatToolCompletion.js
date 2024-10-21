@@ -2,9 +2,10 @@ const { OpenAI } = require('openai');
 
 const openAiKey = sails.config.custom.openAi || sails.config.openAi;
 const togetherAiKey = sails.config.custom.togetherAi || sails.config.togetherAi;
+const aiModels = sails.config.custom.aiModels || sails.config.aiModels || '';
 
 // This function supports tools such as function calls.
-async function getChatCompletion(
+async function getChatToolCompletion(
   messages = [],
   temperature = 0.1,
   topP = 0.1,
@@ -12,8 +13,7 @@ async function getChatCompletion(
   toolChoice = undefined, // force the function to be called on every generation if needed.
   timeout = 300000, // timeout request after 5 minutes
 ) {
-  const models = ['gpt-4o', 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo'];
-  // const models = ['meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo', 'gpt-4o'];
+  const models = aiModels.split(',');
   for (const model of models) {
     // Lama 3.1 supports native function calling
     // so we can modify the OpenAI base url to use the together.ai api
@@ -67,7 +67,7 @@ async function getChatCompletion(
       await sails.helpers.slack.slackHelper(
         {
           title: 'Error in AI',
-          body: `Error in getChatCompletion. model: ${model} Error: ${error}`,
+          body: `Error in getChatToolCompletion. model: ${model} Error: ${error}`,
         },
         'dev',
       );
@@ -80,4 +80,4 @@ async function getChatCompletion(
   };
 }
 
-module.exports = getChatCompletion;
+module.exports = getChatToolCompletion;

@@ -120,10 +120,12 @@ const getCrmCompanyObject = async (inputs, exits) => {
     election_date: electionDateMs,
     primary_date: primaryElectionDateMs,
     doors_knocked: reportedVoterGoals?.doorKnocking || 0,
-    calls_made: Number.isInteger(reportedVoterGoals?.calls)
-      ? reportedVoterGoals?.calls
-      : 0,
-    online_impressions: reportedVoterGoals?.digital || 0,
+    direct_mail_sent: reportedVoterGoals?.directMail || 0,
+    calls_made: reportedVoterGoals?.calls || 0,
+    online_impressions: reportedVoterGoals?.digitalAds || 0,
+    p2p_sent: reportedVoterGoals?.text || 0,
+    event_impressions: reportedVoterGoals?.events || 0,
+    yard_signs_impressions: reportedVoterGoals?.yardSigns || 0,
     my_content_pieces_created: aiContent ? Object.keys(aiContent).length : 0,
     filed_candidate: campaignCommittee ? 'yes' : 'no',
     pro_candidate: isPro ? 'Yes' : 'No',

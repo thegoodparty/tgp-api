@@ -33,6 +33,7 @@ module.exports.policies = {
   'crm/refresh-companies': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-create': ['isAuthenticated', 'isAdmin'],
   'campaign/admin-create-email': ['isAuthenticated', 'isAdmin'],
+  'seed/*': ['isAuthenticated', 'isAdmin'],
 
   '*': ['isAuthenticated'], // Restrict all but routes below
   // public access
@@ -44,7 +45,6 @@ module.exports.policies = {
   'candidate/list': true,
   'newCandidates/list': true,
   'declare/list': true,
-  'seed/*': true,
   'subscribe/*': true,
   'topIssues/topIssue/list': true,
   'topIssues/position/list': true,
