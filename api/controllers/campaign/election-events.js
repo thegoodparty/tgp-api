@@ -1,7 +1,4 @@
 const {
-  sendAfterElectionEmail,
-} = require('../../utils/campaign/event-handlers/sendAfterElectionEmail');
-const {
   sendDayAfterPrimaryEmail,
 } = require('../../utils/campaign/event-handlers/sendDayAfterPrimaryEmail');
 const {
@@ -30,19 +27,13 @@ module.exports = {
   fn: async function (_, exits) {
     try {
       const campaigns = await Campaign.find({ isPro: true }).populate('user');
-      const {
-        afterPrimaryEmailCampaigns,
-        afterElectionEmailCampaigns,
-        cancelCampaigns,
-      } = findActionNeededCampaigns(campaigns);
+      const { afterPrimaryEmailCampaigns, cancelCampaigns } =
+        findActionNeededCampaigns(campaigns);
       for (let campaign of afterPrimaryEmailCampaigns) {
         await sendDayAfterPrimaryEmail(campaign);
       }
-      for (let campaign of afterElectionEmailCampaigns) {
-        await sendAfterElectionEmail(campaign);
-      }
       for (let campaign of cancelCampaigns) {
-        await handleCancelCampaign(campaign);
+        await handleCancelCampaign(campaign, true);
       }
 
       return exits.success({
