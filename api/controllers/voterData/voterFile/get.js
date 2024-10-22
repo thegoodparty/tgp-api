@@ -61,11 +61,6 @@ module.exports = {
       }
       const { user } = this.req;
 
-      // only allow slug param if user is admin
-      if (slug && !user.isAdmin) {
-        return exits.badRequest('Unauthorized');
-      }
-
       // query campaign by slug if present + user is admin
       const campaign =
         slug && user.isAdmin
