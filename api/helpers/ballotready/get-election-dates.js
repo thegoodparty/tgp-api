@@ -14,6 +14,8 @@ module.exports = {
     zip: {
       type: 'string',
       required: true,
+      minLength: 5,
+      maxLength: 5,
     },
     // note: level is ballotLevel (not level -- level is the simplified lowercase one)
     level: {
