@@ -6,8 +6,8 @@ const {
 } = require('./sendProSubscriptionEndingEmail');
 const { stripeSingleton } = require('../../payments/stripeSingleton');
 
-async function handleCancelCampaign(campaign) {
-  await cancelCampaignProSubscription(campaign, campaign.user);
+async function handleCancelCampaign(campaign, autoCancel = false) {
+  await cancelCampaignProSubscription(campaign, campaign.user, autoCancel);
   sendProSubscriptionEndingEmail(campaign);
   const { subscriptionId } = campaign.details || {};
   subscriptionId &&
