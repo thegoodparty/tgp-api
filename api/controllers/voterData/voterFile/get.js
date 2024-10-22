@@ -26,6 +26,9 @@ module.exports = {
     countOnly: {
       type: 'boolean',
     },
+    slug: {
+      type: 'string', // admin only
+    },
   },
 
   exits: {
@@ -42,7 +45,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      let { type, countOnly } = inputs;
+      let { type, countOnly, slug } = inputs;
       if (type === 'doorknocking') {
         type = 'doorKnocking';
       }
@@ -57,10 +60,17 @@ module.exports = {
         customFilters = JSON.parse(inputs.customFilters);
       }
       const { user } = this.req;
-      const campaign = await sails.helpers.campaign.byUser(user.id);
+
+      // query campaign by slug if present + user is admin
+      const campaign =
+        slug && user.isAdmin
+          ? await Campaign.findOne({ slug }).populate('pathToVictory')
+          : await sails.helpers.campaign.byUser(user.id);
+
       if (!campaign) {
         return exits.badRequest('No campaign');
       }
+
       let canDownload = await sails.helpers.campaign.canDownloadVoterFile(
         campaign.id,
       );

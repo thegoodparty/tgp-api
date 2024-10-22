@@ -8,9 +8,8 @@ const {
   getCrmCompanyOwnerName,
 } = require('../../../utils/crm/getCrmCompanyOwnerName.js');
 
-const isUrl = require('validator/lib/isURL');
-
 const assetsBase = sails.config.custom.assetsBase || sails.config.assetsBase;
+const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 module.exports = {
   inputs: {
@@ -36,9 +35,6 @@ module.exports = {
     },
     voicemail: {
       type: 'boolean',
-    },
-    voterFileUrl: {
-      type: 'string',
     },
     type: {
       type: 'string',
@@ -70,7 +66,7 @@ module.exports = {
         image,
         type,
       } = inputs;
-      let voterFileUrl = inputs.voterFileUrl;
+
       const { user } = this.req;
       const { firstName, lastName, email, phone } = user;
       const audience =
@@ -89,22 +85,32 @@ module.exports = {
       }
 
       const assignedPa = await getCrmCompanyOwnerName(crmCompany, true);
-      const messagingScript = campaign.aiContent[script]?.content
-        ? sanitizeHtml(campaign.aiContent[script]?.content, {
+      const messagingScript = campaign.aiContent?.[script]?.content
+        ? sanitizeHtml(campaign.aiContent?.[script]?.content, {
             allowedTags: [],
             allowedAttributes: {},
           })
         : script;
 
-      if (
-        voterFileUrl &&
-        !isUrl(voterFileUrl) &&
-        !voterFileUrl.startsWith('http://localhost')
-      ) {
-        console.error('voterFileUrl is invalid');
+      // build Voter File URL
+      let voterFileUrl;
+
+      try {
+        const filters = [];
+        for (const key in audience) {
+          if (audience[key] === true) {
+            filters.push(key);
+          }
+        }
+        const voterFileRoute = sails.getUrlFor('voterData/voterFile/get');
+        const encodedFilters = encodeURIComponent(JSON.stringify({ filters }));
+        voterFileUrl = `${appBase}${voterFileRoute}?type=${type}&slug=${campaign.slug}&customFilters=${encodedFilters}`;
+      } catch (e) {
+        console.error('Error building voterFileUrl: ', e);
         voterFileUrl = null;
       }
 
+      // format audience filters for slack message
       const formattedAudience = Object.entries(audience)
         .map(([key, value]) => {
           if (key === 'audience_request') {
@@ -332,7 +338,8 @@ function buildSlackBlocks({
                 },
               ],
             },
-            voicemail !== undefined
+            // eslint-disable-next-line eqeqeq
+            voicemail != undefined
               ? {
                   type: 'rich_text_section',
                   elements: [
@@ -382,7 +389,8 @@ function buildSlackBlocks({
                 },
               ],
             },
-          ],
+            // eslint-disable-next-line eqeqeq
+          ].filter((elem) => elem != undefined),
         },
       ],
     },
