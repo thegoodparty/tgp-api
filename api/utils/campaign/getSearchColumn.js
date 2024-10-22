@@ -1,7 +1,7 @@
 const axios = require('axios');
 const l2ApiKey = sails.config.custom.l2Data || sails.config.l2Data;
 
-const llmChatCompletion = require('../ai/llmChatCompletion');
+const getChatToolCompletion = require('../ai/getChatToolCompletion');
 
 async function getSearchColumn(
   slug,
@@ -10,101 +10,132 @@ async function getSearchColumn(
   searchString,
   searchString2 = '',
 ) {
-  try {
-    electionTypes = await findSearchColumn(
-      slug,
-      searchColumn,
-      electionState,
-      searchString,
-      searchString2,
-    );
-
-    return electionTypes;
-  } catch (error) {
-    sails.helpers.log(slug, 'Error in office-helper', error);
-    return undefined;
-  }
-}
-
-async function findSearchColumn(
-  slug,
-  searchColumn,
-  electionState,
-  searchString,
-  searchString2,
-) {
   let foundColumn;
   //   sails.helpers.log(slug, 'searchColumns', searchColumns);
   //   sails.helpers.log(slug, 'searchString', searchString);
   //   sails.helpers.log(slug, 'searchString2', searchString2);
-  let search = searchString;
-  if (searchString2) {
-    search = `${searchString} ${searchString2}`;
-  }
-  sails.helpers.log(slug, `searching for ${search}`);
-  let searchValues = await querySearchColumn(slug, searchColumn, electionState);
-  // strip out any searchValues that are a blank string ""
-  searchValues = searchValues.filter((value) => value !== '');
-  sails.helpers.log(
-    slug,
-    `found ${searchValues.length} searchValues for ${searchColumn}`,
-  );
-  if (searchValues.length > 0) {
+  try {
+    let search = searchString;
+    if (searchString2) {
+      search = `${searchString} ${searchString2}`;
+    }
+    sails.helpers.log(slug, `searching for ${search}`);
+    let searchValues = await querySearchColumn(
+      slug,
+      searchColumn,
+      electionState,
+    );
+    // strip out any searchValues that are a blank string ""
+    searchValues = searchValues.filter((value) => value !== '');
     sails.helpers.log(
       slug,
-      `There are searchValues for ${searchColumn}`,
-      searchValues,
+      `found ${searchValues.length} searchValues for ${searchColumn}`,
     );
-    sails.helpers.log(slug, `Using AI to find the best match ...`);
-    const match = await matchSearchValues(
-      slug,
-      searchValues.join('\n'),
-      search,
-    );
-    sails.helpers.log(slug, 'match', match);
-    if (
-      match &&
-      match !== '' &&
-      match !== `${electionState}##` &&
-      match !== `${electionState}####`
-    ) {
-      foundColumn = {
-        column: searchColumn,
-        value: match.replaceAll('"', ''),
-      };
+    if (searchValues.length > 0) {
+      // sails.helpers.log(
+      //   slug,
+      //   `There are searchValues for ${searchColumn}`,
+      //   searchValues,
+      // );
+      sails.helpers.log(slug, `Using AI to find the best match ...`);
+      const match = await matchSearchValues(
+        slug,
+        searchValues.join('\n'),
+        search,
+      );
+      sails.helpers.log(slug, 'match', match);
+      if (
+        match &&
+        match !== '' &&
+        match !== `${electionState}##` &&
+        match !== `${electionState}####`
+      ) {
+        foundColumn = {
+          column: searchColumn,
+          value: match.replaceAll('"', ''),
+        };
+      }
     }
-  }
 
-  sails.helpers.log(slug, 'getSearchColumn foundColumn', foundColumn);
+    sails.helpers.log(slug, 'getSearchColumn foundColumn', foundColumn);
+  } catch (error) {
+    sails.helpers.log(slug, 'Error in getSearchColumn', error);
+    return undefined;
+  }
 
   return foundColumn;
 }
 
 async function matchSearchValues(slug, searchValues, searchString) {
+  const functionDefinition = [
+    {
+      type: 'function',
+      function: {
+        name: 'matchLabels',
+        description: 'Determine the label that closely matches the input.',
+        parameters: {
+          type: 'object',
+          properties: {
+            matchedLabel: {
+              type: 'string',
+              description: 'The label that closely matches the input.',
+            },
+          },
+          required: ['matchedLabel'],
+        },
+      },
+    },
+  ];
+
+  let toolChoice = {
+    type: 'function',
+    function: { name: 'matchLabels' },
+  };
+
   let messages = [
     {
       role: 'system',
       content: `
-        you are a helpful political assistant whose job is to find the label that most closely matches the input. You will return only the matching label in your response and nothing else. If none of the labels are a good match then you will return "". If there is a good match return the entire label including any hashtags. 
-          `,
+      You are a helpful political assistant whose job is to find the label that closely matches the input. You will return only the matching label in your response and nothing else. You will return in the JSON format specified. If none of the labels are a good match then you will return an empty string for the matchedLabel. If there is a good match return the entire label in the matchedLabel including any hashtags. 
+      Example Input: 'Los Angeles School Board District 15 - Los Angeles - CA'
+      Example Labels: 'CERRITOS COMM COLL DIST'\n 'GLENDALE COMM COLL DIST'\n 'LOS ANGELES COMM COLL DIST'
+      Example Output:
+      {
+        matchedLabel: ''
+      }
+      Example Input: 'San Clemente City Council District 1 - San Clemente- CA'
+      Example Labels: 'CA####ALHAMBRA CITY CNCL 1'\n 'CA####BELLFLOWER CITY CNCL 1'\n 'CA####SAN CLEMENTE CITY CNCL 1'\n
+      Example Output:
+      {
+        matchedLabel: 'CA####SAN CLEMENTE CITY CNCL 1'
+      }
+      Example Input: 'California State Senate District 5 - CA'
+      Example Labels: 'CA##04'\n 'CA##05'\n 'CA##06'\n
+      Example Output: {
+        matchedLabel: 'CA##05'
+      }
+      Example Input: 'Maine Village Board Chair - Wisconsin'
+      Example Labels: 'WI##MARATHON COMM COLL DIST'\n 'WI##MARINETTE COMM COLL DIST'\n 'WI##MARQUETTE COMM COLL DIST'\n
+      Example Output:
+      {
+           'matchedLabel': '',
+      }
+      `,
     },
     {
       role: 'user',
-      content: `find the label that matches the following office: "${searchString}.\n\nLabels: ${searchValues}"`,
+      content: `Find the label that matches. Input: ${searchString}.\n\nLabels: ${searchValues}. Output:`,
     },
   ];
 
-  // const completion = await sails.helpers.ai.createCompletion(
-  //   messages,
-  //   100,
-  //   0.1,
-  //   0.1,
-  // );
-
-  // todo: update this to use function calling and use getChatToolCompletion
-  // so that it works better with llama3.1
-  // also add some few shot examples including non-matching examples.
-  const completion = await llmChatCompletion(messages, 100, 0.1, 0.1);
+  // console.log('messages', messages);
+  const completion = await getChatToolCompletion(
+    messages,
+    0.1,
+    0.1,
+    functionDefinition,
+    toolChoice,
+  );
 
   const content = completion?.content;
   const tokens = completion?.tokens;
@@ -121,12 +152,20 @@ async function matchSearchValues(slug, searchValues, searchString) {
       'victory-issues',
     );
     sails.helpers.log(slug, 'No Response from AI! For', searchValues);
-    throw new Error('no response from AI');
   }
 
   if (content && content !== '') {
-    return content.replace(/"/g, '');
+    let data;
+    try {
+      data = JSON.parse(content);
+    } catch (error) {
+      console.log('error', error);
+    }
+    if (data && data?.matchedLabel && data.matchedLabel !== '') {
+      return data.matchedLabel.replace(/"/g, '');
+    }
   }
+  return undefined;
 }
 
 async function querySearchColumn(slug, searchColumn, electionState) {
