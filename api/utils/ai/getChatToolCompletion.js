@@ -24,25 +24,53 @@ async function getChatToolCompletion(
       baseURL: togetherAi ? 'https://api.together.xyz/v1' : undefined,
     });
 
+    if (
+      model.includes('meta-llama') &&
+      toolChoice?.function?.name &&
+      toolChoice.function.name === 'matchLabels'
+    ) {
+      // this function spec breaks the together.ai api
+      // so we just use better prompt to get the same result
+      tools = undefined;
+      toolChoice = undefined;
+    }
+
     let completion;
     try {
-      completion = await client.chat.completions.create(
-        {
-          model,
-          messages,
-          top_p: topP,
-          temperature: temperature,
-          tools,
-          tool_choice: toolChoice,
-        },
-        {
-          timeout,
-        },
-      );
+      if (tools) {
+        completion = await client.chat.completions.create(
+          {
+            model,
+            messages,
+            top_p: topP,
+            temperature: temperature,
+            tools,
+            tool_choice: toolChoice,
+          },
+          {
+            timeout,
+          },
+        );
+      } else {
+        completion = await client.chat.completions.create(
+          {
+            model,
+            messages,
+            top_p: topP,
+            temperature: temperature,
+          },
+          {
+            timeout,
+          },
+        );
+      }
+
+      // const completionJson = JSON.stringify(completion, null, 2);
+      // console.log('completionJson', completionJson);
 
       let content = '';
       if (completion?.choices && completion.choices[0]?.message) {
-        if (completion.choices[0].message?.tool_calls) {
+        if (tools && completion.choices[0].message?.tool_calls) {
           // console.log('completion (json)', JSON.stringify(completion, null, 2));
           content =
             completion.choices[0].message?.tool_calls?.[0].function.arguments ||
