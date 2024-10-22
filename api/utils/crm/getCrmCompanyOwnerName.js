@@ -3,7 +3,7 @@ const { appEnvironment, PRODUCTION_ENV } = require('../appEnvironment');
 /// map of emails to slack ids for mentioning users
 const EMAIL_TO_SLACK_ID = {
   'sanjeev@goodparty.org': 'U07GUGCQ88M',
-  ///
+  // PA emails
   'jared@goodparty.org': 'U01AY0VQFPE',
   'ryan@goodparty.org': 'U06T7RGGHEZ',
   'kyron.banks@goodparty.org': 'U07JWLYDDUH',
