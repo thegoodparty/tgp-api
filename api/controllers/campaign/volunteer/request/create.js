@@ -58,6 +58,13 @@ module.exports = {
         });
       }
 
+      if (!campaign && candidateEmail === user.email) {
+        return exits.conflict({
+          message: `You can't request to join your own campaign`,
+          exists: true,
+        });
+      }
+
       const campaignRequest = await CampaignRequest.create({
         user: user.id,
         candidateEmail,

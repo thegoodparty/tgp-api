@@ -31,6 +31,8 @@ module.exports = {
     zip: {
       type: 'string',
       required: true,
+      minLength: 5,
+      maxLength: 5,
     },
 
     password: {
