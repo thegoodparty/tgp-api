@@ -27,6 +27,12 @@ const handlePathToVictory = async ({
       democrat: 0,
       republican: 0,
       independent: 0,
+      men: 0,
+      women: 0,
+      white: 0,
+      africanAmerican: 0,
+      asian: 0,
+      hispanic: 0,
     },
   };
 
