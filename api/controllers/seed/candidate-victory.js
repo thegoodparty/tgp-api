@@ -22,6 +22,11 @@ module.exports = {
       type: 'string',
       description: 'Slug for a specific candidate',
     },
+    techspeed: {
+      type: 'boolean',
+      description: 'Run the techspeed candidates',
+      defaultsTo: false,
+    },
   },
 
   exits: {
@@ -32,7 +37,7 @@ module.exports = {
   },
 
   fn: async function (inputs, exits) {
-    const { limit, lt, slug } = inputs;
+    const { limit, lt, slug, techspeed } = inputs;
     let p2vQuery = `
         select id
         from public.ballotcandidate
@@ -41,6 +46,13 @@ module.exports = {
         and "raceId" is not null and "raceId" != ''
         and party != 'Republican' and party != 'Democratic'        
     `;
+
+    if (techspeed) {
+      p2vQuery += ` and "vendorTsData" is not null`;
+    } else {
+      p2vQuery += ` and "vendorTsData" is null`;
+    }
+
     if (slug) {
       p2vQuery += ` and slug = '${slug}'`;
     }
@@ -56,9 +68,10 @@ module.exports = {
     const rows = p2vs?.rows;
     console.log('rows', rows.length);
 
-    const batch_size = 5;
-    for (let i = 0; i < rows.length; i += batch_size) {
-      const batch = rows.slice(i, i + batch_size);
+    // set higher for faster processing but beware of rate limits on apis.
+    const batchSize = 1;
+    for (let i = 0; i < rows.length; i += batchSize) {
+      const batch = rows.slice(i, i + batchSize);
       await Promise.all(
         batch.map(async (row) => {
           let candidateId = row.id;
@@ -73,6 +86,8 @@ module.exports = {
           }
         }),
       );
+      // sleep for a few seconds
+      await new Promise((resolve) => setTimeout(resolve, 2000));
     }
 
     return exits.success({
@@ -166,7 +181,23 @@ async function runP2V(candidateId) {
           voterContactGoal: pathToVictoryResponse.counts.voterContactGoal,
           electionType: pathToVictoryResponse.electionType,
           electionLocation: pathToVictoryResponse.electionLocation,
+          men: pathToVictoryResponse.counts.men,
+          women: pathToVictoryResponse.counts.women,
+          white: pathToVictoryResponse.counts.white,
+          africanAmerican: pathToVictoryResponse.counts.africanAmerican,
+          hispanic: pathToVictoryResponse.counts.hispanic,
+          asian: pathToVictoryResponse.counts.asian,
           p2vCompleteDate: moment().format('YYYY-MM-DD'),
+        },
+      });
+    } catch (e) {
+      console.log('error updating candidate', e);
+    }
+  } else {
+    try {
+      await BallotCandidate.updateOne({ id: candidateId }).set({
+        p2vData: {
+          p2vStatus: 'Failed',
         },
       });
     } catch (e) {
