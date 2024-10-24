@@ -411,17 +411,17 @@ function customFiltersToQuery(filters) {
       case 'party_republican':
         filterConditions.party.push('"Parties_Description" = \'Republican\'');
         break;
-      case 'age_18-25':
+      case 'age_18_25':
         filterConditions.age.push(
           '("Voters_Age"::integer >= 18 AND "Voters_Age"::integer <= 25)',
         );
         break;
-      case 'age_25-35':
+      case 'age_25_35':
         filterConditions.age.push(
           '("Voters_Age"::integer > 25 AND "Voters_Age"::integer <= 35)',
         );
         break;
-      case 'age_35-50':
+      case 'age_35_50':
         filterConditions.age.push(
           '("Voters_Age"::integer > 35 AND "Voters_Age"::integer <= 50)',
         );
