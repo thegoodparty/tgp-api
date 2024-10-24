@@ -63,7 +63,7 @@ async function handleUpdateViability(objectId, propertyName, propertyValue) {
   if (!campaign) {
     return;
   }
-  let propertyType = typeof propertyValue;
+  let propertyType = 'numeric';
   if (propertyName === 'incumbent') {
     if (propertyValue === 'Yes') {
       propertyName = 'isIncumbent';
@@ -71,6 +71,7 @@ async function handleUpdateViability(objectId, propertyName, propertyValue) {
     } else {
       propertyName = 'isIncumbent';
       propertyValue = false;
+      propertyType = 'boolean';
     }
   }
   if (propertyName === 'opponents') {
