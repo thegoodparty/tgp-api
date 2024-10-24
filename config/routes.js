@@ -246,6 +246,7 @@ module.exports.routes = {
   'GET   /api/v1/ai/test/match-columns': 'ai/test/match-columns',
   'GET   /api/v1/ai/test/extract-location': 'ai/test/extract-location',
   'GET   /api/v1/ai/test/path-to-victory': 'ai/test/path-to-victory',
+  'GET   /api/v1/ai/test/search-column': 'ai/test/search-column',
   'GET   /api/v1/ai/load': 'ai/load',
 
   // races

@@ -42,6 +42,7 @@ module.exports = {
       description: 'User ZipCode',
       required: false,
       type: 'string',
+      minLength: 5,
       maxLength: 5,
     },
 
