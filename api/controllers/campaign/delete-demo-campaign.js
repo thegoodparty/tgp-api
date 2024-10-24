@@ -22,7 +22,7 @@ module.exports = {
 
       const campaign = await sails.helpers.campaign.byUser(user.id);
       const { pathToVictory } = campaign;
-      await PathToVictory.destroyOne({ id: pathToVictory.id });
+      await PathToVictory.destroyOne({ id: pathToVictory?.id });
       await CandidatePosition.destroy({
         campaign: campaign.id,
       });
