@@ -23,7 +23,7 @@ module.exports = {
 
       if (payload && payload.length > 0) {
         for (let i = 0; i < payload.length; i++) {
-          const { objectId, propertyName, propertyValue } = payload[i];
+          let { objectId, propertyName, propertyValue } = payload[i];
           try {
             if (propertyName === 'incumbent' || propertyName === 'opponents') {
               await handleUpdateViability(
@@ -63,16 +63,37 @@ async function handleUpdateViability(objectId, propertyName, propertyValue) {
   if (!campaign) {
     return;
   }
+  let propertyType = typeof propertyValue;
+  if (propertyName === 'incumbent') {
+    if (propertyValue === 'Yes') {
+      propertyName = 'isIncumbent';
+      propertyValue = true;
+    } else {
+      propertyName = 'isIncumbent';
+      propertyValue = false;
+    }
+  }
+  if (propertyName === 'opponents') {
+    propertyName = 'opponents';
+    propertyValue = parseInt(propertyValue);
+  }
+
   const campaignId = campaign.id;
-  await sails.sendNativeQuery(`
+  try {
+    await sails.sendNativeQuery(`
       UPDATE public.pathtovictory AS p
         SET data = jsonb_set(
             p.data::jsonb,
             '{${propertyName}}',
-            to_jsonb('${propertyValue}'::numeric)
+            to_jsonb('${propertyValue}'::${propertyType})
         )
       WHERE p.campaign = '${campaignId}';
 `);
+  } catch (e) {
+    await sails.helpers.slack.errorLoggerHelper('error at update viability', {
+      e,
+    });
+  }
 }
 
 async function handleUpdateCampaign({ objectId, propertyName, propertyValue }) {
