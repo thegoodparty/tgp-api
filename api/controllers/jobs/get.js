@@ -1,6 +1,3 @@
-const {
-  exists,
-} = require('@pinecone-database/pinecone/dist/pinecone-generated-ts-fetch');
 const axios = require('axios');
 const ashbyKey = sails.config.custom.ashbyKey || sails.config.ashbyKey;
 

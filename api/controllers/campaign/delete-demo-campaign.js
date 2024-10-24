@@ -19,6 +19,14 @@ module.exports = {
       if (!demoPersona) {
         return exits.badRequest('Not a demo campaign user');
       }
+
+      const campaign = await sails.helpers.campaign.byUser(user.id);
+      const { pathToVictory } = campaign;
+      await PathToVictory.destroyOne({ id: pathToVictory?.id });
+      await CandidatePosition.destroy({
+        campaign: campaign.id,
+      });
+      await Campaign.destroyOne({ id: campaign.id });
       await User.updateOne({ id: user.id }).set({
         avatar: '',
         metaData: JSON.stringify({
@@ -28,13 +36,6 @@ module.exports = {
           whyBrowsing: null,
         }),
       });
-      const campaign = await sails.helpers.campaign.byUser(user.id);
-      const { pathToVictory: p2vId } = campaign;
-      await PathToVictory.destroyOne({ id: p2vId });
-      await CandidatePosition.destroy({
-        campaign: campaign.id,
-      });
-      await Campaign.destroyOne({ id: campaign.id });
 
       return exits.success({
         message: 'Demo campaign deleted.',
