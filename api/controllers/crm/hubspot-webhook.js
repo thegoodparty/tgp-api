@@ -71,8 +71,8 @@ async function handleUpdateViability(objectId, propertyName, propertyValue) {
     } else {
       propertyName = 'isIncumbent';
       propertyValue = false;
-      propertyType = 'boolean';
     }
+    propertyType = 'boolean';
   }
   if (propertyName === 'opponents') {
     propertyName = 'opponents';
