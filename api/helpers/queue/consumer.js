@@ -49,11 +49,12 @@ module.exports = {
         queue = Consumer.create({
           queueUrl,
           handleMessage: async (message) => {
-            try {
-              await handleMessage(message);
-            } catch (error) {
-              console.error('Message processing failed, requeuing:', error);
-              await requeueWithoutError(sqs, queueUrl, message.ReceiptHandle);
+            const shouldRequeue = await handleMessageAndMaybeRequeue(message);
+            // Return a rejected promise if requeue is needed without throwing an error
+            if (shouldRequeue) {
+              return Promise.reject(
+                'Requeuing message without stopping the process',
+              );
             }
           },
           sqs,
@@ -103,17 +104,14 @@ module.exports = {
   },
 };
 
-async function requeueWithoutError(sqs, queueUrl, receiptHandle) {
-  const params = {
-    QueueUrl: queueUrl,
-    ReceiptHandle: receiptHandle,
-    VisibilityTimeout: 0, // Immediately requeue the message
-  };
+// Function to process message and decide if requeue is necessary
+async function handleMessageAndMaybeRequeue(message, sqs, queueUrl) {
   try {
-    await sqs.send(new ChangeMessageVisibilityCommand(params));
-    console.log('Message requeued successfully without error.');
+    await handleMessage(message); // Your main processing logic
+    return false; // No requeue needed
   } catch (error) {
-    console.error('Failed to requeue message:', error);
+    console.error('Message processing failed, will requeue:', error);
+    return true; // Indicate that we should requeue
   }
 }
 
