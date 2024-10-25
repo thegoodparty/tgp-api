@@ -104,6 +104,7 @@ module.exports = {
         customFilters,
         true,
       );
+      console.log('Count Query:', countQuery);
       let withFixColumns = false;
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
       let count = parseInt(sqlResponse.rows[0].count);
