@@ -104,6 +104,7 @@ module.exports = {
         customFilters,
         true,
       );
+      console.log('Count Query:', countQuery);
       let withFixColumns = false;
       let sqlResponse = await sails.helpers.voter.queryHelper(countQuery);
       let count = parseInt(sqlResponse.rows[0].count);
@@ -234,8 +235,11 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
 
   if (type === 'sms') {
     columns += `, "VoterTelephones_CellPhoneFormatted"`;
-
-    whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+    if (whereClause) {
+      whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+    } else {
+      whereClause += `"VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+    }
   }
   if (type === 'digitalAds') {
     columns += `, "VoterTelephones_CellPhoneFormatted",
@@ -411,17 +415,17 @@ function customFiltersToQuery(filters) {
       case 'party_republican':
         filterConditions.party.push('"Parties_Description" = \'Republican\'');
         break;
-      case 'age_18-25':
+      case 'age_18_25':
         filterConditions.age.push(
           '("Voters_Age"::integer >= 18 AND "Voters_Age"::integer <= 25)',
         );
         break;
-      case 'age_25-35':
+      case 'age_25_35':
         filterConditions.age.push(
           '("Voters_Age"::integer > 25 AND "Voters_Age"::integer <= 35)',
         );
         break;
-      case 'age_35-50':
+      case 'age_35_50':
         filterConditions.age.push(
           '("Voters_Age"::integer > 35 AND "Voters_Age"::integer <= 50)',
         );
