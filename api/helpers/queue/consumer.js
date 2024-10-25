@@ -49,7 +49,12 @@ module.exports = {
         queue = Consumer.create({
           queueUrl,
           handleMessage: async (message) => {
-            await handleMessage(message);
+            try {
+              await handleMessage(message);
+            } catch (error) {
+              console.error('Message processing failed, requeuing:', error);
+              await requeueWithoutError(sqs, queueUrl, message.ReceiptHandle);
+            }
           },
           sqs,
         });
@@ -97,6 +102,20 @@ module.exports = {
     }
   },
 };
+
+async function requeueWithoutError(sqs, queueUrl, receiptHandle) {
+  const params = {
+    QueueUrl: queueUrl,
+    ReceiptHandle: receiptHandle,
+    VisibilityTimeout: 0, // Immediately requeue the message
+  };
+  try {
+    await sqs.send(new ChangeMessageVisibilityCommand(params));
+    console.log('Message requeued successfully without error.');
+  } catch (error) {
+    console.error('Failed to requeue message:', error);
+  }
+}
 
 const camelToSentence = (text) => {
   const result = text.replace(/([A-Z])/g, ' $1');
@@ -154,7 +173,7 @@ async function handlePathToVictoryMessage(message) {
       'error in consumer/handlePathToVictorMessagey',
       e,
     );
-    // throw new Error('error in consumer/handlePathToVictoryMessage');
+    throw new Error('error in consumer/handlePathToVictoryMessage');
   }
 
   // For now we are calculating the viability score after a valid path to victory response.
@@ -311,7 +330,7 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     );
 
     // throw an error to requeue the SQS Task.
-    // throw new Error('No Path To Victory Found');
+    throw new Error('No Path To Victory Found');
   }
 }
 
@@ -420,7 +439,7 @@ async function handleGenerateAiContent(message) {
       },
       'dev',
     );
-    // throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+    throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
   } else {
     let chat = existingChat || [];
     let messages = [{ role: 'user', content: prompt }, ...chat];
@@ -609,7 +628,9 @@ async function handleGenerateAiContent(message) {
         console.log('error at consumer', e);
       }
       // throw an Error so that the message goes back to the queue or the DLQ.
-      // throw new Error(`error generating ai content. slug: ${slug}, key: ${key}`);
+      throw new Error(
+        `error generating ai content. slug: ${slug}, key: ${key}`,
+      );
     }
   }
 }
