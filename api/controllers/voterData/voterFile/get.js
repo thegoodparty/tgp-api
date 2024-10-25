@@ -235,8 +235,11 @@ function typeToQuery(type, campaign, customFilters, justCount, fixColumns) {
 
   if (type === 'sms') {
     columns += `, "VoterTelephones_CellPhoneFormatted"`;
-
-    whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+    if (whereClause) {
+      whereClause += ` AND "VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+    } else {
+      whereClause += `"VoterTelephones_CellPhoneFormatted" IS NOT NULL`;
+    }
   }
   if (type === 'digitalAds') {
     columns += `, "VoterTelephones_CellPhoneFormatted",
