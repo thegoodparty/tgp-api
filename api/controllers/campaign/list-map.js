@@ -23,18 +23,6 @@ module.exports = {
     name: {
       type: 'string',
     },
-    neLat: {
-      type: 'number',
-    },
-    neLng: {
-      type: 'number',
-    },
-    swLat: {
-      type: 'number',
-    },
-    swLng: {
-      type: 'number',
-    },
     forceReCalc: {
       type: 'boolean',
     },
@@ -60,10 +48,6 @@ module.exports = {
         results: resultsFilter,
         office: officeFilter,
         name: nameFilter,
-        neLat,
-        neLng,
-        swLat,
-        swLng,
         forceReCalc,
       } = inputs;
 
@@ -195,17 +179,6 @@ module.exports = {
           continue;
         } else {
           cleanCampaign.position = position;
-        }
-
-        let isInBound = filterPosition(
-          cleanCampaign,
-          neLat,
-          neLng,
-          swLat,
-          swLng,
-        );
-        if (!isInBound) {
-          continue;
         }
 
         cleanCampaigns.push(cleanCampaign);
