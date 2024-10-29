@@ -77,8 +77,12 @@ async function getChatToolCompletion(
             '';
         } else {
           // console.log('completion (raw)', completion);
-          content = completion.choices[0].message?.content?.trim() || '';
+          content = completion.choices[0].message?.content || '';
         }
+      }
+
+      if (content && typeof content === 'string') {
+        content = content.trim();
       }
 
       if (content.includes('```html')) {
