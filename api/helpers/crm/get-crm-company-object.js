@@ -28,8 +28,8 @@ const P2V_FIELDS = [
   { key: 'projectedTurnout', hubSpotKey: 'projectedturnout' },
   { key: 'voterContactGoal', hubSpotKey: 'votercontactgoal' },
   { key: 'voterProjection', hubSpotKey: 'voterprojection' },
-  { key: 'men', hubSpot: 'men' },
-  { key: 'women', hubSpot: 'women' },
+  { key: 'men', hubSpotKey: 'men' },
+  { key: 'women', hubSpotKey: 'women' },
 ];
 
 const getP2VValues = (p2vData = {}) => {
