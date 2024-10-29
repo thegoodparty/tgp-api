@@ -43,7 +43,8 @@ module.exports = {
           !user ||
           !details?.zip ||
           didWin === false ||
-          !details?.geoLocation?.lng
+          !details?.geoLocation?.lng ||
+          details?.geoLocationFailed
         ) {
           continue;
         }
