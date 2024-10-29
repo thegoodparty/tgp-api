@@ -70,7 +70,7 @@ module.exports = {
         count,
       });
     } catch (e) {
-      console.log('Error in campaign list map', e);
+      console.log('Error in campaign list map.', e);
       await sails.helpers.slack.errorLoggerHelper(
         'Error in campaign list map',
         { e },
