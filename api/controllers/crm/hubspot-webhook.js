@@ -85,7 +85,7 @@ async function handleUpdateViability(objectId, propertyName, propertyValue) {
       UPDATE public.pathtovictory AS p
         SET data = jsonb_set(
             p.data::jsonb,
-            '{${propertyName}}',
+            '{viability, ${propertyName}}',
             to_jsonb('${propertyValue}'::${propertyType})
         )
       WHERE p.campaign = '${campaignId}';

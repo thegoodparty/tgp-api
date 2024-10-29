@@ -31,7 +31,7 @@ module.exports = {
         where: { user: { '!=': null }, isDemo: false, isActive: true },
       });
 
-      const nextWeek = moment().add(7, 'days');
+      const lastWeek = moment().subtract(7, 'days');
 
       let count = 0;
       for (let i = 0; i < campaigns.length; i++) {
@@ -43,7 +43,8 @@ module.exports = {
           !user ||
           !details?.zip ||
           didWin === false ||
-          !details?.geoLocation?.lng
+          !details?.geoLocation?.lng ||
+          details?.geoLocationFailed
         ) {
           continue;
         }
@@ -58,7 +59,7 @@ module.exports = {
 
         if (didWin === null) {
           const date = moment(details.electionDate);
-          if (date.isBefore(nextWeek)) {
+          if (date.isBefore(lastWeek)) {
             continue;
           }
         }
@@ -70,7 +71,7 @@ module.exports = {
         count,
       });
     } catch (e) {
-      console.log('Error in campaign list map', e);
+      console.log('Error in campaign list map.', e);
       await sails.helpers.slack.errorLoggerHelper(
         'Error in campaign list map',
         { e },

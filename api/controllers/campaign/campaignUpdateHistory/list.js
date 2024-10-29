@@ -46,10 +46,10 @@ module.exports = {
       }).populate('user');
 
       return exits.success({
-        updateHistory: updateHistory.map(async (update) => ({
+        updateHistory: updateHistory.map((update) => ({
           ...update,
           user: {
-            name: await sails.helpers.user.name(user),
+            name: `${user.firstName} ${user.lastName}`,
             avatar: update?.user?.avatar,
           },
         })),

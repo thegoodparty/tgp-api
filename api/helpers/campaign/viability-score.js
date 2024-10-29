@@ -241,7 +241,12 @@ function getBallotReadyCandidates(race, campaign) {
     for (const candidacy of candidacies) {
       let candidacyName = candidacy?.candidate?.fullName || '';
       candidacyName = candidacyName.toLowerCase();
-      const candidateName = campaign.data.name.toLowerCase();
+      let candidateName = campaign?.data?.name;
+      if (!candidateName) {
+        candidateName =
+          campaign?.details?.firstName + ' ' + campaign?.details?.lastName;
+      }
+      candidateName = candidateName.toLowerCase();
       const candidacyElectionDay = candidacy?.election?.electionDay;
       console.log('candidacyElectionDay', candidacyElectionDay);
       const candidacyDate = new Date(candidacyElectionDay);
