@@ -402,9 +402,6 @@ async function analyzePathToVictoryResponse(p2vResponse) {
       },
       'victory-issues',
     );
-
-    // throw an error to requeue the SQS Task.
-    throw new Error('No Path To Victory Found');
   }
   return false;
 }
