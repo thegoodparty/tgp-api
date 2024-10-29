@@ -29,7 +29,7 @@ module.exports = {
       const campaigns = await Campaign.find({
         select: ['details', 'didWin', 'data', 'user'],
         where: { user: { '!=': null }, isDemo: false, isActive: true },
-      });
+      }).populate('user');
 
       const lastWeek = moment().subtract(7, 'days');
 
