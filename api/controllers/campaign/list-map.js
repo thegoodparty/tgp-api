@@ -114,7 +114,7 @@ module.exports = {
 
       const campaigns = result.rows;
 
-      const nextWeek = moment().add(7, 'days');
+      const lastWeek = moment().subtract(7, 'days');
 
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
@@ -185,7 +185,7 @@ module.exports = {
 
         if (didWin === null) {
           const date = moment(electionDate);
-          if (date.isBefore(nextWeek)) {
+          if (date.isBefore(lastWeek)) {
             continue;
           }
         }
