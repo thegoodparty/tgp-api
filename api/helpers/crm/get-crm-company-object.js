@@ -1,3 +1,4 @@
+const { parse } = require('dotenv');
 const moment = require('moment/moment');
 const determineName = async (campaignUser) => {
   if (campaignUser?.firstName) {
@@ -14,8 +15,23 @@ const determineName = async (campaignUser) => {
 // Some Hubspot keys couldn't be changed, see:
 // https://goodpartyorg.slack.com/archives/C01AEH4TEBX/p1716572940340399?thread_ts=1716563708.979759&cid=C01AEH4TEBX
 const KEEP_SNAKECASE = ['p2vStatus', 'p2vCompleteDate', 'winNumber'];
+const P2V_FIELDS = [
+  { key: 'totalRegisteredVoters', hubSpotKey: 'totalregisteredvoters' },
+  { key: 'republicans', hubSpotKey: 'republicans' },
+  { key: 'democrats', hubSpotKey: 'democrats' },
+  { key: 'indies', hubSpotKey: 'indies' },
+  { key: 'asians', hubSpotKey: 'asian' },
+  { key: 'africanAmerican', hubSpotKey: 'africanamerican' },
+  { key: 'hispanic', hubSpotKey: 'hispanic' },
+  { key: 'white', hubSpotKey: 'white' },
+  { key: 'likelyVotes', hubSpotKey: 'likely_voters' },
+  { key: 'projectedTurnout', hubSpotKey: 'projectedturnout' },
+  { key: 'voterContactGoal', hubSpotKey: 'votercontactgoal' },
+  { key: 'voterProjection', hubSpotKey: 'voterprojection' },
+];
 
 const getP2VValues = (p2vData = {}) => {
+  console.log('p2vData', p2vData);
   const p2v = Object.keys(p2vData)
     .filter((key) => KEEP_SNAKECASE.includes(key))
     .reduce(
@@ -29,6 +45,15 @@ const getP2VValues = (p2vData = {}) => {
   delete p2v.p2vCompleteDate;
   delete p2v.winNumber;
   delete p2v.winnumber;
+  // add P2V_FIELDS
+  P2V_FIELDS.forEach(({ key, hubSpotKey }) => {
+    if (p2vData[key] !== undefined) {
+      p2v[hubSpotKey] = p2vData[key];
+    }
+  });
+  if (p2v.votercontactgoal) {
+    p2v.votercontactgoal = parseInt(p2v.votercontactgoal);
+  }
   return p2v;
 };
 
@@ -192,3 +217,56 @@ module.exports = {
   },
   fn: getCrmCompanyObject,
 };
+
+const p2vExample = {
+  p2vStatus: 'Complete',
+  totalRegisteredVoters: 3252,
+  republicans: 1118,
+  democrats: 580,
+  indies: 1554,
+  women: 1720,
+  men: 1531,
+  white: 2740,
+  asian: 30,
+  africanAmerican: 16,
+  hispanic: 69,
+  averageTurnout: 1339,
+  projectedTurnout: 1334,
+  p2vCompleteDate: '2024-10-25',
+  winNumber: '681.00',
+  voterContactGoal: '3405.00',
+  electionType: 'Village',
+  electionLocation: 'NC##FLAT ROCK VLG',
+};
+
+/* requirements:
+    Total Voters maps to totalregisteredvoters
+
+    Democrats maps to democrats
+
+    Republicans maps to republicans
+
+    Independents maps to indies
+
+    Asian voters maps to asian
+
+    african american maps to africanamerican
+
+    hispanic maps to hispanic
+
+    white maps to white
+
+    likely votes maps to likely_voters
+
+    Projected turnout maps to projectedturnout
+
+    Voter contact goal maps to votercontactgoal
+
+    Win Number maps to win_number
+
+    Voter Projection maps to voterprojection
+
+    Women voters maps to women
+
+    Male voters maps to men
+*/
