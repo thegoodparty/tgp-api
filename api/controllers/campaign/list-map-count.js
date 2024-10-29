@@ -31,7 +31,7 @@ module.exports = {
         where: { user: { '!=': null }, isDemo: false, isActive: true },
       });
 
-      const nextWeek = moment().add(7, 'days');
+      const lastWeek = moment().subtract(7, 'days');
 
       let count = 0;
       for (let i = 0; i < campaigns.length; i++) {
@@ -58,7 +58,7 @@ module.exports = {
 
         if (didWin === null) {
           const date = moment(details.electionDate);
-          if (date.isBefore(nextWeek)) {
+          if (date.isBefore(lastWeek)) {
             continue;
           }
         }
