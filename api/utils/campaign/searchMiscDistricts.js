@@ -56,7 +56,18 @@ async function findMiscDistricts(slug, officeName, state) {
     try {
       const contentJson = JSON.parse(matchResp.content);
       sails.helpers.log(slug, 'columns', contentJson.columns);
-      foundMiscDistricts = contentJson?.columns || [];
+      let columns = contentJson?.columns || [];
+      if (columns && typeof columns === 'object' && columns.length > 0) {
+        foundMiscDistricts = columns;
+      } else {
+        await sails.helpers.slack.slackHelper(
+          {
+            title: 'Error',
+            body: `Received invalid response while finding misc districts for ${officeName}. columns: ${columns}`,
+          },
+          'victory-issues',
+        );
+      }
       sails.helpers.log(slug, 'found miscDistricts', matchResp);
     } catch (e) {
       sails.helpers.log(slug, 'error parsing matchResp', e);
