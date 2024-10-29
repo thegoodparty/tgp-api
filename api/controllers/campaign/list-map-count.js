@@ -29,7 +29,7 @@ module.exports = {
       const campaigns = await Campaign.find({
         select: ['details', 'didWin', 'data', 'user'],
         where: { user: { '!=': null }, isDemo: false, isActive: true },
-      });
+      }).populate('user');
 
       const lastWeek = moment().subtract(7, 'days');
 
@@ -43,7 +43,8 @@ module.exports = {
           !user ||
           !details?.zip ||
           didWin === false ||
-          !details?.geoLocation?.lng
+          !details?.geoLocation?.lng ||
+          details?.geoLocationFailed
         ) {
           continue;
         }
@@ -70,7 +71,7 @@ module.exports = {
         count,
       });
     } catch (e) {
-      console.log('Error in campaign list map', e);
+      console.log('Error in campaign list map.', e);
       await sails.helpers.slack.errorLoggerHelper(
         'Error in campaign list map',
         { e },
