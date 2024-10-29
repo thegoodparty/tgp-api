@@ -72,9 +72,24 @@ async function getChatToolCompletion(
       if (completion?.choices && completion.choices[0]?.message) {
         if (tools && completion.choices[0].message?.tool_calls) {
           // console.log('completion (json)', JSON.stringify(completion, null, 2));
-          content =
-            completion.choices[0].message?.tool_calls?.[0].function.arguments ||
-            '';
+          let toolCalls = completion.choices[0].message.tool_calls;
+          if (toolCalls && toolCalls.length > 0) {
+            content = toolCalls[0]?.function?.arguments || '';
+          }
+          if (content === '') {
+            // we are expecting tool_calls to have a function call response
+            // but we can check if the model returned a response without a function call
+            content = completion.choices[0].message?.content || '';
+            if (content !== '') {
+              await sails.helpers.slack.slackHelper(
+                {
+                  title: 'Error in AI',
+                  body: `getChatToolCompletion. model: ${model} No tool_calls found. content without function call found: ${content}`,
+                },
+                'dev',
+              );
+            }
+          }
         } else {
           // console.log('completion (raw)', completion);
           content = completion.choices[0].message?.content || '';
