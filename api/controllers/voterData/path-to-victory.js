@@ -53,7 +53,7 @@ module.exports = {
         await PathToVictory.updateOne({
           id: p2v.id,
         }).set({
-          data: { ...p2v.data, p2vStatus: 'Waiting' },
+          data: { ...p2v.data, p2vStatus: 'Waiting', p2vAttempts: 0 },
         });
       }
 
