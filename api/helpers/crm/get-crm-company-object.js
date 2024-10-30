@@ -183,7 +183,10 @@ const getCrmCompanyObject = async (inputs, exits) => {
     properties.seats_available = seats;
   }
   if (score && typeof score === 'number' && score > 0) {
-    properties.candidate_priority = Math.floor(score);
+    if (score > 5) {
+      score = 5;
+    }
+    properties.automated_score = Math.floor(score);
   }
   if (isPartisan !== undefined && typeof isPartisan === 'boolean') {
     if (isPartisan) {
