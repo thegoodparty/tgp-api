@@ -56,7 +56,6 @@ module.exports = {
       const message = `email sent successfully => ${JSON.stringify(
         data || '{}',
       )}`;
-      // console.log(message);
       return exits.success({ message });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(

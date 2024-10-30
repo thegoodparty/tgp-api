@@ -4,7 +4,7 @@ const {
 const { setUserCampaignIsPro } = require('../campaign/setUserCampaignIsPro');
 const { appEnvironment, PRODUCTION_ENV } = require('../appEnvironment');
 
-const cancelCampaignProSubscription = async function (
+const persistCampaignProCancellation = async function (
   campaign,
   user,
   autoCancel = false,
@@ -29,5 +29,5 @@ const cancelCampaignProSubscription = async function (
 };
 
 module.exports = {
-  cancelCampaignProSubscription,
+  persistCampaignProCancellation,
 };
