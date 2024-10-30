@@ -75,17 +75,19 @@ async function findMiscDistricts(slug, officeName, state) {
           },
           'dev',
         );
-        let columnJson = JSON.parse(columns) || [];
-        if (columnJson && Array.isArray(columnJson) && columnJson.length > 0) {
-          foundMiscDistricts = columnJson;
-          await sails.helpers.slack.slackHelper(
-            {
-              title: 'Error',
-              body: `Double Json.parse was successful for columns: ${foundMiscDistricts}.`,
-            },
-            'dev',
-          );
-        }
+        // the below does not work because the columns is not valid json because its returned with ' and not ".
+        // rather than do something hacky like replacing ' with " we have revised the prompt and are investigating issues with function calling parsing.
+        // let columnJson = JSON.parse(columns) || [];
+        // if (columnJson && Array.isArray(columnJson) && columnJson.length > 0) {
+        //   foundMiscDistricts = columnJson;
+        //   await sails.helpers.slack.slackHelper(
+        //     {
+        //       title: 'Error',
+        //       body: `Double Json.parse was successful for columns: ${foundMiscDistricts}.`,
+        //     },
+        //     'dev',
+        //   );
+        // }
       }
       sails.helpers.log(slug, 'found miscDistricts', matchResp);
     } catch (e) {
