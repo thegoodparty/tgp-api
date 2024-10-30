@@ -156,25 +156,78 @@ async function handleMessage(message) {
   }
 }
 
+async function handlePathToVictoryFailure(campaign) {
+  let p2v = await PathToVictory.findOne({ campaign: campaign.id });
+
+  let p2vAttempts = 0;
+  if (p2v?.data?.p2vAttempts) {
+    p2vAttempts = parseInt(p2v.data.p2vAttempts);
+  }
+  p2vAttempts += 1;
+
+  if (p2vAttempts >= 3) {
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Path To Victory',
+        body: `Path To Victory has failed 3 times for ${campaign.slug}. Marking as failed`,
+      },
+      'victory-issues',
+    );
+
+    // mark the p2vStatus as Failed
+    await PathToVictory.updateOne({
+      id: p2v.id,
+    }).set({
+      data: {
+        ...p2v.data,
+        p2vAttempts,
+        p2vStatus: 'Failed',
+      },
+    });
+  } else {
+    // otherwise, increment the p2vAttempts
+    await PathToVictory.updateOne({
+      id: p2v.id,
+    }).set({
+      data: {
+        ...p2v.data,
+        p2vAttempts,
+      },
+    });
+  }
+}
+
 async function handlePathToVictoryMessage(message) {
+  let p2vSuccess = false;
+  let campaign;
   try {
     const p2vResponse = await handlePathToVictory({
       ...message,
     });
     console.log('p2vResponse', p2vResponse);
     let campaignId = message.campaignId;
-    let campaign = await Campaign.findOne({ id: campaignId });
-    await analyzePathToVictoryResponse({ campaign, ...p2vResponse });
+    campaign = await Campaign.findOne({ id: campaignId }).populate(
+      'pathToVictory',
+    );
+    p2vSuccess = await analyzePathToVictoryResponse({
+      campaign,
+      ...p2vResponse,
+    });
   } catch (e) {
     console.log('error in consumer/handlePathToVictoryMessage', e);
     await sails.helpers.slack.errorLoggerHelper(
       'error in consumer/handlePathToVictorMessagey',
       e,
     );
+  }
+
+  if (p2vSuccess === false) {
+    await handlePathToVictoryFailure(campaign);
     throw new Error('error in consumer/handlePathToVictoryMessage');
   }
 
   // For now we are calculating the viability score after a valid path to victory response.
+  // We will allow viability to re-run incase of office change, we need to recalculate viability.
   let viability;
   try {
     viability = await sails.helpers.campaign.viabilityScore(message.campaignId);
@@ -198,6 +251,7 @@ async function handlePathToVictoryMessage(message) {
   }
 
   // Send the candidate to google sheets for techspeed
+  // todo: need a way to dedupe this process.
   try {
     await sails.helpers.campaign.techspeedAppendSheets(message.campaignId);
   } catch (e) {
@@ -280,16 +334,12 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     // automatically update the Campaign with the pathToVictory data.
     if (campaign.pathToVictory?.data?.p2vStatus === 'Complete') {
       console.log('Path To Victory already completed for', campaign.slug);
-      await sails.helpers.slack.slackHelper(
-        {
-          title: 'Path To Victory',
-          body: `Path To Victory already exists for ${campaign.slug}. Skipping automatic update.`,
-        },
-        'victory',
-      );
+      await completePathToVictory(campaign.slug, pathToVictoryResponse, false);
+      return true;
     } else {
       // set the p2vStatus to 'Complete' and email the user.
       await completePathToVictory(campaign.slug, pathToVictoryResponse);
+      return true;
     }
   } else if (
     pathToVictoryResponse?.electionType &&
@@ -311,7 +361,8 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     // This is because we were not able to get the turnout numbers.
     // But we still want to update the campaign with the pathToVictory data (and L2 Location for Voterfile)
     if (campaign.pathToVictory?.data?.p2vStatus !== 'Complete') {
-      await completePathToVictory(campaign.slug, pathToVictoryResponse);
+      await completePathToVictory(campaign.slug, pathToVictoryResponse, false);
+      return true;
     }
   } else {
     let debugMessage = 'No Path To Victory Found.\n';
@@ -326,13 +377,15 @@ async function analyzePathToVictoryResponse(p2vResponse) {
       },
       'victory-issues',
     );
-
-    // throw an error to requeue the SQS Task.
-    throw new Error('No Path To Victory Found');
   }
+  return false;
 }
 
-async function completePathToVictory(slug, pathToVictoryResponse) {
+async function completePathToVictory(
+  slug,
+  pathToVictoryResponse,
+  sendEmail = true,
+) {
   console.log('completing path to victory for', slug);
   console.log('pathToVictoryResponse', pathToVictoryResponse);
   try {
@@ -388,7 +441,7 @@ async function completePathToVictory(slug, pathToVictoryResponse) {
       },
     });
 
-    if (p2vStatus === 'Complete') {
+    if (p2vStatus === 'Complete' && sendEmail) {
       let name;
       if (user) {
         name = await sails.helpers.user.name(user);

@@ -53,10 +53,15 @@ async function findMiscDistricts(slug, officeName, state) {
     officeName,
   );
   if (matchResp && matchResp?.content) {
+    let contentJson;
     try {
-      const contentJson = JSON.parse(matchResp.content);
-      sails.helpers.log(slug, 'columns', contentJson.columns);
+      contentJson = JSON.parse(matchResp.content);
+    } catch (e) {
+      sails.helpers.log(slug, 'error parsing matchResp', e);
+    }
+    try {
       let columns = contentJson?.columns || [];
+      sails.helpers.log(slug, 'columns', columns);
       if (columns && Array.isArray(columns) && columns.length > 0) {
         foundMiscDistricts = columns;
       } else {
@@ -70,17 +75,19 @@ async function findMiscDistricts(slug, officeName, state) {
           },
           'dev',
         );
-        let columnJson = JSON.parse(columns) || [];
-        if (columnJson && Array.isArray(columnJson) && columnJson.length > 0) {
-          foundMiscDistricts = columnJson;
-          await sails.helpers.slack.slackHelper(
-            {
-              title: 'Error',
-              body: `Double Json.parse was successful for columns: ${foundMiscDistricts}.`,
-            },
-            'dev',
-          );
-        }
+        // the below does not work because the columns is not valid json because its returned with ' and not ".
+        // rather than do something hacky like replacing ' with " we have revised the prompt and are investigating issues with function calling parsing.
+        // let columnJson = JSON.parse(columns) || [];
+        // if (columnJson && Array.isArray(columnJson) && columnJson.length > 0) {
+        //   foundMiscDistricts = columnJson;
+        //   await sails.helpers.slack.slackHelper(
+        //     {
+        //       title: 'Error',
+        //       body: `Double Json.parse was successful for columns: ${foundMiscDistricts}.`,
+        //     },
+        //     'dev',
+        //   );
+        // }
       }
       sails.helpers.log(slug, 'found miscDistricts', matchResp);
     } catch (e) {
@@ -126,12 +133,13 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
     function: { name: 'matchColumns' },
   };
 
+  // todo: if meta llama keeps messing up the formatting we may need to add some few shot examples to the prompt.
   const completion = await getChatToolCompletion(
     [
       {
         role: 'system',
         content:
-          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position.',
+          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position. Please return valid JSON only.',
       },
       {
         role: 'user',
