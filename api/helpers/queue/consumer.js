@@ -159,49 +159,20 @@ async function handleMessage(message) {
 async function handlePathToVictoryFailure(campaign) {
   let p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
-  if (!p2v) {
-    // create a new p2v if it doesn't exist
-    p2v = await PathToVictory.create({
-      campaign: campaign.id,
-      data: { p2vStatus: 'Waiting', p2vStartDate: new Date().valueOf() },
-    }).fetch();
-
-    await Campaign.updateOne({ id: campaign.id }).set({
-      pathToVictory: p2v.id,
-    });
-  } else {
-    // set a p2vStartDate if it doesn't exist.
-    if (
-      p2v?.data?.p2vStatus &&
-      p2v?.data?.p2vStatus !== 'Complete' &&
-      !p2v?.data?.p2vStartDate
-    ) {
-      await PathToVictory.updateOne({
-        id: p2v.id,
-      }).set({
-        data: {
-          ...p2v.data,
-          p2vStatus: 'Waiting',
-          p2vStartDate: new Date().valueOf(),
-        },
-      });
-    }
+  let p2vAttempts = 0;
+  if (p2v?.data?.p2vAttempts) {
+    p2vAttempts = parseInt(p2v.data.p2vAttempts);
   }
+  p2vAttempts += 1;
 
-  if (p2v?.data?.p2vStartDate) {
-    const now = new Date().valueOf();
-    const diff = now - p2v.data.p2vStartDate;
-    const diffMinutes = Math.floor(diff / 60000);
-    // if we change visibility timeout on SQS this will need to be updated.
-    if (diffMinutes >= 15) {
-      await sails.helpers.slack.slackHelper(
-        {
-          title: 'Path To Victory',
-          body: `Path To Victory has been waiting for over an hour for ${campaign.slug}. Marking as failed`,
-        },
-        'victory-issues',
-      );
-    }
+  if (p2vAttempts >= 3) {
+    await sails.helpers.slack.slackHelper(
+      {
+        title: 'Path To Victory',
+        body: `Path To Victory has failed 3 times for ${campaign.slug}. Marking as failed`,
+      },
+      'victory-issues',
+    );
 
     // mark the p2vStatus as Failed
     await PathToVictory.updateOne({
@@ -209,7 +180,18 @@ async function handlePathToVictoryFailure(campaign) {
     }).set({
       data: {
         ...p2v.data,
+        p2vAttempts,
         p2vStatus: 'Failed',
+      },
+    });
+  } else {
+    // otherwise, increment the p2vAttempts
+    await PathToVictory.updateOne({
+      id: p2v.id,
+    }).set({
+      data: {
+        ...p2v.data,
+        p2vAttempts,
       },
     });
   }
@@ -241,50 +223,43 @@ async function handlePathToVictoryMessage(message) {
 
   if (p2vSuccess === false) {
     await handlePathToVictoryFailure(campaign);
-  }
-
-  // we try to run viability even if p2v fails.
-  // however we only run viability once.
-  if (!campaign.pathToVictory?.data?.viability) {
-    // For now we are calculating the viability score after a valid path to victory response.
-    let viability;
-    try {
-      viability = await sails.helpers.campaign.viabilityScore(
-        message.campaignId,
-      );
-    } catch (e) {
-      console.log('error in getting viability score', e);
-      await sails.helpers.slack.errorLoggerHelper(
-        'error calculating viability score',
-        e,
-      );
-    }
-    console.log('viability', viability);
-    if (viability) {
-      const pathToVictory = await PathToVictory.findOne({
-        campaign: message.campaignId,
-      });
-      const data = pathToVictory.data || {};
-      data.viability = viability;
-      await PathToVictory.updateOne({ campaign: message.campaignId }).set({
-        data,
-      });
-    }
-
-    // Send the candidate to google sheets for techspeed
-    try {
-      await sails.helpers.campaign.techspeedAppendSheets(message.campaignId);
-    } catch (e) {
-      console.log('error in techspeedAppendSheets', e);
-      await sails.helpers.slack.errorLoggerHelper(
-        'error in techspeedAppendSheets',
-        e,
-      );
-    }
-  }
-
-  if (p2vSuccess === false) {
     throw new Error('error in consumer/handlePathToVictoryMessage');
+  }
+
+  // For now we are calculating the viability score after a valid path to victory response.
+  // We will allow viability to re-run incase of office change, we need to recalculate viability.
+  let viability;
+  try {
+    viability = await sails.helpers.campaign.viabilityScore(message.campaignId);
+  } catch (e) {
+    console.log('error in getting viability score', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error calculating viability score',
+      e,
+    );
+  }
+  console.log('viability', viability);
+  if (viability) {
+    const pathToVictory = await PathToVictory.findOne({
+      campaign: message.campaignId,
+    });
+    const data = pathToVictory.data || {};
+    data.viability = viability;
+    await PathToVictory.updateOne({ campaign: message.campaignId }).set({
+      data,
+    });
+  }
+
+  // Send the candidate to google sheets for techspeed
+  // todo: need a way to dedupe this process.
+  try {
+    await sails.helpers.campaign.techspeedAppendSheets(message.campaignId);
+  } catch (e) {
+    console.log('error in techspeedAppendSheets', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error in techspeedAppendSheets',
+      e,
+    );
   }
 }
 
