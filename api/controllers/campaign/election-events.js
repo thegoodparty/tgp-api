@@ -33,7 +33,7 @@ module.exports = {
         await sendDayAfterPrimaryEmail(campaign);
       }
       for (let campaign of cancelCampaigns) {
-        await handleCancelCampaign(campaign, true);
+        await handleCancelCampaign(campaign);
       }
 
       return exits.success({

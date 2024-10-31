@@ -2,8 +2,9 @@ const moment = require('moment/moment');
 const {
   sendElectionEventEmail,
 } = require('../../email/sendElectionEventEmail');
+const { resolveUserName } = require('../../user/resolveUserName');
 
-const sendProSubscriptionEndingEmail = async function (campaign) {
+const sendProSubscriptionEndingEmail = function (campaign) {
   const { user } = campaign;
   const todayMoment = moment();
   sendElectionEventEmail({
@@ -11,7 +12,7 @@ const sendProSubscriptionEndingEmail = async function (campaign) {
     subject: `Your Pro Subscription is Ending Today`,
     templateName: 'end-of-pro-subscription',
     emailVars: {
-      userFullName: await sails.helpers.user.name(user),
+      userFullName: resolveUserName(user),
       todayDateString: todayMoment.format('DD MMMM, YYYY'),
     },
   });

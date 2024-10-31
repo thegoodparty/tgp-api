@@ -1,12 +1,12 @@
 const {
-  getCampaignBySubscriptionId,
-} = require('../../campaign/getCampaignBySubscriptionId');
+  persistCampaignProCancellation,
+} = require('../persistCampaignProCancellation');
 const {
-  cancelCampaignProSubscription,
-} = require('../cancelCampaignProSubscription');
+  getReconciledProCampaign,
+} = require('../../campaign/getReconciledProCampaign');
 const {
-  getCampaignByCustomerId,
-} = require('../../campaign/getCampaignByCustomerId');
+  sendProSubscriptionEndingEmail,
+} = require('../../campaign/event-handlers/sendProSubscriptionEndingEmail');
 
 const endCampaignProSubscription = async (event) => {
   const subscription = event.data.object;
@@ -15,12 +15,12 @@ const endCampaignProSubscription = async (event) => {
     throw 'No subscriptionId found in subscription';
   }
 
-  let campaign =
-    (await getCampaignBySubscriptionId(subscriptionId)) ||
-    (await getCampaignByCustomerId(customerId));
+  const campaign = await getReconciledProCampaign(subscriptionId, customerId);
+
   if (!campaign) {
     throw 'No campaign found with given subscription';
   }
+  const { details } = campaign;
 
   const user = await User.findOne({ id: campaign.user });
   if (!user) {
@@ -31,7 +31,12 @@ const endCampaignProSubscription = async (event) => {
     console.log('User is already deleted');
     return;
   }
-  await cancelCampaignProSubscription(campaign, user);
+  await persistCampaignProCancellation(
+    campaign,
+    user,
+    Boolean(details.endOfElectionSubscriptionCanceled),
+  );
+  sendProSubscriptionEndingEmail({ ...campaign, user });
 };
 
 module.exports = {
