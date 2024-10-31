@@ -127,7 +127,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
       ? 'Complete'
       : p2vStatus;
 
-  const properties = {
+  let properties = {
     name,
     candidate_party: party,
     candidate_office: resolvedOffice,
