@@ -12,7 +12,6 @@ const handleDeleteCandidateAssociatedData = async (user, campaign) => {
     } catch (e) {
       console.error(e);
       await sails.helpers.slack.errorLoggerHelper('Error user/delete', e);
-      return e;
     }
   }
   await CandidatePosition.destroy({

@@ -1,7 +1,7 @@
 const {
-  getCampaignBySubscriptionId,
-} = require('./getCampaignBySubscriptionId');
-const { getCampaignByCustomerId } = require('./getCampaignByCustomerId');
+  sendCancellationRequestConfirmationEmail,
+} = require('./event-handlers/sendCancellationRequestConfirmationEmail');
+const { getReconciledProCampaign } = require('./getReconciledProCampaign');
 
 const campaignProSubscriptionUpdated = async (event) => {
   const subscription = event.data.object;
@@ -15,12 +15,15 @@ const campaignProSubscriptionUpdated = async (event) => {
     throw 'No subscriptionId found in subscription';
   }
 
-  let campaign =
-    (await getCampaignBySubscriptionId(subscriptionId)) ||
-    (await getCampaignByCustomerId(customerId));
+  const campaign = await getReconciledProCampaign(subscriptionId, customerId);
   if (!campaign) {
     throw 'No campaign found with given subscription';
   }
+
+  const user = await User.findOne({ id: campaign.user });
+
+  const { details } = campaign;
+  const isCancellationRequest = canceledAt && !details.subscriptionCanceledAt;
 
   await sails.helpers.campaign.patch(
     campaign.id,
@@ -34,6 +37,11 @@ const campaignProSubscriptionUpdated = async (event) => {
     'subscriptionCancelAt',
     cancelAt,
   );
+  isCancellationRequest &&
+    sendCancellationRequestConfirmationEmail({
+      ...(await getReconciledProCampaign(subscriptionId, customerId)),
+      user,
+    });
 };
 
 module.exports = {

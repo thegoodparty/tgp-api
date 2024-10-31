@@ -1,3 +1,5 @@
+const { resolveUserName } = require('../../utils/user/resolveUserName');
+
 module.exports = {
   inputs: {
     user: {
@@ -9,17 +11,7 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       const { user } = inputs;
-      if (!user) {
-        return exits.success('');
-      }
-      if (user.firstName) {
-        return exits.success(`${user.firstName} ${user.lastName}`);
-      }
-      if (user.name) {
-        return exits.success(user.name);
-      }
-
-      return exits.success('');
+      return exits.success(resolveUserName(user));
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
         'Error at helpers/user/name',
