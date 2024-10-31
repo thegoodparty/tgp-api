@@ -65,10 +65,8 @@ async function getChatToolCompletion(
         );
       }
 
-      const completionJson = JSON.stringify(completion, null, 2);
+      // const completionJson = JSON.stringify(completion, null, 2);
       // console.log('completionJson', completionJson);
-
-      let toolsUsed = tools ? 'Yes' : 'No';
       let content = '';
       if (completion?.choices && completion.choices[0]?.message) {
         if (tools && completion.choices[0].message?.tool_calls) {
@@ -82,14 +80,22 @@ async function getChatToolCompletion(
             // but we can check if the model returned a response without a function call
             content = completion.choices[0].message?.content || '';
             if (content !== '') {
-              await sails.helpers.slack.slackHelper(
-                {
-                  title: 'Error in AI',
-                  body: `getChatToolCompletion. model: ${model}. Tools Used: ${toolsUsed}. No tool_calls found. content without function call found: ${content}. raw completion: ${completionJson}`,
-                },
-                'dev',
-              );
-              // todo: may need to parse the <function> tag from the content with no tool_calls.
+              if (content.includes('<function=')) {
+                // there is some bug either with openai client, llama3.1 native FC, or together.ai api
+                // where the tool_calls are not being returned in the response
+                // so we can parse the function call from the content
+                let toolResponse = parseToolResponse(content);
+                if (toolResponse) {
+                  content = toolResponse.arguments;
+                  // todo: remove this if all is well.
+                  await sails.helpers.slack.slackHelper({
+                    title: 'Tool Call Parsed',
+                    body: `Tool call parsed. Model: ${model}. Tool: ${
+                      toolResponse.function
+                    }. Arguments: ${JSON.stringify(toolResponse.arguments)}`,
+                  });
+                }
+              }
             }
           }
         } else {
@@ -127,6 +133,26 @@ async function getChatToolCompletion(
     content: '',
     tokens: 0,
   };
+}
+
+function parseToolResponse(response) {
+  const functionRegex = /<function=(\w+)>(.*?)<\/function>/;
+  const match = response.match(functionRegex);
+
+  if (match) {
+    const [functionName, argsString] = match;
+    try {
+      const args = JSON.parse(argsString);
+      return {
+        function: functionName,
+        arguments: args,
+      };
+    } catch (error) {
+      console.log(`Error parsing function arguments: ${error}`);
+      return undefined;
+    }
+  }
+  return undefined;
 }
 
 module.exports = getChatToolCompletion;
