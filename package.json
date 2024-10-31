@@ -55,7 +55,7 @@
     "node-fetch": ">=2.6.7",
     "node-forge": "^1.2.1",
     "nodemon": "^2.0.15",
-    "openai": "^4.52.5",
+    "openai": "^4.69.0",
     "peopledatalabs": "^7.0.5",
     "pg": "^8.11.5",
     "pg-connection-string": "^2.6.2",
