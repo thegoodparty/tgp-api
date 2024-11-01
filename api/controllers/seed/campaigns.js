@@ -11,6 +11,11 @@ const PARTIES = [
   'nonpartisan',
 ];
 const LEVELS = ['LOCAL', 'CITY', 'COUNTY', 'STATE', 'FEDERAL'];
+const P2V_STATUS = ['Waiting', 'Complete', 'Failed'];
+
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 module.exports = {
   inputs: {
@@ -52,8 +57,7 @@ module.exports = {
         for (let i = startIndex; i < endIndex && i < userCount; i++) {
           const email = `testing${i}@testperson.com`;
           const state = getStateByIndex(i);
-          const location =
-            state.locations[Math.floor(Math.random() * state.locations.length)];
+          const location = randomItem(state.locations);
 
           promises[i % BATCH_SIZE] = User.findOrCreate(
             {
@@ -73,8 +77,8 @@ module.exports = {
             process.stdout.write('.');
             const slug = buildSlug(user.name);
 
-            const party = PARTIES[Math.floor(Math.random() * PARTIES.length)];
-            const level = LEVELS[Math.floor(Math.random() * LEVELS.length)];
+            const party = randomItem(PARTIES);
+            const level = randomItem(LEVELS);
 
             return Campaign.findOrCreate(
               { slug },
@@ -115,8 +119,22 @@ module.exports = {
                   raceId: '',
                 },
               },
-            ).then(() => {
+            ).then((campaign) => {
               process.stdout.write('.');
+
+              return PathToVictory.findOrCreate(
+                { campaign: campaign.id },
+                {
+                  campaign: campaign.id,
+                  // TODO: add more values
+                  data: { p2vStatus: randomItem(P2V_STATUS) },
+                },
+              )
+              .then((p2v) =>
+                Campaign.updateOne({ id: campaign.id }).set({
+                  pathToVictory: p2v.id,
+                }),
+              );
             });
           });
         }

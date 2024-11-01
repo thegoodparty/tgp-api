@@ -33,6 +33,7 @@ const buildQueryWhereClause = ({
   campaignStatus,
   generalElectionDateStart,
   generalElectionDateEnd,
+  p2vStatus,
 }) => `
   ${id ? ` AND c.id = ${id}` : ''}
   ${slug ? ` AND c.slug ILIKE '%${slug}%'` : ''}
@@ -64,6 +65,7 @@ const buildQueryWhereClause = ({
       ? ` AND c.details->>'electionDate' <= '${generalElectionDateEnd}'`
       : ''
   }
+  ${p2vStatus ? ` AND p.data->>'p2vStatus' = '${p2vStatus}'` : ''}
 `;
 
 const buildCustomCampaignListQuery = ({
@@ -77,6 +79,7 @@ const buildCustomCampaignListQuery = ({
   campaignStatus,
   generalElectionDateStart,
   generalElectionDateEnd,
+  p2vStatus,
 }) => `
   SELECT
     c.*,
@@ -101,6 +104,7 @@ const buildCustomCampaignListQuery = ({
     campaignStatus,
     generalElectionDateStart,
     generalElectionDateEnd,
+    p2vStatus,
   })}
   ORDER BY c.id DESC;
 `;
@@ -138,6 +142,9 @@ module.exports = {
     generalElectionDateEnd: {
       type: 'string',
     },
+    p2vStatus: {
+      type: 'string',
+    },
   },
 
   exits: {
@@ -163,6 +170,7 @@ module.exports = {
       campaignStatus,
       generalElectionDateStart,
       generalElectionDateEnd,
+      p2vStatus,
     } = inputs;
 
     try {
@@ -177,7 +185,8 @@ module.exports = {
         !primaryElectionDateEnd &&
         !campaignStatus &&
         !generalElectionDateStart &&
-        !generalElectionDateEnd
+        !generalElectionDateEnd &&
+        !p2vStatus
       ) {
         campaigns = await Campaign.find({
           where: { user: { '!=': null } },
