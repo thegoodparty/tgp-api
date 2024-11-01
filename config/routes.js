@@ -273,6 +273,7 @@ module.exports.routes = {
     'data-processing/techspeed-new-candidates-sheet',
   'GET   /api/v1/nebraska': 'data-processing/nebraska',
   'GET   /api/v1/race-details': 'data-processing/fix-race-details',
+  'GET   /api/v1/update-p2vs': 'data-processing/update-p2vs',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
