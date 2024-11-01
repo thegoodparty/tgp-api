@@ -74,7 +74,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     viability,
   } = p2v?.data || {};
 
-  const { candidates, isIncumbent, seats, score, isPartisan } = viability || {};
+  let { candidates, isIncumbent, seats, score, isPartisan } = viability || {};
 
   const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
 
