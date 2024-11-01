@@ -72,6 +72,7 @@ module.exports.routes = {
   'GET    /api/v1/admin/hidden-candidates': 'admin/candidate/hidden-list',
   'GET    /api/v1/admin/users': 'admin/all-users',
   'DELETE    /api/v1/admin/user': 'admin/delete-user',
+  'POST    /api/v1/admin/user': 'user/admin-create-user',
   'POST   /api/v1/admin/user/impersonate': 'admin/impersonate-user',
   'POST   /api/v1/admin/uploaded-images': 'admin/uploaded-images',
   'POST   /api/v1/admin/upload-image': 'admin/upload-image',
