@@ -5,7 +5,13 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+const USER_ROLES = {
+  SALES: 'sales',
+  CAMPAIGN: 'campaign',
+};
+
 module.exports = {
+  USER_ROLES,
   attributes: {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
@@ -131,6 +137,12 @@ module.exports = {
     isAdmin: {
       type: 'boolean',
       defaultsTo: false,
+      required: false,
+      allowNull: true,
+    },
+    role: {
+      type: 'string',
+      isIn: Object.values(USER_ROLES),
       required: false,
       allowNull: true,
     },

@@ -76,12 +76,20 @@ module.exports = {
       description: 'creation failed',
       responseType: 'badRequest',
     },
+    emailAlreadyInUse: {
+      statusCode: 409,
+      description: 'The provided email address is already in use.',
+    },
   },
   fn: async function (inputs, exits) {
     try {
       let { firstName, lastName, email, zip, phone, party, otherParty } =
         inputs;
       email = email.toLowerCase();
+      const existing = await User.findOne({ email });
+      if (existing) {
+        return exits.emailAlreadyInUse();
+      }
       const userName = `${firstName} ${lastName}`;
       const user = await User.create({
         firstName,

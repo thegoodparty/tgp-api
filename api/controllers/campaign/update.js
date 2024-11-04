@@ -1,3 +1,4 @@
+const { USER_ROLES } = require('../../models/users/User');
 module.exports = {
   friendlyName: 'Update Campaign',
 
@@ -28,7 +29,14 @@ module.exports = {
       const userCampaign = await sails.helpers.campaign.byUser(user.id);
 
       // Only allow mismatched slugs for admins
-      if (slug && slug !== userCampaign.slug && !user.isAdmin) {
+      if (
+        slug &&
+        slug !== userCampaign.slug &&
+        // TODO: these role authorization checks should be done at the
+        //  routing/policy layer
+        user?.role !== USER_ROLES.SALES &&
+        !user.isAdmin
+      ) {
         return exits.badRequest('Unauthorized');
       }
 
