@@ -1,6 +1,7 @@
 const { initial } = require('lodash');
 const getAssistantCompletion = require('../../../../utils/ai/getAssistantCompletion');
 const getChatSystemPrompt = require('../../../../utils/ai/getChatSystemPrompt');
+const crypto = require('crypto');
 
 const llamaAiAssistant =
   sails.config.custom.llamaAiAssistant || sails.config.llamaAiAssistant;
