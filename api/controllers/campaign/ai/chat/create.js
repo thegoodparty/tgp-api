@@ -2,8 +2,8 @@ const { initial } = require('lodash');
 const getAssistantCompletion = require('../../../../utils/ai/getAssistantCompletion');
 const getChatSystemPrompt = require('../../../../utils/ai/getChatSystemPrompt');
 
-const openAiAssistant =
-  sails.config.custom.openAiAssistant || sails.config.openAiAssistant;
+const llamaAiAssistant =
+  sails.config.custom.llamaAiAssistant || sails.config.llamaAiAssistant;
 
 module.exports = {
   inputs: {
@@ -48,10 +48,18 @@ module.exports = {
       const chatMessage = {
         role: 'user',
         content: message,
+        id: crypto.randomUUID(),
+        createdAt: new Date().valueOf(),
       };
 
       let threadId;
       let messageId;
+
+      if (!threadId) {
+        console.log('creating thread');
+        threadId = crypto.randomUUID();
+        console.log('threadId', threadId);
+      }
 
       console.log('candidateContext', candidateContext);
       console.log('systemPrompt', systemPrompt);
@@ -59,7 +67,7 @@ module.exports = {
       const completion = await getAssistantCompletion(
         systemPrompt,
         candidateContext,
-        openAiAssistant,
+        llamaAiAssistant,
         threadId,
         chatMessage,
         messageId,
@@ -74,11 +82,11 @@ module.exports = {
           id: completion.messageId,
           content: completion.content,
           createdAt: completion.createdAt,
-          usage,
+          usage: completion.usage,
         };
 
         await AIChat.create({
-          assistant: openAiAssistant,
+          assistant: llamaAiAssistant,
           thread: completion.threadId,
           user: user.id,
           campaign: campaign.id,

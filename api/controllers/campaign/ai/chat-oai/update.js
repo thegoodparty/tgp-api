@@ -1,8 +1,8 @@
-const getAssistantCompletion = require('../../../../utils/ai/getAssistantCompletion');
+const getOpenAiAssistantCompletion = require('../../../../utils/ai/getOpenAiAssistantCompletion');
 const getChatSystemPrompt = require('../../../../utils/ai/getChatSystemPrompt');
 
-const llamaAiAssistant =
-  sails.config.custom.llamaAiAssistant || sails.config.llamaAiAssistant;
+const openAiAssistant =
+  sails.config.custom.openAiAssistant || sails.config.openAiAssistant;
 
 module.exports = {
   inputs: {
@@ -63,14 +63,12 @@ module.exports = {
       let chatMessage = {
         role: 'user',
         content: message,
-        id: crypto.randomUUID(),
-        createdAt: new Date().valueOf(),
       };
 
-      const completion = await getAssistantCompletion(
+      const completion = await getOpenAiAssistantCompletion(
         systemPrompt,
         candidateContext,
-        llamaAiAssistant,
+        openAiAssistant,
         threadId,
         chatMessage,
         messageId,
@@ -85,7 +83,7 @@ module.exports = {
           id: completion.messageId,
           content: completion.content,
           createdAt: completion.createdAt,
-          usage: completion.usage,
+          usage,
         };
 
         await AIChat.updateOne({ id: aiChat.id }).set({

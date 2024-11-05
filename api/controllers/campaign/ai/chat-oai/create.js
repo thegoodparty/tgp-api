@@ -1,19 +1,17 @@
-const getAssistantCompletion = require('../../../../utils/ai/getAssistantCompletion');
+const { initial } = require('lodash');
+const getOpenAiAssistantCompletion = require('../../../../utils/ai/getOpenAiAssistantCompletion');
 const getChatSystemPrompt = require('../../../../utils/ai/getChatSystemPrompt');
 
-const llamaAiAssistant =
-  sails.config.custom.llamaAiAssistant || sails.config.llamaAiAssistant;
+const openAiAssistant =
+  sails.config.custom.openAiAssistant || sails.config.openAiAssistant;
 
 module.exports = {
   inputs: {
-    threadId: {
+    message: {
       type: 'string',
       required: true,
     },
-    message: {
-      type: 'string',
-    },
-    regenerate: {
+    initial: {
       type: 'boolean',
       defaultsTo: false,
     },
@@ -21,7 +19,7 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Chat Found',
+      description: 'Campaign Found',
       responseType: 'ok',
     },
     badRequest: {
@@ -34,43 +32,34 @@ module.exports = {
     try {
       const user = this.req.user;
 
-      let { threadId, regenerate, message } = inputs;
-
-      if (regenerate && !threadId) {
+      if (!user) {
         return exits.badRequest();
       }
 
-      let aiChat = await AIChat.findOne({ thread: threadId, user: user.id });
-      if (!aiChat) {
-        return exits.badRequest();
-      }
+      const { message } = inputs;
 
-      let messages = aiChat?.data?.messages || [];
-      let campaign = await Campaign.findOne({ id: aiChat?.campaign });
+      // Create a new chat
+      let campaign = await sails.helpers.campaign.byUser(user.id);
       const { candidateContext, systemPrompt } = await getChatSystemPrompt(
         campaign,
+        initial,
       );
 
-      let messageId;
-      if (regenerate) {
-        let aiMessage = messages[messages.length - 1];
-        messageId = aiMessage.id;
-        messages.pop();
-        message = messages[messages.length - 1]?.content;
-        messages.pop();
-      }
-
-      let chatMessage = {
+      const chatMessage = {
         role: 'user',
         content: message,
-        id: crypto.randomUUID(),
-        createdAt: new Date().valueOf(),
       };
 
-      const completion = await getAssistantCompletion(
+      let threadId;
+      let messageId;
+
+      console.log('candidateContext', candidateContext);
+      console.log('systemPrompt', systemPrompt);
+
+      const completion = await getOpenAiAssistantCompletion(
         systemPrompt,
         candidateContext,
-        llamaAiAssistant,
+        openAiAssistant,
         threadId,
         chatMessage,
         messageId,
@@ -79,23 +68,28 @@ module.exports = {
       console.log('completion', completion);
 
       let chatResponse;
-      if (completion && completion.content) {
+      if (completion && completion?.content) {
         chatResponse = {
           role: 'assistant',
           id: completion.messageId,
           content: completion.content,
           createdAt: completion.createdAt,
-          usage: completion.usage,
+          usage,
         };
 
-        await AIChat.updateOne({ id: aiChat.id }).set({
+        await AIChat.create({
+          assistant: openAiAssistant,
+          thread: completion.threadId,
+          user: user.id,
+          campaign: campaign.id,
           data: {
-            ...aiChat.data,
-            messages: [...messages, chatMessage, chatResponse],
+            messages: [chatMessage, chatResponse],
           },
         });
-
-        return exits.success({ message: chatResponse });
+        return exits.success({
+          chat: [chatMessage, chatResponse],
+          threadId: completion.threadId,
+        });
       } else {
         return exits.badRequest();
       }

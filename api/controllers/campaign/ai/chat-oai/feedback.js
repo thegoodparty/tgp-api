@@ -1,9 +1,9 @@
 const { isIn } = require('validator');
-const getAssistantCompletion = require('../../../../utils/ai/getAssistantCompletion');
+const getOpenAiAssistantCompletion = require('../../../../utils/ai/getOpenAiAssistantCompletion');
 const getChatSystemPrompt = require('../../../../utils/ai/getChatSystemPrompt');
 
-const llamaAiAssistant =
-  sails.config.custom.llamaAiAssistant || sails.config.llamaAiAssistant;
+const openAiAssistant =
+  sails.config.custom.openAiAssistant || sails.config.openAiAssistant;
 
 module.exports = {
   inputs: {
@@ -57,10 +57,10 @@ module.exports = {
         {
           title: `${type} feedback on AI Chat thread`,
           body: `${type} feedback on AI Chat thread
-          User: ${user.email}
-          ${message ? `Message: ${message}` : ''}
-          Thread ID: ${threadId}
-          Last Message on thread: ${
+User: ${user.email}
+${message ? `Message: ${message}` : ''}
+Thread ID: ${threadId}
+Last Message on thread: ${
             aiChat?.data?.messages[aiChat?.data?.messages.length - 1]?.content
           }`,
         },
