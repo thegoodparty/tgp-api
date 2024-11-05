@@ -1,4 +1,5 @@
 const llmChatCompletion = require('./llmChatCompletion');
+const crypto = require('crypto');
 
 async function getAssistantCompletion(
   systemPrompt,
