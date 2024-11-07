@@ -67,25 +67,23 @@ async function getSearchColumn(
 }
 
 async function matchSearchValues(slug, searchValues, searchString) {
-  const functionDefinition = [
-    {
-      type: 'function',
-      function: {
-        name: 'matchLabels',
-        description: 'Determine the label that closely matches the input.',
-        parameters: {
-          type: 'object',
-          properties: {
-            matchedLabel: {
-              type: 'string',
-              description: 'The label that closely matches the input.',
-            },
+  const functionDefinition = {
+    type: 'function',
+    function: {
+      name: 'matchLabels',
+      description: 'Determine the label that closely matches the input.',
+      parameters: {
+        type: 'object',
+        properties: {
+          matchedLabel: {
+            type: 'string',
+            description: 'The label that closely matches the input.',
           },
-          required: ['matchedLabel'],
         },
+        required: ['matchedLabel'],
       },
     },
-  ];
+  };
 
   let toolChoice = {
     type: 'function',

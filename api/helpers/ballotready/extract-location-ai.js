@@ -153,44 +153,41 @@ module.exports = {
       }
       `;
 
-      let tools = [
-        {
-          type: 'function',
-          function: {
-            name: 'extractLocation',
-            description: 'Extract the location from the office name.',
-            parameters: {
-              type: 'object',
-              properties: {},
-            },
+      let tool = {
+        type: 'function',
+        function: {
+          name: 'extractLocation',
+          description: 'Extract the location from the office name.',
+          parameters: {
+            type: 'object',
+            properties: {},
           },
         },
-      ];
-
+      };
       let systemPrompt;
       if (level === 'county') {
         systemPrompt = countyPrompt;
       } else if (level === 'city') {
         systemPrompt = cityPrompt;
-        tools[0].function.parameters.properties.city = {
+        tool.function.parameters.properties.city = {
           type: 'string',
           description: 'The city name.',
         };
       } else if (level === 'town') {
         systemPrompt = townPrompt;
-        tools[0].function.parameters.properties.town = {
+        tool.function.parameters.properties.town = {
           type: 'string',
           description: 'The town name.',
         };
       } else if (level === 'township') {
         systemPrompt = townshipPrompt;
-        tools[0].function.parameters.properties.township = {
+        tool.function.parameters.properties.township = {
           type: 'string',
           description: 'The township name.',
         };
       } else if (level === 'village') {
         systemPrompt = villagePrompt;
-        tools[0].function.parameters.properties.village = {
+        tool.function.parameters.properties.village = {
           type: 'string',
           description: 'The village name.',
         };
@@ -199,7 +196,7 @@ module.exports = {
       }
 
       // we always try to get the county name
-      tools[0].function.parameters.properties.county = {
+      tool.function.parameters.properties.county = {
         type: 'string',
         description: 'The county name.',
       };
@@ -225,7 +222,7 @@ module.exports = {
         messages,
         0.1,
         0.1,
-        tools,
+        tool,
         toolChoice,
       );
 

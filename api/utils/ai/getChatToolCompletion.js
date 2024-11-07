@@ -9,7 +9,7 @@ async function getChatToolCompletion(
   messages = [],
   temperature = 0.1,
   topP = 0.1,
-  tools = undefined, // list of functions that could be called.
+  tool = undefined, // list of functions that could be called.
   toolChoice = undefined, // force the function to be called on every generation if needed.
   timeout = 300000, // timeout request after 5 minutes
 ) {
@@ -24,27 +24,50 @@ async function getChatToolCompletion(
       baseURL: togetherAi ? 'https://api.together.xyz/v1' : undefined,
     });
 
-    if (
-      model.includes('meta-llama') &&
-      toolChoice?.function?.name &&
-      toolChoice.function.name === 'matchLabels'
-    ) {
-      // this function spec breaks the together.ai api
-      // so we just use better prompt to get the same result
-      tools = undefined;
+    let toolPrompt;
+    if (model.includes('meta-llama')) {
+      // the native function calling in llama is not working as expected
+      // so we use this function prompt to get the same result
+      toolPrompt = `You have access to the following functions:
+
+      Use the function '${tool.name}' to '${tool.description}':
+      ${JSON.stringify(tool)}
+      
+      If you choose to call a function ONLY reply in the following format with no prefix or suffix:
+      
+      <function=example_function_name>{"example_name": "example_value"}</function>
+      
+      Reminder:
+      - Function calls MUST follow the specified format, start with <function= and end with </function>
+      - Required parameters MUST be specified
+      - Only call one function at a time
+      - Put the entire function call reply on one line
+      - If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls`;
+
+      // add the tool prompt to the last system message
+      for (const message of messages) {
+        if (message.role === 'system') {
+          message.content += toolPrompt;
+          break;
+        }
+      }
+
+      tool = undefined;
       toolChoice = undefined;
     }
 
+    console.log('toolChoice', toolChoice);
+
     let completion;
     try {
-      if (tools) {
+      if (tool) {
         completion = await client.chat.completions.create(
           {
             model,
             messages,
             top_p: topP,
             temperature: temperature,
-            tools,
+            tools: [tool],
             tool_choice: toolChoice,
           },
           {
@@ -69,7 +92,7 @@ async function getChatToolCompletion(
       // console.log('completionJson', completionJson);
       let content = '';
       if (completion?.choices && completion.choices[0]?.message) {
-        if (tools && completion.choices[0].message?.tool_calls) {
+        if (completion.choices[0].message?.tool_calls) {
           // console.log('completion (json)', JSON.stringify(completion, null, 2));
           let toolCalls = completion.choices[0].message.tool_calls;
           if (toolCalls && toolCalls.length > 0) {
@@ -79,24 +102,6 @@ async function getChatToolCompletion(
             // we are expecting tool_calls to have a function call response
             // but we can check if the model returned a response without a function call
             content = completion.choices[0].message?.content || '';
-            if (content !== '') {
-              if (content.includes('<function=')) {
-                // there is some bug either with openai client, llama3.1 native FC, or together.ai api
-                // where the tool_calls are not being returned in the response
-                // so we can parse the function call from the content
-                let toolResponse = parseToolResponse(content);
-                if (toolResponse) {
-                  content = toolResponse.arguments;
-                  // todo: remove this if all is well.
-                  await sails.helpers.slack.slackHelper({
-                    title: 'Tool Call Parsed',
-                    body: `Tool call parsed. Model: ${model}. Tool: ${
-                      toolResponse.function
-                    }. Arguments: ${JSON.stringify(toolResponse.arguments)}`,
-                  });
-                }
-              }
-            }
           }
         } else {
           // console.log('completion (raw)', completion);
@@ -106,6 +111,18 @@ async function getChatToolCompletion(
 
       if (content && typeof content === 'string') {
         content = content.trim();
+      }
+
+      if (content && content !== '') {
+        if (content.includes('<function=')) {
+          // there is some bug either with openai client, llama3.1 native FC, or together.ai api
+          // where the tool_calls are not being returned in the response
+          // so we can parse the function call from the content
+          let toolResponse = parseToolResponse(content);
+          if (toolResponse) {
+            content = toolResponse.arguments;
+          }
+        }
       }
 
       if (content.includes('```html')) {
