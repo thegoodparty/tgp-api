@@ -129,22 +129,24 @@ function buildSlackBlocks(
                   },
                 ],
               },
-              {
-                type: 'rich_text_section',
-                elements: [
-                  {
-                    type: 'text',
-                    text: 'Message: ',
-                    style: {
-                      bold: true,
-                    },
-                  },
-                  {
-                    type: 'text',
-                    text: String(userMessage),
-                  },
-                ],
-              },
+              userMessage
+                ? {
+                    type: 'rich_text_section',
+                    elements: [
+                      {
+                        type: 'text',
+                        text: 'Message: ',
+                        style: {
+                          bold: true,
+                        },
+                      },
+                      {
+                        type: 'text',
+                        text: String(userMessage),
+                      },
+                    ],
+                  }
+                : undefined,
               {
                 type: 'rich_text_section',
                 elements: [
@@ -177,7 +179,7 @@ function buildSlackBlocks(
                   },
                 ],
               },
-            ],
+            ].filter((elem) => elem !== undefined),
           },
           {
             type: 'rich_text_section',
