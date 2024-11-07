@@ -53,18 +53,20 @@ module.exports = {
         },
       });
 
+      const lastMsgIndex = aiChat?.data?.messages.length - 1;
+      const slackBlocks = buildSlackBlocks(
+        type,
+        user.email,
+        threadId,
+        message,
+        aiChat?.data?.messages[lastMsgIndex - 1]?.content,
+        aiChat?.data?.messages[lastMsgIndex]?.content,
+      );
+
       await sails.helpers.slack.slackHelper(
-        {
-          title: `${type} feedback on AI Chat thread`,
-          body: `${type} feedback on AI Chat thread
-          User: ${user.email}
-          ${message ? `Message: ${message}` : ''}
-          Thread ID: ${threadId}
-          Last Message on thread: ${
-            aiChat?.data?.messages[aiChat?.data?.messages.length - 1]?.content
-          }`,
-        },
+        slackBlocks,
         'user-feedback',
+        false,
       );
 
       return exits.success({ message: 'ok' });
@@ -81,3 +83,134 @@ module.exports = {
     }
   },
 };
+
+function buildSlackBlocks(
+  type,
+  email,
+  threadId,
+  userMessage,
+  userPrompt,
+  lastThreadMessage,
+) {
+  const title = `${
+    type.charAt(0).toUpperCase() + type.slice(1)
+  } feedback on AI Chat thread`;
+
+  return {
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: `💬 ${title}`,
+          emoji: true,
+        },
+      },
+      {
+        type: 'rich_text',
+        elements: [
+          {
+            type: 'rich_text_list',
+            style: 'bullet',
+            elements: [
+              {
+                type: 'rich_text_section',
+                elements: [
+                  {
+                    type: 'text',
+                    text: 'User: ',
+                    style: {
+                      bold: true,
+                    },
+                  },
+                  {
+                    type: 'text',
+                    text: String(email),
+                  },
+                ],
+              },
+              {
+                type: 'rich_text_section',
+                elements: [
+                  {
+                    type: 'text',
+                    text: 'Message: ',
+                    style: {
+                      bold: true,
+                    },
+                  },
+                  {
+                    type: 'text',
+                    text: String(userMessage),
+                  },
+                ],
+              },
+              {
+                type: 'rich_text_section',
+                elements: [
+                  {
+                    type: 'text',
+                    text: 'Thread ID: ',
+                    style: {
+                      bold: true,
+                    },
+                  },
+                  {
+                    type: 'text',
+                    text: String(threadId),
+                  },
+                ],
+              },
+              {
+                type: 'rich_text_section',
+                elements: [
+                  {
+                    type: 'text',
+                    text: 'User Prompt: ',
+                    style: {
+                      bold: true,
+                    },
+                  },
+                  {
+                    type: 'text',
+                    text: String(userPrompt),
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: 'rich_text_section',
+            elements: [
+              {
+                type: 'text',
+                text: '\n\n',
+              },
+            ],
+          },
+          {
+            type: 'rich_text_section',
+            elements: [
+              {
+                type: 'text',
+                text: ' Last Message on Thread:',
+                style: {
+                  bold: true,
+                },
+              },
+            ],
+          },
+          {
+            type: 'rich_text_preformatted',
+            elements: [
+              {
+                type: 'text',
+                text: lastThreadMessage,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
