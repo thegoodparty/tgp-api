@@ -275,6 +275,7 @@ module.exports.routes = {
   'GET   /api/v1/nebraska': 'data-processing/nebraska',
   'GET   /api/v1/race-details': 'data-processing/fix-race-details',
   'GET   /api/v1/update-p2vs': 'data-processing/update-p2vs',
+  'GET   /api/v1/fetch-election-types': 'data-processing/fetch-election-types',
 
   // jobs
   'GET   /api/v1/jobs': 'jobs/list',
