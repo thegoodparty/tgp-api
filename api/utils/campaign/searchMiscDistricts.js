@@ -9,7 +9,12 @@ async function searchMiscDistricts(
   let searchColumns = [];
   try {
     sails.helpers.log(slug, `Searching misc districts for ${officeName}`);
-    searchColumns = await findMiscDistricts(slug, officeName, electionState);
+    searchColumns = await findMiscDistricts(
+      slug,
+      officeName,
+      electionState,
+      electionLevel,
+    );
 
     sails.helpers.log(slug, 'miscDistricts', searchColumns);
     return searchColumns;
@@ -19,9 +24,75 @@ async function searchMiscDistricts(
   return searchColumns;
 }
 
-async function findMiscDistricts(slug, officeName, state) {
-  // Populate the miscellaneous districts from the database.
-  const results = await ElectionType.find({ state });
+function getOfficeCategory(officeName, electionLevel) {
+  let category;
+
+  let searchMap = {
+    Judicial: ['Judicial', 'Judge', 'Attorney', 'Court', 'Justice'],
+    Education: ['Education', 'School', 'College', 'University', 'Elementary'],
+    City: [
+      'City Council',
+      'City Mayor',
+      'City Clerk',
+      'City Treasurer',
+      'City Commission',
+    ],
+    County: [
+      'County Commission',
+      'County Supervisor',
+      'County Legislative',
+      'County Board',
+    ],
+    State: [
+      'U.S. Congress',
+      'U.S. Senate',
+      'U.S. House',
+      'U.S. Representative',
+      'U.S. Senator',
+      'Senate',
+      'State House',
+      'House of Representatives',
+      'State Assembly',
+      'State Representative',
+      'State Senator',
+    ],
+  };
+
+  for (const [key, value] of Object.entries(searchMap)) {
+    for (const search of value) {
+      if (officeName.toLowerCase().includes(search.toLowerCase())) {
+        category = key;
+        break;
+      }
+    }
+  }
+
+  if (!category) {
+    if (
+      electionLevel.toLowerCase() === 'city' ||
+      electionLevel.toLowerCase() === 'local'
+    ) {
+      category = 'City';
+    } else if (electionLevel.toLowerCase() === 'county') {
+      category = 'County';
+    }
+  }
+
+  return category;
+}
+
+async function findMiscDistricts(slug, officeName, state, electionLevel) {
+  // Attempt to determine the category of the office.
+  const category = getOfficeCategory(officeName, electionLevel);
+  console.log(`Determined category: ${category} for office ${officeName}`);
+
+  // Populate the potential miscellaneous districts from the database.
+  let results;
+  if (category) {
+    results = await ElectionType.find({ state, category });
+  } else {
+    results = await ElectionType.find({ state });
+  }
 
   if (!results || results.length === 0) {
     sails.helpers.log(
@@ -103,34 +174,30 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
     slug,
     `Doing AI search for ${searchString} against ${searchColumns.length} columns`,
   );
-  const functionDefinition = [
-    {
-      type: 'function',
-      function: {
-        name: 'matchColumns',
-        description: 'Determine the columns that best match the office name.',
-        parameters: {
-          type: 'object',
-          properties: {
-            columns: {
-              type: 'array',
-              items: {
-                type: 'string',
-              },
-              description:
-                'The list of columns that best match the office name.',
-              maxItems: 5,
+  const matchColumnTool = {
+    type: 'function',
+    function: {
+      name: 'match_columns',
+      description: 'Determine the columns that best match the office name.',
+      parameters: {
+        type: 'object',
+        properties: {
+          columns: {
+            type: 'array',
+            items: {
+              type: 'string',
             },
+            description: 'The list of columns that best match the office name.',
+            maxItems: 5,
           },
-          required: ['columns'],
         },
       },
     },
-  ];
+  };
 
   let toolChoice = {
     type: 'function',
-    function: { name: 'matchColumns' },
+    function: { name: 'match_columns' },
   };
 
   // todo: if meta llama keeps messing up the formatting we may need to add some few shot examples to the prompt.
@@ -139,7 +206,7 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
       {
         role: 'system',
         content:
-          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position. Please return valid JSON only.',
+          'You are a political assistant whose job is to find the top 5 columns that match the office name (ordered by the most likely at the top). If none of the labels are a good match then you will return an empty column array. Make sure you only return columns that are extremely relevant. For Example: for a City Council position you would not return a State position or a School District position. Please return valid JSON only. Do not return more than 5 columns.',
       },
       {
         role: 'user',
@@ -148,7 +215,7 @@ async function matchSearchColumns(slug, searchColumns, searchString) {
     ],
     0.1,
     0.1,
-    functionDefinition,
+    matchColumnTool,
     toolChoice,
   );
 
