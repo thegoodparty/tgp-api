@@ -67,12 +67,7 @@ module.exports = {
 
         const { details, didWin, data } = campaign;
 
-        if (
-          !details?.zip ||
-          didWin === false ||
-          !details?.geoLocation?.lng ||
-          details?.geoLocationFailed
-        ) {
+        if (didWin === false) {
           continue;
         }
 
