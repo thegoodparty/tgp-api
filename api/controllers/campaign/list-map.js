@@ -53,7 +53,7 @@ module.exports = {
 
       const isProd = appBase === 'https://goodparty.org';
 
-      let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false AND c."isActive" = true`;
+      let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false`;
 
       if (partyFilter) {
         whereClauses += ` AND LOWER(c.details->>'party') LIKE '${partyFilter}%'`;

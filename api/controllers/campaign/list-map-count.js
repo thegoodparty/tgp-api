@@ -29,7 +29,7 @@ module.exports = {
 
       const { state, results } = inputs;
 
-      let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false AND c."isActive" = true`;
+      let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false`;
 
       if (state) {
         whereClauses += ` AND c.details->>'state' = '${state}'`;
