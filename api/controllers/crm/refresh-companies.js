@@ -1,5 +1,7 @@
 module.exports = {
-  inputs: {},
+  inputs: {
+    campaignId: { type: 'number' },
+  },
 
   exits: {
     success: {
@@ -21,9 +23,15 @@ module.exports = {
     try {
       let updated = 0;
       let failures = [];
-      const campaigns = (await Campaign.find()).filter(
-        (c) => c.data?.hubspotId,
-      );
+
+      let campaigns;
+
+      if (inputs.campaignId) {
+        const campaign = await Campaign.findOne({ id: inputs.campaignId });
+        campaigns = [campaign];
+      } else {
+        campaigns = (await Campaign.find()).filter((c) => c.data?.hubspotId);
+      }
 
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
