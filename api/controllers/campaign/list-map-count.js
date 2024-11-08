@@ -82,7 +82,7 @@ module.exports = {
           }
         }
 
-        const date = moment(electionDate);
+        const date = moment(details?.electionDate);
 
         if (date.isBefore(yearStart) || date.isAfter(yearEnd)) {
           continue;
