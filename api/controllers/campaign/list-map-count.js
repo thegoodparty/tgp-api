@@ -36,7 +36,7 @@ module.exports = {
       }
 
       if (results) {
-        whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General')`; // "didWin" is properly quoted
+        whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General' OR c.data->'hubSpotUpdates'->>'primary_election_result' = 'Won Primary')`; // "didWin" is properly quoted
       }
 
       // Native SQL query with proper column quoting and JOIN
@@ -58,7 +58,8 @@ module.exports = {
 
       const campaigns = result.rows;
 
-      const lastWeek = moment().subtract(7, 'days');
+      const yearStart = moment('1/1/2024');
+      const yearEnd = moment('1/1/2025');
 
       let count = 0;
       for (let i = 0; i < campaigns.length; i++) {
@@ -81,11 +82,8 @@ module.exports = {
           }
         }
 
-        if (didWin === null) {
-          const date = moment(details.electionDate);
-          if (date.isBefore(lastWeek)) {
-            continue;
-          }
+        if (date.isBefore(yearStart) || date.isAfter(yearEnd)) {
+          continue;
         }
 
         count++;
