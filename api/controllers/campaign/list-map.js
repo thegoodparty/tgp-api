@@ -1,5 +1,4 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
-const moment = require('moment');
 
 module.exports = {
   friendlyName: 'List of onboarding (Admin)',
@@ -54,6 +53,8 @@ module.exports = {
       const isProd = appBase === 'https://goodparty.org';
 
       let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false`;
+      // election date this year (2024)
+      whereClauses += ` AND c.details->>'electionDate' LIKE '2024%'`;
 
       if (partyFilter) {
         whereClauses += ` AND LOWER(c.details->>'party') LIKE '${partyFilter}%'`;
@@ -67,15 +68,13 @@ module.exports = {
         whereClauses += ` AND c.details->>'ballotLevel' = '${levelFilter}'`;
       }
 
-      if (resultsFilter) {
-        whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General' OR c.data->'hubSpotUpdates'->>'primary_election_result' = 'Won Primary')`; // "didWin" is properly quoted
-      }
-
       if (officeFilter) {
         whereClauses += ` AND (c.details->>'normalizedOffice' = '${officeFilter}' OR c.details->>'office' = '${officeFilter}' OR c.details->>'otherOffice' = '${officeFilter}')`;
       }
 
-      if (isProd) {
+      if (resultsFilter) {
+        whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General' OR c.data->'hubSpotUpdates'->>'primary_election_result' = 'Won Primary')`; // "didWin" is properly quoted
+      } else if (isProd) {
         whereClauses += ` AND c.data->'hubSpotUpdates'->>'verified_candidates' = 'Yes'`;
       }
 
@@ -98,16 +97,9 @@ module.exports = {
 
       const campaigns = result.rows;
 
-      const yearStart = moment('1/1/2024');
-      const yearEnd = moment('1/1/2025');
-
       const cleanCampaigns = [];
       for (let i = 0; i < campaigns.length; i++) {
         const campaign = campaigns[i];
-
-        if (!campaign.details?.zip || campaign.didWin === false) {
-          continue;
-        }
 
         let { details, slug, didWin, firstName, lastName, avatar, data } =
           campaign;
@@ -167,12 +159,6 @@ module.exports = {
           city,
           normalizedOffice: normalizedOffice || resolvedOffice,
         };
-
-        const date = moment(electionDate);
-
-        if (date.isBefore(yearStart) || date.isAfter(yearEnd)) {
-          continue;
-        }
 
         const position = await handleGeoLocation(campaign, forceReCalc);
         if (!position) {

@@ -30,6 +30,8 @@ module.exports = {
       const { state, results } = inputs;
 
       let whereClauses = `WHERE c."user" IS NOT NULL AND c."isDemo" = false`;
+      // election date this year (2024)
+      whereClauses += ` AND c.details->>'electionDate' LIKE '2024%'`;
 
       if (state) {
         whereClauses += ` AND c.details->>'state' = '${state}'`;
@@ -37,6 +39,8 @@ module.exports = {
 
       if (results) {
         whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General' OR c.data->'hubSpotUpdates'->>'primary_election_result' = 'Won Primary')`; // "didWin" is properly quoted
+      } else if (isProd) {
+        whereClauses += ` AND c.data->'hubSpotUpdates'->>'verified_candidates' = 'Yes'`;
       }
 
       // Native SQL query with proper column quoting and JOIN
@@ -58,33 +62,7 @@ module.exports = {
 
       const campaigns = result.rows;
 
-      const yearStart = moment('1/1/2024');
-      const yearEnd = moment('1/1/2025');
-
-      let count = 0;
-      for (let i = 0; i < campaigns.length; i++) {
-        const campaign = campaigns[i];
-
-        const { details, didWin, data } = campaign;
-
-        if (didWin === false) {
-          continue;
-        }
-
-        if (isProd) {
-          if (data?.hubSpotUpdates?.verified_candidates !== 'Yes') {
-            continue;
-          }
-        }
-
-        const date = moment(details?.electionDate);
-
-        if (date.isBefore(yearStart) || date.isAfter(yearEnd)) {
-          continue;
-        }
-
-        count++;
-      }
+      let count = campaigns.length;
 
       return exits.success({
         count,
