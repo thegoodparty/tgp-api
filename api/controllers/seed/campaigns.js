@@ -12,6 +12,14 @@ const PARTIES = [
 ];
 const LEVELS = ['LOCAL', 'CITY', 'COUNTY', 'STATE', 'FEDERAL'];
 const P2V_STATUS = ['Waiting', 'Complete', 'Failed'];
+const OFFICES = [
+  'Representative',
+  'Governor',
+  'Senator',
+  'City Council',
+  'Commissioner',
+  'Sheriff',
+];
 
 function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -87,6 +95,21 @@ module.exports = {
                 data: {
                   slug,
                   currentStep: 'onboarding-complete',
+                  hubSpotUpdates: {
+                    election_results: randomItem([
+                      'Won General',
+                      'won general',
+                      'Lost General',
+                      null,
+                    ]),
+                    primary_election_result: randomItem([
+                      'Won Primary',
+                      'won primary',
+                      'Lost Primary',
+                      null,
+                    ]),
+                    // TODO: add more hubspot fields
+                  },
                 },
                 isDemo: false,
                 isActive: true,
@@ -100,9 +123,7 @@ module.exports = {
                   geoLocation: { ...location },
                   state: state.key,
                   office: 'Other',
-                  otherOffice: `${
-                    state.key
-                  } ${level.toLowerCase()} Representative`,
+                  otherOffice: randomItem(OFFICES),
                   level,
                   ballotLevel: level,
                   hasPrimary: false,
@@ -126,11 +147,10 @@ module.exports = {
                 { campaign: campaign.id },
                 {
                   campaign: campaign.id,
-                  // TODO: add more values
+                  // TODO: add more p2v values
                   data: { p2vStatus: randomItem(P2V_STATUS) },
                 },
-              )
-              .then((p2v) =>
+              ).then((p2v) =>
                 Campaign.updateOne({ id: campaign.id }).set({
                   pathToVictory: p2v.id,
                 }),
