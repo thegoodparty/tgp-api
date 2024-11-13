@@ -72,9 +72,9 @@ module.exports = {
         console.log('processing row : ', i);
         const processedRow = await processRow(row, columnNames);
         console.log('processedRow : ', processedRow);
-        // const isUpdated = await saveVendorCandidate(processedRow);
+        const isUpdated = await saveVendorData(processedRow);
 
-        // console.log('isUpdated : ', isUpdated, i);
+        console.log('isUpdated : ', isUpdated, i);
 
         if (isUpdated) {
           const today = formatDateForGoogleSheets(new Date);
@@ -207,54 +207,57 @@ async function processRow(candidate, columnNames) {
 async function saveVendorData(row) {
   try {
     const { parsedCandidate } = row;
-    const { ballotready_candidate_id, phone_clean, email } = parsedCandidate;
-    if (!ballotready_candidate_id) {
-      console.log('missing required fields');
+    if (!parsedCandidate['Campaign ID']) {
+      console.error('Missing required campaign ID from Techspeed');
       return;
     }
-    // const updated = await BallotCandidate.updateOne({
-    //   brCandidateId: ballotready_candidate_id,
-    // }).set({
-    //   vendorTsPhone: phone_clean || '',
-    //   vendorTsEmail: email || '',
-    //   vendorTsData: parsedCandidate,
-    // });
+
+    const updatedVendorTsData = transformColumnNames(parsedCandidate);
+    const updated = await Campaign.updateOne({
+      id: parsedCandidate['Campaign ID'],
+    }).set({
+      vendorTsData: updatedVendorTsData,
+    });
     return !!updated;
   } catch (e) {
-    console.log('error saving vendor candidate : ', e);
+    console.error('error saving vendor candidate : ', e);
   }
 }
 
 function transformColumnNames(parsedCandidate) {
-  const updatedParsedCandidate = {}
+  const changedKeysOnly = {}
 
   const keyMap = {
-    'Incumbent Source URL': 'incumbent_source_url',
-    'opponents': 'number_of_opponents',
-    'Opponent Source URL': 'opponent_source_url',
+    'Incumbent Source URL': 'incumbentSourceUrl',
+    'opponents': 'numberOfOpponents',
+    'Opponent Source URL': 'opponentSourceUrl',
     'STATUS (Complete, Not Yet Started, Exception)': 'status',
-    'E.3 Candidates ID - Headshot': 'headshot_url',
-    '9. candidate specific campaign finance filing URL': 'candidate_finance_filing_url',
-    'A. Flag If the Candidate Source List URL is  minable with AI, human, bulk download': 'source_list_url_minable_by',
-    'A. Source URL for specific race': 'race_source_url',
-    'A. Flag If the  Race Source URL is  minable with AI, human, bulk download': 'race_source_url_minable_by',
-    'B. Number of seats available in a race': 'number_of_seats',
-    'C. Term of office (for the seat)': 'office_term',
-    'D. Number of candidates running for seat': 'number_of_candidates',
-    'URL for Campaign Finance Filing site for jurisdiction/Office': 'office_finance_filing_url',
-    'URL for where prospective candiates can find Filing information (how to file to run for this office)': 'how_to_file_url',
-    'C.1 Set the trigger date for re-election mining (Based on the term of the office)': 'reelection_mining_trigger_date',
-    'F. Election Results - URL for results posted': 'election_results_url',
-    'F. Vote Totals': 'vote_totals',
+    'E.3 Candidates ID - Headshot': 'headshotUrl',
+    '9. candidate specific campaign finance filing URL': 'candidateFinanceFilingUrl',
+    'A. Flag If the Candidate Source List URL is  minable with AI, human, bulk download': 'sourceListUrlMinableBy',
+    'A. Source URL for specific race': 'raceSourceUrl',
+    'A. Flag If the  Race Source URL is  minable with AI, human, bulk download': 'raceSourceUrlMinableBy',
+    'B. Number of seats available in a race': 'numberOfSeats',
+    'C. Term of office (for the seat)': 'officeTerm',
+    'D. Number of candidates running for seat': 'numberOfCandidates',
+    'URL for Campaign Finance Filing site for jurisdiction/Office': 'officeFinanceFilingUrl',
+    'URL for where prospective candiates can find Filing information (how to file to run for this office)': 'howToFileUrl',
+    'C.1 Set the trigger date for re-election mining (Based on the term of the office)': 'reelectionMiningTriggerDate',
+    'F. Election Results - URL for results posted': 'electionResultsUrl',
+    'F. Vote Totals': 'voteTotals',
     'Comment': 'comment',
-    'date processed by TS': 'date_processed_by_ts',
+    'date processed by TS': 'dateProcessedByTs',
   };
+  
 
   for (const key in parsedCandidate) {
-    const newKey = keyMap[key] || key;
-    updatedParsedCandidate[newKey] = parsedCandidate[key];
+    if (keyMap[key]) {
+      const newKey = keyMap[key];
+      changedKeysOnly[newKey] = parsedCandidate[key];
+    }
   }
   
+  return changedKeysOnly;
 }
 
 async function streamToString(readableStream) {
