@@ -38,7 +38,9 @@ module.exports = {
       }
 
       if (results) {
-        whereClauses += ` AND (c."didWin" = true OR c.data->'hubSpotUpdates'->>'election_results' = 'Won General' OR c.data->'hubSpotUpdates'->>'primary_election_result' = 'Won Primary')`; // "didWin" is properly quoted
+        whereClauses += ` AND (c."didWin" = true 
+          OR LOWER(c.data->'hubSpotUpdates'->>'election_results') = 'won general' 
+          OR LOWER(c.data->'hubSpotUpdates'->>'primary_election_result') = 'won primary')`; // "didWin" is properly quoted
       } else if (isProd) {
         whereClauses += ` AND c.data->'hubSpotUpdates'->>'verified_candidates' = 'Yes'`;
       }
