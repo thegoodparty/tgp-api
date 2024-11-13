@@ -63,6 +63,12 @@ module.exports = {
       model: 'pathToVictory',
     },
 
+    vendorTsData: {
+      type:'json',
+      columnType: 'jsonb',
+      defaultsTo: {},
+    },
+
     campaignsUpdateHistories: {
       collection: 'campaignUpdateHistory',
       via: 'campaign',

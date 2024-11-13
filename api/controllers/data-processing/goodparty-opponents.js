@@ -49,8 +49,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
-      console.log('process column:', processColumn);
-      console.log('starting goodparty-candidates-enhance');
+      console.log('starting goodparty-opponents');
       const jwtClient = await authenticateGoogleServiceAccount();
       await jwtClient.authorize();
       const sheets = google.sheets({ version: 'v4', auth: jwtClient });
@@ -60,20 +59,17 @@ module.exports = {
       // Read rows from the sheet
       const readResponse = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: 'GoodParty Candidates',
+        range: 'Good Party Candidate Opponents',
       });
 
       const rows = readResponse.data.values;
 
       const columnNames = rows[1];
-      console.log('columnNames: ', columnNames)
-
       let processedCount = 0;
       for (let i = 2; i < rows.length; i++) {
         const row = rows[i];
         // start from 2 to skip header
-        console.log('processing row : ', i + 2);
-        console.log('Current row:', row);
+        console.log('processing row : ', i);
         const processedRow = await processRow(row, columnNames);
         if (!processedRow) {
           console.log(`Skipping row ${i + 2} because it was already processed.`);
@@ -90,7 +86,6 @@ module.exports = {
               rows[i].push('');
             }
           }
-          
           const today = formatDateForGoogleSheets(new Date);
           console.log('updated1');
           rows[i][columnNames.length - processColumn] = today;
@@ -103,7 +98,7 @@ module.exports = {
       // write back to google sheets
       await sheets.spreadsheets.values.update({
         spreadsheetId,
-        range: 'GoodParty Candidates',
+        range: 'Good Party Candidate Opponents',
         valueInputOption: 'RAW',
         requestBody: {
           values: rows,
@@ -112,20 +107,19 @@ module.exports = {
       console.log('done writing to sheet');
 
       await sails.helpers.slack.errorLoggerHelper(
-        'Successfully enhanced candidates',
+        'Successfully enhanced opponents',
         {},
       );
 
-      // return exits.success({
-      //   processedCount,
-      // });
-      return;
+      return exits.success({
+        processedCount,
+      });
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
-        'Error enhancing candidates',
+        'Error enhancing opponents',
         e,
       );
-      throw new Error(`goodparty-candidates enhancement failed: ${e.message}`);
+      throw new Error(`goodparty-opponents enhancement failed: ${e.message}`);
     }
   },
 };
@@ -186,88 +180,78 @@ async function readJsonFromS3(bucketName, keyName) {
   }
 }
 
-async function processRow(candidate, columnNames) {
+async function processRow(opponent, columnNames) {
   try {
-    if (!candidate) {
+    if (!opponent) {
       return [];
     }
-    const gpProcessed = candidate[candidate.length - processColumn];
-    // console.log('processing row : ', candidate);
+    const gpProcessed = opponent[opponent.length - processColumn];
+    // console.log('processing row : ', opponent);
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(gpProcessed)) { // Date regex
       // already processed
       console.log('already processed', gpProcessed, processColumn);
       return null;
     }
-    const parsedCandidate = {};
+    const parsedOpponent = {};
 
     for (let i = 0; i < columnNames.length - 4; i++) {
-      parsedCandidate[columnNames[i]] = candidate[i];
+      parsedOpponent[columnNames[i]] = opponent[i];
     }
 
-    console.log('parsedCandidate : ', parsedCandidate);
+    console.log('parsedOpponent : ', parsedOpponent);
 
     return {
-      parsedCandidate,
+      parsedOpponent,
     };
   } catch (e) {
-    console.log('error processing row : ', candidate);
+    console.log('error processing row : ', opponent);
     console.log('error : ', e);
-    return [...candidate, 'n/a', 'n/a'];
+    return [...opponent, 'n/a', 'n/a'];
   }
 }
 
 async function saveVendorData(row) {
   try {
-    const { parsedCandidate } = row;
-    if (!parsedCandidate['Campaign ID']) {
+    const { parsedOpponent } = row;
+    if (!parsedOpponent['Campaign ID']) {
       console.error('Missing required campaign ID from Techspeed');
-      return false;
+      return;
     }
 
-    const updatedVendorTsData = transformColumnNames(parsedCandidate);
-    const updated = await Campaign.updateOne({
-      id: parsedCandidate['Campaign ID'],
-    }).set({
-      vendorTsData: updatedVendorTsData,
-    });
-    
+    const updatedVendorTsData = transformColumnNames(parsedOpponent);
+    const updated = await Opponent.create({
+      campaignId: parsedOpponent['CampaignID'],
+      partyAffiliation: parsedOpponent.partyAffiliation,
+      firstName: parsedOpponent.firstName,
+      lastName: parsedOpponent.lastName,
+      sourceUrl: parsedOpponent.sourceUrl,
+      campaignUrl: parsedOpponent.campaignUrl,
+      financeFilingUrl: parsedOpponent.financeFilingUrl
+    }).fetch();
+    const updated = true;
     return !!updated;
   } catch (e) {
-    console.error('error saving vendor candidate : ', e);
+    console.error('error saving vendor opponent : ', e);
   }
 }
 
-function transformColumnNames(parsedCandidate) {
+function transformColumnNames(parsedOpponent) {
   const changedKeysOnly = {}
 
   const keyMap = {
-    'incumbent': 'isIncumbent',
-    'Incumbent Source URL': 'incumbentSourceUrl',
-    'opponents': 'numberOfOpponents',
-    'Opponent Source URL': 'opponentSourceUrl',
-    'STATUS (Complete, Not Yet Started, Exception)': 'status',
-    'E.3 Candidates ID - Headshot': 'headshotUrl',
-    '9. candidate specific campaign finance filing URL': 'candidateFinanceFilingUrl',
-    'A. Flag If the Candidate Source List URL is  minable with AI, human, bulk download': 'sourceListUrlMinableBy',
-    'A. Source URL for specific race': 'raceSourceUrl',
-    'A. Flag If the  Race Source URL is  minable with AI, human, bulk download': 'raceSourceUrlMinableBy',
-    'B. Number of seats available in a race': 'numberOfSeats',
-    'C. Term of office (for the seat)': 'officeTerm',
-    'D. Number of candidates running for seat': 'numberOfCandidates',
-    'URL for Campaign Finance Filing site for jurisdiction/Office': 'officeFinanceFilingUrl',
-    'URL for where prospective candiates can find Filing information (how to file to run for this office)': 'howToFileUrl',
-    'C.1 Set the trigger date for re-election mining (Based on the term of the office)': 'reelectionMiningTriggerDate',
-    'F. Election Results - URL for results posted': 'electionResultsUrl',
-    'F. Vote Totals': 'voteTotals',
-    'Comment': 'comment',
-    'date processed by TS': 'dateProcessedByTs',
+    '8.a Opponant - Party affiliation (Democrat or Republican candidate running for same seat)': 'partyAffiliation',
+    '8.b First name Opponent': 'firstName',
+    '8.c Last name Opponent': 'lastName',
+    'Source URL for Opponent list': 'sourceUrl',
+    '8.d Campaign Website Opponent': 'campaignUrl',
+    '9. Opponant specific campaign finance filing URL': 'financeFilingUrl'
   };
   
 
-  for (const key in parsedCandidate) {
+  for (const key in parsedOpponent) {
     if (keyMap[key]) {
       const newKey = keyMap[key];
-      changedKeysOnly[newKey] = parsedCandidate[key];
+      changedKeysOnly[newKey] = parsedOpponent[key];
     }
   }
   
