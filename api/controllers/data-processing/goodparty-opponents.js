@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { google } = require('googleapis');
+const Opponent = require('../../models/Opponent');
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
 
@@ -76,6 +77,16 @@ module.exports = {
           continue;
         }
         console.log('processedRow : ', processedRow);
+
+        const isExisting = await findExistingOpponent(row, processedRow);
+
+        if (isExisting) {
+          console.log('isExisting');
+          await updateExistingOpponent()
+        } else {
+          await createOpponent();
+        }
+
         const isUpdated = await saveVendorData(processedRow);
 
         console.log('isUpdated : ', isUpdated, i + 2);
@@ -220,15 +231,15 @@ async function saveVendorData(row) {
 
     const updatedVendorTsData = transformColumnNames(parsedOpponent);
     const updated = await Opponent.create({
-      campaignId: parsedOpponent['CampaignID'],
       partyAffiliation: parsedOpponent.partyAffiliation,
       firstName: parsedOpponent.firstName,
       lastName: parsedOpponent.lastName,
       sourceUrl: parsedOpponent.sourceUrl,
       campaignUrl: parsedOpponent.campaignUrl,
-      financeFilingUrl: parsedOpponent.financeFilingUrl
+      financeFilingUrl: parsedOpponent.financeFilingUrl,
+      campaignId: parsedOpponent['Campaign ID'],
     }).fetch();
-    const updated = true;
+    //const updated = true;
     return !!updated;
   } catch (e) {
     console.error('error saving vendor opponent : ', e);
@@ -239,12 +250,12 @@ function transformColumnNames(parsedOpponent) {
   const changedKeysOnly = {}
 
   const keyMap = {
-    '8.a Opponant - Party affiliation (Democrat or Republican candidate running for same seat)': 'partyAffiliation',
+    '8.a Opponant - Party affiliation (Democrat or Republican candidate running for same seat)': 'partyAffiliation', // It's misspelled on the gsheet
     '8.b First name Opponent': 'firstName',
     '8.c Last name Opponent': 'lastName',
     'Source URL for Opponent list': 'sourceUrl',
     '8.d Campaign Website Opponent': 'campaignUrl',
-    '9. Opponant specific campaign finance filing URL': 'financeFilingUrl'
+    '9. Opponant specific campaign finance filing URL': 'financeFilingUrl' // It's misspelled on the gsheet
   };
   
 
@@ -264,4 +275,25 @@ async function streamToString(readableStream) {
     chunks.push(chunk);
   }
   return Buffer.concat(chunks).toString('utf-8');
+}
+
+async function findExistingOpponent(row) {
+  try {
+    const { parsedOpponent } = row;
+    const { Slug } = parsedOpponent;
+    
+    const existing = await Opponent.findOne({ 
+      slug: Slug,
+      firstName: parsedOpponent['First name Opponent'],
+      lastName: parsedOpponent['Last name Opponent'], 
+    });
+    if (existing) {
+      return existing;
+    }
+
+    return null;
+  } catch (e) {
+    console.log('error finding opponent : ', e);
+    return null;
+  }
 }
