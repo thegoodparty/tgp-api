@@ -69,31 +69,31 @@ module.exports = {
       console.log('columnNames: ', columnNames)
 
       let processedCount = 0;
-      for (let i = 2; i < rows.length; i++) {
-        const row = rows[i];
+      //for (let i = 2; i < rows.length; i++) {
+      for (let i = 2; i < 12; i++) {
         // start from 2 to skip header
         console.log('processing row : ', i + 2);
+        
+        const row = padRowToMatchColumns(rows[i], columnNames.length);
+        console.log('Length of row after padding:', row.length, 'length of columnNames:', columnNames.length);
         console.log('Current row:', row);
+        
         const processedRow = await processRow(row, columnNames);
         if (!processedRow) {
           console.log(`Skipping row ${i + 2} because it was already processed.`);
           continue;
         }
         console.log('processedRow : ', processedRow);
+
         const isUpdated = await saveVendorData(processedRow);
 
-        console.log('isUpdated : ', isUpdated, i + 2);
+        console.log('isUpdated : ', isUpdated, i + 1);
 
         if (isUpdated) {
-          if (rows[i].length < columnNames.length) {
-            for (let j = 0; j < columnNames.length - rows[i].length; j++) {
-              rows[i].push('');
-            }
-          }
           
           const today = formatDateForGoogleSheets(new Date);
           console.log('updated1');
-          rows[i][columnNames.length - processColumn] = today;
+          row[columnNames.length - processColumn] = today;
           console.log('updated2');
           processedCount++;
           console.log('processed');
@@ -189,14 +189,29 @@ async function readJsonFromS3(bucketName, keyName) {
 async function processRow(candidate, columnNames) {
   try {
     if (!candidate) {
-      return [];
+      console.log('No candidate passed to processRow');
+      return null;
     }
     const gpProcessed = candidate[candidate.length - processColumn];
     // console.log('processing row : ', candidate);
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(gpProcessed)) { // Date regex
-      // already processed
-      console.log('already processed', gpProcessed, processColumn);
-      return null;
+      
+      const dateProcessedByTs = candidate[columnNames.indexOf('date processed by TS')];
+
+      if(!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateProcessedByTs)) {
+        console.log("'date processed by TS' contains an invalid value", dateProcessedByTs);
+        return null;
+      }
+      const convertedDateProcessedByTs = new Date(Date.parse(dateProcessedByTs));
+      const convertedGpProcessed = new Date(Date.parse(gpProcessed));
+
+      if (convertedGpProcessed > convertedDateProcessedByTs) { // If false, TS has updated the row since we last consumed it
+        console.log('convertedGpProcessed more recent than convertedDateProcessedByTs', gpProcessed, processColumn);
+        return null;
+      }
+      console.log('has been updated since last consumption', gpProcessed, processColumn);
+    } else {
+      console.log('gpProcessed did not have a date', gpProcessed);
     }
     const parsedCandidate = {};
 
@@ -204,7 +219,12 @@ async function processRow(candidate, columnNames) {
       parsedCandidate[columnNames[i]] = candidate[i];
     }
 
-    console.log('parsedCandidate : ', parsedCandidate);
+    if (parsedCandidate['STATUS (Complete, Not Yet Started, Exception)'] !== 'Complete') {
+      console.log('candidate hasnt been processed by TS');
+      return null; // Hasn't been processed by TechSpeed
+    }
+
+    //console.log('parsedCandidate : ', parsedCandidate);
 
     return {
       parsedCandidate,
@@ -280,4 +300,9 @@ async function streamToString(readableStream) {
     chunks.push(chunk);
   }
   return Buffer.concat(chunks).toString('utf-8');
+}
+
+function padRowToMatchColumns(row, columnCount) {
+  const paddedRow = Array.from({ length: columnCount }, (_, index) => row[index] || '');
+  return paddedRow;
 }
