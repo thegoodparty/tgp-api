@@ -8,6 +8,27 @@ const hubSpotToken =
 const hubspotClient =
   hubSpotToken && new hubspot.Client({ accessToken: hubSpotToken });
 
+const hubspotProperties = [
+  'past_candidate',
+  'incumbent',
+  'candidate_experience_level',
+  'final_viability_rating',
+  'primary_election_result',
+  'election_results',
+  'professional_experience',
+  'p2p_campaigns',
+  'p2p_sent',
+  'confirmed_self_filer',
+  'verified_candidates',
+  'date_verified',
+  'pro_candidate',
+  'filing_deadline',
+  'opponents',
+  'hubspot_owner_id',
+  'office_type',
+];
+
 module.exports = {
   hubspotClient,
+  hubspotProperties,
 };
