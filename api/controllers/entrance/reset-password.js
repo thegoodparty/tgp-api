@@ -1,3 +1,5 @@
+const { USER_ROLES } = require('../../models/users/User');
+
 module.exports = {
   friendlyName: 'Update password and login',
 
@@ -84,7 +86,7 @@ module.exports = {
 
       console.log('reset4');
 
-      if (adminCreate) {
+      if (adminCreate && user.role !== USER_ROLES.SALES) {
         // check if the campaign attached to this user is marked as created by admin
         const campaign = await sails.helpers.campaign.byUser(user.id);
         if (campaign.data.createdBy !== 'admin') {
