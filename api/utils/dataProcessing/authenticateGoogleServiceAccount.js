@@ -1,6 +1,10 @@
+const { google } = require('googleapis');
+const { readJsonFromS3 } = require('../aws/readJsonFromS3')
+
 const googleServiceEmail =
   'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
-const readJsonFromS3 = require('../aws/readJsonFromS3.js')
+
+const s3Bucket = 'goodparty-keys';
 
 async function authenticateGoogleServiceAccount() {
   try {

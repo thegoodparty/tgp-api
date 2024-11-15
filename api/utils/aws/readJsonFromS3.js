@@ -13,8 +13,6 @@ const s3 = new S3Client({
   },
 });
 
-const s3Bucket = 'goodparty-keys';
-
 async function streamToString(readableStream) {
   const chunks = [];
   for await (const chunk of readableStream) {
