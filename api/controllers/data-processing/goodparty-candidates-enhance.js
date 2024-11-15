@@ -143,7 +143,6 @@ async function processRow(candidate, columnNames) {
       return null;
     }
     const gpProcessed = candidate[candidate.length - processColumn];
-    // console.log('processing row : ', candidate);
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(gpProcessed)) { // Date regex
 
       const dateProcessedByTs = candidate[columnNames.indexOf('date processed by TS')];
