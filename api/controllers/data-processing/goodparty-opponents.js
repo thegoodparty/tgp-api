@@ -154,7 +154,6 @@ async function processRow(opponent, columnNames) {
     const gpProcessed = opponent[opponent.length - processColumn];
     console.log('gpProcessed:', gpProcessed);
     console.log('processColumn:', processColumn);
-    // console.log('processing row : ', opponent);
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(gpProcessed)) { // Date regex
       // already processed
       console.log('already processed', gpProcessed, processColumn);
@@ -165,8 +164,6 @@ async function processRow(opponent, columnNames) {
     for (let i = 0; i < columnNames.length - 4; i++) {
       parsedOpponent[columnNames[i]] = opponent[i];
     }
-
-    //console.log('parsedOpponent : ', parsedOpponent);
 
     return {
       parsedOpponent,
