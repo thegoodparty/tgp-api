@@ -57,8 +57,7 @@ module.exports = {
       // Read rows from the sheet
       const readResponse = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        //range: 'Good Party Candidate Opponents',
-        range: 'Opponents Testing Temp',
+        range: 'Good Party Candidate Opponents',
       });
 
       const rows = readResponse.data.values;
@@ -123,8 +122,7 @@ module.exports = {
       // write back to google sheets
       await sheets.spreadsheets.values.update({
         spreadsheetId,
-        //range: 'Good Party Candidate Opponents',
-        range: 'Opponents Testing Temp',
+        range: 'Good Party Candidate Opponents',
         valueInputOption: 'RAW',
         requestBody: {
           values: modifiedRows,
