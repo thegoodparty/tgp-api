@@ -1,4 +1,5 @@
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const { USER_ROLES } = require('../../models/users/User');
 
 module.exports = {
   inputs: {
@@ -10,11 +11,11 @@ module.exports = {
 
   exits: {
     success: {
-      description: 'Campaign Created',
+      description: 'Email Sent',
       responseType: 'ok',
     },
     badRequest: {
-      description: 'creation failed',
+      description: 'Email Send Failed',
       responseType: 'badRequest',
     },
   },
@@ -25,28 +26,114 @@ module.exports = {
       if (!user) {
         return exits.badRequest({ message: 'User not found' });
       }
-      const { firstName, lastName, email } = user;
+      const { firstName, lastName, email, role } = user;
 
-      await sendEmail(firstName, lastName, email);
+      await sendEmail(firstName, lastName, email, role);
 
       return exits.success({
         message: 'ok',
       });
     } catch (e) {
       console.log(e);
-      return exits.badRequest({ message: 'Error creating campaign.' });
+      return exits.badRequest({ message: 'Error sending set password email.' });
     }
   },
 };
 
-async function sendEmail(firstName, lastName, email) {
+async function sendEmail(firstName, lastName, email, role) {
   const token = await createToken(email);
   const encodedEmail = email.replace('+', '%2b');
   const link = encodeURI(
     `${appBase}/set-password?email=${encodedEmail}&token=${token}`,
   );
   const variables = {
-    content: `<div style="color:#000000">
+    content: getEmailContent(firstName, lastName, link, role),
+  };
+  const subject =
+    role === 'sales'
+      ? "You've been added to the GoodParty.org Admin"
+      : 'Welcome to GoodParty.org! Set Up Your Account and Access Your Campaign Tools';
+
+  await sails.helpers.mailgun.mailgunTemplateSender(
+    email,
+    subject,
+    'blank-email',
+    variables,
+  );
+}
+
+async function createToken(email) {
+  // Come up with a pseudorandom, probabilistically-unique token for use
+  // in our password recovery email.
+  const token = await sails.helpers.strings.random('url-friendly');
+
+  // Store the token on the user record
+  // (This allows us to look up the user when the link from the email is clicked.)
+  await User.update({ email }).set({
+    passwordResetToken: token,
+    passwordResetTokenExpiresAt:
+      Date.now() + sails.config.custom.passwordResetTokenTTL,
+  });
+
+  return token;
+}
+
+function getEmailContent(firstName, lastName, link, role) {
+  if (role === USER_ROLES.SALES) {
+    return `<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+          <tbody>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-size: 16px;
+                    font-family: Arial, sans-serif;
+                    margin-top: 0;
+                    margin-bottom: 5px;
+                  "
+                >
+                Hi ${firstName} ${lastName}!<br/> <br>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p
+                  style="
+                    font-size: 16px;
+                    font-family: Arial, sans-serif;
+                    margin-top: 0;
+                    margin-bottom: 5px;
+                  "
+                >
+                You’ve been added to the GoodParty.org Admin. Please set your password:
+                <a href="${link}">Set Your Password</a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br /><br /><a
+                  href="${link}"
+                  style="
+                    padding: 16px 32px;
+                    background: black;
+                    color: #fff;
+                    font-size: 16px;
+                    border-radius: 8px;
+                    text-decoration: none;
+                  "
+                >
+                  Set Your Password
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        `;
+  }
+
+  return `<div style="color:#000000">
   Hi ${firstName} ${lastName},
   <br />
   <br />
@@ -118,29 +205,5 @@ All the best,
     <br />
 GoodParty.org Team
 </div>
-  `,
-  };
-
-  await sails.helpers.mailgun.mailgunTemplateSender(
-    email,
-    'Welcome to GoodParty.org! Set Up Your Account and Access Your Campaign Tools',
-    'blank-email',
-    variables,
-  );
-}
-
-async function createToken(email) {
-  // Come up with a pseudorandom, probabilistically-unique token for use
-  // in our password recovery email.
-  const token = await sails.helpers.strings.random('url-friendly');
-
-  // Store the token on the user record
-  // (This allows us to look up the user when the link from the email is clicked.)
-  await User.update({ email }).set({
-    passwordResetToken: token,
-    passwordResetTokenExpiresAt:
-      Date.now() + sails.config.custom.passwordResetTokenTTL,
-  });
-
-  return token;
+  `;
 }
