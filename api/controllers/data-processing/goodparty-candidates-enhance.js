@@ -34,8 +34,20 @@ const s3 = new S3Client({
 const s3Bucket = 'goodparty-keys';
 
 module.exports = {
-  inputs: {},
-
+  inputs: {
+    startRow: {
+      type: 'number',
+      required: false,
+      description: 'Optional row number to start reading and writing from.',
+      defaultsTo: 2, // Default to 2 to skip header
+    },
+    limit: {
+      type: 'number',
+      required: false,
+      description: 'Maximum number of unprocessed rows to process.',
+      defaultsTo: 100, // Set a default limit of 100 rows
+    },
+  },
   exits: {
     success: {
       description: 'ok',
@@ -49,6 +61,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const { startRow, limit } = inputs;
       console.log('process column:', processColumn);
       console.log('starting goodparty-candidates-enhance');
       const jwtClient = await authenticateGoogleServiceAccount();
@@ -69,10 +82,12 @@ module.exports = {
       console.log('columnNames: ', columnNames)
 
       let processedCount = 0;
-      //for (let i = 2; i < rows.length; i++) {
-      for (let i = 2; i < 12; i++) {
-        // start from 2 to skip header
-        console.log('processing row : ', i + 2);
+      for (let i = startRow; i < rows.length; i++) {
+        if (processedCount >= limit) {
+          console.log('Reached the processing limit:', limit);
+          break;
+        }
+        console.log('processing row : ', i + 1);
         
         const row = padRowToMatchColumns(rows[i], columnNames.length);
         console.log('Length of row after padding:', row.length, 'length of columnNames:', columnNames.length);
@@ -80,7 +95,7 @@ module.exports = {
         
         const processedRow = await processRow(row, columnNames);
         if (!processedRow) {
-          console.log(`Skipping row ${i + 2} because it was already processed.`);
+          console.log(`Skipping row ${i + 1} because it was already processed.`);
           continue;
         }
         console.log('processedRow : ', processedRow);
@@ -116,9 +131,6 @@ module.exports = {
         {},
       );
 
-      // return exits.success({
-      //   processedCount,
-      // });
       return;
     } catch (e) {
       await sails.helpers.slack.errorLoggerHelper(
@@ -195,7 +207,7 @@ async function processRow(candidate, columnNames) {
     const gpProcessed = candidate[candidate.length - processColumn];
     // console.log('processing row : ', candidate);
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(gpProcessed)) { // Date regex
-      
+
       const dateProcessedByTs = candidate[columnNames.indexOf('date processed by TS')];
 
       if(!/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateProcessedByTs)) {
@@ -224,8 +236,6 @@ async function processRow(candidate, columnNames) {
       return null; // Hasn't been processed by TechSpeed
     }
 
-    //console.log('parsedCandidate : ', parsedCandidate);
-
     return {
       parsedCandidate,
     };
@@ -250,7 +260,7 @@ async function saveVendorData(row) {
     }).set({
       vendorTsData: updatedVendorTsData,
     });
-    
+    await sails.helpers.crm.updateCampaign(updated);
     return !!updated;
   } catch (e) {
     console.error('error saving vendor candidate : ', e);

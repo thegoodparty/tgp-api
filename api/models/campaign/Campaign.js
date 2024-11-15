@@ -63,12 +63,6 @@ module.exports = {
       model: 'pathToVictory',
     },
 
-    vendorTsData: {
-      type:'json',
-      columnType: 'jsonb',
-      defaultsTo: {},
-    },
-
     campaignsUpdateHistories: {
       collection: 'campaignUpdateHistory',
       via: 'campaign',
@@ -77,6 +71,12 @@ module.exports = {
     campaignPlanVersions: {
       collection: 'campaignPlanVersion',
       via: 'campaign',
+    },
+
+    vendorTsData: {
+      type:'json',
+      columnType: 'jsonb',
+      defaultsTo: {},
     },
 
     // one to one relationship

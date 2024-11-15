@@ -35,8 +35,20 @@ const s3 = new S3Client({
 const s3Bucket = 'goodparty-keys';
 
 module.exports = {
-  inputs: {},
-
+  inputs: {
+    startRow: {
+      type: 'number',
+      required: false,
+      description: 'Optional row number to start reading and writing from.',
+      defaultsTo: 2, // Default to 2 to skip header
+    },
+    limit: {
+      type: 'number',
+      required: false,
+      description: 'Maximum number of unprocessed rows to process.',
+      defaultsTo: 100, // Set a default limit of 100 rows
+    },
+  },
   exits: {
     success: {
       description: 'ok',
@@ -50,6 +62,7 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const { startRow, limit } = inputs;
       console.log('starting goodparty-opponents');
       const jwtClient = await authenticateGoogleServiceAccount();
       await jwtClient.authorize();
@@ -67,39 +80,41 @@ module.exports = {
 
       const columnNames = rows[1];
       let processedCount = 0;
-      for (let i = 2; i < rows.length; i++) {
-        const row = rows[i];
+      for (let i = startRow; i < rows.length; i++) {
+        if (processedCount >= limit) {
+          console.log('Reached the processing limit:', limit);
+          break;
+        }
+        const row = padRowToMatchColumns(rows[i], columnNames.length);
         // start from 2 to skip header
-        console.log('processing row : ', i);
+        console.log('processing row : ', i + 1);
+
         const processedRow = await processRow(row, columnNames);
+
         if (!processedRow) {
-          console.log(`Skipping row ${i + 2} because it was already processed.`);
+          console.log(`Skipping row ${i + 1} because it was already processed.`);
           continue;
         }
         console.log('processedRow : ', processedRow);
 
-        const isExisting = await findExistingOpponent(row, processedRow);
+        const isExisting = await findExistingOpponent(row);
 
+        let isUpdated = false;
         if (isExisting) {
           console.log('isExisting');
-          await updateExistingOpponent()
+          isUpdated = await updateExistingOpponent(processedRow)
         } else {
-          await createOpponent();
+          isUpdated = await createOpponent(processedRow);
         }
 
-        const isUpdated = await saveVendorData(processedRow);
+        
 
-        console.log('isUpdated : ', isUpdated, i + 2);
+        console.log('isUpdated : ', isUpdated, i + 1);
 
         if (isUpdated) {
-          if (rows[i].length < columnNames.length) {
-            for (let j = 0; j < columnNames.length - rows[i].length; j++) {
-              rows[i].push('');
-            }
-          }
           const today = formatDateForGoogleSheets(new Date);
           console.log('updated1');
-          rows[i][columnNames.length - processColumn] = today;
+          row[columnNames.length - processColumn] = today;
           console.log('updated2');
           processedCount++;
           console.log('processed');
@@ -194,7 +209,7 @@ async function readJsonFromS3(bucketName, keyName) {
 async function processRow(opponent, columnNames) {
   try {
     if (!opponent) {
-      return [];
+      return null;
     }
     const gpProcessed = opponent[opponent.length - processColumn];
     // console.log('processing row : ', opponent);
@@ -221,7 +236,7 @@ async function processRow(opponent, columnNames) {
   }
 }
 
-async function saveVendorData(row) {
+async function createOpponent(row) {
   try {
     const { parsedOpponent } = row;
     if (!parsedOpponent['Campaign ID']) {
@@ -231,15 +246,14 @@ async function saveVendorData(row) {
 
     const updatedVendorTsData = transformColumnNames(parsedOpponent);
     const updated = await Opponent.create({
-      partyAffiliation: parsedOpponent.partyAffiliation,
-      firstName: parsedOpponent.firstName,
-      lastName: parsedOpponent.lastName,
-      sourceUrl: parsedOpponent.sourceUrl,
-      campaignUrl: parsedOpponent.campaignUrl,
-      financeFilingUrl: parsedOpponent.financeFilingUrl,
+      partyAffiliation: updatedVendorTsData.partyAffiliation,
+      firstName: updatedVendorTsData.firstName,
+      lastName: updatedVendorTsData.lastName,
+      sourceUrl: updatedVendorTsData.sourceUrl,
+      campaignUrl: updatedVendorTsData.campaignUrl,
+      financeFilingUrl: updatedVendorTsData.financeFilingUrl,
       campaignId: parsedOpponent['Campaign ID'],
     }).fetch();
-    //const updated = true;
     return !!updated;
   } catch (e) {
     console.error('error saving vendor opponent : ', e);
@@ -280,10 +294,9 @@ async function streamToString(readableStream) {
 async function findExistingOpponent(row) {
   try {
     const { parsedOpponent } = row;
-    const { Slug } = parsedOpponent;
-    
+
     const existing = await Opponent.findOne({ 
-      slug: Slug,
+      campaignId: parsedOpponent['Campaign ID'],
       firstName: parsedOpponent['First name Opponent'],
       lastName: parsedOpponent['Last name Opponent'], 
     });
@@ -296,4 +309,29 @@ async function findExistingOpponent(row) {
     console.log('error finding opponent : ', e);
     return null;
   }
+}
+
+async function updateExistingOpponent(processedRow) {
+  try {
+    const { parsedOpponent } = processedRow;
+    const updated = await Opponent.updateOne({ 
+      campaignId: parsedOpponent['Campaign ID'],
+      firstName: parsedOpponent.firstName,
+      lastName: parsedOpponent.lastName, 
+    }).set({ // Change this, campaignId is not unique
+      partyAffiliation: parsedOpponent.partyAffiliation,
+      firstName: parsedOpponent.firstName,
+      lastName: parsedOpponent.lastName,
+      sourceUrl: parsedOpponent.sourceUrl,
+      campaignUrl: parsedOpponent.campaignUrl,
+      financeFilingUrl: parsedOpponent.financeFilingUrl,
+    });
+    return !!updated;
+  } catch (e) {
+    console.log('error updating existing candidate : ', e);
+  }
+}
+
+async function createOpponent(processedRow) {
+
 }
