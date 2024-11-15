@@ -1,13 +1,8 @@
 /* eslint-disable camelcase */
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const { google } = require('googleapis');
-const googleServiceEmail =
-  'good-party-service@thegoodparty-1562658240463.iam.gserviceaccount.com';
-
-const accessKeyId =
-  sails.config.custom.awsAccessKeyId || sails.config.awsAccessKeyId;
-const secretAccessKey =
-  sails.config.custom.awsSecretAccessKey || sails.config.awsSecretAccessKey;
+const { formatDateForGoogleSheets } = require('../../utils/dates');
+const { authenticateGoogleServiceAccount } = require('../../utils/dataProcessing/authenticateGoogleServiceAccount');
+const { padRowToMatchColumns } = require('../../utils/dataProcessing/padRowToMatchColumns');
 
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
@@ -22,16 +17,6 @@ if (
 ) {
   processColumn = 4;
 }
-
-const s3 = new S3Client({
-  region: 'us-west-2',
-  credentials: {
-    accessKeyId,
-    secretAccessKey,
-  },
-});
-
-const s3Bucket = 'goodparty-keys';
 
 module.exports = {
   inputs: {
@@ -73,13 +58,22 @@ module.exports = {
       // Read rows from the sheet
       const readResponse = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: 'GoodParty Candidates',
+        //range: 'GoodParty Candidates',
+        range: 'Candidates Testing Temp',
       });
 
       const rows = readResponse.data.values;
 
+      if (!rows || rows.length <= startRow) {
+        throw new Error('No rows receiving from Google Sheets or startRow exceeds data length');
+      }
+
       const columnNames = rows[1];
       console.log('columnNames: ', columnNames)
+
+      const modifiedRows = [];
+      modifiedRows.push(rows[0]);
+      modifiedRows.push(rows[1]);
 
       let processedCount = 0;
       for (let i = startRow; i < rows.length; i++) {
@@ -109,6 +103,7 @@ module.exports = {
           const today = formatDateForGoogleSheets(new Date);
           console.log('updated1');
           row[columnNames.length - processColumn] = today;
+          modifiedRows.push(row);
           console.log('updated2');
           processedCount++;
           console.log('processed');
@@ -118,10 +113,11 @@ module.exports = {
       // write back to google sheets
       await sheets.spreadsheets.values.update({
         spreadsheetId,
-        range: 'GoodParty Candidates',
+        //range: 'GoodParty Candidates',
+        range: 'Candidates Testing Temp',
         valueInputOption: 'RAW',
         requestBody: {
-          values: rows,
+          values: modifiedRows,
         },
       });
       console.log('done writing to sheet');
@@ -141,62 +137,6 @@ module.exports = {
     }
   },
 };
-
-function formatDateForGoogleSheets(date) {
-  const month = date.getMonth() + 1; // Months are zero based
-  const day = date.getDate();
-  const year = date.getFullYear();
-  return `${month}/${day}/${year}`;
-}
-
-async function authenticateGoogleServiceAccount() {
-  try {
-    // Fetch the service account JSON from S3
-    const googleServiceJSON = await readJsonFromS3(
-      s3Bucket,
-      'google-service-key.json',
-    );
-
-    // Log the keys to check if 'private_key' exists
-    const parsed = JSON.parse(googleServiceJSON);
-
-    // Extract the private key from the service account JSON
-    const googleServiceKey = parsed.private_key;
-    if (!googleServiceKey) {
-      throw new Error('No private key found in the service account JSON.');
-    }
-
-    // Configure a JWT client with the service account credentials
-    const jwtClient = new google.auth.JWT(
-      googleServiceEmail, // Client email from the JSON
-      null, // No keyFile, as we are providing the key directly
-      googleServiceKey, // The private key from the JSON
-      ['https://www.googleapis.com/auth/spreadsheets'], // Scopes
-    );
-
-    return jwtClient;
-  } catch (error) {
-    console.error('Error authenticating Google Service Account:', error);
-    throw error;
-  }
-}
-
-async function readJsonFromS3(bucketName, keyName) {
-  try {
-    const params = {
-      Bucket: bucketName,
-      Key: keyName,
-    };
-
-    const getCommand = new GetObjectCommand(params);
-    const data = await s3.send(getCommand);
-    const jsonContent = await streamToString(data.Body);
-    return jsonContent;
-  } catch (error) {
-    console.log('Error reading JSON from S3:', error);
-    throw error;
-  }
-}
 
 async function processRow(candidate, columnNames) {
   try {
@@ -302,17 +242,4 @@ function transformColumnNames(parsedCandidate) {
   }
   
   return changedKeysOnly;
-}
-
-async function streamToString(readableStream) {
-  const chunks = [];
-  for await (const chunk of readableStream) {
-    chunks.push(chunk);
-  }
-  return Buffer.concat(chunks).toString('utf-8');
-}
-
-function padRowToMatchColumns(row, columnCount) {
-  const paddedRow = Array.from({ length: columnCount }, (_, index) => row[index] || '');
-  return paddedRow;
 }

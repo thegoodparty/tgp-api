@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 const { google } = require('googleapis');
-//const Opponent = sails.models.Opponent;
 const { formatDateForGoogleSheets } = require('../../utils/dates');
 const { authenticateGoogleServiceAccount } = require('../../utils/dataProcessing/authenticateGoogleServiceAccount');
 const { padRowToMatchColumns } = require('../../utils/dataProcessing/padRowToMatchColumns');
@@ -77,7 +76,7 @@ module.exports = {
       const modifiedRows = [];
       modifiedRows.push(rows[0]);
       modifiedRows.push(rows[1]);
-      
+
       for (let i = startRow; i < rows.length; i++) {
         if (processedCount >= limit) {
           console.log('Reached the processing limit:', limit);
