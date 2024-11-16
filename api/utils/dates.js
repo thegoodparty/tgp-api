@@ -34,9 +34,17 @@ const formatUSDateString = (dateString) => {
   return getFormattedDateString(new Date(dateString));
 };
 
+function formatDateForGoogleSheets(date) {
+  const month = date.getMonth() + 1; // Months are zero based
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
 module.exports = {
   getFormattedDateString,
   convertISO8601DateStringToUSDateString,
   dateToISO8601DateString,
   formatUSDateString,
+  formatDateForGoogleSheets,
 };

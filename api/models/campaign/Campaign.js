@@ -73,6 +73,12 @@ module.exports = {
       via: 'campaign',
     },
 
+    vendorTsData: {
+      type:'json',
+      columnType: 'jsonb',
+      defaultsTo: {},
+    },
+
     // one to one relationship
     ballotCandidate: {
       model: 'BallotCandidate',
