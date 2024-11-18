@@ -1,16 +1,26 @@
+const { pick } = require('../../utils/objects');
+const { hubspotProperties } = require('../../utils/crm/crmClientSingleton');
+
 module.exports = {
-  inputs: {},
+  inputs: {
+    campaignId: {
+      type: 'number',
+      description: 'Campaign ID to sync one campaign',
+    },
+    resync: {
+      type: 'boolean',
+      description: 'Pass true to resync and overwrite current hubSpotUpdates',
+    },
+  },
 
   exits: {
     success: {
       description: 'found',
     },
-
     badRequest: {
       description: 'Bad Request',
       responseType: 'badRequest',
     },
-
     notFound: {
       description: 'Not Found',
       responseType: 'notFound',
@@ -19,78 +29,71 @@ module.exports = {
 
   fn: async function (inputs, exits) {
     try {
+      const { campaignId, resync = false } = inputs;
+
       let updated = 0;
-      const campaigns = await Campaign.find();
+
+      const campaigns = campaignId
+        ? [await Campaign.findOne({ id: campaignId })]
+        : await Campaign.find();
+
       for (let i = 0; i < campaigns.length; i++) {
         try {
           const campaign = campaigns[i];
-          if (campaign.data?.hubSpotUpdates) {
+          if (campaign.data?.hubSpotUpdates && resync !== true) {
+            console.log(`Skipping resync - ${campaign.id}`);
             continue;
           }
           const company = await sails.helpers.crm.getCompany(campaign);
           if (!company) {
+            console.log(`No company found - ${campaign.id}`);
             continue;
           }
           sleep(400);
 
-          const { properties } = company;
-          const {
-            past_candidate,
-            incumbent,
-            candidate_experience_level,
-            final_viability_rating,
-            primary_election_result,
-            election_results,
-            professional_experience,
-            p2p_campaigns,
-            p2p_sent,
-            confirmed_self_filer,
-            verified_candidates,
-            date_verified,
-            pro_candidate,
-            filing_deadline,
-            opponents,
-            office_type,
-          } = properties || {};
+          console.log(`Syncing - ${campaign.id}`);
 
-          campaign.data.hubSpotUpdates = {
-            past_candidate,
-            incumbent,
-            candidate_experience_level,
-            final_viability_rating,
-            primary_election_result,
-            election_results,
-            professional_experience,
-            p2p_campaigns,
-            p2p_sent,
-            confirmed_self_filer,
-            verified_candidates,
-            date_verified,
-            pro_candidate,
-            filing_deadline,
-            opponents,
-            office_type,
-          };
+          /* eslint-disable camelcase */
+          const { verified_candidates, pro_candidate, election_results } =
+            company.properties;
+
+          campaign.data.hubSpotUpdates = pick(
+            company.properties,
+            hubspotProperties,
+          );
+
           const updatedCampaign = {
             data: campaign.data,
           };
-          if (verified_candidates === 'Yes' && !campaign.isVerified) {
+
+          if (
+            String(verified_candidates).toLowerCase() === 'yes' &&
+            !campaign.isVerified
+          ) {
             updatedCampaign.isVerified = true;
           }
 
-          if (pro_candidate === 'Yes' && !campaign.isPro) {
+          if (
+            String(pro_candidate).toLowerCase() === 'yes' &&
+            !campaign.isPro
+          ) {
             updatedCampaign.isPro = true;
           }
-          if (election_results === 'Won General' && !campaign.didWin) {
+
+          if (
+            String(election_results).toLowerCase() === 'won general' &&
+            !campaign.didWin
+          ) {
             updatedCampaign.didWin = true;
           }
+          /* eslint-enable camelcase */
 
           await Campaign.updateOne({ id: campaign.id }).set(updatedCampaign);
           updated++;
         } catch (e) {
           console.log('error at crm/sync', e);
           await sails.helpers.slack.errorLoggerHelper('error at crm/sync', {
-            error,
+            error: e,
             campaign: campaigns[i].slug,
           });
         }
