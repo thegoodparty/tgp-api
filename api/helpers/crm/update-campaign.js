@@ -32,10 +32,22 @@ module.exports = {
           );
         } catch (e) {
           console.log('error updating crm', e);
-          await sails.helpers.slack.errorLoggerHelper(
-            `Error updating company for ${name} with existing hubspotId: ${existingId} in hubspot`,
-            e,
-          );
+
+          if (e.code === 404) {
+            // Could not find record in hubspot, remove the hubspot ID
+            await Campaign.updateOne({ id: campaign.id }).set({
+              data: { ...data, hubspotId: null },
+            });
+            await sails.helpers.slack.errorLoggerHelper(
+              `Could not find hubspot company for ${name} with hubspotId ${existingId}`,
+              e,
+            );
+          } else {
+            await sails.helpers.slack.errorLoggerHelper(
+              `Error updating company for ${name} with existing hubspotId: ${existingId} in hubspot`,
+              e,
+            );
+          }
         }
         const userId = campaign.user;
         const user = await User.findOne({ id: userId });
