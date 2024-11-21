@@ -250,16 +250,18 @@ async function handlePathToVictoryMessage(message) {
     });
   }
 
-  // Send the candidate to google sheets for techspeed
-  // todo: need a way to dedupe this process.
-  try {
-    await sails.helpers.campaign.techspeedAppendSheets(message.campaignId);
-  } catch (e) {
-    console.log('error in techspeedAppendSheets', e);
-    await sails.helpers.slack.errorLoggerHelper(
-      'error in techspeedAppendSheets',
-      e,
-    );
+  const isProd = appBase === 'https://goodparty.org';
+  // Send the candidate to google sheets for techspeed on production.
+  if (isProd) {
+    try {
+      await sails.helpers.campaign.techspeedAppendSheets(message.campaignId);
+    } catch (e) {
+      console.log('error in techspeedAppendSheets', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error in techspeedAppendSheets',
+        e,
+      );
+    }
   }
 }
 
