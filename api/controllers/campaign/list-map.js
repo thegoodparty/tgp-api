@@ -148,6 +148,7 @@ module.exports = {
           slug,
           id: slug,
           didWin,
+          data,
           office: resolvedOffice,
           state,
           ballotLevel,
