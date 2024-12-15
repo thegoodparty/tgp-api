@@ -45,6 +45,7 @@ module.exports = {
             // { positionId: { '!=': '' } },
             // { positionId: { '!=': null } },
             { raceId: { '!=': '' } },
+            { electionDay: { '!=': '' } },
             { raceId: { '!=': null } },
             { isRemoved: false },
           ],
