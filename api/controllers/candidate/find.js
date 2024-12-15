@@ -32,6 +32,7 @@ module.exports = {
     try {
       let { name, office, bustCache } = inputs;
       const slug = `${name}-${office}`;
+
       let candidate = await BallotCandidate.findOne({
         where: {
           and: [
@@ -47,14 +48,19 @@ module.exports = {
           ],
         },
       });
-      console.log('candidate', candidate);
+
       if (!candidate) {
+        return exits.notFound();
+      }
+
+      const now = new Date();
+      const electionDay = new Date(candidate.electionDay);
+      if (electionDay < now) {
         return exits.notFound();
       }
 
       // force update based on date (when fixing a bug).
       if (candidate.presentationData) {
-        const now = new Date();
         if (!candidate.presentationData.updatedAt) {
           bustCache = true;
         } else {
