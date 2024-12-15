@@ -42,13 +42,17 @@ module.exports = {
         },
       });
       let slugs = [];
-      for (let candidate of candidates) {
-        const slug = `${slugify(
-          `${candidate.firstName}-${candidate.lastName}`,
-          { lower: true },
-        )}/${slugify(candidate.positionName, { lower: true })}`;
+      const now = new Date();
 
-        slugs.push(slug);
+      for (let candidate of candidates) {
+        const electionDay = new Date(candidate.electionDay);
+        if (electionDay > now) {
+          const slug = `${slugify(
+            `${candidate.firstName}-${candidate.lastName}`,
+            { lower: true },
+          )}/${slugify(candidate.positionName, { lower: true })}`;
+          slugs.push(slug);
+        }
       }
 
       return exits.success({
