@@ -38,6 +38,7 @@ module.exports = {
             { party: { '!=': 'Democratic-Farmer-Labor' } },
             { raceId: { '!=': '' } },
             { raceId: { '!=': null } },
+            { electionDay: { '!=': '' } },
             { brCandidateId: { '!=': '' } },
             { isRemoved: false },
           ],
