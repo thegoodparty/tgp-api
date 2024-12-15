@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 module.exports = {
   inputs: {
     name: {
@@ -53,9 +55,12 @@ module.exports = {
         return exits.notFound();
       }
 
-      const now = new Date();
-      const electionDay = new Date(candidate.electionDay);
-      if (electionDay < now) {
+      // use moment to only return not found if the election day will pass in a week.
+
+      const now = moment();
+      const electionDay = moment(candidate.electionDay);
+
+      if (electionDay.isBefore(now.subtract(7, 'days'))) {
         return exits.notFound();
       }
 
