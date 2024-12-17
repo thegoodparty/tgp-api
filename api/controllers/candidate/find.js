@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 module.exports = {
   inputs: {
     name: {
@@ -32,6 +34,7 @@ module.exports = {
     try {
       let { name, office, bustCache } = inputs;
       const slug = `${name}-${office}`;
+
       let candidate = await BallotCandidate.findOne({
         where: {
           and: [
@@ -42,19 +45,28 @@ module.exports = {
             // { positionId: { '!=': '' } },
             // { positionId: { '!=': null } },
             { raceId: { '!=': '' } },
+            { electionDay: { '!=': '' } },
             { raceId: { '!=': null } },
             { isRemoved: false },
           ],
         },
       });
-      console.log('candidate', candidate);
+
       if (!candidate) {
+        return exits.notFound();
+      }
+
+      // use moment to only return not found if the election day will pass in a week.
+
+      const now = moment();
+      const electionDay = moment(candidate.electionDay);
+
+      if (electionDay.isBefore(now.subtract(7, 'days'))) {
         return exits.notFound();
       }
 
       // force update based on date (when fixing a bug).
       if (candidate.presentationData) {
-        const now = new Date();
         if (!candidate.presentationData.updatedAt) {
           bustCache = true;
         } else {
