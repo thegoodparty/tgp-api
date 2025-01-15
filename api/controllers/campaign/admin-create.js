@@ -129,7 +129,7 @@ module.exports = {
 
       await claimExistingCampaignRequests(user, newCampaign);
       await createCrmUser(firstName, lastName, email);
-      await sails.helpers.crm.updateCampaign(campaign);
+      await sails.helpers.crm.updateCampaign(newCampaign);
       return exits.success({
         campaign: newCampaign,
       });
