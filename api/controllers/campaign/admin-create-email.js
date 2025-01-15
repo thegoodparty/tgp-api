@@ -50,7 +50,7 @@ async function sendEmail(firstName, email) {
     name: firstName,
     link,
   };
-  const subject = 'Access your free campaign resources!';
+  const subject = 'GoodParty.org: Access your free campaign resources!';
 
   await sails.helpers.mailgun.mailgunTemplateSender(
     email,
