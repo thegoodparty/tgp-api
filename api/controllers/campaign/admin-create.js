@@ -1,6 +1,5 @@
 const { findSlug } = require('../../utils/campaign/findSlug');
 const { createCrmUser } = require('../../utils/campaign/createCrmUser');
-const updateCampaign = require('../../helpers/crm/update-campaign');
 const appBase = sails.config.custom.appBase || sails.config.appBase;
 
 const claimExistingCampaignRequests = async (user, campaign) => {
