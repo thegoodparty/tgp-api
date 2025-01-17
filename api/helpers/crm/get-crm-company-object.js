@@ -62,8 +62,17 @@ const getP2VValues = (p2vData = {}) => {
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
   const { data, aiContent, details, isActive, isPro } = campaign || {};
+  const { user } = this.req;
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
+
+  const updateHistoryCount = await CampaignUpdateHistory.count({
+    campaign: campaign.id,
+  });
+
+  const aiChatCount = await AIChat.count({
+    user: user.id,
+  });
 
   const {
     p2vStatus,
@@ -120,6 +129,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     ? await sails.helpers.zip.shortToLongState(state)
     : undefined;
 
+  const proSubscriptionStatus = getProSubscriptionStatus(campaign);
+
   const p2v_status =
     p2vNotNeeded || !p2vStatus
       ? 'Locked'
@@ -134,6 +145,12 @@ const getCrmCompanyObject = async (inputs, exits) => {
     state: longState,
     candidate_state: longState,
     candidate_district: district,
+    logged_campaign_tracker_events: updateHistoryCount,
+    voter_files_created:
+      (data?.customVoterFiles && data?.customVoterFiles.length) || 0,
+    sms_campaigns_requested: data?.textCampaignCount || 0,
+    campaign_assistant_chats: aiChatCount || 0,
+    pro_subscription_status: proSubscriptionStatus,
     city,
     type: 'CAMPAIGN',
     last_step: isActive ? 'onboarding-complete' : currentStep,
@@ -222,6 +239,16 @@ module.exports = {
   },
   fn: getCrmCompanyObject,
 };
+
+function getProSubscriptionStatus(campaign) {
+  if (!campaign.isPro) {
+    return 'Active';
+  }
+  if (campaign.details?.subscriptionCanceledAt) {
+    return 'Canceled';
+  }
+  return 'Inactive';
+}
 
 const p2vExample = {
   p2vStatus: 'Complete',
