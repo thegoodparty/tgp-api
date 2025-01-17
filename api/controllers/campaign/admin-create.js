@@ -65,6 +65,9 @@ module.exports = {
     otherParty: {
       type: 'string',
     },
+    adminUserEmail: {
+      type: 'string'
+    }
   },
 
   exits: {
@@ -83,7 +86,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      let { firstName, lastName, email, zip, phone, party, otherParty } =
+      let { firstName, lastName, email, zip, phone, party, otherParty, adminUserEmail } =
         inputs;
       email = email.toLowerCase();
       const existing = await User.findOne({ email });
@@ -104,7 +107,6 @@ module.exports = {
       if (!user) {
         return exits.badRequest({ message: 'Error creating user.' });
       }
-
       const slug = await findSlug(userName);
       const data = {
         slug,
@@ -112,6 +114,7 @@ module.exports = {
         party,
         otherParty,
         createdBy: 'admin',
+        adminUserEmail: adminUserEmail ?? ''
       };
 
       const newCampaign = await Campaign.create({
