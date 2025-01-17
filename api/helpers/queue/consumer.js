@@ -380,6 +380,8 @@ async function analyzePathToVictoryResponse(p2vResponse) {
       'victory-issues',
     );
   }
+
+  await sails.helpers.crm.updateCampaign(campaign);
   return false;
 }
 
@@ -471,6 +473,8 @@ async function completePathToVictory(
   } catch (e) {
     console.log('error updating campaign', e);
   }
+
+  await sails.helpers.crm.updateCampaign(campaign);
 }
 
 async function handleGenerateAiContent(message) {
