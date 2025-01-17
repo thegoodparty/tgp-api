@@ -85,7 +85,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   let { candidates, isIncumbent, seats, score, isPartisan } = viability || {};
 
-  const { lastStepDate, currentStep, reportedVoterGoals } = data || {};
+  const { lastStepDate, currentStep, reportedVoterGoals, createdBy, adminUserEmail } = data || {};
 
   const {
     zip,
@@ -183,6 +183,8 @@ const getCrmCompanyObject = async (inputs, exits) => {
     ...getP2VValues(p2v?.data),
     win_number: winNumber,
     voter_data_adoption: canDownloadVoterFile ? 'Unlocked' : 'Locked',
+    created_by_admin: createdBy === 'admin' ? 'yes' : 'no',
+    admin_user: adminUserEmail ?? ''
   };
 
   if (candidates && typeof candidates === 'number' && candidates > 0) {
