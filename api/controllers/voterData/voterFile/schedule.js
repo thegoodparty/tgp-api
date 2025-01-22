@@ -170,6 +170,15 @@ module.exports = {
         false,
       );
 
+      // this is sent to hubspot on update
+      await campaign.updateOne({ id: campaign.id }).set({
+        data: {
+          ...campaign.data,
+          textCampaignCount: (campaign.data.textCampaignCount || 0) + 1,
+        },
+      });
+      await sails.helpers.crm.updateCampaign(campaign);
+
       return exits.success({ message: 'ok' });
     } catch (error) {
       console.error('Error voter file schedule:', error);
