@@ -128,6 +128,10 @@ module.exports = {
           const { name, hasPrimary, partisanType } = node?.position || {};
           const electionYear = new Date(electionDay).getFullYear();
 
+          if (existingPositions[`${name}|${electionYear}`]) {
+            continue;
+          }
+
           if (
             // skip primary if the we have primary in that race
             (hasPrimary && isPrimary) ||
