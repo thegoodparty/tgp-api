@@ -76,10 +76,12 @@ const getCrmCompanyObject = async (inputs, exits) => {
   const updateHistoryCount = await CampaignUpdateHistory.count({
     campaign: campaign.id,
   });
-
-  const aiChatCount = await AIChat.count({
-    user: userId,
-  });
+  let aiChatCount = 0;
+  if (userId) {
+    aiChatCount = await AIChat.count({
+      user: userId,
+    });
+  }
 
   const {
     p2vStatus,
