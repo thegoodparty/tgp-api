@@ -12,6 +12,13 @@ const determineName = async (campaignUser) => {
   return user ? await sails.helpers.user.name(user) : '';
 };
 
+const getUserId = async (campaignUser) => {
+  if (campaignUser?.id) {
+    return campaignUser.id;
+  }
+  return campaignUser;
+};
+
 // Some Hubspot keys couldn't be changed, see:
 // https://goodpartyorg.slack.com/archives/C01AEH4TEBX/p1716572940340399?thread_ts=1716563708.979759&cid=C01AEH4TEBX
 const KEEP_SNAKECASE = ['p2vStatus', 'p2vCompleteDate', 'winNumber'];
@@ -62,7 +69,7 @@ const getP2VValues = (p2vData = {}) => {
 const getCrmCompanyObject = async (inputs, exits) => {
   const { campaign } = inputs;
   const { data, aiContent, details, isActive, isPro } = campaign || {};
-  const { user } = this.req;
+  const userId = getUserId(campaign.user);
 
   const p2v = await PathToVictory.findOne({ campaign: campaign.id });
 
@@ -71,7 +78,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
   });
 
   const aiChatCount = await AIChat.count({
-    user: user.id,
+    user: userId,
   });
 
   const {
@@ -85,7 +92,13 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   let { candidates, isIncumbent, seats, score, isPartisan } = viability || {};
 
-  const { lastStepDate, currentStep, reportedVoterGoals, createdBy, adminUserEmail } = data || {};
+  const {
+    lastStepDate,
+    currentStep,
+    reportedVoterGoals,
+    createdBy,
+    adminUserEmail,
+  } = data || {};
 
   const {
     zip,
@@ -184,7 +197,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
     win_number: winNumber,
     voter_data_adoption: canDownloadVoterFile ? 'Unlocked' : 'Locked',
     created_by_admin: createdBy === 'admin' ? 'yes' : 'no',
-    admin_user: adminUserEmail ?? ''
+    admin_user: adminUserEmail ?? '',
   };
 
   if (candidates && typeof candidates === 'number' && candidates > 0) {
