@@ -12,7 +12,7 @@ const determineName = async (campaignUser) => {
   return user ? await sails.helpers.user.name(user) : '';
 };
 
-const getUserId = async (campaignUser) => {
+const getUserId = (campaignUser) => {
   if (campaignUser?.id) {
     return campaignUser.id;
   }
