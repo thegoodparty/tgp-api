@@ -394,6 +394,15 @@ async function completePathToVictory(
   console.log('pathToVictoryResponse', pathToVictoryResponse);
   try {
     const campaign = await Campaign.findOne({ slug }).populate('user');
+
+    if (!campaign || !campaign.id) {
+      console.log('no campaign found for slug', slug);
+      await sails.helpers.slack.errorLoggerHelper(
+        'error in completePathToVictory',
+        { message: `no campaign found for slug ${slug}` },
+      );
+    }
+
     const { user } = campaign;
 
     let p2v = await PathToVictory.findOne({ campaign: campaign.id });
@@ -470,11 +479,15 @@ async function completePathToVictory(
         }
       }
     }
+
+    await sails.helpers.crm.updateCampaign(campaign);
   } catch (e) {
     console.log('error updating campaign', e);
+    await sails.helpers.slack.errorLoggerHelper(
+      'error updating campaign with path to victory',
+      e,
+    );
   }
-
-  await sails.helpers.crm.updateCampaign(campaign);
 }
 
 async function handleGenerateAiContent(message) {

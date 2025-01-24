@@ -57,6 +57,15 @@ module.exports = {
         });
       }
 
+      if (!campaign || !campaign.id) {
+        await sails.helpers.slack.errorLoggerHelper('Error path-to-victory', {
+          error: `Error in path-to-victory. campaign.id is not valid for slug: ${slug}`,
+        });
+        return exits.badRequest({
+          message: `Error in path-to-victory.`,
+        });
+      }
+
       await sails.helpers.queue.enqueuePathToVictory(campaign.id);
 
       return exits.success({
@@ -64,7 +73,10 @@ module.exports = {
       });
     } catch (e) {
       console.log(e);
-      await sails.helpers.slack.errorLoggerHelper('Error path-to-victory', e);
+      await sails.helpers.slack.errorLoggerHelper(
+        'Uncaught Error in path-to-victory',
+        e,
+      );
 
       return exits.badRequest({ message: 'Error path-to-victory.' });
     }

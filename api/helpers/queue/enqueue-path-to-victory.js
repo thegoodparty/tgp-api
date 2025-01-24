@@ -20,8 +20,24 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       let { campaignId } = inputs;
+
+      if (!campaignId) {
+        return exits.badRequest({ message: 'campaignId is required' });
+      }
+
       // get a fresh copy of the campaign
       const campaign = await Campaign.findOne({ id: campaignId });
+
+      if (!campaign) {
+        await sails.helpers.slack.slackHelper(
+          {
+            title: 'Enqueue-path-to-victory Error.',
+            body: `Enqueue-path-to-victory received invalid campaignId ${campaignId}`,
+          },
+          'victory-issues',
+        );
+        return exits.badRequest({ message: 'campaign not found' });
+      }
 
       const { slug, details } = campaign;
 
