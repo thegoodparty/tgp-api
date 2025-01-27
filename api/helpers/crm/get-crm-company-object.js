@@ -258,7 +258,7 @@ module.exports = {
 };
 
 function getProSubscriptionStatus(campaign) {
-  if (!campaign.isPro) {
+  if (campaign.isPro) {
     return 'Active';
   }
   if (campaign.details?.subscriptionCanceledAt) {

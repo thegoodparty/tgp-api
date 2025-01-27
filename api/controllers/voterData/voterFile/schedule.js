@@ -171,7 +171,7 @@ module.exports = {
       );
 
       // this is sent to hubspot on update
-      await campaign.updateOne({ id: campaign.id }).set({
+      await Campaign.updateOne({ id: campaign.id }).set({
         data: {
           ...campaign.data,
           textCampaignCount: (campaign.data.textCampaignCount || 0) + 1,
