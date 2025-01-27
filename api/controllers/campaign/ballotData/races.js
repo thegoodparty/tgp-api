@@ -57,16 +57,10 @@ module.exports = {
       let electionsByYear = {};
       let primaryElectionDates = {}; // key - positionId, value - electionDay and raceId (primary election date)
       let hasNextPage = false;
-      let endCursor;
 
       if (races?.edges) {
         hasNextPage = races.pageInfo.hasNextPage;
-        console.log('hasNextPage', hasNextPage);
-        startCursor = races.pageInfo.startCursor;
-        console.log('startCursor', startCursor);
-        endCursor = races.pageInfo.endCursor;
-        console.log('endCursor', endCursor);
-
+        startCursor = races.pageInfo.endCursor;
         const raceResponse = parseRaces(
           races,
           existingPositions,
@@ -78,8 +72,7 @@ module.exports = {
         primaryElectionDates = raceResponse.primaryElectionDates;
       }
 
-      while (hasNextPage) {
-        console.log('Getting next page', startCursor);
+      while (hasNextPage === true) {
         query = getRaceQuery(zip, startCursor);
         const queryResponse = await sails.helpers.graphql.queryHelper(query);
         races = queryResponse?.races;
@@ -93,12 +86,8 @@ module.exports = {
           existingPositions = raceResponse.existingPositions;
           electionsByYear = raceResponse.electionsByYear;
           primaryElectionDates = raceResponse.primaryElectionDates;
-          hasNextPage = races?.pageInfo?.hasNextPage;
-          startCursor = races?.pageInfo?.startCursor;
-          if (startCursor === endCursor) {
-            // if we don't check for the endCursor it will loop forever.
-            hasNextPage = false;
-          }
+          hasNextPage = races?.pageInfo?.hasNextPage || false;
+          startCursor = races?.pageInfo?.endCursor;
         }
       }
 
@@ -127,7 +116,7 @@ function parseRaces(
     const { electionDay } = node?.election || {};
     const { name, hasPrimary, partisanType } = node?.position || {};
     const electionYear = new Date(electionDay).getFullYear();
-    console.log(`Processing ${name} ${electionYear}`);
+    // console.log(`Processing ${name} ${electionYear}`);
 
     if (existingPositions[`${name}|${electionYear}`]) {
       continue;
