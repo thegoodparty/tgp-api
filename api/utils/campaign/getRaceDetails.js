@@ -183,7 +183,8 @@ async function getRaceDetails(raceId, slug, zip, getElectionDates = true) {
   }
 
   let priorElectionDates = [];
-  if (partisanType !== 'partisan' && getElectionDates) {
+  // update: we will now attempt to get the election dates even if its a partisan election.
+  if (getElectionDates) {
     if (positionId) {
       const ballotPosition = await BallotPosition.findOne({
         ballotHashId: positionId.toString(),

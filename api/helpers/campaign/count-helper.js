@@ -114,7 +114,9 @@ module.exports = {
         electionType === 'State_Senate_District' ||
         electionType === 'US_House_District' ||
         electionType === 'US_Senate' ||
-        partisanType === 'partisan'
+        // if its a partisan race, and we haven't been able to figure out the election dates
+        // we can use the General Election date.
+        (partisanType === 'partisan' && priorElectionDates.length === 0)
       ) {
         partisanRace = true;
       }
