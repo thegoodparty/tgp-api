@@ -42,6 +42,8 @@ const campaignProSubscriptionUpdated = async (event) => {
       ...(await getReconciledProCampaign(subscriptionId, customerId)),
       user,
     });
+
+  await sails.helpers.crm.updateCampaign(campaign);
 };
 
 module.exports = {
