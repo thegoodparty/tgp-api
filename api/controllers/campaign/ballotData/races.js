@@ -113,12 +113,19 @@ function parseRaces(
   for (let i = 0; i < races.edges.length; i++) {
     const { node } = races.edges[i] || {};
     const { isPrimary } = node || {};
-    const { electionDay } = node?.election || {};
+    const { electionDay, name: electionName } = node?.election || {};
     const { name, hasPrimary, partisanType } = node?.position || {};
+
     const electionYear = new Date(electionDay).getFullYear();
     // console.log(`Processing ${name} ${electionYear}`);
 
+    console.log('node?.position', node?.position);
+
     if (existingPositions[`${name}|${electionYear}`]) {
+      continue;
+    }
+
+    if (electionName.includes('Runoff')) {
       continue;
     }
 
@@ -149,7 +156,8 @@ function parseRaces(
     if (partisanType === 'partisan') {
       continue;
     }
-    const { electionDay } = node?.election || {};
+    const { electionDay, name } = node?.election || {};
+
     const electionYear = new Date(electionDay).getFullYear();
     const primaryElectionDate = primaryElectionDates[`${id}|${electionYear}`];
     if (id && hasPrimary && !isPrimary && primaryElectionDate) {
