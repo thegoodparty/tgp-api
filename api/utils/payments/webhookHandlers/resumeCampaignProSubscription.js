@@ -35,6 +35,8 @@ const resumeCampaignProSubscription = async (event) => {
     sendProConfirmationEmail(user, campaign),
     doVoterDownloadCheck(campaign),
   ]);
+
+  await sails.helpers.crm.updateCampaign(campaign);
 };
 
 module.exports = {

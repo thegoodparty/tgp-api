@@ -37,6 +37,8 @@ const endCampaignProSubscription = async (event) => {
     Boolean(details.endOfElectionSubscriptionCanceled),
   );
   sendProSubscriptionEndingEmail({ ...campaign, user });
+
+  await sails.helpers.crm.updateCampaign(campaign);
 };
 
 module.exports = {
