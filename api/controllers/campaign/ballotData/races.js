@@ -119,8 +119,6 @@ function parseRaces(
     const electionYear = new Date(electionDay).getFullYear();
     // console.log(`Processing ${name} ${electionYear}`);
 
-    console.log('node?.position', node?.position);
-
     if (existingPositions[`${name}|${electionYear}`]) {
       continue;
     }
