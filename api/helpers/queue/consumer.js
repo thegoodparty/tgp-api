@@ -279,12 +279,14 @@ async function analyzePathToVictoryResponse(p2vResponse) {
     subAreaName,
     subAreaValue,
     partisanType,
+    priorElectionDates,
   } = p2vResponse;
 
   const candidateSlackMessage = `
   • Candidate: ${campaign?.data?.name} [${campaign?.slug}]
   • Office: ${officeName}
   • Election Date: ${electionDate}
+  • Prior Election Dates: ${priorElectionDates}
   • Election Term: ${electionTerm}
   • Election Level: ${electionLevel}
   • Election State: ${electionState}
