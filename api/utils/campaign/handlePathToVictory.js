@@ -181,6 +181,7 @@ const handlePathToVictory = async ({
       subAreaName,
       subAreaValue,
       partisanType,
+      priorElectionDates,
     };
   } catch (e) {
     sails.helpers.log(slug, 'error in handle-p2v', e);
