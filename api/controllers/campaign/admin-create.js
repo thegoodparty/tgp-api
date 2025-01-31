@@ -65,7 +65,7 @@ module.exports = {
     otherParty: {
       type: 'string',
     },
-    adminUserEmail: {
+    adminEmail: {
       type: 'string'
     }
   },
@@ -86,7 +86,7 @@ module.exports = {
   },
   fn: async function (inputs, exits) {
     try {
-      let { firstName, lastName, email, zip, phone, party, otherParty, adminUserEmail } =
+      let { firstName, lastName, email, zip, phone, party, otherParty, adminEmail } =
         inputs;
       email = email.toLowerCase();
       const existing = await User.findOne({ email });
@@ -114,7 +114,7 @@ module.exports = {
         party,
         otherParty,
         createdBy: 'admin',
-        adminUserEmail: adminUserEmail ?? ''
+        adminUserEmail: adminEmail ?? ''
       };
 
       const newCampaign = await Campaign.create({
