@@ -168,6 +168,10 @@ module.exports = {
       }
       console.log('foundColumns', foundColumns);
 
+      // we now have the columns for the last 3 elections.
+      // we store it on counts for debugging purposes.
+      counts.foundColumns = foundColumns;
+
       // get the counts for each of the 3 years.
       let turnoutCounts = [];
       for (const column of foundColumns) {
@@ -450,11 +454,12 @@ function determineHistoryColumn(
           const electionSplit = electionKey.split('_');
           const electionKeyType = electionSplit[0];
           const electionKeyDate = electionSplit[1];
+          // we skip primaries and runoffs.
           if (
-            electionKeyType !== 'EG' &&
-            electionKeyType !== 'ECG' &&
-            electionKeyType !== 'EL' &&
-            electionKeyType !== 'EP'
+            electionKeyType === 'EP' ||
+            electionKeyType === 'EPD' ||
+            electionKeyType === 'EPP' ||
+            electionKeyType === 'ER'
           ) {
             continue;
           }
