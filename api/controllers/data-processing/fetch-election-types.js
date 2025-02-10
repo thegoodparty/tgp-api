@@ -320,37 +320,58 @@ module.exports = {
 
     try {
       for (const state of states) {
-        console.log('seeding state', state);
+        console.log('Seeding state', state);
         // make an API call to get all the columns for the state
         let columns = await getAllStateColumns(state);
         console.log(`Got ${columns.length} Raw Columns for state ${state}`);
         // filter the columns to only include the ones that are in the miscellaneousDistricts object
-        let columnsMatched = 0;
+        let columnsToCheck = [];
         for (const category of Object.keys(miscellaneousDistricts)) {
           for (const district of miscellaneousDistricts[category]) {
             if (columns.includes(district)) {
-              console.log('FOUND! district', district);
-              columnsMatched++;
-              await ElectionType.findOrCreate(
-                {
-                  name: district,
-                  state: state,
-                  category: category,
-                },
-                {
-                  name: district,
-                  state: state,
-                  category: category,
-                },
-              );
+              columnsToCheck.push({ district, category });
             }
           }
         }
+
+        let columnsMatched = 0;
+        let columnsChecked = 0;
+        for (const { district, category } of columnsToCheck) {
+          await new Promise((resolve) => setTimeout(resolve, 7000));
+          columnsChecked++;
+          // L2 returns columns for states even if they don't have any values
+          // so we need to check if the column has any values before we add it to the database
+          let columnValues = await querySearchColumn(district, state);
+          console.log(
+            `[${state}] Checking column ${columnsChecked} / ${columnsToCheck.length}`,
+          );
+          const blankValues = [`${state}##`, `${state}####`, '', ' '];
+          const filteredValues = columnValues.filter(
+            (value) => !blankValues.includes(value),
+          );
+          console.log('filteredValues', filteredValues.length);
+          if (filteredValues.length > 1) {
+            console.log(`FOUND! district ${district}`);
+            columnsMatched++;
+            await ElectionType.findOrCreate(
+              {
+                name: district,
+                state: state,
+                category: category,
+              },
+              {
+                name: district,
+                state: state,
+                category: category,
+              },
+            );
+          }
+        }
+
         console.log(
           `Found ${columnsMatched} Election Types for state ${state}`,
         );
-        await new Promise((resolve) => setTimeout(resolve, 6000));
-        console.log('Sleeping for 6 seconds...');
+        await new Promise((resolve) => setTimeout(resolve, 7000));
       }
     } catch (e) {
       console.log('error in seed election types', e);
@@ -393,4 +414,30 @@ async function getAllStateColumns(electionState) {
     console.log('error at getAllStateColumns', e);
   }
   return columns;
+}
+
+async function querySearchColumn(searchColumn, electionState) {
+  let searchValues = [];
+  try {
+    let searchUrl = `https://api.l2datamapping.com/api/v2/customer/application/column/values/1OSR/VM_${electionState}/${searchColumn}?id=1OSR&apikey=${l2ApiKey}`;
+    const response = await axios.get(searchUrl);
+    if (response?.data?.values && response.data.values.length > 0) {
+      searchValues = response.data.values;
+    } else if (
+      response?.data?.message &&
+      response.data.message.includes('API threshold reached')
+    ) {
+      console.log('L2-Data API threshold reached');
+      await sails.helpers.slack.slackHelper(
+        {
+          title: 'L2-Data API threshold reached',
+          body: `Error! L2-Data API threshold reached for ${searchColumn} in ${electionState}.`,
+        },
+        'dev',
+      );
+    }
+  } catch (e) {
+    console.log('error at querySearchColumn', e);
+  }
+  return searchValues;
 }
