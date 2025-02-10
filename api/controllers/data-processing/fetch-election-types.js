@@ -337,21 +337,20 @@ module.exports = {
         let columnsMatched = 0;
         let columnsChecked = 0;
         for (const { district, category } of columnsToCheck) {
-          await new Promise((resolve) => setTimeout(resolve, 7000));
+          await new Promise((resolve) => setTimeout(resolve, 10000));
           columnsChecked++;
           // L2 returns columns for states even if they don't have any values
           // so we need to check if the column has any values before we add it to the database
           let columnValues = await querySearchColumn(district, state);
           console.log(
-            `[${state}] Checking column ${columnsChecked} / ${columnsToCheck.length}`,
+            `[${state}] Checking column ${columnsChecked} / ${columnsToCheck.length}. Columns found: ${columnsMatched}`,
           );
           const blankValues = [`${state}##`, `${state}####`, '', ' '];
           const filteredValues = columnValues.filter(
             (value) => !blankValues.includes(value),
           );
-          console.log('filteredValues', filteredValues.length);
           if (filteredValues.length > 1) {
-            console.log(`FOUND! district ${district}`);
+            // console.log(`FOUND! district ${district}`);
             columnsMatched++;
             await ElectionType.findOrCreate(
               {
@@ -371,7 +370,7 @@ module.exports = {
         console.log(
           `Found ${columnsMatched} Election Types for state ${state}`,
         );
-        await new Promise((resolve) => setTimeout(resolve, 7000));
+        await new Promise((resolve) => setTimeout(resolve, 10000));
       }
     } catch (e) {
       console.log('error in seed election types', e);
