@@ -1,5 +1,6 @@
 /* eslint-disable object-shorthand */
 const appBase = sails.config.custom.appBase || sails.config.appBase;
+const moment = require('moment');
 
 module.exports = {
   inputs: {},
