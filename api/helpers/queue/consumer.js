@@ -288,7 +288,9 @@ async function analyzePathToVictoryResponse(p2vResponse) {
   • Election Date: ${electionDate}
   • Prior Election Dates: ${priorElectionDates}
   • L2 Election Date Columns: ${
-    pathToVictoryResponse?.counts?.foundColumns || ''
+    pathToVictoryResponse?.counts?.foundColumns
+      ? JSON.stringify(pathToVictoryResponse?.counts?.foundColumns)
+      : ''
   }
   • Election Term: ${electionTerm}
   • Election Level: ${electionLevel}
