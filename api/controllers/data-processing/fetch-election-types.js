@@ -337,7 +337,7 @@ module.exports = {
         let columnsMatched = 0;
         let columnsChecked = 0;
         for (const { district, category } of columnsToCheck) {
-          await new Promise((resolve) => setTimeout(resolve, 10000));
+          await new Promise((resolve) => setTimeout(resolve, 7000));
           columnsChecked++;
           // L2 returns columns for states even if they don't have any values
           // so we need to check if the column has any values before we add it to the database
@@ -370,7 +370,7 @@ module.exports = {
         console.log(
           `Found ${columnsMatched} Election Types for state ${state}`,
         );
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        await new Promise((resolve) => setTimeout(resolve, 7000));
       }
     } catch (e) {
       console.log('error in seed election types', e);
