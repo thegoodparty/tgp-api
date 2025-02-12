@@ -92,6 +92,7 @@
     "start": "cross-env NODE_ENV=production node app.js",
     "dev": "cross-env NODE_ENV=development nodemon app.js",
     "qa": "cross-env NODE_ENV=qa nodemon app.js",
+    "prod": "cross-env NODE_ENV=prod nodemon app.js",
     "test": "npm run lint && npm run custom-tests && echo 'Done.'",
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
     "lint-fix": "eslint --fix",
