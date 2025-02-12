@@ -15,46 +15,14 @@ async function getChatToolCompletion(
 ) {
   const models = aiModels.split(',');
   for (const model of models) {
-    // Lama 3.1 supports native function calling
+    // Lama 3.3 supports native function calling
     // so we can modify the OpenAI base url to use the together.ai api
     console.log('model', model);
-    const togetherAi = model.includes('meta-llama');
+    const togetherAi = model.includes('meta-llama') || model.includes('Qwen');
     const client = new OpenAI({
       apiKey: togetherAi ? togetherAiKey : openAiKey,
       baseURL: togetherAi ? 'https://api.together.xyz/v1' : undefined,
     });
-
-    let toolPrompt;
-    if (model.includes('meta-llama')) {
-      // the native function calling in llama is not working as expected
-      // so we use this function prompt to get the same result
-      toolPrompt = `You have access to the following functions:
-
-      Use the function '${tool.name}' to '${tool.description}':
-      ${JSON.stringify(tool)}
-      
-      If you choose to call a function ONLY reply in the following format with no prefix or suffix:
-      
-      <function=example_function_name>{"example_name": "example_value"}</function>
-      
-      Reminder:
-      - Function calls MUST follow the specified format, start with <function= and end with </function>
-      - Required parameters MUST be specified
-      - Only call one function at a time
-      - Put the entire function call reply on one line
-      - If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls`;
-
-      // add the tool prompt to the last system message
-      for (const message of messages) {
-        if (message.role === 'system') {
-          message.content += toolPrompt;
-          break;
-        }
-      }
-
-      tool = undefined;
-      toolChoice = undefined;
-    }
 
     console.log('toolChoice', toolChoice);
 
