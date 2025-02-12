@@ -56,6 +56,11 @@ const handlePathToVictory = async ({
           electionLevel,
           electionState,
         );
+      } else {
+        // we must set searchColumns to an empty array
+        // for at large, president, senate, governor, and mayor.
+        // to enable skipping straight to counts without searching.
+        searchColumns = [''];
       }
 
       let locationColumns = await searchLocationDistricts(
@@ -87,6 +92,7 @@ const handlePathToVictory = async ({
       }
     } else {
       // if electionType and electionLocation are already specified
+      // we can skip the search and go straight to counts.
       searchColumns = [''];
     }
 
@@ -108,8 +114,8 @@ const handlePathToVictory = async ({
       } else if (electionType && electionLocation) {
         // if already specified, skip the search.
       } else {
-        // sleep for 5 seconds to avoid rate limiting.
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        // sleep for 7 seconds to avoid rate limiting.
+        await new Promise((resolve) => setTimeout(resolve, 7000));
         columnResponse = await getSearchColumn(
           slug,
           searchColumn,

@@ -18,16 +18,18 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       // Process path to victory all Waiting campaigns.
+      const today = moment().format('YYYY-MM-DD');
       const campaigns = await sails.sendNativeQuery(`
       select *
       from public.campaign as c
       inner join public.pathtovictory as pathtovictory on c.id = pathtovictory.campaign
       where c.details->>'pledged'='true'
-      and (c.details->>'runForOffice'='yes' or c.details->>'knowRun'='true')
       and c.details->>'electionDate' is not null
       and c.details->>'raceId' is not null
-      and pathtovictory.data->>'totalRegisteredVoters' is null
+      and (pathtovictory.data->>'p2vStatus'='Waiting' or pathtovictory.data->>'p2vStatus'='Failed')
       and pathtovictory.data->>'p2vNotNeeded' is null
+	    and c.details->>'electionDate' >= '${today}'
+	    and c."isDemo"=false
       order by c.id desc;
       `);
 
