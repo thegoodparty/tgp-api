@@ -152,15 +152,13 @@ function parseRaces(races, existingPositions, elections, primaryElectionDates) {
 }
 
 function getRaceQuery(zip, level, electionDate, startCursor) {
-  console.log(
-    'zip, level, electionDate, startCursor',
-    zip,
-    level,
-    electionDate,
-    startCursor,
-  );
   const gt = moment(electionDate).startOf('month').format('YYYY-MM-DD');
   const lt = moment(electionDate).endOf('month').format('YYYY-MM-DD');
+
+  let levelWithTownship = level?.toUpperCase();
+  if (level === 'LOCAL') {
+    levelWithTownship = 'LOCAL, TOWNSHIP';
+  }
 
   const query = `
   query {
@@ -173,7 +171,7 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
           gt: "${gt}"
           lt: "${lt}"
         }
-        level: [${level?.toUpperCase()}]
+        level: [${levelWithTownship}]
       }
       after: ${startCursor ? `"${startCursor}"` : null}
     ) {
