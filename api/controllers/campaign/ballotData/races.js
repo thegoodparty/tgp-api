@@ -42,6 +42,10 @@ module.exports = {
     try {
       await sails.helpers.queue.consumer();
       const { zip, level, electionDate } = inputs;
+      await sails.helpers.slack.errorLoggerHelper(
+        'office picker inputs',
+        inputs,
+      );
 
       let startCursor;
 
