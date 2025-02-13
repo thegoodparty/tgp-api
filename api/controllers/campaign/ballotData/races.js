@@ -42,15 +42,14 @@ module.exports = {
     try {
       await sails.helpers.queue.consumer();
       const { zip, level, electionDate } = inputs;
-      await sails.helpers.slack.errorLoggerHelper(
-        'office picker inputs',
-        inputs,
-      );
 
       let startCursor;
 
       let query = getRaceQuery(zip, level, electionDate, startCursor);
-      await sails.helpers.slack.errorLoggerHelper('office query', { query });
+      await sails.helpers.slack.errorLoggerHelper('office level and query', {
+        level,
+        query,
+      });
       let { races } = await sails.helpers.graphql.queryHelper(query);
       let existingPositions = {};
       let elections = [];
