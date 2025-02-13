@@ -167,9 +167,13 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
         zip: "${truncateZip(zip)}"
       }
       filterBy: {
-        electionDay: {
+        ${
+          electionDate
+            ? `electionDay: {
           gt: "${gt}"
           lt: "${lt}"
+        }`
+            : ''
         }
         level: [${levelWithTownship}]
       }
