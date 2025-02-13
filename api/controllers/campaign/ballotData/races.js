@@ -156,7 +156,7 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
   const lt = moment(electionDate).endOf('month').format('YYYY-MM-DD');
 
   let levelWithTownship = level?.toUpperCase();
-  if (level === 'LOCAL OR TOWNSHIP') {
+  if (level?.startsWith('LOCAL')) {
     levelWithTownship = 'LOCAL, TOWNSHIP';
   }
 
