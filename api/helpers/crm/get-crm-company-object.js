@@ -204,7 +204,7 @@ const getCrmCompanyObject = async (inputs, exits) => {
 
   if (candidates && typeof candidates === 'number' && candidates > 0) {
     const opponents = candidates - 1;
-    properties.opponents = opponents.toString();
+    properties.number_of_opponents = opponents.toString();
   }
   if (isIncumbent !== undefined && typeof isIncumbent === 'boolean') {
     if (isIncumbent) {
