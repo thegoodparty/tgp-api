@@ -50,6 +50,7 @@ module.exports = {
       let startCursor;
 
       let query = getRaceQuery(zip, level, electionDate, startCursor);
+      await sails.helpers.slack.errorLoggerHelper('office query', { query });
       let { races } = await sails.helpers.graphql.queryHelper(query);
       let existingPositions = {};
       let elections = [];
@@ -158,10 +159,9 @@ function parseRaces(races, existingPositions, elections, primaryElectionDates) {
 function getRaceQuery(zip, level, electionDate, startCursor) {
   const gt = moment(electionDate).startOf('month').format('YYYY-MM-DD');
   const lt = moment(electionDate).endOf('month').format('YYYY-MM-DD');
-
   let levelWithTownship = level?.toUpperCase();
   if (level?.startsWith('LOCAL')) {
-    levelWithTownship = 'LOCAL, TOWNSHIP';
+    levelWithTownship = 'LOCAL,TOWNSHIP';
   }
 
   const query = `
@@ -217,6 +217,5 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
     }
   }
   `;
-  console.log('query', query);
   return query;
 }
