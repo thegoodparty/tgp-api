@@ -46,10 +46,7 @@ module.exports = {
       let startCursor;
 
       let query = getRaceQuery(zip, level, electionDate, startCursor);
-      await sails.helpers.slack.errorLoggerHelper('office level and query', {
-        level,
-        query,
-      });
+
       let { races } = await sails.helpers.graphql.queryHelper(query);
       let existingPositions = {};
       let elections = [];
