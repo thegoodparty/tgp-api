@@ -41,7 +41,21 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       await sails.helpers.queue.consumer();
-      const { zip, level, electionDate } = inputs;
+      let { zip, level, electionDate } = inputs;
+
+      // Sanitize inputs that might be the string "undefined".
+      if (
+        typeof level === 'string' &&
+        level.toLowerCase().trim() === 'undefined'
+      ) {
+        level = undefined;
+      }
+      if (
+        typeof electionDate === 'string' &&
+        electionDate.toLowerCase().trim() === 'undefined'
+      ) {
+        electionDate = undefined;
+      }
 
       let startCursor;
 
@@ -170,8 +184,8 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
         ${
           electionDate
             ? `electionDay: {
-          gt: "${gt}"
-          lt: "${lt}"
+          gte: "${gt}"
+          lte: "${lt}"
         }`
             : ''
         }
