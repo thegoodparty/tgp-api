@@ -90,10 +90,7 @@ async function findMiscDistricts(slug, officeName, state, electionLevel) {
   let results;
   if (category) {
     results = await ElectionType.find({ state, category });
-  }
-
-  // if theres no match for the suspected category, get all potential miscellaneous districts.
-  if (!results || results.length === 0) {
+  } else {
     results = await ElectionType.find({ state });
   }
 
