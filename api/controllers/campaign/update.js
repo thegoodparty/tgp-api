@@ -80,10 +80,6 @@ module.exports = {
         await sails.helpers.crm.updateCampaign(updated);
       } catch (e) {
         sails.helpers.log(campaign.slug, 'error updating crm', e);
-        await sails.helpers.slack.errorLoggerHelper(
-          'Update Campaign - CRM update failed',
-          e,
-        );
       }
 
       try {
