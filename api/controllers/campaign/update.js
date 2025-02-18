@@ -77,7 +77,7 @@ module.exports = {
       }
 
       try {
-        await sails.helpers.crm.updateCampaign(updated);
+        await sails.helpers.crm.updateCampaign(campaign);
       } catch (e) {
         sails.helpers.log(campaign.slug, 'error updating crm', e);
         await sails.helpers.slack.errorLoggerHelper(
