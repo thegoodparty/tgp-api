@@ -216,6 +216,9 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
             level
             name
             state
+            electionFrequencies {
+              frequency
+            }
 
             normalizedPosition {
               name
