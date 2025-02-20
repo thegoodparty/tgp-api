@@ -167,11 +167,21 @@ function parseRaces(races, existingPositions, elections, primaryElectionDates) {
 }
 
 function getRaceQuery(zip, level, electionDate, startCursor) {
-  const gt = moment(electionDate).startOf('month').format('YYYY-MM-DD');
-  const lt = moment(electionDate).endOf('month').format('YYYY-MM-DD');
+  let gt;
+  let lt;
+  if (electionDate) {
+    gt = moment(electionDate).startOf('month').format('YYYY-MM-DD');
+    lt = moment(electionDate).endOf('month').format('YYYY-MM-DD');
+  } else {
+    gt = moment().format('YYYY-MM-DD');
+    lt = moment().add(2, 'year').format('YYYY-MM-DD');
+  }
   let levelWithTownship = level?.toUpperCase();
   if (levelWithTownship === 'LOCAL') {
-    levelWithTownship = 'LOCAL,TOWNSHIP';
+    levelWithTownship = 'LOCAL,TOWNSHIP,CITY';
+  }
+  if (levelWithTownship === 'COUNTY') {
+    levelWithTownship = 'COUNTY,REGIONAL';
   }
 
   const query = `
@@ -181,14 +191,10 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
         zip: "${truncateZip(zip)}"
       }
       filterBy: {
-        ${
-          electionDate
-            ? `electionDay: {
+       electionDay: {
           gte: "${gt}"
           lte: "${lt}"
-        }`
-            : ''
-        }
+        }       
         level: [${levelWithTownship}]
       }
       after: ${startCursor ? `"${startCursor}"` : null}
@@ -210,6 +216,9 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
             level
             name
             state
+            electionFrequencies {
+              frequency
+            }
 
             normalizedPosition {
               name
