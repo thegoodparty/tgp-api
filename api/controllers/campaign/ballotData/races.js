@@ -166,9 +166,23 @@ function parseRaces(
   return { electionsByYear, existingPositions, primaryElectionDates };
 }
 
-function getRaceQuery(zip, startCursor) {
-  const today = moment().format('YYYY-MM-DD');
-  const nextYear = moment().add(4, 'year').format('YYYY-MM-DD');
+function getRaceQuery(zip, level, electionDate, startCursor) {
+  let gt;
+  let lt;
+  if (electionDate) {
+    gt = moment(electionDate).startOf('month').format('YYYY-MM-DD');
+    lt = moment(electionDate).endOf('month').format('YYYY-MM-DD');
+  } else {
+    gt = moment().format('YYYY-MM-DD');
+    lt = moment().add(2, 'year').format('YYYY-MM-DD');
+  }
+  let levelWithTownship = level?.toUpperCase();
+  if (levelWithTownship === 'LOCAL') {
+    levelWithTownship = 'LOCAL,TOWNSHIP,CITY';
+  }
+  if (levelWithTownship === 'COUNTY') {
+    levelWithTownship = 'COUNTY,REGIONAL';
+  }
 
   const query = `
   query {
@@ -177,10 +191,11 @@ function getRaceQuery(zip, startCursor) {
         zip: "${truncateZip(zip)}"
       }
       filterBy: {
-        electionDay: {
-          gt: "${today}"
-          lt: "${nextYear}"
-        }
+       electionDay: {
+          gte: "${gt}"
+          lte: "${lt}"
+        }       
+        level: [${levelWithTownship}]
       }
       after: ${startCursor ? `"${startCursor}"` : null}
     ) {
@@ -205,10 +220,12 @@ function getRaceQuery(zip, startCursor) {
             name
             salary
             state
-            subAreaName
-            subAreaValue
             electionFrequencies {
               frequency
+            }
+
+            normalizedPosition {
+              name
             }
           }
           filingPeriods {
