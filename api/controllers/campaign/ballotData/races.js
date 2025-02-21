@@ -7,18 +7,6 @@ const isPOTUSorVPOTUSNode = ({ position }) =>
   position?.level === 'FEDERAL' &&
   position?.name?.toLowerCase().includes('president');
 
-const sortRacesGroupedByYear = (elections = {}) => {
-  const electionYears = Object.keys(elections);
-  return electionYears.reduce((aggregate, electionYear) => {
-    const electionsSortedByYear =
-      elections[electionYear].sort(sortRacesByLevel);
-    return {
-      ...aggregate,
-      [electionYear]: electionsSortedByYear,
-    };
-  }, {});
-};
-
 module.exports = {
   friendlyName: 'Health',
 
@@ -30,6 +18,12 @@ module.exports = {
       required: true,
       minLength: 5,
       maxLength: 5,
+    },
+    level: {
+      type: 'string',
+    },
+    electionDate: {
+      type: 'string',
     },
   },
 
@@ -47,14 +41,29 @@ module.exports = {
   fn: async function (inputs, exits) {
     try {
       await sails.helpers.queue.consumer();
-      const { zip } = inputs;
+      let { zip, level, electionDate } = inputs;
+
+      // Sanitize inputs that might be the string "undefined".
+      if (
+        typeof level === 'string' &&
+        level.toLowerCase().trim() === 'undefined'
+      ) {
+        level = undefined;
+      }
+      if (
+        typeof electionDate === 'string' &&
+        electionDate.toLowerCase().trim() === 'undefined'
+      ) {
+        electionDate = undefined;
+      }
 
       let startCursor;
 
-      let query = getRaceQuery(zip, startCursor);
+      let query = getRaceQuery(zip, level, electionDate, startCursor);
+
       let { races } = await sails.helpers.graphql.queryHelper(query);
       let existingPositions = {};
-      let electionsByYear = {};
+      let elections = [];
       let primaryElectionDates = {}; // key - positionId, value - electionDay and raceId (primary election date)
       let hasNextPage = false;
 
@@ -64,36 +73,34 @@ module.exports = {
         const raceResponse = parseRaces(
           races,
           existingPositions,
-          electionsByYear,
+          elections,
           primaryElectionDates,
         );
         existingPositions = raceResponse.existingPositions;
-        electionsByYear = raceResponse.electionsByYear;
+        elections = raceResponse.elections;
         primaryElectionDates = raceResponse.primaryElectionDates;
       }
 
       while (hasNextPage === true) {
-        query = getRaceQuery(zip, startCursor);
+        query = getRaceQuery(zip, level, electionDate, startCursor);
         const queryResponse = await sails.helpers.graphql.queryHelper(query);
         races = queryResponse?.races;
         if (races) {
           const raceResponse = parseRaces(
             races,
             existingPositions,
-            electionsByYear,
+            elections,
             primaryElectionDates,
           );
           existingPositions = raceResponse.existingPositions;
-          electionsByYear = raceResponse.electionsByYear;
+          elections = raceResponse.elections;
           primaryElectionDates = raceResponse.primaryElectionDates;
           hasNextPage = races?.pageInfo?.hasNextPage || false;
           startCursor = races?.pageInfo?.endCursor;
         }
       }
 
-      const racesGroupedByYearAndSorted =
-        sortRacesGroupedByYear(electionsByYear);
-      return exits.success(racesGroupedByYearAndSorted);
+      return exits.success(elections);
     } catch (e) {
       console.log('error at ballotData/get', e);
       return exits.success({
@@ -104,12 +111,7 @@ module.exports = {
   },
 };
 
-function parseRaces(
-  races,
-  existingPositions,
-  electionsByYear,
-  primaryElectionDates,
-) {
+function parseRaces(races, existingPositions, elections, primaryElectionDates) {
   for (let i = 0; i < races.edges.length; i++) {
     const { node } = races.edges[i] || {};
     const { isPrimary } = node || {};
@@ -140,9 +142,7 @@ function parseRaces(
     }
     existingPositions[`${name}|${electionYear}`] = true;
 
-    electionsByYear[electionYear]
-      ? electionsByYear[electionYear].push(node)
-      : (electionsByYear[electionYear] = [node]);
+    elections.push(node);
   }
   // iterate over the races again and save the primary election date to the general election
   // the position id will be the same for both primary and general election
@@ -163,7 +163,7 @@ function parseRaces(
       node.election.primaryElectionId = primaryElectionDate.primaryElectionId;
     }
   }
-  return { electionsByYear, existingPositions, primaryElectionDates };
+  return { elections, existingPositions, primaryElectionDates };
 }
 
 function getRaceQuery(zip, level, electionDate, startCursor) {
@@ -207,18 +207,14 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
             id
             electionDay
             name
-            originalElectionDate
             state
-            timezone
           }
           position {
             id
-            appointed
             hasPrimary
             partisanType
             level
             name
-            salary
             state
             electionFrequencies {
               frequency
@@ -228,10 +224,7 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
               name
             }
           }
-          filingPeriods {
-            startOn
-            endOn
-          }
+
         }
       }
       pageInfo {
@@ -244,30 +237,4 @@ function getRaceQuery(zip, level, electionDate, startCursor) {
   }
   `;
   return query;
-}
-
-function sortRacesByLevel(a, b) {
-  const aLevel = levelValue(a.position?.level);
-  const bLevel = levelValue(b.position?.level);
-  return aLevel - bLevel;
-}
-
-function levelValue(level) {
-  if (level === 'FEDERAL') {
-    return 10;
-  }
-  if (level === 'STATE') {
-    return 8;
-  }
-
-  if (level === 'COUNTY') {
-    return 6;
-  }
-  if (level === 'CITY') {
-    return 4;
-  }
-  if (level === 'LOCAL') {
-    return 0;
-  }
-  return 12;
 }
