@@ -2,6 +2,7 @@ const axios = require('axios');
 const moment = require('moment');
 const { patchUserMetaData } = require('../../utils/user/patchUserMetaData');
 const { fetchFsUserId } = require('../../utils/tracking/fetchFsUserId');
+const { correctFsUserId } = require('../../utils/tracking/correctFsUserId');
 const { reconcileFsUserId } = require('../../utils/tracking/reconcileFsUserId');
 const {
   mapCampaignManagementRequests,
