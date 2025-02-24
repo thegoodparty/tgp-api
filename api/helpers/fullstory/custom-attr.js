@@ -32,12 +32,13 @@ module.exports = {
         return exits.success('no api key');
       }
 
-      if (appBase === 'http://localhost:4000') {
-        console.log('fullstory helpers disabled on localhost');
-        return exits.success('fullstory helpers disabled on localhost');
-      }
+      // if (appBase === 'http://localhost:4000') {
+      //   console.log('fullstory helpers disabled on localhost');
+      //   return exits.success('fullstory helpers disabled on localhost');
+      // }
 
       const { userId } = inputs;
+      
       const user = await User.findOne({ id: userId });
 
       if (!user) {
@@ -49,15 +50,16 @@ module.exports = {
       const { firstName, lastName } = user;
       const { email } = user;
       const emailDomain = email.split('@')[1];
-      if (emailDomain === 'goodparty.org') {
-        return exits.success('Skipping fullstory for goodparty.org users');
-      }
+      // if (emailDomain === 'goodparty.org') {
+      //   return exits.success('Skipping fullstory for goodparty.org users');
+      // }
 
       const headers = {
         Authorization: `Basic ${fullStoryKey}`,
         'Content-Type': 'application/json',
       };
-
+      correctFsUserId(headers, userId);
+      user = await User.findOne({ id: userId });
       const {
         id: campaignId,
         slug,

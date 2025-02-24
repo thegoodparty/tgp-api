@@ -1,5 +1,5 @@
-const { default: axios } = require("axios");
-const User = require("../../models/users/User")
+const axios = require('axios');
+const { patchUserMetaData } = require('../user/patchUserMetaData');
 
 const fullStoryKey =
   sails.config.custom.fullStoryKey || sails.config.fullStoryKey;
@@ -18,13 +18,15 @@ const correctFsUserId = async (headers, userId) => {
   // }
 
   // Rename fsUserId to oldFsUserId
-  await User.updateOne({ id: userId})
-    .set({
-      metaData: {
-        ...metaData,
-        oldFsUserId: metaData.fsUserId,
-      },
-    }).meta({fetch: true});
+  const user = await User.findOne({ id: userId });
+  patchUserMetaData(user, { oldFsUserId: user.metaData.fsUserId});
+  // await User.updateOne({ id: userId})
+  //   .set({
+  //     metaData: {
+  //       ...metaData,
+  //       oldFsUserId: metaData.fsUserId,
+  //     },
+  //   }).meta({fetch: true});
 
   // Query FS by our UID to get REAL FS id.
   const fsUser = await axios.get(
@@ -42,14 +44,16 @@ const correctFsUserId = async (headers, userId) => {
   const correctFsUserId = fsUser.results[0].id;
   console.log('correctFsUserId: ', correctFsUserId);
   // Save real fsId to metaData under 'fsUserId'
-  await User.updateOne({ id: userId })
-    .set({
-      metaData: {
-        ...metaData,
-        fsUserId: correctFsUserId
-      },
-    })
-    .meta({ fetch: true});
+
+  patchUserMetaData(user, { fsUserId: correctFsUserId});
+  // await User.updateOne({ id: userId })
+  //   .set({
+  //     metaData: {
+  //       ...metaData,
+  //       fsUserId: correctFsUserId
+  //     },
+  //   })
+  //   .meta({ fetch: true});
 
   // Send post with properties update with real fsId
     // If successful, delete profile for oldFsUserId
