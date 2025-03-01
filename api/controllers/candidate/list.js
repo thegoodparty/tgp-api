@@ -1,4 +1,4 @@
-// used for sitemaps
+// used for sitemaps.
 const slugify = require('slugify');
 const moment = require('moment');
 
