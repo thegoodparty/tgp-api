@@ -37,7 +37,6 @@ module.exports = {
             { party: { '!=': 'Democratic' } },
             { party: { '!=': 'Democratic-Farmer-Labor' } },
             { raceId: { '!=': '' } },
-            { raceId: { '!=': null } },
             { electionDay: { '!=': '' } },
             { brCandidateId: { '!=': '' } },
             { isRemoved: false },
@@ -50,19 +49,13 @@ module.exports = {
       for (let candidate of candidates) {
         const electionDay = moment(candidate.electionDay);
 
-        // Check if the election day is either in the future or within the last week
-        if (
-          electionDay.isAfter(now) ||
-          (electionDay.isBefore(now) &&
-            electionDay.isAfter(now.subtract(7, 'days')))
-        ) {
-          if (electionDay > now) {
-            const slug = `${slugify(
-              `${candidate.firstName}-${candidate.lastName}`,
-              { lower: true },
-            )}/${slugify(candidate.positionName, { lower: true })}`;
-            slugs.push(slug);
-          }
+        // Only include candidates whose election is either upcoming or within the past week
+        if (!electionDay.isBefore(now.subtract(7, 'days'))) {
+          const slug = `${slugify(
+            `${candidate.firstName}-${candidate.lastName}`,
+            { lower: true },
+          )}/${slugify(candidate.positionName, { lower: true })}`;
+          slugs.push(slug);
         }
       }
 
