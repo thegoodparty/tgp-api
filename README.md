@@ -115,6 +115,7 @@ We are using [conventional commits](https://www.conventionalcommits.org/)
 
 - Deployed with Elastic Beanstalk
   `eb deploy gp-{stage}-api`
+- Or via CI/CD by pushing to github. See the eb-deploy.yml
 
 ### Links
 
