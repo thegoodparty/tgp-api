@@ -51,7 +51,7 @@ module.exports = {
         const electionDay = moment(candidate.electionDay);
 
         // Only include candidates whose election is either upcoming or within the past week
-        if (!electionDay.isBefore(now.subtract(7, 'days'))) {
+        if (electionDay.isAfter(now.subtract(7, 'days'))) {
           const slug = `${slugify(
             `${candidate.firstName}-${candidate.lastName}`,
             { lower: true },
