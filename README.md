@@ -111,6 +111,11 @@ We are using [conventional commits](https://www.conventionalcommits.org/)
 7) seed-ballotpedia manual match (third run) - /api/v1/seed/seed-ballotpedia?manualResults=true
 ```
 
+### Deployment
+
+- Deployed with Elastic Beanstalk
+  `eb deploy gp-{stage}-api`
+
 ### Links
 
 - [Sails framework documentation](https://sailsjs.com/get-started)
