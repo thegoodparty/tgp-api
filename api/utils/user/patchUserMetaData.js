@@ -1,3 +1,5 @@
+const User = require("../../models/users/User");
+
 const patchUserMetaData = async (user, metaDataUpdate = {}) => {
   const metaData = JSON.parse(user.metaData);
 
