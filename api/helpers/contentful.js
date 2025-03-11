@@ -13,21 +13,21 @@ const processTeamMembers = (teamMembers) =>
   teamMembers.map((member) => ({
     ...member.fields,
     id: member.sys.id,
-    fullName: member.fields.fullName,
-    goodPhoto: extractMediaFile(member.fields.goodPhoto),
-    partyPhoto: extractMediaFile(member.fields.partyPhoto),
-    role: member.fields.role,
-    partyRole: member.fields.partyRole,
+    fullName: member.fields?.fullName,
+    goodPhoto: extractMediaFile(member.fields?.goodPhoto),
+    partyPhoto: extractMediaFile(member.fields?.partyPhoto),
+    role: member.fields?.role,
+    partyRole: member.fields?.partyRole,
   }));
 
 const processTeamMilestone = (item) => ({
   ...item.fields,
   id: item.sys.id,
-  month: item.fields.month,
-  year: item.fields.year,
-  blurb: item.fields.blurb,
-  description: item.fields.description,
-  image: extractMediaFile(item.fields.image),
+  month: item.fields?.month,
+  year: item.fields?.year,
+  blurb: item.fields?.blurb,
+  description: item.fields?.description,
+  image: extractMediaFile(item.fields?.image),
 });
 
 module.exports = {
