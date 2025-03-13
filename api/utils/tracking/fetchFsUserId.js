@@ -16,7 +16,7 @@ const fetchFsUserId = async (headers, { id: userId, firstName, lastName }) => {
       const createResponse = await axios.post(
         'https://api.fullstory.com/v2/users',
         {
-          uid: `local-matt-${userId}`,
+          uid: `${userId}`,
           display_name: `${firstName} ${lastName}`, // Customize this as needed
         },
         {
