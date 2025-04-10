@@ -29,7 +29,7 @@ module.exports = {
     try {
       const { state } = inputs;
       let candidates = await BallotCandidate.find({
-        select: ['firstName', 'lastName', 'positionName'],
+        select: ['firstName', 'lastName', 'positionName', 'electionDay'],
         where: {
           and: [
             { state: state.toUpperCase() },
@@ -45,13 +45,13 @@ module.exports = {
         },
       });
       let slugs = [];
-      const oneWeekAgo = moment().subtract(7, 'days');
+      const now = moment();
 
       for (let candidate of candidates) {
         const electionDay = moment(candidate.electionDay);
 
-        // Only include candidates whose election is either upcoming or within the past week
-        if (electionDay.isAfter(oneWeekAgo)) {
+        // Match the logic from find.js - only include if election day hasn't passed more than 7 days ago
+        if (!electionDay.isBefore(now.subtract(7, 'days'))) {
           const slug = `${slugify(
             `${candidate.firstName}-${candidate.lastName}`,
             { lower: true },
