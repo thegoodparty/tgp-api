@@ -29,7 +29,7 @@ module.exports = {
     try {
       const { state } = inputs;
       let candidates = await BallotCandidate.find({
-        select: ['firstName', 'lastName', 'positionName'],
+        select: ['firstName', 'lastName', 'positionName', 'electionDay'],
         where: {
           and: [
             { state: state.toUpperCase() },
@@ -37,21 +37,20 @@ module.exports = {
             { party: { '!=': 'Democratic' } },
             { party: { '!=': 'Democratic-Farmer-Labor' } },
             { raceId: { '!=': '' } },
-            { raceId: { '!=': null } },
             { electionDay: { '!=': '' } },
-            { brCandidateId: { '!=': '' } },
+            { raceId: { '!=': null } },
             { isRemoved: false },
           ],
         },
       });
       let slugs = [];
-      const oneWeekAgo = moment().subtract(7, 'days');
+      const cutoffDate = moment().subtract(7, 'days');
 
       for (let candidate of candidates) {
         const electionDay = moment(candidate.electionDay);
 
-        // Only include candidates whose election is either upcoming or within the past week
-        if (electionDay.isAfter(oneWeekAgo)) {
+        // Compare against the fixed cutoff date
+        if (!electionDay.isBefore(cutoffDate)) {
           const slug = `${slugify(
             `${candidate.firstName}-${candidate.lastName}`,
             { lower: true },
