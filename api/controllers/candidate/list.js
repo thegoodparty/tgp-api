@@ -37,21 +37,20 @@ module.exports = {
             { party: { '!=': 'Democratic' } },
             { party: { '!=': 'Democratic-Farmer-Labor' } },
             { raceId: { '!=': '' } },
-            { raceId: { '!=': null } },
             { electionDay: { '!=': '' } },
-            { brCandidateId: { '!=': '' } },
+            { raceId: { '!=': null } },
             { isRemoved: false },
           ],
         },
       });
       let slugs = [];
-      const now = moment();
+      const cutoffDate = moment().subtract(7, 'days');
 
       for (let candidate of candidates) {
         const electionDay = moment(candidate.electionDay);
 
-        // Match the logic from find.js - only include if election day hasn't passed more than 7 days ago
-        if (!electionDay.isBefore(now.subtract(7, 'days'))) {
+        // Compare against the fixed cutoff date
+        if (!electionDay.isBefore(cutoffDate)) {
           const slug = `${slugify(
             `${candidate.firstName}-${candidate.lastName}`,
             { lower: true },
