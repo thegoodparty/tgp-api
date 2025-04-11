@@ -22,7 +22,7 @@
     "@sailshq/lodash": "^3.10.3",
     "@tyriar/binary-heap": "^1.0.5",
     "async": "^3.2.5",
-    "axios": "^1.7.9",
+    "axios": "^1.8.4",
     "cheerio": "^1.0.0-rc.12",
     "contentful": "^9.3.7",
     "cross-env": "^7.0.2",
